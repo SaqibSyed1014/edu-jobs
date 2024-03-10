@@ -1,0 +1,80 @@
+<script setup lang="ts">
+
+</script>
+
+<template>
+  <section class="pt-11 pb-24">
+    <div class="container">
+      <div class="grid grid-cols-2">
+        <div class="form-side-overlay bg-[url('/images/others/business.jpg')] bg-cover bg-[70%] relative">
+          <div class="absolute top-0 bg-gradient-to-tr from-brand-800 to-brand-600 h-full w-full opacity-80">
+
+          </div>
+          <div class="relative z-10 py-36 px-8">
+            <div class="container flex items-center">
+              <div class="text-white">
+                <h3 class="text-7xl">
+                  Start turning your ideas into reality.
+                </h3>
+                <p class="text-xl text-brand-200 pt-6 pb-12">
+                  Create a free account and get full access to all features for 30-days. No credit card needed. Trusted
+                  by over 4,000 professionals.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-center">
+          <div class="pl-12">
+            <h3 class="text-4xl pb-5">
+              Create an Account
+            </h3>
+            <p class="text-xl text-gray-600">
+              Be a part of our 10k+ member’s community
+            </p>
+            <form class="grid grid-cols-2 gap-x-8 gap-y-6 pt-12">
+              <div>
+                <label for="firstName">First Name</label>
+                <input
+                    type="text"
+                    placeholder="First Name"
+                    class="shadow-none"
+                >
+              </div>
+              <div>
+                <label for="lastName">Last Name</label>
+                <input
+                    type="text"
+                    placeholder="Last Name"
+                    class="shadow-none"
+                >
+              </div>
+              <div class="col-span-2">
+                <label for="email">Email</label>
+                <input
+                    type="email"
+                    placeholder="you@company.com"
+                    class="shadow-none"
+                >
+              </div>
+
+              <div class="col-span-2">
+                <BaseButton label="Sign Up" color="primary" :full-sized="true" />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+
+<style scoped lang="postcss">
+form label{
+  @apply block pb-1.5 text-xl text-gray-700
+}
+form input{
+  @apply w-full shadow-none
+}
+</style>

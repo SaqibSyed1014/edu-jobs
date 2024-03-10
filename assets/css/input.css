@@ -1,3 +1,22 @@
+@import "custom.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .field-shadow{
+        box-shadow: 0 2px 4px -2px #3B73FA0F, 0 4px 8px -2px #3B73FA1A;
+    }
+}
+
+input{
+    @apply bg-white rounded-lg border border-gray-200 py-2.5 px-3.5 field-shadow outline-0 transition focus:outline-1 focus:outline-brand-500 placeholder-gray-400
+}
+section{
+    @apply pb-24
+}
+h1, h2, h3, h4, h5, h6{
+    @apply font-semibold
+}
+
