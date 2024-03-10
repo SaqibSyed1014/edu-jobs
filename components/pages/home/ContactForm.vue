@@ -39,7 +39,6 @@
                 <input
                     type="text"
                     placeholder="First Name"
-                    class="shadow-none"
                 >
               </div>
               <div>
@@ -47,7 +46,6 @@
                 <input
                     type="text"
                     placeholder="Last Name"
-                    class="shadow-none"
                 >
               </div>
               <div class="col-span-2">
@@ -55,8 +53,23 @@
                 <input
                     type="email"
                     placeholder="you@company.com"
-                    class="shadow-none"
                 >
+              </div>
+              <div class="col-span-2">
+                <label for="email">Email</label>
+                <input
+                    type="text"
+                    placeholder="+1 (555) 000-0000"
+                >
+              </div>
+              <div class="col-span-2">
+                <div class="flex gap-2">
+                  <input id="policyCB" type="checkbox" value=""
+                          class="!w-4 h-4 text-brand-600 bg-gray-100 border-gray-300 rounded focus:ring-brand-500 dark:focus:ring-brand-600 dark:ring-offset-gray-800 focus:ring-2">
+                  <label id="policyCB" class="text-base text-gray-600 inline-block">
+                    You agree to our friendly <span class="underline cursor-pointer hover:no-underline">privacy policy</span>.
+                  </label>
+                </div>
               </div>
 
               <div class="col-span-2">
@@ -72,7 +85,7 @@
 
 <style scoped lang="postcss">
 form label{
-  @apply block pb-1.5 text-xl text-gray-700
+  @apply block pb-1.5 text-sm text-gray-700
 }
 form input{
   @apply w-full shadow-none
