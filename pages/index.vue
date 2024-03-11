@@ -4,6 +4,7 @@
     <Partnerships />
     <Testimonials />
     <SearchedByCities />
+    <FeaturedJobs />
     <ForCandidates />
     <ForEmployers />
     <Blogs />
