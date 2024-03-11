@@ -80,7 +80,7 @@ const jobPostsList = [
   <section class="hero-section overflow-hidden">
     <div class="container relative">
       <div class="content text-center relative z-20 py-24">
-        <h1 class="font-semibold text-6xl leading-[60px] tracking-[-2%] w-10/12 mx-auto">
+        <h1 class="font-inter font-semibold text-6xl leading-[60px] tracking-[-2%] w-10/12 mx-auto">
           Find the most <span class="text-brand-600">exciting jobs</span> in the easiest way possible
         </h1>
 

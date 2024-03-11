@@ -7,6 +7,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import Footer from "~/components/Footer.vue";
-import CTABanner from "~/components/pages/CTABanner.vue";
+import Footer from "~/components/pages/common/Footer.vue";
+import CTABanner from "~/components/pages/common/CTABanner.vue";
 </script>

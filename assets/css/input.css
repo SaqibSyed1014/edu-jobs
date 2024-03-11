@@ -1,4 +1,6 @@
 @import "custom.css";
+/*@import "fonts.css";*/
+/*@import url('https://fonts.googleapis.com/css2?family=Courier+Prime&family=Unica+One&display=swap');*/
 
 @tailwind base;
 @tailwind components;
@@ -10,6 +12,10 @@
     }
 }
 
+body{
+    @apply font-inter
+}
+
 input{
     @apply bg-white rounded-lg border border-gray-200 py-2.5 px-3.5 field-shadow outline-0 transition focus:outline-1 focus:outline-brand-500 placeholder-gray-400
 }
@@ -19,4 +25,5 @@ section{
 h1, h2, h3, h4, h5, h6{
     @apply font-semibold
 }
+
 

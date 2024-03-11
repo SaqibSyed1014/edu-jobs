@@ -45,7 +45,7 @@ const menuLinks = [
 
         </nav>
       </div>
-      <div class="nav-actions flex gap-3">
+      <div class="nav-actions flex shrink-0 gap-3">
         <BaseButton label="Log in" :plane="true" />
 
         <BaseButton label="Sign up" :outline="true" />

@@ -13,6 +13,9 @@ module.exports = {
       center: true,
     },
     extend: {
+      fontFamily: {
+        inter: ['"Inter"', "sans-serif"]
+      },
       colors: {
         gray: {
           25: '#FCFCFD',
