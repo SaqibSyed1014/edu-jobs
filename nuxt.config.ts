@@ -1,7 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
     modules: [
-        '@nuxtjs/tailwindcss'
+        '@nuxtjs/tailwindcss',
+        'nuxt-swiper'
     ],
     components: [
         {
@@ -9,6 +10,9 @@ export default defineNuxtConfig({
             pathPrefix: false,
         },
     ],
+    swiper: {
+        prefix: 'Swiper'
+    },
     tailwindcss: {
         cssPath: '~/assets/css/input.css'
     }

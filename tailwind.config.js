@@ -85,6 +85,9 @@ module.exports = {
           950: '#053321'
         }
       },
+      boxShadow: {
+        'xs': '0 1px 2px 0 #1018280D'
+      },
       backgroundImage: (theme) => ({
         "overlay-gradient-45": [
           "45deg",
