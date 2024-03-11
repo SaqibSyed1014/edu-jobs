@@ -7,13 +7,11 @@
     <div class="container">
       <div class="grid grid-cols-2">
         <div class="form-side-overlay bg-[url('/images/others/business.jpg')] bg-cover bg-[70%] relative">
-          <div class="absolute top-0 bg-gradient-to-tr from-brand-800 to-brand-600 h-full w-full opacity-80">
-
-          </div>
-          <div class="relative z-10 py-36 px-8">
+          <div class="absolute top-0 bg-gradient-to-tr from-brand-800 to-brand-600 h-full w-full opacity-80"></div>
+          <div class="relative z-10 py-36 2xl:py-40 px-8">
             <div class="container flex items-center">
               <div class="text-white">
-                <h3 class="text-7xl">
+                <h3 class="text-5xl 2xl:text-7xl">
                   Start turning your ideas into reality.
                 </h3>
                 <p class="text-xl text-brand-200 pt-6 pb-12">
@@ -26,7 +24,7 @@
         </div>
 
         <div class="flex items-center justify-center">
-          <div class="pl-12">
+          <div class="pl-12 py-16">
             <h3 class="text-4xl pb-5">
               Create an Account
             </h3>

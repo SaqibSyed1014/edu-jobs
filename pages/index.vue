@@ -2,6 +2,7 @@
   <div>
     <Hero />
     <Partnerships />
+    <Testimonials />
     <SearchedByCities />
     <ForCandidates />
     <ForEmployers />
