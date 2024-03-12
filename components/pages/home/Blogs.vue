@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import BlogCard from "~/components/core/BlogCard.vue";
+
 const blogList = [
   {
     category: 'Design',
@@ -37,6 +39,8 @@ const blogList = [
     author: 'demi.png'
   }
 ]
+
+const blogsSlider = ref(null)
 </script>
 
 <template>
@@ -54,38 +58,32 @@ const blogList = [
 
         <div class="hidden md:grid grid-cols-2 gap-x-8 gap-y-12 py-24">
           <template v-for="blog in blogList">
-            <div class="blog-post-card grid grid-cols-2 gap-5">
-              <div class="blog-image rounded-2xl overflow-hidden">
-                <img :src="`/images/blogs/${blog.image}`" alt="Blog Image" class="w-full h-full object-cover">
-              </div>
-              <div class="flex flex-col gap-6">
-                <div class="blog-details">
-                  <p class="text-sm text-brand-700 font-semibold">
-                    {{ blog.category }}
-                  </p>
-                  <h5 class="text-lg">
-                    {{ blog.title }}
-                  </h5>
-                  <p class="text-gray-600 line-clamp-2">
-                    {{ blog.text }}
-                  </p>
-                </div>
-                <div class="author-details flex gap-3">
-                  <div class="w-10 h-10 rounded-full overflow-hidden">
-                    <img :src="`/images/people/${blog.author}`" alt="Author Image" class="w-full h-full object-cover">
-                  </div>
-                  <div class="text-sm">
-                    <p class="font-semibold">
-                      {{ blog.writtenBy }}
-                    </p>
-                    <p class="text-gray-600">
-                      {{ blog.writtenAt }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <BlogCard :blog="blog" />
           </template>
+        </div>
+
+        <div class="md:hidden">
+          <swiper-container
+              ref="blogsSlider"
+              :loop="true"
+              :free-mode="true"
+              :slides-per-view="1"
+              :space-between="20"
+              class="blogs-mobile-slider"
+          >
+            <swiper-slide v-for="blog in blogList">
+              <BlogCard :blog="blog" />
+            </swiper-slide>
+          </swiper-container>
+        </div>
+
+        <div class="flex md:hidden justify-between gap-8 pt-8 pb-12">
+          <div @click="blogsSlider?.swiper?.slidePrev()" class="slider-nav-arrows right">
+
+          </div>
+          <div @click="blogsSlider?.swiper?.slideNext()" class="slider-nav-arrows left">
+
+          </div>
         </div>
 
         <div>

@@ -108,6 +108,20 @@ const testimonialsList = [
 ]
 
 const testimonialSlider = ref(null)
+const testimonialMobileSlider = ref(null)
+
+const sliderBreakpoints = {
+  320: {
+    slidesPerView: 1,
+    'grid.rows': 1,
+    // 'grid.columns': 1
+  },
+  640: {
+    slidesPerView: 3,
+    'grid.rows': 4,
+    // 'grid.columns': 3
+  }
+}
 </script>
 
 <template>
@@ -128,27 +142,43 @@ const testimonialSlider = ref(null)
         <swiper-container
             ref="testimonialSlider"
             :loop="true"
-            :grab-cursor="false"
             :space-between="32"
             :slides-per-view="3"
             :grid-rows="2"
             grid-fill="row"
-            navigation-next-el=".next"
-            class="testimonial-slider"
+            class="testimonial-slider hidden md:block"
         >
           <swiper-slide v-for="testimonial in testimonialsList">
             <TestimonialCard :testimonial="testimonial" />
           </swiper-slide>
         </swiper-container>
-        <div class="grid grid-cols-3 gap-8">
 
-        </div>
+        <swiper-container
+            ref="testimonialMobileSlider"
+            :loop="true"
+            :space-between="32"
+            :slides-per-view="1"
+            class="testimonial-mobile-slider block md:hidden"
+        >
+          <swiper-slide v-for="testimonial in testimonialsList">
+            <TestimonialCard :testimonial="testimonial" />
+          </swiper-slide>
+        </swiper-container>
 
-        <div class="flex gap-8 pt-8">
+        <div class="hidden md:flex gap-8 pt-8">
           <div @click="testimonialSlider?.swiper?.slidePrev()" class="slider-nav-arrows right">
 
           </div>
           <div @click="testimonialSlider?.swiper?.slideNext()" class="slider-nav-arrows left">
+
+          </div>
+        </div>
+
+        <div class="flex md:hidden justify-between gap-8 pt-8">
+          <div @click="testimonialMobileSlider?.swiper?.slidePrev()" class="slider-nav-arrows right">
+
+          </div>
+          <div @click="testimonialMobileSlider?.swiper?.slideNext()" class="slider-nav-arrows left">
 
           </div>
         </div>

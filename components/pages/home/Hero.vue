@@ -99,7 +99,7 @@ const jobPostsList = [
               >
             </div>
             <hr class="hidden md:block h-3 w-px bg-gray-200 mx-2">
-            <hr class="block md:hidden h-px w-full bg-gray-200 mx-2">
+            <hr class="block md:hidden h-px w-[92%] mx-auto bg-gray-200">
             <div>
               <input
                   type="text"
@@ -127,14 +127,15 @@ const jobPostsList = [
         :free-mode="true"
         :space-between="20"
         :grab-cursor="false"
-        :slides-per-view="3"
+        slides-per-view="auto"
+        :auto-resize="false"
         :autoplay-delay="1"
         :autoplay-disable-on-interaction="false"
         :speed="4000"
         :free-mode-omentum="false"
         class="jobs-slider z-20"
     >
-        <swiper-slide v-for="job in jobPostsList">
+        <swiper-slide v-for="job in jobPostsList" class="!w-[340px]">
           <JobCard :job="job"/>
         </swiper-slide>
     </swiper-container>

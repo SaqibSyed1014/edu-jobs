@@ -63,6 +63,16 @@ const jobPostsList = [
 ]
 
 const jobSlider = ref(null)
+
+const sliderBreakpoints = {
+  320: {
+    slidesPerView: 1
+  },
+  640: {
+    slidesPerView: 'auto',
+    autoResize: false
+  }
+}
 </script>
 
 <template>
@@ -80,7 +90,7 @@ const jobSlider = ref(null)
             </p>
             <BaseButton label="Explore More" color="primary" />
 
-            <div class="flex items-center gap-8 pt-16">
+            <div class="hidden md:flex items-center gap-8 pt-16">
               <div @click="jobSlider?.swiper?.slidePrev()" class="slider-nav-arrows right">
 
               </div>
@@ -95,13 +105,22 @@ const jobSlider = ref(null)
                 :loop="true"
                 :free-mode="true"
                 :space-between="20"
-                :slides-per-view="2.5"
+                :breakpoints="sliderBreakpoints"
                 class="jobs-slider z-20"
             >
-              <swiper-slide v-for="job in jobPostsList">
+              <swiper-slide v-for="job in jobPostsList" class="md:!w-[340px]">
                 <JobCard :job="job"/>
               </swiper-slide>
             </swiper-container>
+
+            <div class="flex md:hidden justify-between gap-8 pt-8">
+              <div @click="jobSlider?.swiper?.slidePrev()" class="slider-nav-arrows right">
+
+              </div>
+              <div @click="jobSlider?.swiper?.slideNext()" class="slider-nav-arrows left">
+
+              </div>
+            </div>
           </div>
         </div>
       </div>
