@@ -6,7 +6,10 @@ const props = defineProps<{
   outline?: Boolean
   plane?: Boolean
   fullSized?: Boolean
+  fullSizedOnSmall?: Boolean
 }>()
+
+const defaultStyles = 'flex items-center justify-center gap-3'
 
 const btnStyles = computed(() => {
   if (props.color === 'primary')
@@ -25,10 +28,18 @@ const btnSize = computed(() => {
     return 'w-full'
   return ''
 })
+
+const btnSizeOnSmall = computed(() => {
+  if (props.fullSizedOnSmall)
+    return 'max-sm:w-full'
+  return ''
+})
 </script>
 
 <template>
-  <button :class="[btnStyles, btnSize]">
+  <button :class="[defaultStyles, btnStyles, btnSize, btnSizeOnSmall]">
+    <slot name="prepend-icon"></slot>
     {{ label }}
+    <slot name="append-icon"></slot>
   </button>
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import HamburgerSVG from '~/assets/icons/hamburger.svg'
-import XClose from '~/assets/icons/x-close.svg'
+import HamburgerIcon from '~/assets/icons/hamburger.svg'
+import XCloseIcon from '~/assets/icons/x-close.svg'
 
 const menuLinks = [
   {
@@ -62,12 +62,12 @@ function togglingSidebarVisibility() {
       </div>
 
       <!--  Hamburger Icon    -->
-      <HamburgerSVG
+      <HamburgerIcon
           v-if="!toggleSideBar"
           class="block md:hidden w-6 h-6"
           @click="togglingSidebarVisibility"
       />
-      <XClose
+      <XCloseIcon
           v-else
           class="block md:hidden w-4 h-4"
           @click="togglingSidebarVisibility"

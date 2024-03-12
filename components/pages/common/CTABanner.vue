@@ -16,8 +16,8 @@ import BaseButton from "~/components/core/BaseButton.vue";
               We donate a percentage of our revenue to classrooms in need
             </p>
           </div>
-          <div>
-            <BaseButton label="Our Pledge" color="primary"/>
+          <div class="shrink-0">
+            <BaseButton label="Our Pledge" color="primary" :full-sized-on-small="true" />
           </div>
         </div>
 

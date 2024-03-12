@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import ArrowUpRightIcon from '~/assets/icons/arrow-narrow-up-right.svg'
 import TestimonialCard from "~/components/core/TestimonialCard.vue";
+import ArrowRightIcon from "assets/icons/arrow-right.svg";
+import ArrowLeftIcon from "assets/icons/arrow-left.svg";
 
 const testimonialsList = [
   {
@@ -135,7 +138,11 @@ const sliderBreakpoints = {
             <p class="supporting-text">Hear from some of our amazing customers</p>
           </div>
           <div>
-            <BaseButton label="Search Jobs" color="primary"/>
+            <BaseButton label="Search Jobs" color="primary">
+              <template #append-icon>
+                <ArrowUpRightIcon class="w-3 h-3" />
+              </template>
+            </BaseButton>
           </div>
         </div>
 
@@ -167,19 +174,19 @@ const sliderBreakpoints = {
 
         <div class="hidden md:flex gap-8 pt-8">
           <div @click="testimonialSlider?.swiper?.slidePrev()" class="slider-nav-arrows right">
-
+            <ArrowLeftIcon class="w-4 h-4" />
           </div>
           <div @click="testimonialSlider?.swiper?.slideNext()" class="slider-nav-arrows left">
-
+            <ArrowRightIcon class="w-4 h-4" />
           </div>
         </div>
 
         <div class="flex md:hidden justify-between gap-8 pt-8">
           <div @click="testimonialMobileSlider?.swiper?.slidePrev()" class="slider-nav-arrows right">
-
+            <ArrowLeftIcon class="w-4 h-4" />
           </div>
           <div @click="testimonialMobileSlider?.swiper?.slideNext()" class="slider-nav-arrows left">
-
+            <ArrowRightIcon class="w-4 h-4" />
           </div>
         </div>
       </div>

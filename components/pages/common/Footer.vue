@@ -1,6 +1,7 @@
 <script setup lang="ts">
-
-import BaseButton from "~/components/core/BaseButton.vue";
+import InstagramIcon from "assets/icons/instagram.svg";
+import FacebookIcon from "assets/icons/facebook.svg";
+import TwitterIcon from "~/assets/icons/twitter-x.svg";
 
 const footerLinks = [
   {
@@ -25,7 +26,7 @@ const footerLinks = [
 <template>
   <footer class="bg-gray-50">
     <div class="container">
-      <div class="grid grid-cols-4 sm:grid-cols-12 max-md:gap-8 py-24">
+      <div class="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-12 max-md:gap-8 py-24">
         <div class="logo-and-text col-span-4">
           <img src="/images/logo.svg" alt="EduJobs Logo">
 
@@ -45,12 +46,12 @@ const footerLinks = [
     </div>
     <section class="bg-gray-25 py-12">
       <div class="container">
-        <div class="content flex max-md:flex-col justify-between items-center gap-8">
+        <div class="content flex max-md:flex-col justify-between md:items-center gap-8">
           <div class="supporting-text">
             <p class="font-semibold text-lg text-gray-900">Join our newsletter</p>
             <p class="text-gray-600">We’ll send you a nice letter once per week. No spam.</p>
           </div>
-          <form class="flex max-md:flex-col gap-4 w-full">
+          <form class="flex max-md:flex-col md:justify-end gap-4 w-full">
             <input type="email" placeholder="Enter your email">
             <BaseButton label="Subscribe" color="primary" class="" />
           </form>
@@ -59,7 +60,7 @@ const footerLinks = [
     </section>
     <div class="container py-12">
       <hr class="border-b border-gray-200 mb-8">
-      <div class="flex justify-between items-center text-gray-500 font-normal">
+      <div class="flex justify-between max-md:flex-col-reverse md:items-center text-gray-500 font-normal max-md:gap-6">
         <div class="flex max-md:flex-col md:items-center gap-4">
           <span class="max-md:block flex-1">
             © 2024 EduJobs.org
@@ -69,6 +70,11 @@ const footerLinks = [
             <span>Terms and conditions</span>
             <div class="w-2 h-2 rounded-full bg-gray-500"/>
             <span>Privacy Policy</span></div>
+        </div>
+        <div class="social-links flex flex-1 gap-6 md:justify-end">
+          <TwitterIcon class="w-6 h-6" />
+          <InstagramIcon class="w-6 h-6" />
+          <FacebookIcon class="w-6 h-6" />
         </div>
       </div>
     </div>

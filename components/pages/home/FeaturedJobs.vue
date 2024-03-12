@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import ArrowUpRightIcon from "assets/icons/arrow-narrow-up-right.svg";
+import ArrowLeftIcon from "assets/icons/arrow-left.svg";
+import ArrowRightIcon from "assets/icons/arrow-right.svg";
+
 const jobPostsList = [
   {
     logo: 'logo-one.jpg',
@@ -68,7 +72,7 @@ const sliderBreakpoints = {
   320: {
     slidesPerView: 1
   },
-  640: {
+  768: {
     slidesPerView: 'auto',
     autoResize: false
   }
@@ -88,18 +92,22 @@ const sliderBreakpoints = {
             <p class="supporting-text pb-8">
               Discover tech stacks, employee benefits, and open roles.
             </p>
-            <BaseButton label="Explore More" color="primary" />
+            <BaseButton label="Explore More" color="primary" :full-sized-on-small="true">
+              <template #append-icon>
+                <ArrowUpRightIcon class="w-3 h-3" />
+              </template>
+            </BaseButton>
 
             <div class="hidden md:flex items-center gap-8 pt-16">
               <div @click="jobSlider?.swiper?.slidePrev()" class="slider-nav-arrows right">
-
+                <ArrowLeftIcon class="w-4 h-4" />
               </div>
               <div @click="jobSlider?.swiper?.slideNext()" class="slider-nav-arrows left">
-
+                <ArrowRightIcon class="w-4 h-4" />
               </div>
             </div>
           </div>
-          <div class="col-span-2">
+          <div class="col-span-2 pt-16">
             <swiper-container
                 ref="jobSlider"
                 :loop="true"
@@ -115,10 +123,10 @@ const sliderBreakpoints = {
 
             <div class="flex md:hidden justify-between gap-8 pt-8">
               <div @click="jobSlider?.swiper?.slidePrev()" class="slider-nav-arrows right">
-
+                <ArrowLeftIcon class="w-4 h-4" />
               </div>
               <div @click="jobSlider?.swiper?.slideNext()" class="slider-nav-arrows left">
-
+                <ArrowRightIcon class="w-4 h-4" />
               </div>
             </div>
           </div>

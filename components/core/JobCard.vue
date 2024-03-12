@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import ClockIcon from '~/assets/icons/clock.svg'
+import DollarIcon from '~/assets/icons/currency-dollar.svg'
+
 defineProps<{ job :any }>()
 </script>
 
@@ -34,10 +37,12 @@ defineProps<{ job :any }>()
     </div>
     <div class="job-post-footer flex items-center gap-5 text-gray-600">
       <div class="flex items-center gap-2">
+        <ClockIcon class="w-5 h-5" />
         <span>{{ job.duration }}</span>
       </div>
 
       <div class="flex items-center gap-2">
+        <DollarIcon class="w-5 h-5" />
         <span>{{ job.wage }}</span>
       </div>
     </div>

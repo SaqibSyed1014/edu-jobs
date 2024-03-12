@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import BlogCard from "~/components/core/BlogCard.vue";
+import ArrowUpRightIcon from "assets/icons/arrow-narrow-up-right.svg";
+import ArrowLeftIcon from "assets/icons/arrow-left.svg";
+import ArrowRightIcon from "assets/icons/arrow-right.svg";
 
 const blogList = [
   {
@@ -47,7 +50,7 @@ const blogsSlider = ref(null)
   <section class="bg-gray-25 py-24">
     <div class="container">
       <div class="content">
-        <div class="heading-and-subheading flex max-md:flex-col gap-4 pb-16">
+        <div class="heading-and-subheading flex flex-col gap-4 pb-16">
           <h2 class="section-heading">
             Latest writings
           </h2>
@@ -56,13 +59,13 @@ const blogsSlider = ref(null)
           </p>
         </div>
 
-        <div class="hidden md:grid grid-cols-2 gap-x-8 gap-y-12 py-24">
+        <div class="hidden sm:grid grid-cols-2 gap-x-8 gap-y-12 py-24">
           <template v-for="blog in blogList">
             <BlogCard :blog="blog" />
           </template>
         </div>
 
-        <div class="md:hidden">
+        <div class="sm:hidden">
           <swiper-container
               ref="blogsSlider"
               :loop="true"
@@ -77,17 +80,21 @@ const blogsSlider = ref(null)
           </swiper-container>
         </div>
 
-        <div class="flex md:hidden justify-between gap-8 pt-8 pb-12">
+        <div class="flex sm:hidden justify-between gap-8 pt-8 pb-12">
           <div @click="blogsSlider?.swiper?.slidePrev()" class="slider-nav-arrows right">
-
+            <ArrowLeftIcon class="w-4 h-4" />
           </div>
           <div @click="blogsSlider?.swiper?.slideNext()" class="slider-nav-arrows left">
-
+            <ArrowRightIcon class="w-4 h-4" />
           </div>
         </div>
 
         <div>
-          <BaseButton label="See Our Blog" color="primary" />
+          <BaseButton label="See Our Blog" color="primary" :full-sized-on-small="true">
+            <template #append-icon>
+              <ArrowUpRightIcon class="w-3 h-3" />
+            </template>
+          </BaseButton>
         </div>
       </div>
     </div>

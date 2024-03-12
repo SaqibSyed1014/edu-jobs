@@ -2,13 +2,13 @@
     @apply flex max-md:flex-col justify-center items-center gap-4
 }
 .home-search-filters .filter-wrapper{
-    @apply flex max-md:flex-col items-center bg-white field-shadow overflow-hidden rounded-lg max-md:w-full
+    @apply flex max-md:flex-col items-center bg-white field-shadow overflow-hidden rounded-lg max-md:w-full px-3
 }
 .home-search-filters .filter-wrapper div{
     @apply max-md:w-full
 }
 .home-search-filters .filter-wrapper input{
-    @apply focus:outline-0 shadow-none border-0
+    @apply focus:outline-0 shadow-none border-0 px-2
 }
 
 .hero-section .dashed-ring{

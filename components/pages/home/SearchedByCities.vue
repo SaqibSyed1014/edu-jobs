@@ -1,6 +1,6 @@
 <script setup lang="ts">
-
-import BaseButton from "~/components/core/BaseButton.vue";
+import ArrowUpRightIcon from "assets/icons/arrow-narrow-up-right.svg";
+import LocationPinIcon from "~/assets/icons/location-pin.svg"
 
 const citiesList = [
   {
@@ -53,19 +53,24 @@ const citiesList = [
             <p class="supporting-text">Find your fittest job in your desired city</p>
           </div>
           <div>
-            <BaseButton label="View All" color="primary" />
+            <BaseButton label="View All" color="primary" :full-sized-on-small="true">
+              <template #append-icon>
+                <ArrowUpRightIcon class="w-3 h-3" />
+              </template>
+            </BaseButton>
           </div>
         </div>
 
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           <template v-for="city in citiesList">
             <div class="city-card border border-gray-200 rounded-xl overflow-hidden">
               <div class="city-image h-[175px]">
                 <img :src="`/images/cities/${city.image}`" alt="City Image" class="w-full h-full object-cover">
               </div>
               <div class="city-jobs-details px-4 py-5">
-                <div class="font-semibold text-lg pb-0 mb-1">
-                  {{ city.name }}
+                <div class="flex gap-2 items-center pb-0 mb-1">
+                  <LocationPinIcon class="w-5 h-5" />
+                  <span class="font-semibold text-lg">{{ city.name }}</span>
                 </div>
                 <div class="flex items-center gap-3 text-gray-600">
                   <span>{{ city.openings }} openings</span>
