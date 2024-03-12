@@ -7,11 +7,11 @@
     <div class="container">
       <div class="content">
         <div class="heading-and-subheading flex flex-col gap-3">
-          <p class="text-brand-700 font-semibold">For Candidates</p>
-          <h2 class="text-4xl font-semibold tracking-[-2%]">Get rid of old recruitment processes</h2>
+          <p class="section-subheading">For Candidates</p>
+          <h2 class="section-heading">Get rid of old recruitment processes</h2>
         </div>
 
-        <div class="grid grid-cols-2 gap-24 process-steps pt-16">
+        <div class="grid md:grid-cols-2 gap-24 process-steps pt-16">
           <div>
             <div class="border-l-4 border-brand-600 px-6 py-4">
               <h4 class="font-semibold text-lg">

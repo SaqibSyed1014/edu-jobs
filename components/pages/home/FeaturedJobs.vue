@@ -69,13 +69,13 @@ const jobSlider = ref(null)
   <section class="py-24 overflow-hidden">
     <div class="content">
       <div class="container">
-        <div class="grid grid-cols-3 items-center">
+        <div class="grid grid-cols-1 lg:grid-cols-3 items-center">
           <div class="col-span-1">
-            <p class="text-brand-700 font-semibold">Featured</p>
-            <h3 class="text-4xl pt-3 pb-5">
+            <p class="section-subheading">Featured</p>
+            <h3 class="section-heading pt-3 pb-5">
               Jobs of the day
             </h3>
-            <p class="text-xl text-gray-600 pb-8">
+            <p class="supporting-text pb-8">
               Discover tech stacks, employee benefits, and open roles.
             </p>
             <BaseButton label="Explore More" color="primary" />

@@ -2,7 +2,8 @@
 export default defineNuxtConfig({
     modules: [
         '@nuxtjs/tailwindcss',
-        'nuxt-swiper'
+        'nuxt-swiper',
+        'nuxt-svgo'
     ],
     components: [
         {
@@ -15,5 +16,8 @@ export default defineNuxtConfig({
     },
     tailwindcss: {
         cssPath: '~/assets/css/input.css'
+    },
+    svgo: {
+        defaultImport: 'component'
     }
 })

@@ -114,11 +114,11 @@ const testimonialSlider = ref(null)
   <section class="py-24">
     <div class="container">
       <div class="content">
-        <div class="heading-and-supporting-content flex justify-between items-center pb-16">
+        <div class="heading-and-supporting-content flex max-md:flex-col justify-between md:items-center gap-5 pb-16">
           <div class="heading-and-subheading flex flex-col gap-3">
-            <p class="text-brand-700 font-semibold">Testimonials</p>
-            <h2 class="text-4xl font-semibold tracking-[-2%]">Over 100+ people trust us</h2>
-            <p class="text-xl text-gray-600">Hear from some of our amazing customers</p>
+            <p class="section-subheading">Testimonials</p>
+            <h2 class="section-heading">Over 100+ people trust us</h2>
+            <p class="supporting-text">Hear from some of our amazing customers</p>
           </div>
           <div>
             <BaseButton label="Search Jobs" color="primary"/>

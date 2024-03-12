@@ -46,18 +46,18 @@ const citiesList = [
   <section>
     <div class="container">
       <div class="content">
-        <div class="heading-and-supporting-content flex justify-between items-center">
+        <div class="heading-and-supporting-content flex  max-md:flex-col justify-between md:items-center gap-5 pb-16">
           <div class="heading-and-subheading flex flex-col gap-3">
-            <p class="text-brand-700 font-semibold">Top Searches</p>
-            <h2 class="text-4xl font-semibold tracking-[-2%]">Search Jobs by Cities</h2>
-            <p class="text-xl text-gray-600">Find your fittest job in your desired city</p>
+            <p class="section-subheading">Top Searches</p>
+            <h2 class="section-heading">Search Jobs by Cities</h2>
+            <p class="supporting-text">Find your fittest job in your desired city</p>
           </div>
           <div>
             <BaseButton label="View All" color="primary" />
           </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-8 pt-16">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           <template v-for="city in citiesList">
             <div class="city-card border border-gray-200 rounded-xl overflow-hidden">
               <div class="city-image h-[175px]">

@@ -80,11 +80,11 @@ const jobPostsList = [
   <section class="hero-section overflow-hidden">
     <div class="container relative">
       <div class="content text-center relative z-20 py-24">
-        <h1 class="font-inter font-semibold text-6xl leading-[60px] tracking-[-2%] w-10/12 2xl:w-8/12 mx-auto">
+        <h1 class="font-inter font-semibold text-4xl md:text-5xl lg:text-6xl tracking-[-2%] w-full md:w-10/12 2xl:w-8/12 mx-auto">
           Find the most <span class="text-brand-600">exciting jobs</span> in the easiest way possible
         </h1>
 
-        <p class="text-gray-600 text-xl w-8/12 mx-auto pt-6 pb-12">
+        <p class="text-gray-600 text-lg md:text-xl w-full md:w-8/12 mx-auto pt-6 pb-12">
           Explore thousands of job opportunities with all the information you need and manage all your job applications
           from start to finish.
         </p>
@@ -98,7 +98,8 @@ const jobPostsList = [
                   class="w-full"
               >
             </div>
-            <hr class="h-3 w-px bg-gray-200 mx-2">
+            <hr class="hidden md:block h-3 w-px bg-gray-200 mx-2">
+            <hr class="block md:hidden h-px w-full bg-gray-200 mx-2">
             <div>
               <input
                   type="text"

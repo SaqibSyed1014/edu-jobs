@@ -26,26 +26,26 @@ const cardsList = [
     <div class="container">
       <div class="content">
         <div class="heading-and-subheading flex flex-col justify-center items-center gap-3 text-center">
-          <p class="text-brand-700 font-semibold">For Employers</p>
-          <h2 class="text-4xl font-semibold tracking-[-2%]">
+          <p class="section-subheading">For Employers</p>
+          <h2 class="section-heading">
             Find out what we have for your company
           </h2>
-          <p class="text-lg text-gray-600">
+          <p class="supporting-text">
             Search and connect with the right candidates faster and go with a seamless flow
           </p>
         </div>
 
-        <div class="grid grid-cols-3 gap-8 py-20">
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 py-20">
           <template v-for="card in cardsList">
             <div class="flex flex-col gap-10 bg-gray-50 p-6">
               <div class="bg-brand-500 text-white rounded-xl mx-auto w-14 h-14">
 
               </div>
-              <div class="flex flex-col gap-4 text-center">
-                <h4 class="text-3xl mb-4">
+              <div class="flex flex-col gap-3 text-center">
+                <h4 class="text-lg sm:text-xl md:text-2xl lg:text-3xl md:mb-4">
                   {{ card.title }}
                 </h4>
-                <p class="text-gray-600 text-lg">
+                <p class="text-gray-600 md:text-lg">
                   {{ card.text }}
                 </p>
                 <span class="text-brand-500 font-semibold">

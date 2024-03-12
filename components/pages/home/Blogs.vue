@@ -43,16 +43,16 @@ const blogList = [
   <section class="bg-gray-25 py-24">
     <div class="container">
       <div class="content">
-        <div class="heading-and-subheading pb-16">
-          <h2 class="text-4xl font-semibold tracking-[-2%] pb-5">
+        <div class="heading-and-subheading flex max-md:flex-col gap-4 pb-16">
+          <h2 class="section-heading">
             Latest writings
           </h2>
-          <p class="text-lg text-gray-600">
+          <p class="supporting-text">
             The latest news, technologies, and resources from our team.
           </p>
         </div>
 
-        <div class="grid grid-cols-2 gap-x-8 gap-y-12 py-24">
+        <div class="hidden md:grid grid-cols-2 gap-x-8 gap-y-12 py-24">
           <template v-for="blog in blogList">
             <div class="blog-post-card grid grid-cols-2 gap-5">
               <div class="blog-image rounded-2xl overflow-hidden">

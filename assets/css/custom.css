@@ -1,8 +1,11 @@
 .home-search-filters{
-    @apply flex justify-center items-center gap-4
+    @apply flex max-md:flex-col justify-center items-center gap-4
 }
 .home-search-filters .filter-wrapper{
-    @apply flex items-center bg-white field-shadow overflow-hidden rounded-lg
+    @apply flex max-md:flex-col items-center bg-white field-shadow overflow-hidden rounded-lg max-md:w-full
+}
+.home-search-filters .filter-wrapper div{
+    @apply max-md:w-full
 }
 .home-search-filters .filter-wrapper input{
     @apply focus:outline-0 shadow-none border-0

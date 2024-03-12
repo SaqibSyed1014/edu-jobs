@@ -19,7 +19,7 @@ const partnersList = [
         <p class="section-title">
           Trusted by World’s leading names
         </p>
-      <div class="grid grid-cols-5 gap-x-16 gap-y-8">
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-16 gap-y-8">
         <div v-for="partner in partnersList">
           <img :src="`/images/partners/${partner}`" alt="Partner Logo">
         </div>

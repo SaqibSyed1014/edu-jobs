@@ -5,8 +5,8 @@
 <template>
   <section class="pt-11 pb-24">
     <div class="container">
-      <div class="grid grid-cols-2">
-        <div class="form-side-overlay bg-[url('/images/others/business.jpg')] bg-cover bg-[70%] relative">
+      <div class="grid md:grid-cols-2">
+        <div class="hidden md:block form-side-overlay bg-[url('/images/others/business.jpg')] bg-cover bg-[70%] relative">
           <div class="absolute top-0 bg-gradient-to-tr from-brand-800 to-brand-600 h-full w-full opacity-80"></div>
           <div class="relative z-10 py-36 2xl:py-40 px-8">
             <div class="container flex items-center">
@@ -24,14 +24,14 @@
         </div>
 
         <div class="flex items-center justify-center">
-          <div class="pl-12 py-16">
+          <div class="md:pl-12 py-16">
             <h3 class="text-4xl pb-5">
               Create an Account
             </h3>
             <p class="text-xl text-gray-600">
               Be a part of our 10k+ member’s community
             </p>
-            <form class="grid grid-cols-2 gap-x-8 gap-y-6 pt-12">
+            <form class="grid md:grid-cols-2 gap-x-8 gap-y-6 pt-12">
               <div>
                 <label for="firstName">First Name</label>
                 <input
@@ -46,21 +46,21 @@
                     placeholder="Last Name"
                 >
               </div>
-              <div class="col-span-2">
+              <div class="md:col-span-2">
                 <label for="email">Email</label>
                 <input
                     type="email"
                     placeholder="you@company.com"
                 >
               </div>
-              <div class="col-span-2">
+              <div class="md:col-span-2">
                 <label for="email">Email</label>
                 <input
                     type="text"
                     placeholder="+1 (555) 000-0000"
                 >
               </div>
-              <div class="col-span-2">
+              <div class="md:col-span-2">
                 <div class="flex gap-2">
                   <input id="policyCB" type="checkbox" value=""
                           class="!w-4 h-4 text-brand-600 bg-gray-100 border-gray-300 rounded focus:ring-brand-500 dark:focus:ring-brand-600 dark:ring-offset-gray-800 focus:ring-2">
@@ -70,7 +70,7 @@
                 </div>
               </div>
 
-              <div class="col-span-2">
+              <div class="md:col-span-2">
                 <BaseButton label="Sign Up" color="primary" :full-sized="true" />
               </div>
             </form>
