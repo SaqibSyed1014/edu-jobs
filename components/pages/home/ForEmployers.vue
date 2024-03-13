@@ -3,6 +3,7 @@ import UsersIcon from "assets/icons/users.svg";
 import SearchRefractionIcon from "assets/icons/search-refraction.svg";
 import AnnouncementIcon from "assets/icons/announcement.svg";
 import ArrowUpRightIcon from "assets/icons/arrow-narrow-up-right.svg";
+import ArrowIcon from "assets/icons/arrow-right.svg";
 
 const cardsList = [
   {
@@ -53,8 +54,9 @@ const cardsList = [
                 <p class="text-gray-600 md:text-lg">
                   {{ card.text }}
                 </p>
-                <span class="text-brand-500 font-semibold">
+                <span class="flex items-center justify-center gap-3 text-brand-500 font-semibold cursor-pointer group">
                   {{ card.linkText }}
+                  <ArrowIcon class="w-3 h-3 group-hover:translate-x-[8px] transition" />
                 </span>
               </div>
             </div>

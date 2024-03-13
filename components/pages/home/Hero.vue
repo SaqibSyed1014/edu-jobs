@@ -9,7 +9,7 @@ const jobPostsList = [
   {
     logo: 'logo-one.jpg',
     postedAt: '1h ago',
-    title: 'Marketing Associate',
+    title: 'First Marketing Associate',
     country: 'Polymath, Melbourne, AU',
     category: 'Design',
     description: 'We’re looking for a mid-level product designer to join our team.',
@@ -47,6 +47,16 @@ const jobPostsList = [
     wage: '80k - 100k'
   },
   {
+    logo: 'logo-two.jpg',
+    postedAt: '6h ago',
+    title: 'Senior Graphic Designer',
+    country: 'Polymath, Melbourne, AU',
+    category: 'Design',
+    description: 'We’re looking for a mid-level product designer to join our team.',
+    duration: 'Full-time',
+    wage: '80k - 100k'
+  },
+  {
     logo: 'logo-one.jpg',
     postedAt: '6h ago',
     title: 'Senior Graphic Designer',
@@ -69,7 +79,7 @@ const jobPostsList = [
   {
     logo: 'logo-three.jpg',
     postedAt: '2h ago',
-    title: 'Lead Product Designer',
+    title: 'Last Lead Product Designer',
     country: 'Polymath, Melbourne, AU',
     category: 'Design',
     description: 'We’re looking for a mid-level product designer to join our team.',
@@ -77,6 +87,21 @@ const jobPostsList = [
     wage: '80k - 100k'
   },
 ]
+
+const slidingSlide = ref(null)
+onMounted(() => {
+  function infinite() {
+    console.log('jd ', slidingSlide.value?.swiper.slides.length)
+    slidingSlide.value?.swiper.slideTo(slidingSlide.value?.swiper.slides.length);
+    slidingSlide.value?.swiper.once('transitionEnd', function(){
+      slidingSlide.value?.swiper.slideTo(slidingSlide.value?.swiper.params.slidesPerView, 0, false);
+      setTimeout(function () {
+        infinite();
+      }, 0);
+    });
+  }
+  infinite();
+})
 </script>
 
 <template>
@@ -95,7 +120,7 @@ const jobPostsList = [
         <div class="home-search-filters">
           <div class="filter-wrapper">
             <div class="flex items-center">
-              <SearchIcon class="w-4 h-4" />
+              <SearchIcon class="w-4 h-4 text-gray-400" />
               <input
                   type="text"
                   placeholder="Keyword, Job title..."
@@ -105,7 +130,7 @@ const jobPostsList = [
             <hr class="hidden md:block h-3 w-px bg-gray-200 mx-2">
             <hr class="block md:hidden h-px w-[92%] mx-auto bg-gray-200">
             <div class="flex items-center">
-              <LocationPinIcon class="w-4 h-4" />
+              <LocationPinIcon class="w-4 h-4 text-gray-400" />
               <input
                   type="text"
                   placeholder="Anywhere"
@@ -131,19 +156,16 @@ const jobPostsList = [
 
     <swiper-container
         :loop="true"
-        :free-mode="true"
         :space-between="20"
-        :grab-cursor="false"
         slides-per-view="auto"
         :auto-resize="false"
         :autoplay-delay="1"
         :autoplay-disable-on-interaction="false"
         :speed="4000"
-        :free-mode-omentum="false"
         class="jobs-slider z-20"
     >
-        <swiper-slide v-for="job in jobPostsList" class="!w-[340px]">
-          <JobCard :job="job"/>
+        <swiper-slide v-for="(job, i) in jobPostsList" :key="i" class="!w-[340px]">
+          <JobCard :job="job" :index="i" />
         </swiper-slide>
     </swiper-container>
   </section>

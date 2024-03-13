@@ -69,7 +69,7 @@ const citiesList = [
               </div>
               <div class="city-jobs-details px-4 py-5">
                 <div class="flex gap-2 items-center pb-0 mb-1">
-                  <LocationPinIcon class="w-5 h-5" />
+                  <LocationPinIcon class="w-5 h-5 text-gray-700" />
                   <span class="font-semibold text-lg">{{ city.name }}</span>
                 </div>
                 <div class="flex items-center gap-3 text-gray-600">

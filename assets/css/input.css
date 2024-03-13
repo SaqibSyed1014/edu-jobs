@@ -26,7 +26,7 @@ h1, h2, h3, h4, h5, h6{
     @apply font-semibold
 }
 .slider-nav-arrows{
-    @apply flex justify-center items-center w-14 h-14 border border-gray-200 rounded-full cursor-pointer transition hover:bg-gray-200
+    @apply flex justify-center items-center w-14 h-14 border border-gray-200 rounded-full cursor-pointer transition hover:bg-gray-200 text-gray-500
 }
 
 .section-subheading{
