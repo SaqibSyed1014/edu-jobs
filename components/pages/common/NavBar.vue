@@ -73,11 +73,11 @@ function togglingSidebarVisibility() {
           @click="togglingSidebarVisibility"
       />
 
-      <!--  CTA Btns    -->
+      <!--  CTA Btns  -->
       <div class="nav-actions hidden md:flex shrink-0 gap-3">
-        <BaseButton label="Log in" :plane="true" />
+        <BaseButton label="Log in" color="plain" />
 
-        <BaseButton label="Sign up" :outline="true" />
+        <BaseButton label="Sign up" color="gray" :outline="true" />
 
         <BaseButton label="Post a Job" color="primary" />
       </div>
