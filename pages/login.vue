@@ -44,7 +44,7 @@ import GoogleIcon from 'assets/icons/google.svg'
                     <input type="checkbox" class="form-checkbox"/>
                     <span class="font-medium">Remember for 30 days</span>
                   </div>
-                  <NuxtLink to="/forget-password" class="font-semibold text-sm text-blue-500 hover:underline">
+                  <NuxtLink to="/forgotPassword" class="font-semibold text-sm text-blue-500 hover:underline">
                     Forgot password
                   </NuxtLink>
                 </div>
