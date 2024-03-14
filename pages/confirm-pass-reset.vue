@@ -17,20 +17,14 @@ import ArrowLeftIcon from "assets/icons/arrow-left.svg";
             </div>
             <div class="flex flex-col gap-3 items-center">
               <h2 class="text-2xl md:text-3xl mb-3">
-                Check your school email
+                Password reset
               </h2>
-              <p>We sent a password reset link to</p>
-              <p>john.doe@sdsu.edu</p>
+              <p class="text-center">Your password has been successfully reset. Click below to log in magically.</p>
             </div>
           </div>
           <div>
-            <a href="mailto:">
-              <BaseButton label="Open email app" :full-sized="true" />
-            </a>
+            <BaseButton label="Continue" :full-sized="true" />
           </div>
-          <p class="text-sm font-medium text-center">
-            Didn't receive the email? Click to send
-          </p>
           <div class="text-center">
             <NuxtLink to="/login" class="text-sm flex gap-2.5 items-center justify-center group">
               <ArrowLeftIcon class="w-4 h-4 text-gray-600 group-hover:-translate-x-[8px] transition" />
