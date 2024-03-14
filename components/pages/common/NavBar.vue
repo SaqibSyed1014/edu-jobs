@@ -75,11 +75,23 @@ function togglingSidebarVisibility() {
 
       <!--  CTA Btns  -->
       <div class="nav-actions hidden md:flex shrink-0 gap-2 xl:gap-3">
-        <BaseButton label="Log in" color="plain" navigate-to="/login" />
+        <BaseButton
+            label="Log in"
+            color="plain"
+            navigate-to="/login"
+        />
 
-        <BaseButton label="Sign up" color="gray" :outline="true" />
+        <BaseButton
+            label="Sign up"
+            color="gray"
+            :outline="true"
+            navigate-to="/signup"
+        />
 
-        <BaseButton label="Post a Job" color="primary" />
+        <BaseButton
+            label="Post a Job"
+            color="primary"
+        />
       </div>
     </div>
 
@@ -89,7 +101,3 @@ function togglingSidebarVisibility() {
     />
   </header>
 </template>
-
-<style scoped lang="postcss">
-
-</style>

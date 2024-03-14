@@ -6,7 +6,7 @@ import GoogleIcon from 'assets/icons/google.svg'
   <div class="auth-login-form pt-16 pb-24">
     <div class="container">
       <div class="grid grid-cols-12 gap-20">
-        <div class="col-span-7 flex items-center">
+        <div class="col-span-7 xl:col-span-8 flex items-center">
             <div class="flex flex-col items-center gap-8 py-8 justify-center max-lg:hidden">
               <h2 class="text-center text-2xl xl:text-3xl w-3/4 mx-auto">
                 We’ve been using Untitled to kick start every new project and can’t imagine working without it.
@@ -21,10 +21,10 @@ import GoogleIcon from 'assets/icons/google.svg'
             </div>
         </div>
 
-        <div class="col-span-5">
+        <div class="col-span-5 xl:col-span-4">
           <div class="flex justify-center items-center">
-            <div class="w-full gap-8 flex flex-col justify-center items-center">
-              <div class="flex flex-col gap-3 w-full">
+            <div class="flex flex-col justify-center gap-8 w-full">
+              <div class="flex flex-col gap-3">
                 <h1 class="font-semibold text-3xl">Welcome back</h1>
                 <p>Welcome back! Please enter your details.</p>
               </div>
@@ -57,9 +57,9 @@ import GoogleIcon from 'assets/icons/google.svg'
                   </BaseButton>
                 </div>
               </div>
-              <p class="text-sm">
+              <p class="text-sm text-center">
                 <span>Don’t have an account? </span>
-                <NuxtLink to="signup" class="text-brand-600 font-semibold hover:text-brand-400 transition">
+                <NuxtLink to="/signup" class="text-brand-600 font-semibold hover:text-brand-400 transition">
                   Sign up
                 </NuxtLink>
               </p>
@@ -70,7 +70,3 @@ import GoogleIcon from 'assets/icons/google.svg'
     </div>
   </div>
 </template>
-
-<style scoped lang="postcss">
-
-</style>
