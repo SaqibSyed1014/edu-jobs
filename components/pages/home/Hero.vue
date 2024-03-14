@@ -9,7 +9,7 @@ const jobPostsList = [
   {
     logo: 'logo-one.jpg',
     postedAt: '1h ago',
-    title: 'First Marketing Associate',
+    title: 'Marketing Associate',
     country: 'Polymath, Melbourne, AU',
     category: 'Design',
     description: 'We’re looking for a mid-level product designer to join our team.',
@@ -79,7 +79,7 @@ const jobPostsList = [
   {
     logo: 'logo-three.jpg',
     postedAt: '2h ago',
-    title: 'Last Lead Product Designer',
+    title: 'Lead Product Designer',
     country: 'Polymath, Melbourne, AU',
     category: 'Design',
     description: 'We’re looking for a mid-level product designer to join our team.',
@@ -87,21 +87,6 @@ const jobPostsList = [
     wage: '80k - 100k'
   },
 ]
-
-const slidingSlide = ref(null)
-onMounted(() => {
-  function infinite() {
-    console.log('jd ', slidingSlide.value?.swiper.slides.length)
-    slidingSlide.value?.swiper.slideTo(slidingSlide.value?.swiper.slides.length);
-    slidingSlide.value?.swiper.once('transitionEnd', function(){
-      slidingSlide.value?.swiper.slideTo(slidingSlide.value?.swiper.params.slidesPerView, 0, false);
-      setTimeout(function () {
-        infinite();
-      }, 0);
-    });
-  }
-  infinite();
-})
 </script>
 
 <template>
@@ -165,7 +150,7 @@ onMounted(() => {
         class="jobs-slider z-20"
     >
         <swiper-slide v-for="(job, i) in jobPostsList" :key="i" class="!w-[340px]">
-          <JobCard :job="job" :index="i" />
+          <JobCard :job="job" />
         </swiper-slide>
     </swiper-container>
   </section>

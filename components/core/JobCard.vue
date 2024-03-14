@@ -2,7 +2,7 @@
 import ClockIcon from '~/assets/icons/clock.svg'
 import DollarIcon from '~/assets/icons/currency-dollar.svg'
 
-defineProps<{ job :any, index: number }>()
+defineProps<{ job :any }>()
 </script>
 
 <template>
@@ -17,7 +17,7 @@ defineProps<{ job :any, index: number }>()
         </div>
       </div>
       <div class="pt-3">
-        <p class="font-semibold">{{ index }}) {{ job.title }}</p>
+        <p class="font-semibold">{{ job.title }}</p>
         <p class="text-gray-600 text-sm">{{ job.country }}</p>
       </div>
     </div>

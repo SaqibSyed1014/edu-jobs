@@ -1,14 +1,10 @@
 {
-  "name": "tailwind-nuxt-starter",
+  "name": "edu-jobs",
   "version": "1.0.0",
-  "description": "A free and open-source starter project to help you get started with the core Flowbite Library components and Nuxt.js",
+  "description": "Explore thousands of job opportunities with all the information you need and manage all your job applications from start to finish.",
   "license": "MIT",
-  "repository": "https://github.com/themesberg/tailwind-nuxt-starter",
-  "homepage": "https://flowbite.com/docs/getting-started/nuxt/",
-  "contributors": [
-    "Zoltán Szőgyényi (https://twitter.com/zoltanszogyenyi)"
-  ],
-  "author": "Bergside Inc.",
+  "repository": "https://github.com/mfr415/edujobs.git",
+  "homepage": "",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
