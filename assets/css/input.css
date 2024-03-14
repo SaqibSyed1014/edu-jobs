@@ -19,6 +19,12 @@ body{
 input{
     @apply bg-white rounded-lg border border-gray-200 py-2.5 px-3.5 field-shadow outline-0 transition focus:outline-1 focus:outline-brand-500 placeholder-gray-400
 }
+.form-control{
+    @apply flex flex-col gap-1.5
+}
+.form-control input{
+    @apply w-full
+}
 section{
     @apply pb-24
 }

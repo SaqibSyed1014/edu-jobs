@@ -2,10 +2,11 @@
 type ColorVariant = 'primary' | 'secondary' | 'gray' | 'plain'
 const props = defineProps<{
   color?: ColorVariant,
-  label: string
+  label: String
   outline?: Boolean
   fullSized?: Boolean
   fullSizedOnSmall?: Boolean
+  navigateTo?: String
 }>()
 
 const defaultStyles = 'flex items-center justify-center gap-3'
@@ -38,12 +39,17 @@ const btnStyleClasses = computed(() => [
   btnSize.value,
   btnSizeOnSmall.value
 ]);
+
+const component = computed(() => {
+  if (props.navigateTo) return defineNuxtLink({})
+  return 'button'
+})
 </script>
 
 <template>
-  <button :class="[defaultStyles, btnStyleClasses]">
-    <slot name="prepend-icon"></slot>
+  <component :is="component" :to="navigateTo" :class="[defaultStyles, btnStyleClasses]">
+    <slot name="prepend-icon" />
     {{ label }}
-    <slot name="append-icon"></slot>
-  </button>
+    <slot name="append-icon" />
+  </component>
 </template>

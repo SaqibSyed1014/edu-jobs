@@ -49,7 +49,7 @@ const footerLinks = [
         <div class="content flex max-md:flex-col justify-between md:items-center gap-8">
           <div class="supporting-text">
             <p class="font-semibold text-lg text-gray-900">Join our newsletter</p>
-            <p class="text-gray-600">We’ll send you a nice letter once per week. No spam.</p>
+            <p class="text-gray-600 text-base">We’ll send you a nice letter once per week. No spam.</p>
           </div>
           <form class="flex max-md:flex-col md:justify-end gap-4 w-full">
             <input type="email" placeholder="Enter your email">

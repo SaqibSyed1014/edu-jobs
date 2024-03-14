@@ -5,7 +5,7 @@ import XCloseIcon from '~/assets/icons/x-close.svg'
 const menuLinks = [
   {
     label: 'Home',
-    path: ''
+    path: '/'
   },
   {
     label: 'Jobs',
@@ -44,16 +44,16 @@ function togglingSidebarVisibility() {
 <template>
   <header>
     <div class="container mx-auto flex items-center justify-between bg-transparent py-4 relative z-40">
-      <div class="content flex items-center justify-between gap-10">
+      <div class="content flex items-center justify-between gap-7 xl:gap-10">
         <div class="logo shrink-0">
           <img src="/images/logo.svg" alt="EduJobs Logo">
         </div>
         <!-- Menu Links -->
         <nav class="shrink-0 hidden md:block">
-          <ul class="flex gap-8 flex-nowrap items-center font-medium text-gray-600">
+          <ul class="flex gap-5 xl:gap-8 flex-nowrap items-center font-medium text-gray-600">
             <template v-for="link in menuLinks">
-              <li class="cursor-pointer hover:text-brand-500 transition">
-                {{ link.label }}
+              <li class="hover:text-brand-500 transition">
+                <NuxtLink :to="link.path">{{ link.label }}</NuxtLink>
               </li>
             </template>
           </ul>
@@ -74,8 +74,8 @@ function togglingSidebarVisibility() {
       />
 
       <!--  CTA Btns  -->
-      <div class="nav-actions hidden md:flex shrink-0 gap-3">
-        <BaseButton label="Log in" color="plain" />
+      <div class="nav-actions hidden md:flex shrink-0 gap-2 xl:gap-3">
+        <BaseButton label="Log in" color="plain" navigate-to="/login" />
 
         <BaseButton label="Sign up" color="gray" :outline="true" />
 
