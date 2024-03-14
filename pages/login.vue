@@ -5,7 +5,7 @@ import GoogleIcon from 'assets/icons/google.svg'
 <template>
   <div class="auth-login-form pt-16 pb-24">
     <div class="container">
-      <div class="grid grid-cols-12 gap-20">
+      <div class="grid md:grid-cols-12 md:gap-20">
         <div class="col-span-7 xl:col-span-8 flex items-center">
             <div class="flex flex-col items-center gap-8 py-8 justify-center max-lg:hidden">
               <h2 class="text-center text-2xl xl:text-3xl w-3/4 mx-auto">
@@ -44,7 +44,7 @@ import GoogleIcon from 'assets/icons/google.svg'
                     <input type="checkbox" class="form-checkbox"/>
                     <span class="font-medium">Remember for 30 days</span>
                   </div>
-                  <NuxtLink to="/forgotPassword" class="font-semibold text-sm text-blue-500 hover:underline">
+                  <NuxtLink to="/forgo-password" class="font-semibold text-sm text-blue-500 hover:underline">
                     Forgot password
                   </NuxtLink>
                 </div>
