@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import KeyIcon from "assets/icons/key.svg";
-import ArrowLeftIcon from "assets/icons/arrow-left.svg";
+definePageMeta({
+  layout: 'minimal'
+})
 </script>
 
 <template>
@@ -13,7 +14,7 @@ import ArrowLeftIcon from "assets/icons/arrow-left.svg";
         <div class="flex flex-col gap-8 z-10 max-w-[360px] lg:w-full">
           <div class="flex flex-col gap-6 items-center">
             <div class="w-14 h-14 bg-white relative flex flex-col justify-center items-center rounded-xl shadow border border-gray-200">
-              <KeyIcon class="w-7 h-7" />
+              <SvgoKey class="w-7 h-7" />
             </div>
             <div class="flex flex-col gap-3 items-center">
               <h2 class="text-2xl md:text-3xl mb-3">
@@ -27,7 +28,7 @@ import ArrowLeftIcon from "assets/icons/arrow-left.svg";
           </div>
           <div class="text-center">
             <NuxtLink to="/login" class="text-sm flex gap-2.5 items-center justify-center group">
-              <ArrowLeftIcon class="w-4 h-4 text-gray-600 group-hover:-translate-x-[8px] transition" />
+              <SvgoArrowLeft class="w-4 h-4 text-gray-600 group-hover:-translate-x-[8px] transition" />
               Back to log in
             </NuxtLink>
           </div>
