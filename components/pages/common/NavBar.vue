@@ -21,7 +21,7 @@ const menuLinks = [
   },
   {
     label: 'Pricing',
-    path: ''
+    path: '/pricing'
   },
   {
     label: 'Our Blogs',
