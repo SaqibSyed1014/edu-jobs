@@ -2,13 +2,11 @@
 import { CheckIcon } from '@heroicons/vue/20/solid'
 
 defineProps<{ steps: any[] }>()
-const route = useRoute()
-console.log("🚀 ~ router:", route)
 </script>
 
 <template>
 
-    <div class="flex flex-row justify-between gap-8">
+    <div class="hidden md:flex flex-row justify-between gap-8">
         <nav aria-label="Progress" class="">
             <ol role="list" class="overflow-hidden">
                 <li v-for="(step, stepIdx) in steps" :key="step.name"
@@ -25,7 +23,7 @@ console.log("🚀 ~ router:", route)
                                 </span>
                             </span>
                             <span class="ml-4 flex min-w-0 flex-col">
-                                <span class="text-base font-semibold">{{ step.name }}</span>
+                                <span class="text-xs lg:text-base font-semibold">{{ step.name }}</span>
                             </span>
                         </NuxtLink>
                     </template>
@@ -40,7 +38,7 @@ console.log("🚀 ~ router:", route)
                                 </span>
                             </span>
                             <span class="ml-4 flex min-w-0 flex-col">
-                                <span class="text-base font-semibold text-brand-700">{{ step.name }}</span>
+                                <span class="text-xs lg:text-base font-semibold text-brand-700">{{ step.name }}</span>
                             </span>
                         </NuxtLink>
                     </template>

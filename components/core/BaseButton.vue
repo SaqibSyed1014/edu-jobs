@@ -1,5 +1,5 @@
 <script setup lang="ts">
-type ColorVariant = 'primary' | 'secondary' | 'gray' | 'plain'
+type ColorVariant = 'primary' | 'secondary' | 'gray' | 'plain' | 'brand'
 const props = defineProps<{
   color?: ColorVariant,
   label: String
@@ -16,7 +16,8 @@ const btnStyles = computed(() => {
     primary: props.outline ? 'border border-brand-600 text-brand-600 hover:bg-brand-600 hover:text-white' : 'bg-brand-600 text-white hover:bg-brand-500',
     secondary: props.outline ? 'border border-brand-600 text-brand-600 hover:bg-brand-600 hover:text-white' : 'bg-brand-600 text-white hover:bg-brand-500',
     gray: props.outline ? 'border border-gray-300 text-gray-700 hover:bg-gray-200' : 'bg-gray-300 text-white hover:bg-gray-200',
-    plain: props.outline ? 'border border-gray-700 transparent text-gray-600' : 'bg-transparent text-gray-600 hover:bg-gray-200'
+    plain: props.outline ? 'border border-gray-700 transparent text-gray-600' : 'bg-transparent text-gray-600 hover:bg-gray-200',
+    brand: props.outline ? 'border border-gray-700 transparent text-gray-600' : 'bg-brand-50 text-brand-800 hover:bg-brand-100',
   };
 
   const baseStyles = 'rounded-lg px-4 py-2.5 font-semibold transition';
