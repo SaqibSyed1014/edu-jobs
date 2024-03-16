@@ -16,7 +16,7 @@ body{
     @apply font-inter
 }
 
-input{
+input, .form-input, .form-textarea{
     @apply bg-white rounded-lg border border-gray-200 py-2.5 px-3.5 field-shadow outline-0 transition focus:outline-1 focus:outline-brand-500 placeholder-gray-400
 }
 .form-control{
