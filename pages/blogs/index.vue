@@ -12,8 +12,8 @@ const blogList = [
   {
     title: 'Migrating to Linear 101',
     text: 'How do you create compelling presentations that wow your colleagues and impress your managers?',
-    image: 'blog-one.png',
-    writtenBy: 'Olivia Rhye',
+    image: 'blog-two.png',
+    writtenBy: 'David',
     writtenAt: '22 Jan 2024',
     author: 'olivia.png',
     tags: ['Research', 'Management', 'Software']
@@ -21,8 +21,8 @@ const blogList = [
   {
     title: 'Building your API stack',
     text: 'How do you create compelling presentations that wow your colleagues and impress your managers?',
-    image: 'blog-one.png',
-    writtenBy: 'Olivia Rhye',
+    image: 'blog-three.png',
+    writtenBy: 'Malik Robinson',
     writtenAt: '18 Jan 2024',
     author: 'olivia.png',
     tags: ['Software', 'Tools', 'SaaS']
@@ -30,7 +30,7 @@ const blogList = [
   {
     title: 'UX review presentations',
     text: 'How do you create compelling presentations that wow your colleagues and impress your managers?',
-    image: 'blog-one.png',
+    image: 'blog-four.png',
     writtenBy: 'Olivia Rhye',
     writtenAt: '20 Jan 2024',
     author: 'olivia.png',
@@ -39,8 +39,8 @@ const blogList = [
   {
     title: 'Bill Walsh leadership lessons',
     text: 'How do you create compelling presentations that wow your colleagues and impress your managers?',
-    image: 'blog-one.png',
-    writtenBy: 'Olivia Rhye',
+    image: 'blog-three.png',
+    writtenBy: 'Andi Lee',
     writtenAt: '20 Jan 2024',
     author: 'olivia.png',
     tags: ['Design', 'SaaS']
@@ -49,7 +49,7 @@ const blogList = [
     title: 'UX review presentations',
     text: 'How do you create compelling presentations that wow your colleagues and impress your managers?',
     image: 'blog-one.png',
-    writtenBy: 'Olivia Rhye',
+    writtenBy: 'Lana',
     writtenAt: '20 Jan 2024',
     author: 'olivia.png',
     tags: ['SaaS']
@@ -81,33 +81,32 @@ const blogList = [
       <div class="container md:px-8">
         <h2 class="text-xl md:text-2xl mb-8">Recent blog posts</h2>
       <div class="grid lg:grid-cols-2 gap-8">
-        <template>
+        <template v-for="blog in blogList.slice(0, 1)">
           <div class="flex flex-col justify-around">
             <div class="overflow-hidden rounded-2xl mb-5">
-              <img :src="`/images/blogs/${blogList[0].image}`" alt="blog-list-img" class="w-full h-full object-cover object-top">
+              <img :src="`/images/blogs/${blog.image}`" alt="blog-list-img" class="w-full h-full object-cover object-top">
             </div>
             <div class="flex flex-col gap-2 mb-6">
-              <p class="text-brand-600 text-sm">{{ blogList[0].writtenBy }} • {{ blogList[0].writtenAt }}</p>
+              <p class="text-brand-600 text-sm">{{ blog.writtenBy }} • {{ blog.writtenAt }}</p>
               <h3>
-                <NuxtLink to="/blogs/details" class="flex items-center justify-between gap-1 text-lg hover:text-brand-600">
-                  {{ blogList[0].title }}
+                <NuxtLink to="/blogs/detail" class="flex items-center justify-between gap-1 text-lg hover:text-brand-600">
+                  {{ blog.title }}
                   <span class="shrink-0">
                       <SvgoArrowNarrowUpRight class="w-4 h-4" />
                     </span>
                 </NuxtLink>
               </h3>
-              <p class="text-black-light font-normal">{{ blogList[0].text }}</p>
+              <p class="text-black-light font-normal">{{ blog.text }}</p>
             </div>
             <div class="flex flex-wrap gap-2 font-medium text-sm">
-              <template v-for="tag in blogList[0].tags">
+              <template v-for="tag in blog.tags">
                 <div class="text-[#6941C6] bg-[#F9F5FF] border border-[#E9D7FE] rounded-full px-2.5 py-0.5">{{ tag }}</div>
               </template>
             </div>
           </div>
         </template>
-
         <div class="grid grid-cols-1 gap-8">
-          <template v-for="blog in blogList.slice(0, 2)">
+          <template v-for="blog in blogList.slice(1, 3)">
             <div class="flex flex-col sm:flex-row gap-5">
               <div class="flex-none sm:w-60 2xl:w-80 overflow-hidden rounded-2xl">
                 <img :src="`/images/blogs/${blog.image}`" alt="blog-list-img" class="w-full h-full object-cover object-top">
@@ -116,7 +115,7 @@ const blogList = [
                 <div class="flex flex-col gap-2 mb-6">
                   <p class="text-brand-600 text-sm">{{ blog.writtenBy }} • {{ blog.writtenAt }}</p>
                   <h3>
-                    <NuxtLink to="/blogs/details" class="flex justify-between gap-1 text-lg hover:text-primary">
+                    <NuxtLink to="/blogs/detail" class="flex justify-between gap-1 text-lg hover:text-brand-600">
                       {{ blog.title }}
                     </NuxtLink>
                   </h3>
@@ -146,7 +145,7 @@ const blogList = [
               <div class="flex flex-col gap-2 mb-6">
                 <p class="text-brand-600 text-sm">{{ blog.writtenBy }} • {{ blog.writtenAt }}</p>
                 <h3>
-                  <NuxtLink to="/blogs/details" class="flex items-center justify-between gap-1 text-lg hover:text-brand-600">
+                  <NuxtLink to="/blogs/detail" class="flex items-center justify-between gap-1 text-lg hover:text-brand-600">
                     {{ blog.title }}
                     <span class="shrink-0">
                       <SvgoArrowNarrowUpRight class="w-4 h-4" />
