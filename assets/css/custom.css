@@ -57,3 +57,7 @@
 swiper-container::part(wrapper) {
     transition-timing-function : linear !important;
 }
+
+.reviews-slider swiper-container::part(swiper-pagination-bullet) {
+    padding-top: 3rem;
+}
