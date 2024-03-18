@@ -25,7 +25,7 @@ const menuLinks = [
   },
   {
     label: 'Our Blogs',
-    path: ''
+    path: '/blogs'
   }
 ]
 

@@ -9,7 +9,7 @@ const props = defineProps<{
   navigateTo?: String
 }>()
 
-const defaultStyles = 'flex items-center justify-center gap-3'
+const defaultStyles = 'flex items-center justify-center gap-3 shrink-0'
 
 const btnStyles = computed(() => {
   const colorStyles = {
