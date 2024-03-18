@@ -6,19 +6,38 @@ import TwitterIcon from "~/assets/icons/twitter-x.svg";
 const footerLinks = [
   {
     heading: 'For School Districts',
-    links: ['Why Us', 'Post Job', 'Pricing', 'Sign Up']
+    links: [
+      { label: 'Why Us', path: '' },
+      { label: 'Post Job', path: '' },
+      { label: 'Pricing', path: '/pricing' },
+      { label: 'Sign Up', path: '/signup' },
+    ]
   },
   {
     heading: 'For Candidates',
-    links: ['Why Us', 'Sign Up', 'Browse Jobs']
+    links: [
+      { label: 'Why Us', path: '' },
+      { label: 'Sign Up', path: '/signup' },
+      { label: 'Browse Jobs', path: '' },
+    ]
   },
   {
     heading: 'Company',
-    links: ['About Us', 'Careers', 'Blog', 'Contact Us']
+    links: [
+      { label: 'About Us', path: '' },
+      { label: 'Careers', path: '/signup' },
+      { label: 'Blog', path: '/blogs' },
+      { label: 'Contact Us', path: '/contact-us' },
+    ]
   },
   {
     heading: 'Popular Job Searches',
-    links: ['Teaching Jobs', 'School Jobs', 'Match Teacher Jobs', 'Stem Jobs']
+    links: [
+      { label: 'Teaching Jobs', path: '' },
+      { label: 'School Jobs', path: '' },
+      { label: 'Match Teacher Jobs', path: '' },
+      { label: 'Stem Jobs', path: '' },
+    ]
   }
 ]
 </script>
@@ -32,12 +51,14 @@ const footerLinks = [
 
           <p class="max-md:pb-4 pt-8">Explore jobs and hire talent in the easiest possible way.</p>
         </div>
-        <template v-for="linkObj in footerLinks">
+        <template v-for="linkSection in footerLinks">
           <div class="footer-links col-span-2 font-semibold">
-            <p class="text-brand-700 text-sm">{{ linkObj.heading }}</p>
+            <p class="text-brand-700 text-sm">{{ linkSection.heading }}</p>
             <ul class="flex flex-col gap-3 text-gray-600 pt-4">
-              <template v-for="link in linkObj.links">
-                <li class="hover:text-gray-500 hover:underline cursor-pointer">{{ link }}</li>
+              <template v-for="link in linkSection.links">
+                <li class="hover:text-gray-500 hover:underline cursor-pointer">
+                  <NuxtLink :to="link.path">{{ link.label }}</NuxtLink>
+                </li>
               </template>
             </ul>
           </div>

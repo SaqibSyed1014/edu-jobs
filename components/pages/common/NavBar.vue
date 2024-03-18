@@ -101,3 +101,10 @@ function togglingSidebarVisibility() {
     />
   </header>
 </template>
+
+<style scoped>
+header nav ul li .router-link-active{
+  color: theme('colors.brand.600');
+  font-weight: 600;
+}
+</style>
