@@ -32,11 +32,6 @@ definePageMeta({
       </div>
       <div class="flex flex-col gap-4">
         <BaseButton label="Sign in" :full-sized="true"/>
-        <BaseButton label="Sign in with Google" color="gray" :outline="true" :full-sized="true">
-          <template #prepend-icon>
-            <SvgoGoogle class="w-5 h-5"/>
-          </template>
-        </BaseButton>
       </div>
     </div>
     <p class="text-sm text-center">
