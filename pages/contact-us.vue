@@ -13,14 +13,14 @@
     <section class="pb-16 md:pb-24">
       <div class="container md:px-8">
         <div class="grid md:grid-cols-3 gap-6">
-          <div class="bg-gray-50 p-6">
+          <div class="bg-gray-200 rounded-xl p-6">
             <div class="bg-brand-600 rounded-[10px] flex items-center justify-center text-white w-12 h-12 mb-12 md:mb-16">
               <SvgoHappyFace class="w-6 h-6" />
             </div>
             <h2 class="mb-2 text-lg md:text-xl">Chat with us</h2>
             <p class="text-black-light font-normal">Speak to our friendly team.</p>
           </div>
-          <div class="bg-gray-50 p-6">
+          <div class="bg-gray-200 rounded-xl p-6">
             <div class="bg-brand-600 rounded-[10px] flex items-center justify-center text-white w-12 h-12 mb-12 md:mb-16">
               <SvgoChats class="w-6 h-6" />
             </div>
@@ -28,7 +28,7 @@
             <p class="text-black-light font-normal">We’re here to help.</p>
             <a href="mailto:support@dormstreet.com" class="text-brand-600 hover:underline mt-4 md:mt-5 inline-flex font-semibold">support@dormstreet.com</a>
           </div>
-          <div class="bg-gray-50 p-6">
+          <div class="bg-gray-200 rounded-xl p-6">
             <div class="bg-brand-600 rounded-[10px] flex items-center justify-center text-white w-12 h-12 mb-12 md:mb-16">
               <SvgoPhone class="w-6 h-6" />
             </div>
@@ -54,7 +54,7 @@
             <h4 class="text-lg md:text-xl">Novato, CA</h4>
           </div>
         </div>
-        <div class="">
+        <div class="md:px-20">
           <img src="/images/others/google-map.png" alt="map-image" class="w-full h-full">
         </div>
       </div>
