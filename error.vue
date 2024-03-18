@@ -8,18 +8,18 @@ import router from "#app/plugins/router";
       <div class="flex flex-col sm:flex-row sm:items-center min-h-screen px-3 lg:px-20">
         <div class="sm:flex-1 order-last sm:order-first">
           <div>
-            <p class="text-custom-red text-sm font-semibold py-1 text-rose-800">404 error</p>
+            <p class="text-brand-600 text-sm font-semibold py-1">404 error</p>
             <h3 class="text-3xl sm:text-5xl font-bold drop-shadow-lg py-2">Page not found</h3>
             <p class="text-gray-600 py-1">Sorry, the page you are looking for does no exist. </p>
           </div>
           <div class="flex flex-col sm:flex-row gap-3 items-center py-5 sm:py-8">
-            <div @click="() => this.$router.go(-1)" class="flex flex-row gap-2 py-2 px-4 rounded-lg border border-custom-secondary-border bg-white items-center text-sm font-semibold w-full justify-center order-last sm:w-auto sm:order-first" href="javascript:history.back()">
+            <NuxtLink to="./" class="flex flex-row gap-2 py-2 px-4 cursor-pointer rounded-lg border border-custom-secondary-border bg-white items-center text-sm font-semibold w-full justify-center order-last sm:w-auto sm:order-first" href="javascript:history.back()">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M15.8334 10H4.16669M4.16669 10L10 15.8333M4.16669 10L10 4.16666" stroke="#344054" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
               Go back
-            </div>
-            <BaseButton navigate-to="/" :full-sized-on-small="true">
+            </NuxtLink>
+            <BaseButton navigate-to="/" label="Take me home" :full-sized-on-small="true">
               Take me home
             </BaseButton>
           </div>
