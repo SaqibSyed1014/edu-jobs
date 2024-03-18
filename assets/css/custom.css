@@ -57,3 +57,12 @@
 swiper-container::part(wrapper) {
     transition-timing-function : linear !important;
 }
+
+
+.dp__input_icons{
+    @apply !hidden
+}
+
+.dp__input{
+   @apply !bg-transparent !py-[9px] !px-3.5
+}

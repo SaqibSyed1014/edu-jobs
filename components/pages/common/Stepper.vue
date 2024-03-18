@@ -5,20 +5,19 @@ defineProps<{ steps: any[] }>()
 </script>
 
 <template>
-
-    <div class="hidden md:flex flex-row justify-between gap-8">
+    <div class="hidden lg:flex flex-row justify-between gap-8">
         <nav aria-label="Progress" class="">
             <ol role="list" class="overflow-hidden">
                 <li v-for="(step, stepIdx) in steps" :key="step.name"
-                    :class="[stepIdx !== steps.length - 1 ? 'pb-10' : '', 'relative']">
+                    :class="[stepIdx !== steps.length - 1 ? 'pb-8' : '', 'relative']">
                     <template v-if="step.status === 'complete'">
 
                         <div v-if="stepIdx !== steps.length - 1"
-                            class="absolute left-4 top-4 -ml-px mt-0.5 h-full w-0.5 bg-brand-600" aria-hidden="true" />
+                            class="absolute left-4 top-4 -ml-px mt-7 h-[30%] w-0.5 bg-brand-600" aria-hidden="true" />
                         <NuxtLink :to="step.href" class="group relative flex items-center">
                             <span class="flex h-9 items-center">
                                 <span
-                                    class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-brand-600 group-hover:bg-brand-800">
+                                    class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-brand-600 group-hover:bg-brand-700">
                                     <CheckIcon class="h-5 w-5 text-white" aria-hidden="true" />
                                 </span>
                             </span>
@@ -29,7 +28,7 @@ defineProps<{ steps: any[] }>()
                     </template>
                     <template v-else-if="step.status === 'current'">
                         <div v-if="stepIdx !== steps.length - 1"
-                            class="absolute left-4 top-4 -ml-px mt-0.5 h-full w-0.5 bg-gray-300" aria-hidden="true" />
+                            class="absolute left-4 top-4 -ml-px mt-7 h-[30%] w-0.5 bg-gray-300" aria-hidden="true" />
                         <NuxtLink :to="step.href" class="group relative flex items-center" aria-current="step">
                             <span class="flex h-9 items-center" aria-hidden="true">
                                 <span
@@ -44,7 +43,7 @@ defineProps<{ steps: any[] }>()
                     </template>
                     <template v-else>
                         <div v-if="stepIdx !== steps.length - 1"
-                            class="absolute left-4 top-4 -ml-px mt-0.5 h-full w-0.5 bg-gray-300" aria-hidden="true" />
+                            class="absolute left-4 top-4 -ml-px mt-7 h-[30%] w-0.5 bg-gray-300" aria-hidden="true" />
                         <NuxtLink :to="step.href" class="group relative flex items-center">
                             <span class="flex h-9 items-center" aria-hidden="true">
                                 <span
