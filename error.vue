@@ -13,12 +13,12 @@ import router from "#app/plugins/router";
             <p class="text-gray-600 py-1">Sorry, the page you are looking for does no exist. </p>
           </div>
           <div class="flex flex-col sm:flex-row gap-3 items-center py-5 sm:py-8">
-            <NuxtLink to="./" class="flex flex-row gap-2 py-2 px-4 cursor-pointer rounded-lg border border-custom-secondary-border bg-white items-center text-sm font-semibold w-full justify-center order-last sm:w-auto sm:order-first" href="javascript:history.back()">
+            <div @click="history.go(-1)" class="flex flex-row gap-2 py-2 px-4 cursor-pointer rounded-lg border border-custom-secondary-border bg-white items-center text-sm font-semibold w-full justify-center order-last sm:w-auto sm:order-first" href="javascript:history.back()">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M15.8334 10H4.16669M4.16669 10L10 15.8333M4.16669 10L10 4.16666" stroke="#344054" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
               Go back
-            </NuxtLink>
+            </div>
             <BaseButton navigate-to="/" label="Take me home" :full-sized-on-small="true">
               Take me home
             </BaseButton>
