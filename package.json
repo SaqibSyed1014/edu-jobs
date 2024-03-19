@@ -23,6 +23,8 @@
     "@vuepic/vue-datepicker": "^8.3.1",
     "defu": "^6.1.4",
     "flowbite": "^2.2.0",
-    "nuxt-swiper": "^1.2.2"
+    "nuxt-swiper": "^1.2.2",
+    "vee-validate": "^4.12.6",
+    "yup": "^1.4.0"
   }
 }

@@ -92,15 +92,16 @@ const format = (date: any) => {
                             class="md:mt-5 md:mb-8" />
                     </div>
                     <div class="flex flex-col md:flex-row justify-end gap-3 md:pt-5 md:pb-8 w-full md:w-fit">
-                        <BaseButton label="Cancel" color="gray" :outline="true" />
-                        <BaseButton label="Next" color="primary" navigate-to="/post-a-job/review-information" />
+                        <BaseButton label="Cancel" color="gray" :outline="true" class="order-2 md:order-1" />
+                        <BaseButton label="Next" color="primary" navigate-to="/post-a-job/review-information"
+                            class="order-1 md:order-2" />
                     </div>
                 </div>
 
             </div>
 
 
-            <div class="w-full lg:w-1/5 flex flex-col gap-4 pt-8">
+            <div class="w-full lg:w-1/5 flex flex-col gap-4 md:pt-8">
                 <div
                     class="block lg:max-w-sm p-4 border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                     <p class="text-gray-900 text-base font-medium">Order Summary</p>
@@ -119,7 +120,7 @@ const format = (date: any) => {
                 </div>
 
                 <div
-                    class="block lg:max-w-sm p-4 border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                    class="hidden md:block lg:max-w-sm p-4 border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                     <div class="flex-col items-start gap-5 flex w-full">
                         <UploadImageIcon class="h-12" />
                         <div class="w-full flex-col justify-between items-start gap-5 flex">
