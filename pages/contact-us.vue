@@ -78,7 +78,6 @@ const mapOptions = {
                     :key="index"
                     :clickable="true"
                     :draggable="true"
-                    @click="center = m.position"
                 />
               </GMapCluster>
             </GMapMap>
