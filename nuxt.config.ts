@@ -7,6 +7,17 @@ export default defineNuxtConfig({
             viewport: 'width=device-width, initial-scale=1',
         }
     },
+    build: {
+        transpile: ['@googlemaps/markercluster'],
+    },
+    vite: {
+        optimizeDeps: {
+            include: [
+                "vue-google-maps-community-fork",
+                "fast-deep-equal",
+            ],
+        },
+    },
     modules: [
         '@nuxtjs/tailwindcss',
         'nuxt-swiper',
