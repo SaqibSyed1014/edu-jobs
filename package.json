@@ -21,6 +21,7 @@
   "dependencies": {
     "defu": "^6.1.4",
     "flowbite": "^2.2.0",
-    "nuxt-swiper": "^1.2.2"
+    "nuxt-swiper": "^1.2.2",
+    "vue-google-maps-community-fork": "^0.3.1"
   }
 }

@@ -1,4 +1,14 @@
 <script setup lang="ts">
+const center = { lat: 38.0400, lng: -122.7400 }
+const mapOptions = {
+  markers: [
+    {
+      position: {
+        lat: 38.0400, lng: -122.7400
+      },
+    }
+  ]
+}
 </script>
 
 <template>
@@ -54,8 +64,25 @@
             <h4 class="text-lg md:text-xl">Novato, CA</h4>
           </div>
         </div>
-        <div class="md:px-20">
-          <img src="/images/others/google-map.png" alt="map-image" class="w-full h-full">
+        <div class="lg:px-20">
+          <client-only>
+            <GMapMap
+                :center="center"
+                :zoom="12"
+                style="height: 500px;"
+            >
+              <GMapCluster :maxZoom="12">
+                <GMapMarker
+                    v-for="(m, index) in mapOptions.markers"
+                    :position="m.position"
+                    :key="index"
+                    :clickable="true"
+                    :draggable="true"
+                    @click="center = m.position"
+                />
+              </GMapCluster>
+            </GMapMap>
+          </client-only>
         </div>
       </div>
     </section>
