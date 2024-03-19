@@ -8,12 +8,11 @@ export default defineNuxtConfig({
         }
     },
     build: {
-        transpile: ['@googlemaps/markercluster'],
+        transpile: ['vue-google-maps-community-fork', '@googlemaps/markercluster'],
     },
     vite: {
         optimizeDeps: {
             include: [
-                "vue-google-maps-community-fork",
                 "fast-deep-equal",
             ],
         },

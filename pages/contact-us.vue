@@ -71,7 +71,6 @@ const mapOptions = {
                 :zoom="12"
                 style="height: 500px;"
             >
-              <GMapCluster :maxZoom="12">
                 <GMapMarker
                     v-for="(m, index) in mapOptions.markers"
                     :position="m.position"
@@ -79,7 +78,6 @@ const mapOptions = {
                     :clickable="true"
                     :draggable="true"
                 />
-              </GMapCluster>
             </GMapMap>
           </client-only>
         </div>
