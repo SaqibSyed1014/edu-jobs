@@ -116,11 +116,9 @@ const jobPostsList = [
             <hr class="block md:hidden h-px w-[92%] mx-auto bg-gray-200">
             <div class="flex items-center">
               <LocationPinIcon class="w-4 h-4 text-gray-400" />
-              <input
-                  type="text"
-                  placeholder="Anywhere"
-                  class="w-full"
-              >
+              <client-only>
+                <GMapAutocomplete placeholder="Anywhere" class="w-full" />
+              </client-only>
             </div>
           </div>
           <div>
