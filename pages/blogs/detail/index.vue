@@ -15,7 +15,7 @@
         </div>
         <div class="">
           <div class="mb-8">
-            <img src="/images/blogs/blog-two.png" alt="" class="w-full h-auto object-cover" />
+            <img src="/images/blogs/blog-two.png" alt="" class="w-full md:w-[70%] mx-auto h-auto object-cover" />
           </div>
           <div class="flex items-center gap-24">
             <div class="flex gap-12">
@@ -75,10 +75,10 @@
       </div>
     </section>
 
-    <section>
+    <section class="py-0">
       <div class="container md:px-8">
-        <div class="grid grid-cols-6 gap-4 xl:gap-24 pb-16 border-b border-[#EAECF0]">
-          <div class="col-span-4 flex-1">
+        <div class="grid md:grid-cols-6 gap-4 xl:gap-24 pb-16 border-b border-[#EAECF0]">
+          <div class="md:col-span-4 flex-1">
             <h2 class="text-2xl md:text-3xl mb-5">Introduction</h2>
             <p class="md:text-lg font-normal text-black-light">
               Mi tincidunt elit, id quisque ligula ac diam, amet. Vel etiam suspendisse morbi eleifend faucibus eget vestibulum felis. Dictum quis montes, sit sit. Tellus aliquam enim urna, etiam. Mauris posuere vulputate arcu amet, vitae nisi, tellus tincidunt. At feugiat sapien varius id. <br><br>
@@ -159,7 +159,7 @@
               Tristique odio senectus nam posuere ornare leo metus, ultricies. Blandit duis ultricies vulputate morbi feugiat cras placerat elit. Aliquam tellus lorem sed ac. Montes, sed mattis pellentesque suscipit accumsan. Cursus viverra aenean magna risus elementum faucibus molestie pellentesque. Arcu ultricies sed mauris vestibulum.
             </p>
           </div>
-          <div class="col-span-2 w-full md:max-w-72 xl:max-w-sm">
+          <div class="md:col-span-2 w-full md:max-w-72 xl:max-w-sm">
             <div class="sticky top-20 z-[1] bg-[#F9FAFB] border border-[#EAECF0] rounded-2xl p-4 xl:px-8 xl:py-10">
               <div class="flex items-center justify-center border border-[#EAECF0] rounded-xl w-14 h-14 mb-8">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
