@@ -91,6 +91,7 @@ function togglingSidebarVisibility() {
         <BaseButton
             label="Post a Job"
             color="primary"
+            navigate-to="/post-a-job"
         />
       </div>
     </div>
