@@ -62,13 +62,12 @@ const {
   >
     <label
       :for="name"
-      v-if="label"
       class="block text-sm font-medium md:font-semibold text-gray-700 sm:pt-1.5"
     >
       {{ label }}
       <span
         v-show="subLabel"
-        class="w-[210px] text-slate-600 text-sm font-normal leading-normal"
+        class="w-[228px] text-slate-600 text-sm md:text-base font-normal leading-normal"
       >
         <br />
         {{ subLabel }}
@@ -76,7 +75,7 @@ const {
     >
     <div class="mt-2 sm:col-span-2 sm:mt-0">
       <div class="relative">
-        <div class="flex flex-col gap-y-1.5 relative">
+        <div class="flex flex-col gap-y-1.5">
           <div
             :class="
               errorMessage
@@ -84,15 +83,19 @@ const {
                 : 'flex relative rounded-md ring-1 ring-inset ring-gray-300 focus-within:ring-0 focus-within:ring-inset focus-within:ring-brand-600'
             "
           >
+            <span
+              class="inline-flex items-center rounded-tl-lg rounded-bl-lg px-3 font-normal border border-r-0 border-gray-300 leading-normal text-gray-500 sm:text-base"
+              >http://</span
+            >
             <input
               :name="name"
               :id="name"
               :type="type"
-              :value="value ? value : inputValue"
+              :value="inputValue"
               :placeholder="placeholder"
               @input="handleChange"
               @blur="handleBlur"
-              class="block flex-1 border-0 bg-transparent placeholder:pl-1.5 py-2.5 pl-3.5 text-gray-900 placeholder:text-gray-500 placeholder:text-base placeholder:font-normal focus:ring-0 sm:text-sm sm:leading-6"
+              class="block w-full bg-transparent min-w-0 flex-1 rounded-none rounded-r-md border-0 py-2,5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
           </div>
           <p
@@ -102,7 +105,7 @@ const {
             {{ errorMessage || successMessage }}
           </p>
         </div>
-        <div v-if="errorMessage && value" class="absolute right-2 top-3">
+        <div v-if="errorMessage" class="absolute right-2 top-3">
           <AlertCircle class="h-4" />
         </div>
       </div>

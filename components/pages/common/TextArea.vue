@@ -4,13 +4,9 @@ import { useField } from "vee-validate";
 import AlertCircle from "~/assets/icons/alert-circle.svg";
 
 const props = defineProps({
-  type: {
-    type: String,
-    default: "text",
-  },
   value: {
     type: String,
-    default: undefined,
+    default: "",
   },
   name: {
     type: String,
@@ -38,13 +34,8 @@ const props = defineProps({
   },
 });
 
-// use `toRef` to create reactive references to `name` prop which is passed to `useField`
-// this is important because vee-validte needs to know if the field name changes
-// https://vee-validate.logaretm.com/v4/guide/composition-api/caveats
 const name = toRef(props, "name");
 
-// we don't provide any rules here because we are using form-level validation
-// https://vee-validate.logaretm.com/v4/guide/validation#form-level-validation
 const {
   value: inputValue,
   errorMessage,
@@ -62,21 +53,20 @@ const {
   >
     <label
       :for="name"
-      v-if="label"
       class="block text-sm font-medium md:font-semibold text-gray-700 sm:pt-1.5"
     >
       {{ label }}
       <span
         v-show="subLabel"
-        class="w-[210px] text-slate-600 text-sm font-normal leading-normal"
+        class="w-[228px] text-slate-600 text-sm md:text-base font-normal leading-normal"
       >
         <br />
         {{ subLabel }}
-      </span></label
-    >
+      </span>
+    </label>
     <div class="mt-2 sm:col-span-2 sm:mt-0">
       <div class="relative">
-        <div class="flex flex-col gap-y-1.5 relative">
+        <div class="flex flex-col gap-y-1.5">
           <div
             :class="
               errorMessage
@@ -84,16 +74,19 @@ const {
                 : 'flex relative rounded-md ring-1 ring-inset ring-gray-300 focus-within:ring-0 focus-within:ring-inset focus-within:ring-brand-600'
             "
           >
-            <input
+            <textarea
               :name="name"
-              :id="name"
-              :type="type"
-              :value="value ? value : inputValue"
+              rows="4"
+              v-model="inputValue"
+              class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               :placeholder="placeholder"
+              maxlength="50"
               @input="handleChange"
               @blur="handleBlur"
-              class="block flex-1 border-0 bg-transparent placeholder:pl-1.5 py-2.5 pl-3.5 text-gray-900 placeholder:text-gray-500 placeholder:text-base placeholder:font-normal focus:ring-0 sm:text-sm sm:leading-6"
-            />
+            ></textarea>
+          </div>
+          <div class="text-gray-600 text-sm font-normal leading-tight pt-1.5">
+            {{ 40 - inputValue?.length }} words left
           </div>
           <p
             class="text-red-500 text-sm font-normal leading-tight"
@@ -102,7 +95,7 @@ const {
             {{ errorMessage || successMessage }}
           </p>
         </div>
-        <div v-if="errorMessage && value" class="absolute right-2 top-3">
+        <div v-if="errorMessage" class="absolute right-2 top-3">
           <AlertCircle class="h-4" />
         </div>
       </div>

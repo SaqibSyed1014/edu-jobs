@@ -24,6 +24,10 @@ const steps = ref([
   },
 ]);
 
+const jobRoles = ref(["Role 1", "Role 2"]);
+const grades = ref(["Grade 1", "Grade 2"]);
+const subjects = ref(["English", "Math"]);
+
 const date = ref();
 const message = ref("");
 const format = (date: any) => {
@@ -36,22 +40,22 @@ const format = (date: any) => {
 
 const router = useRouter();
 function onSubmit(values: any) {
-  console.log("🚀 ~ onSubmit ~ values:", values);
-  //   router.push({
-  //     path: "/post-a-job/job-details",
-  //   });
-  // alert(JSON.stringify(values, null, 2));
+  // console.log("🚀 ~ onSubmit ~ values:", values);
+  router.push({
+    path: "/post-a-job/application-details",
+  });
 }
 
 // Using yup to generate a validation schema
 // https://vee-validate.logaretm.com/v4/guide/validation#validation-schemas-with-yup
 const schema = Yup.object().shape({
   jobTitle: Yup.string().required("Please enter the job title"),
-  date: Yup.string().required("Please enter the date title"),
   employment: Yup.string().required("You must choose an employment type"),
-
-  //   email: Yup.string().email().required("Your Email Address is required"),
-  //   fullName: Yup.string().required("Your Full Name is required"),
+  jobRole: Yup.string().required("You must choose your job role"),
+  gradeLevel: Yup.string().required("You must choose your gradeLevel"),
+  subjects: Yup.string().required("You must choose your subjects"),
+  jobDesc: Yup.string().required("Please enter the job description"),
+  startDate: Yup.string().required("Start Date is required"),
 });
 </script>
 
@@ -82,11 +86,7 @@ const schema = Yup.object().shape({
           </div>
           <StepRing class="h-14 lg:hidden" />
         </div>
-        <Form
-          @submit="onSubmit"
-          :validation-schema="schema"
-          v-slot="{ values }"
-        >
+        <Form @submit="onSubmit" :validation-schema="schema">
           <div
             class="mt-5 border-b border-gray-900/10 divide-y divide-gray-900/10 border-t pb-0"
           >
@@ -109,12 +109,7 @@ const schema = Yup.object().shape({
                 Start Date
               </label>
               <div class="mt-2 sm:col-span-2 sm:mt-0 relative">
-                <VueDatePicker
-                  v-model="date"
-                  :format="format"
-                  placeholder="March 25, 2024"
-                />
-                <CalendarSvg class="absolute h-5 bottom-3 right-3" />
+                <DatePicker name="startDate" />
               </div>
             </div>
 
@@ -213,13 +208,26 @@ const schema = Yup.object().shape({
                 Job Role
               </label>
               <div class="mt-2 sm:col-span-2 sm:mt-0">
-                <select
-                  id="countries"
+                <Field
+                  v-slot="{ value }"
+                  name="jobRole"
+                  as="select"
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-[11px] px-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 >
-                  <option selected>Select</option>
-                  <option value="US">...</option>
-                </select>
+                  <option value="" disabled>Select</option>
+                  <option
+                    v-for="item in jobRoles"
+                    :key="item"
+                    :value="item"
+                    :selected="value && value.includes(item)"
+                  >
+                    {{ item }}
+                  </option>
+                </Field>
+                <ErrorMessage
+                  class="text-red-500 text-sm font-normal leading-tight"
+                  name="jobRole"
+                />
               </div>
             </div>
 
@@ -233,13 +241,26 @@ const schema = Yup.object().shape({
                 Grade Level(s)
               </label>
               <div class="mt-2 sm:col-span-2 sm:mt-0">
-                <select
-                  id="countries"
+                <Field
+                  v-slot="{ value }"
+                  name="gradeLevel"
+                  as="select"
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-[11px] px-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 >
-                  <option selected>Select</option>
-                  <option value="US">...</option>
-                </select>
+                  <option value="" disabled>Select</option>
+                  <option
+                    v-for="item in grades"
+                    :key="item"
+                    :value="item"
+                    :selected="value && value.includes(item)"
+                  >
+                    {{ item }}
+                  </option>
+                </Field>
+                <ErrorMessage
+                  class="text-red-500 text-sm font-normal leading-tight"
+                  name="gradeLevel"
+                />
               </div>
             </div>
 
@@ -253,41 +274,36 @@ const schema = Yup.object().shape({
                 Subject Area(s)
               </label>
               <div class="mt-2 sm:col-span-2 sm:mt-0">
-                <select
-                  id="countries"
+                <Field
+                  v-slot="{ value }"
+                  name="subjects"
+                  as="select"
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-[11px] px-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 >
-                  <option selected>Select</option>
-                  <option value="US">...</option>
-                </select>
+                  <option value="" disabled>Select</option>
+                  <option
+                    v-for="item in subjects"
+                    :key="item"
+                    :value="item"
+                    :selected="value && value.includes(item)"
+                  >
+                    {{ item }}
+                  </option>
+                </Field>
+                <ErrorMessage
+                  class="text-red-500 text-sm font-normal leading-tight"
+                  name="subjects"
+                />
               </div>
             </div>
 
-            <div
-              class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
-            >
-              <label
-                for="jobdescription"
-                class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
-              >
-                Job Description
-              </label>
-              <div class="mt-2 sm:col-span-2 sm:mt-0">
-                <textarea
-                  id="message"
-                  v-model="message"
-                  rows="4"
-                  class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Enter a description.."
-                  maxlength="50"
-                ></textarea>
-                <div
-                  class="text-gray-600 text-sm font-normal leading-tight pt-1.5"
-                >
-                  {{ 40 - message.length }} words left
-                </div>
-              </div>
-            </div>
+            <TextArea
+              name="jobDesc"
+              label="Job Description"
+              placeholder="Enter a description.."
+              subLabel=""
+              className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+            />
           </div>
           <div
             class="flex flex-col md:flex-row items-center justify-between gap-3 mt-4 md:mt-0"
@@ -312,6 +328,7 @@ const schema = Yup.object().shape({
               <BaseButton
                 label="Next"
                 color="primary"
+                type="submit"
                 class="order-1 md:order-2"
               />
             </div>

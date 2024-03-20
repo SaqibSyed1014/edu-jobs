@@ -24,11 +24,10 @@ const steps = ref([
 ]);
 const router = useRouter();
 function onSubmit(values: any) {
-  console.log("🚀 ~ onSubmit ~ values:", values);
+  // console.log("🚀 ~ onSubmit ~ values:", values);
   router.push({
     path: "/post-a-job/job-details",
   });
-  // alert(JSON.stringify(values, null, 2));
 }
 
 // Using yup to generate a validation schema
