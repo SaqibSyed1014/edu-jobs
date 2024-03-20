@@ -88,7 +88,7 @@ const {
               :name="name"
               :id="name"
               :type="type"
-              :value="value ? value : inputValue"
+              :value="value !== undefined ? value : inputValue"
               :placeholder="placeholder"
               @input="handleChange"
               @blur="handleBlur"

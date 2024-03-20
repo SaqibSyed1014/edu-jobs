@@ -86,7 +86,11 @@ const schema = Yup.object().shape({
           </div>
           <StepRing class="h-14 lg:hidden" />
         </div>
-        <Form @submit="onSubmit" :validation-schema="schema">
+        <Form
+          @submit="onSubmit"
+          :validation-schema="schema"
+          v-slot="{ errors }"
+        >
           <div
             class="mt-5 border-b border-gray-900/10 divide-y divide-gray-900/10 border-t pb-0"
           >
@@ -198,40 +202,25 @@ const schema = Yup.object().shape({
               </div>
             </div>
 
-            <div
-              class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
-            >
-              <label
-                for="jobrole"
-                class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
-              >
-                Job Role
-              </label>
-              <div class="mt-2 sm:col-span-2 sm:mt-0">
-                <Field
-                  v-slot="{ value }"
-                  name="jobRole"
-                  as="select"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-[11px] px-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                >
-                  <option value="" disabled>Select</option>
-                  <option
-                    v-for="item in jobRoles"
-                    :key="item"
-                    :value="item"
-                    :selected="value && value.includes(item)"
-                  >
-                    {{ item }}
-                  </option>
-                </Field>
-                <ErrorMessage
-                  class="text-red-500 text-sm font-normal leading-tight"
-                  name="jobRole"
-                />
-              </div>
-            </div>
+            <SelectBox
+              name="jobRole"
+              label="Job Role"
+              :data="jobRoles"
+              subLabel=""
+              :errorMessage="errors.jobRole"
+              className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+            />
 
-            <div
+            <SelectBox
+              name="gradeLevel"
+              label="Grade Level(s)"
+              :data="grades"
+              subLabel=""
+              :errorMessage="errors.gradeLevel"
+              className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+            />
+
+            <!-- <div
               class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
             >
               <label
@@ -262,9 +251,18 @@ const schema = Yup.object().shape({
                   name="gradeLevel"
                 />
               </div>
-            </div>
+            </div> -->
 
-            <div
+            <SelectBox
+              name="subjects"
+              label="Subject Area(s)"
+              :data="subjects"
+              subLabel=""
+              :errorMessage="errors.subjects"
+              className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+            />
+
+            <!-- <div
               class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
             >
               <label
@@ -295,7 +293,7 @@ const schema = Yup.object().shape({
                   name="subjects"
                 />
               </div>
-            </div>
+            </div> -->
 
             <TextArea
               name="jobDesc"
