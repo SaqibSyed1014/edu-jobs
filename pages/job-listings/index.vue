@@ -175,6 +175,8 @@ const itemsViewOptions = [
     icon: SvgoGrid
   }
 ]
+
+const isGridOptionSelected = ref(true)
 </script>
 
 <template>
@@ -259,13 +261,18 @@ const itemsViewOptions = [
             </BaseButton>
 
             <div class="inline-flex rounded-md shadow-sm" role="group">
-              <BaseButtonsGroup color="gray" :outline="true" :btns-group="itemsViewOptions" />
+              <BaseButtonsGroup
+                  color="gray"
+                  :outline="true"
+                  :btns-group="itemsViewOptions"
+                  @option-selected="(val :number) => isGridOptionSelected = val === 0"
+              />
             </div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div class="grid gap-6" :class="[isGridOptionSelected ? 'md:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1']">
             <template v-for="job in jobList">
-              <JobCard :job="job" />
+              <JobCard :job="job" :card-form="isGridOptionSelected" />
             </template>
           </div>
 
