@@ -14,7 +14,7 @@
       <li class="active">1</li>
       <li>2</li>
       <li>3</li>
-      <li>...</li>
+      <li class="dots">...</li>
       <li>8</li>
       <li>9</li>
       <li>10</li>
@@ -29,9 +29,9 @@
 
 <style scoped lang="postcss">
 .pagination ul li{
-  @apply px-4 py-2 cursor-pointer text-gray-600 hover:bg-gray-50 transition
+  @apply flex items-center px-4 py-2 rounded-md cursor-pointer text-gray-600 hover:bg-gray-50 transition
 }
 .pagination .active{
-  @apply bg-gray-50 rounded-lg text-gray-800
+  @apply bg-gray-50 text-gray-800
 }
 </style>

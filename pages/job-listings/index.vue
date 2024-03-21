@@ -259,7 +259,9 @@ const isFilterSidebarVisible = ref(false)
 
           <div class="grid gap-6" :class="[isGridOptionSelected ? 'md:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1']">
             <template v-for="job in jobList">
-              <JobCard :job="job" :card-form="isGridOptionSelected" />
+              <NuxtLink to="/job-listings/details">
+                <JobCard :job="job" :card-form="isGridOptionSelected"/>
+              </NuxtLink>
             </template>
           </div>
 
