@@ -3,6 +3,8 @@ import {SvgoBarChart, SvgoClock, SvgoGrid, SvgoLineChartUp, SvgoList} from "#com
 import LocationPinIcon from "assets/icons/location-pin.svg";
 import SearchIcon from "assets/icons/search.svg";
 import Pagination from "~/components/core/Pagination.vue";
+import ListingFilters from "~/components/core/ListingFilters.vue";
+import JobCTA from "~/components/pages/job-listings/JobCTA.vue";
 
 const filters = [
   {
@@ -177,43 +179,22 @@ const itemsViewOptions = [
 ]
 
 const isGridOptionSelected = ref(true)
+
+const isFilterSidebarVisible = ref(false)
 </script>
 
 <template>
     <div class="job-listing-view">
       <ListingView>
         <template #filters>
-          <div class="flex flex-col gap-3">
-            <div class="flex justify-between items-center font-semibold border-b border-gray-200 py-2">
-              <div class="flex justify-center items-center gap-3 text-gray-700">
-                <SvgoFilter class="w-4 h-4" />
-                <p>Filters</p>
-              </div>
-              <span class="text-brand-700 text-sm cursor-pointer">
-                Clear All
-              </span>
-            </div>
+          <ListingFilters class="hidden md:flex" :filtration-list="filters" />
 
-            <template v-for="filter in filters">
-              <div>
-                <div class="flex items-center gap-3 font-semibold">
-                  <component :is="filter.icon" class="w-5 h-5 text-gray-500" />
-                  <span class="">{{ filter.title }}</span>
-                </div>
-                <div class="filter-list pl-8 border-b border-gray-200">
-                  <template v-for="item in filter.list">
-                    <div class="flex items-center gap-3 first:pt-2 pb-4">
-                      <input type="checkbox" >
-                      <label for="">
-                        {{ item.label }}
-                        <span class="text-gray-400 font-normal">({{ item.counts }})</span>
-                      </label>
-                    </div>
-                  </template>
-                </div>
-              </div>
-            </template>
-          </div>
+          <SideBarWrapper :is-sidebar-visible="isFilterSidebarVisible">
+            <ListingFilters
+                @close-filter-sidebar="isFilterSidebarVisible = false"
+                :filtration-list="filters"
+            />
+          </SideBarWrapper>
         </template>
 
         <template #header>
@@ -243,24 +224,24 @@ const isGridOptionSelected = ref(true)
                 </client-only>
               </div>
             </div>
-            <div>
               <BaseButton label="Search" color="primary" :full-sized-on-small="true"/>
-            </div>
           </div>
         </template>
 
         <template #cards-list>
-          <div class="flex justify-between items-center">
-            <BaseButton color="gray" :outline="true" label="Most Relevant">
-              <template #prepend-icon>
-                <SvgoFilterFunnel class="w-5 h-5 text-gray-600"/>
-              </template>
-              <template #append-icon>
-                <SvgoChevronDown class="w-4 h-4 text-gray-600"/>
-              </template>
-            </BaseButton>
+          <div class="flex gap-4 justify-between items-center">
+            <div class="max-md:flex-1">
+              <BaseButton color="gray" :outline="true" :full-sized-on-small="true" label="Most Relevant" class="justify-between">
+                <template #prepend-icon>
+                  <SvgoFilterFunnel class="w-5 h-5 text-gray-600"/>
+                </template>
+                <template #append-icon>
+                  <SvgoChevronDown class="w-4 h-4 text-gray-600"/>
+                </template>
+              </BaseButton>
+            </div>
 
-            <div class="inline-flex rounded-md shadow-sm" role="group">
+            <div class="hidden md:inline-flex rounded-md shadow-sm" role="group">
               <BaseButtonsGroup
                   color="gray"
                   :outline="true"
@@ -268,17 +249,27 @@ const isGridOptionSelected = ref(true)
                   @option-selected="(val :number) => isGridOptionSelected = val === 0"
               />
             </div>
+
+            <BaseButton @click="isFilterSidebarVisible = true" color="gray" :outline="true" label="" class="md:hidden">
+              <template #prepend-icon>
+                <SvgoFilter class="w-5 h-5 text-gray-600"/>
+              </template>
+            </BaseButton>
           </div>
 
           <div class="grid gap-6" :class="[isGridOptionSelected ? 'md:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1']">
             <template v-for="job in jobList">
-              <JobCard :job="job" :card-form="isGridOptionSelected" />
+              <NuxtLink to="/job-listings/details">
+                <JobCard :job="job" :card-form="isGridOptionSelected"/>
+              </NuxtLink>
             </template>
           </div>
 
           <Pagination />
         </template>
       </ListingView>
+
+      <JobCTA />
     </div>
 </template>
 

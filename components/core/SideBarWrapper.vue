@@ -1,15 +1,16 @@
 <script setup lang="ts">
+const props = defineProps<{ isSidebarVisible: boolean }>()
 
+watch(() => props.isSidebarVisible, (val) => {
+  if (val) document.body.classList.add('overflow-hidden')
+  else document.body.classList.remove('overflow-hidden')
+})
 </script>
 
 <template>
-  <div class="fixed top-0 left-0 z-30">
+  <div class="fixed top-0 left-0 z-30 transform transition-all" :class="[isSidebarVisible ? 'translate-x-0' : '-translate-x-full']">
     <div class="mt-[62px] bg-white py-6 h-screen w-screen overflow-auto px-4">
-      <slot/>
+      <slot />
     </div>
   </div>
 </template>
-
-<style scoped lang="postcss">
-
-</style>
