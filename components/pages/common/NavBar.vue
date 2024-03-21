@@ -42,7 +42,7 @@ function togglingSidebarVisibility() {
 </script>
 
 <template>
-  <header>
+  <header class="max-md:sticky bg-gray-25 top-0 w-full">
     <div class="container mx-auto flex items-center justify-between bg-transparent py-4 relative z-40">
       <div class="content flex items-center justify-between gap-7 xl:gap-10">
         <div class="logo shrink-0">

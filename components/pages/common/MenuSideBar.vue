@@ -4,8 +4,7 @@ defineProps<{ menuLinks: any[], isSidebarVisible: Boolean }>()
 
 <template>
   <SideBarWrapper
-      class="transform transition-all"
-      :class="[isSidebarVisible ? 'translate-x-0' : '-translate-x-full']"
+      :is-sidebar-visible="isSidebarVisible"
   >
     <div class="">
       <ul class="font-semibold pb-6">
