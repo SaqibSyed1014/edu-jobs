@@ -4,6 +4,7 @@ import LocationPinIcon from "assets/icons/location-pin.svg";
 import SearchIcon from "assets/icons/search.svg";
 import Pagination from "~/components/core/Pagination.vue";
 import ListingFilters from "~/components/core/ListingFilters.vue";
+import JobCTA from "~/components/pages/job-listings/JobCTA.vue";
 
 const filters = [
   {
@@ -265,6 +266,8 @@ const isFilterSidebarVisible = ref(false)
           <Pagination />
         </template>
       </ListingView>
+
+      <JobCTA />
     </div>
 </template>
 

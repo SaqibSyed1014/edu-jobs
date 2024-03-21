@@ -9,7 +9,7 @@
         <SvgoArrowLeft class="w-4 h-4 text-gray-600"/>
       </template>
     </BaseButton>
-    <p class="text-sm text-[#344054] block md:hidden font-medium">Page 1 of 10</p>
+    <p class="flex items-center text-sm text-[#344054] block md:hidden font-medium">Page 1 of 10</p>
     <ul class="hidden md:flex pagination font-medium">
       <li class="active">1</li>
       <li>2</li>
