@@ -190,7 +190,7 @@ const selectAlphabet = (index: number) => {
         </form>
 
         <div class="inline-flex">
-          <div class="z-40 flex shrink-0 items-center shadow-sm pr-3">
+          <div class="flex shrink-0 items-center shadow-sm pr-3">
             <button
               type="button"
               class="size-11 flex items-center text-black xl:hidden rounded-lg shadow border border-gray-300 justify-center"
