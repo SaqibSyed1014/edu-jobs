@@ -303,8 +303,11 @@ const faqList = [
           <BaseButton color="gray" :outline="true" label="Previous Job" />
           <BaseButton label="Next Job" />
         </div>
+        <hr>
       </div>
     </section>
+
+    <JobCTA />
   </div>
 </template>
 

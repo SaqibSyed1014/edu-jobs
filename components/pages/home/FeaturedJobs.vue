@@ -117,7 +117,7 @@ const sliderBreakpoints = {
                 class="jobs-slider z-20"
             >
               <swiper-slide v-for="job in jobPostsList" class="md:!w-[340px]">
-                <JobCard :job="job"/>
+                <JobCard :job="job" :card-form="true" />
               </swiper-slide>
             </swiper-container>
 

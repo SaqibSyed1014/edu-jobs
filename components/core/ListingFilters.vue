@@ -26,10 +26,12 @@ const emits = defineEmits(['closeFilterSidebar'])
           <span class="">{{ filter.title }}</span>
         </div>
         <div class="filter-list pl-8 border-b border-gray-200">
-          <template v-for="item in filter.list">
+          <template v-for="(item, i) in filter.list">
             <div class="flex items-center gap-3 first:pt-2 pb-4">
-              <input type="checkbox" >
-              <label for="">
+              <div class="shrink-0 relative">
+                <input :id="`filter-cb-${i}`" type="checkbox" :checked="item.checked">
+              </div>
+              <label :for="`filter-cb-${i}`" class="cursor-pointer">
                 {{ item.label }}
                 <span class="text-gray-400 font-normal">({{ item.counts }})</span>
               </label>
@@ -44,7 +46,3 @@ const emits = defineEmits(['closeFilterSidebar'])
     </div>
   </div>
 </template>
-
-<style scoped lang="postcss">
-
-</style>
