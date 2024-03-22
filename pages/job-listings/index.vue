@@ -214,31 +214,11 @@ const isFilterSidebarVisible = ref(false)
         </template>
 
         <template #search-filters>
-          <div class="home-search-filters">
-            <div class="filter-wrapper w-full">
-              <div class="flex items-center flex-1">
-                <SearchIcon class="w-4 h-4 text-gray-400" />
-                <input
-                    type="text"
-                    placeholder="Keyword, Job title..."
-                    class="w-full"
-                >
-              </div>
-              <hr class="hidden md:block h-3 w-px bg-gray-200 mx-2">
-              <hr class="block md:hidden h-px w-[92%] mx-auto bg-gray-200">
-              <div class="flex items-center flex-1">
-                <LocationPinIcon class="w-4 h-4 text-gray-400" />
-                <client-only>
-                  <GMapAutocomplete placeholder="Anywhere" class="w-full" />
-                </client-only>
-              </div>
-            </div>
-              <BaseButton label="Search" color="primary" :full-sized-on-small="true"/>
-          </div>
+          <SearchBar />
         </template>
 
         <template #cards-list>
-          <div class="flex gap-4 justify-between items-center">
+          <div class="flex gap-4 justify-between items-stretch md:items-center">
             <div class="max-md:flex-1">
               <BaseButton color="gray" :outline="true" :full-sized-on-small="true" label="Most Relevant" class="justify-between">
                 <template #prepend-icon>

@@ -1,16 +1,18 @@
 <script setup lang="ts">
 defineProps<{ menuLinks: any[], isSidebarVisible: Boolean }>()
+
+const emits = defineEmits(['toggleSidebar'])
 </script>
 
 <template>
   <SideBarWrapper
       :is-sidebar-visible="isSidebarVisible"
   >
-    <div class="">
+    <nav>
       <ul class="font-semibold pb-6">
         <template v-for="link in menuLinks">
           <li class="hover:text-brand-500 transition py-3">
-            {{ link.label }}
+            <NuxtLink :to="link.path" @click.stop="emits('toggleSidebar')">{{ link.label }}</NuxtLink>
           </li>
         </template>
       </ul>
@@ -22,7 +24,7 @@ defineProps<{ menuLinks: any[], isSidebarVisible: Boolean }>()
 
         <BaseButton label="Sign up" :outline="true" full-sized />
       </div>
-    </div>
+    </nav>
   </SideBarWrapper>
 </template>
 

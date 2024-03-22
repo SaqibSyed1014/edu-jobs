@@ -3,6 +3,7 @@ import LocationPinIcon from "assets/icons/location-pin.svg";
 import SearchIcon from "assets/icons/search.svg";
 
 import { register } from 'swiper/element/bundle';
+import SearchBar from "~/components/core/SearchBar.vue";
 register();
 
 const jobPostsList = [
@@ -102,29 +103,7 @@ const jobPostsList = [
           from start to finish.
         </p>
 
-        <div class="home-search-filters">
-          <div class="filter-wrapper">
-            <div class="flex items-center">
-              <SearchIcon class="w-4 h-4 text-gray-400" />
-              <input
-                  type="text"
-                  placeholder="Keyword, Job title..."
-                  class="w-full"
-              >
-            </div>
-            <hr class="hidden md:block h-3 w-px bg-gray-200 mx-2">
-            <hr class="block md:hidden h-px w-[92%] mx-auto bg-gray-200">
-            <div class="flex items-center">
-              <LocationPinIcon class="w-4 h-4 text-gray-400" />
-              <client-only>
-                <GMapAutocomplete placeholder="Anywhere" class="w-full" />
-              </client-only>
-            </div>
-          </div>
-          <div>
-            <BaseButton label="Search" color="primary" :full-sized-on-small="true"/>
-          </div>
-        </div>
+        <SearchBar class="md:max-w-[650px] mx-auto" />
       </div>
 
       <div class="dashed-ring forth-ring" />

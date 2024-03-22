@@ -98,11 +98,12 @@ function togglingSidebarVisibility() {
     <MenuSideBar
         :is-sidebar-visible="toggleSideBar"
         :menu-links="menuLinks"
+        @toggle-sidebar="toggleSideBar = false"
     />
   </header>
 </template>
 
-<style scoped>
+<style>
 header nav ul li .router-link-active{
   color: theme('colors.brand.600');
   font-weight: 600;

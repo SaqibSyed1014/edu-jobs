@@ -32,7 +32,7 @@ export default defineNuxtConfig({
         prefix: 'Swiper'
     },
     tailwindcss: {
-        cssPath: '~/assets/css/input.css'
+        cssPath: '~/assets/css/tailwind.css'
     },
     svgo: {
         defaultImport: 'component'
