@@ -66,52 +66,52 @@ const selectedAlphabet = ref<number>(0); // Reactive variable to store the selec
 
 const schoolList = ref([
   {
-    avatar: "/images/schoolLogo/Avatar1.png",
+    avatar: "/images/schoolDistrict/Avatar1.png",
     schoolName: "Palo Alto Unified School District",
   },
   {
-    avatar: "/images/schoolLogo/avatar2.png",
+    avatar: "/images/schoolDistrict/avatar2.png",
     schoolName: "San Dieguito Union High School District",
   },
   {
-    avatar: "/images/schoolLogo/avatar3.png",
+    avatar: "/images/schoolDistrict/avatar3.png",
     schoolName: "Arcadia Unified School District",
   },
   {
-    avatar: "/images/schoolLogo/avatar4.png",
+    avatar: "/images/schoolDistrict/avatar4.png",
     schoolName: "Saratoga Joint Union High School District",
   },
   {
-    avatar: "/images/schoolLogo/avatar5.png",
+    avatar: "/images/schoolDistrict/avatar5.png",
     schoolName: "Palo Alto Unified School Districts",
   },
   {
-    avatar: "/images/schoolLogo/avatar6.png",
+    avatar: "/images/schoolDistrict/avatar6.png",
     schoolName: "San Dieguito Union High School District",
   },
   {
-    avatar: "/images/schoolLogo/avatar7.png",
+    avatar: "/images/schoolDistrict/avatar7.png",
     schoolName: "Arcadia Unified School District",
   },
   {
-    avatar: "/images/schoolLogo/avatar8.png",
+    avatar: "/images/schoolDistrict/avatar8.png",
     schoolName: "Saratoga Joint Union High School District",
   },
 
   {
-    avatar: "/images/schoolLogo/avatar9.png",
+    avatar: "/images/schoolDistrict/avatar9.png",
     schoolName: "Palo Alto Unified School Districts",
   },
   {
-    avatar: "/images/schoolLogo/avatar10.png",
+    avatar: "/images/schoolDistrict/avatar10.png",
     schoolName: "San Dieguito Union High School District",
   },
   {
-    avatar: "/images/schoolLogo/avatar11.png",
+    avatar: "/images/schoolDistrict/avatar11.png",
     schoolName: "Arcadia Unified School District",
   },
   {
-    avatar: "/images/schoolLogo/avatar12.png",
+    avatar: "/images/schoolDistrict/avatar12.png",
     schoolName: "Saratoga Joint Union High School District",
   },
 ]);
