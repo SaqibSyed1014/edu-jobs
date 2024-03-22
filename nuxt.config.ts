@@ -20,7 +20,8 @@ export default defineNuxtConfig({
     modules: [
         '@nuxtjs/tailwindcss',
         'nuxt-swiper',
-        'nuxt-svgo'
+        'nuxt-svgo',
+        '@nuxtjs/robots'
     ],
     components: [
         {
@@ -36,5 +37,11 @@ export default defineNuxtConfig({
     },
     svgo: {
         defaultImport: 'component'
+    },
+    robots: {
+        rules: {
+            UserAgent: '*',
+            Disallow: '/'
+        }
     }
 })

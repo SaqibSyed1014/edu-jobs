@@ -15,7 +15,7 @@
         </div>
         <div class="">
           <div class="mb-8">
-            <img src="/images/blogs/blog-two.png" alt="" class="w-full md:w-[70%] mx-auto h-auto object-cover" />
+              <img src="/images/blogs/blog-two.png" alt="" class="w-full md:w-[70%] ml-0 h-[300px] xl:h-[400px] object-cover" />
           </div>
           <div class="flex items-center gap-24">
             <div class="flex gap-12">
