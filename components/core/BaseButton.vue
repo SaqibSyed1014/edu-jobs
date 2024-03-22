@@ -31,7 +31,7 @@ const btnStyles = computed(() => {
 });
 
 const btnSize = computed(() => props.fullSized ? 'w-full' : '');
-const btnSizeOnSmall = computed(() => props.fullSizedOnSmall ? 'max-sm:w-full' : '');
+const btnSizeOnSmall = computed(() => props.fullSizedOnSmall ? 'max-md:w-full' : '');
 
 const btnStyleClasses = computed(() => [
   defaultStyles,
