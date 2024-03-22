@@ -42,10 +42,10 @@ const faqList = [
                 <SvgoChevronRight class="w-4 h-4 text-gray-300" />
                 <span class="text-brand-700 font-medium">Polymath</span>
               </div>
-              <div class="flex items-center gap-3 text-brand-700 font-medium">
-                <SvgoArrowLeft class="w-4 h-4" />
+              <NuxtLink to="/job-listings" class="flex items-center gap-3 group text-brand-700 font-medium cursor-pointer">
+                <SvgoArrowLeft class="w-4 h-4 group-hover:-translate-x-[8px] transition" />
                 Back
-              </div>
+              </NuxtLink>
             </div>
 
             <div class="mb-8 h-[140px] md:h-[240px] max-md:-mx-5">

@@ -14,8 +14,8 @@
           <p class="text-black-light text-lg md:text-xl font-normal">Like to know the secrets of transforming a 2-14 team into a 3x Super Bowl winning Dynasty? Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
         </div>
         <div class="">
-          <div class="mb-8">
-              <img src="/images/blogs/blog-two.png" alt="" class="w-full md:w-[70%] ml-0 h-[300px] xl:h-[400px] object-cover" />
+          <div class="mb-8 w-full md:w-[65%] h-[140px] md:h-[240px]">
+              <img src="/images/blogs/blog-two.png" alt="" class="h-full w-full object-cover" />
           </div>
           <div class="flex items-center gap-24">
             <div class="flex gap-12">
