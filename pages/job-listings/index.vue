@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {SvgoBarChart, SvgoClock, SvgoGrid, SvgoLineChartUp, SvgoList} from "#components";
+import {SvgoBarChart, SvgoClock, SvgoCurrencyDollar, SvgoGrid, SvgoLineChartUp, SvgoList} from "#components";
 import LocationPinIcon from "assets/icons/location-pin.svg";
 import SearchIcon from "assets/icons/search.svg";
 import Pagination from "~/components/core/Pagination.vue";
@@ -8,8 +8,9 @@ import JobCTA from "~/components/pages/job-listings/JobCTA.vue";
 
 const filters = [
   {
+    type: 'checkbox',
     title: 'Type of employment',
-    icon: SvgoClock,
+    icon: 'SvgoClock',
     list: [
       {
         label: 'Full-time',
@@ -35,8 +36,9 @@ const filters = [
 
   },
   {
+    type: 'checkbox',
     title: 'Job Category',
-    icon: SvgoBarChart,
+    icon: 'SvgoBarChart',
     list: [
       {
         label: 'Instructional',
@@ -51,8 +53,9 @@ const filters = [
     ]
   },
   {
+    type: 'checkbox',
     title: 'Experience Level',
-    icon: SvgoLineChartUp,
+    icon: 'SvgoLineChartUp',
     list: [
       {
         label: 'Entry-level',
@@ -80,8 +83,14 @@ const filters = [
         counts: 5
       }
     ],
-
   },
+  {
+    type: 'range',
+    title: 'Salary Range',
+    icon: 'SvgoCurrencyDollar',
+    min: 0,
+    max: 250000
+  }
 ]
 
 const jobList = [
