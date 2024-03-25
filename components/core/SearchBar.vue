@@ -51,6 +51,6 @@
   @apply max-md:w-full
 }
 .search-bar .filter-wrapper input{
-  @apply focus:outline-0 shadow-none border-0 px-2 placeholder-gray-400
+  @apply focus:outline-0 border-0 px-2 placeholder-gray-400
 }
 </style>

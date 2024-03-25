@@ -61,10 +61,11 @@
                 >
               </div>
               <div class="md:col-span-2">
-                <div class="flex gap-2">
-                  <input id="policyCB" type="checkbox" value=""
-                          class="!w-4 h-4 text-brand-600 bg-gray-100 border-gray-300 rounded focus:ring-brand-500 dark:focus:ring-brand-600 dark:ring-offset-gray-800 focus:ring-2">
-                  <label id="policyCB" class="text-base text-gray-600 inline-block">
+                <div class="flex gap-2 items-center">
+                  <div class="shrink-0">
+                    <input id="policyCB" type="checkbox" value="">
+                  </div>
+                  <label for="policyCB" class="text-base text-gray-600 inline-block !pb-0">
                     You agree to our friendly <span class="underline cursor-pointer hover:no-underline">privacy policy</span>.
                   </label>
                 </div>
@@ -85,7 +86,7 @@
 form label{
   @apply block pb-1.5 text-sm text-gray-700
 }
-form input{
-  @apply w-full shadow-none
+form input:not(input[type=checkbox]){
+  @apply w-full
 }
 </style>
