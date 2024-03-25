@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { toRef } from "vue";
 import { useField } from "vee-validate";
-import AlertCircle from "~/assets/icons/alert-circle.svg";
-
+// import { QuillEditor } from "@vueup/vue-quill";
+// import "@vueup/vue-quill/dist/vue-quill.snow.css";
 const props = defineProps({
   value: {
     type: String,
@@ -65,6 +65,7 @@ const {
       </span>
     </label>
     <div class="mt-2 sm:col-span-2 sm:mt-0">
+      <!-- <QuillEditor theme="snow" /> -->
       <div class="relative">
         <div class="flex flex-col gap-y-1.5">
           <div
@@ -96,7 +97,7 @@ const {
           </p>
         </div>
         <div v-if="errorMessage" class="absolute right-2 top-3">
-          <AlertCircle class="h-4" />
+          <SvgoAlertCircle class="h-4" />
         </div>
       </div>
     </div>

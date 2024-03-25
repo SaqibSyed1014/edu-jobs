@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { toRef } from "vue";
 import { useField } from "vee-validate";
-import AlertCircle from "~/assets/icons/alert-circle.svg";
 import { Form, Field, ErrorMessage } from "vee-validate";
 
 const props = defineProps({
@@ -59,6 +58,7 @@ const {
 <template>
   <div :class="[className]">
     <label
+      v-if="label"
       :for="name"
       class="block text-sm font-medium md:font-semibold text-gray-700 sm:pt-1.5"
     >

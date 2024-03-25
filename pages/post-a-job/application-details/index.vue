@@ -1,16 +1,10 @@
 <script setup lang="ts">
-import UploadImageIcon from "~/assets/icons/upload.svg";
-import ClockIcon from "~/assets/icons/clock.svg";
-import DollarIcon from "~/assets/icons/currency-dollar.svg";
-import CalendarSvg from "~/assets/icons/calendar.svg";
-import StepRing from "~/assets/icons/ring-3-4.svg";
-import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import * as Yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
 
 const steps = ref([
-  { name: "District Information", href: "/post-a-job", status: "complete" },
+  { name: "Institution Information", href: "/post-a-job", status: "complete" },
   { name: "Job Details", href: "/post-a-job/job-details", status: "complete" },
   {
     name: "Application Details",
@@ -80,7 +74,7 @@ const schema = Yup.object().shape({
               Please fill the fields below regarding application details.
             </p>
           </div>
-          <StepRing class="h-14 lg:hidden" />
+          <SvgoRing34 class="h-14 lg:hidden" />
         </div>
         <div
           class="mt-5 space-y-0 border-b border-gray-900/10 divide-y divide-gray-900/10 border-t sm:pb-0"
@@ -134,6 +128,7 @@ const schema = Yup.object().shape({
             <BaseButton
               label="Cancel"
               color="gray"
+              type="button"
               :outline="true"
               class="order-2 md:order-1"
             />
@@ -149,7 +144,7 @@ const schema = Yup.object().shape({
 
       <div class="w-full lg:w-1/5 flex flex-col gap-4 md:pt-8">
         <div
-          class="block lg:max-w-sm p-4 border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+          class="block lg:max-w-sm p-4 border border-gray-200 rounded-lg shadow"
         >
           <p class="text-gray-900 text-base font-medium">Order Summary</p>
 
@@ -167,10 +162,10 @@ const schema = Yup.object().shape({
         </div>
 
         <div
-          class="hidden md:block lg:max-w-sm p-4 border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+          class="hidden md:block lg:max-w-sm p-4 border border-gray-200 rounded-lg shadow"
         >
           <div class="flex-col items-start gap-5 flex w-full">
-            <UploadImageIcon class="h-12" />
+            <SvgoUpload class="h-12" />
             <div class="w-full flex-col justify-between items-start gap-5 flex">
               <div class="w-full">
                 <p class="text-gray-900 text-base font-medium leading-normal">
@@ -185,13 +180,13 @@ const schema = Yup.object().shape({
                 class="justify-between w-full xl:items-center gap-4 flex lg:flex-col xl:flex-row"
               >
                 <div class="flex items-center space-x-1.5">
-                  <ClockIcon class="h-5" />
+                  <SvgoClock class="h-5" />
                   <p class="text-gray-600 text-sm font-medium leading-tight">
                     Full-time
                   </p>
                 </div>
                 <div class="flex items-center space-x-1.5">
-                  <DollarIcon class="h-5" />
+                  <SvgoCurrencyDollar class="h-5" />
                   <p class="text-gray-600 text-sm font-medium leading-tight">
                     80k - 100k
                   </p>
@@ -202,7 +197,7 @@ const schema = Yup.object().shape({
         </div>
 
         <div
-          class="block lg:max-w-sm p-4 border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+          class="block lg:max-w-sm p-4 border border-gray-200 rounded-lg shadow"
         >
           <div class="flex-col items-start gap-5 flex w-full">
             <div class="w-full flex-col justify-between items-start gap-5 flex">

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { toRef } from "vue";
 import { useField } from "vee-validate";
-import AlertCircle from "~/assets/icons/alert-circle.svg";
 
 const props = defineProps({
   type: {
@@ -106,7 +105,7 @@ const {
           </p>
         </div>
         <div v-if="errorMessage" class="absolute right-2 top-3">
-          <AlertCircle class="h-4" />
+          <SvgoAlertCircle class="h-4" />
         </div>
       </div>
     </div>

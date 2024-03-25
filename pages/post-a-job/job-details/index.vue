@@ -1,16 +1,12 @@
 <script setup lang="ts">
-import UploadImageIcon from "~/assets/icons/upload.svg";
-import ClockIcon from "~/assets/icons/clock.svg";
-import DollarIcon from "~/assets/icons/currency-dollar.svg";
-import StepRing from "~/assets/icons/ring-2-4.svg";
-import CalendarSvg from "~/assets/icons/calendar.svg";
-import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import * as Yup from "yup";
-import { Form, Field, ErrorMessage } from "vee-validate";
+import { Form, Field, ErrorMessage, useField } from "vee-validate";
+// import { QuillEditor } from "@vueup/vue-quill";
+// import "@vueup/vue-quill/dist/vue-quill.snow.css";
 
 const steps = ref([
-  { name: "District Information", href: "/post-a-job", status: "complete" },
+  { name: "Institution Information", href: "/post-a-job", status: "complete" },
   { name: "Job Details", href: "/post-a-job/job-details", status: "current" },
   {
     name: "Application Details",
@@ -27,7 +23,6 @@ const steps = ref([
 const jobRoles = ref(["Role 1", "Role 2"]);
 const grades = ref(["Grade 1", "Grade 2"]);
 const subjects = ref(["English", "Math"]);
-
 const date = ref();
 const message = ref("");
 const format = (date: any) => {
@@ -40,7 +35,6 @@ const format = (date: any) => {
 
 const router = useRouter();
 function onSubmit(values: any) {
-  // console.log("🚀 ~ onSubmit ~ values:", values);
   router.push({
     path: "/post-a-job/application-details",
   });
@@ -53,6 +47,8 @@ const schema = Yup.object().shape({
   employment: Yup.string().required("You must choose an employment type"),
   jobRole: Yup.string().required("You must choose your job role"),
   gradeLevel: Yup.string().required("You must choose your gradeLevel"),
+  paymenttype: Yup.string().required("Please select payment type"),
+  paymentRange: Yup.string().required("Please select payment range"),
   subjects: Yup.string().required("You must choose your subjects"),
   jobDesc: Yup.string().required("Please enter the job description"),
   startDate: Yup.string().required("Start Date is required"),
@@ -84,7 +80,7 @@ const schema = Yup.object().shape({
               Please fill the fields below regarding job information.
             </p>
           </div>
-          <StepRing class="h-14 lg:hidden" />
+          <SvgoRing24 class="h-14 lg:hidden" />
         </div>
         <Form
           @submit="onSubmit"
@@ -102,7 +98,6 @@ const schema = Yup.object().shape({
               subLabel=""
               className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
             />
-
             <div
               class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
             >
@@ -202,6 +197,27 @@ const schema = Yup.object().shape({
               </div>
             </div>
 
+            <div>
+              <SelectBox
+                name="paymenttype"
+                label="Payment Type"
+                :data="[]"
+                subLabel=""
+                :errorMessage="errors.paymenttype"
+                className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+              />
+
+              <PayRangeSelectBox
+                name="paymentRange"
+                label="Pay Range"
+                :data="[]"
+                :data2="[]"
+                subLabel="(USD)"
+                :errorMessage="errors.paymentRange"
+                className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+              />
+            </div>
+
             <SelectBox
               name="jobRole"
               label="Job Role"
@@ -295,6 +311,29 @@ const schema = Yup.object().shape({
               </div>
             </div> -->
 
+            <!-- <div
+              class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+            >
+              <label
+                for="jobDesc"
+                class="block text-sm font-medium md:font-semibold text-gray-700 sm:pt-1.5"
+              >
+                jobDesc
+              </label>
+              <div class="mt-2 sm:col-span-2 sm:mt-0">
+                
+                <div class="relative">
+                  <div class="flex flex-col gap-y-1.5">
+                    <div
+                      class="flex relative rounded-md ring-1 ring-inset ring-gray-300 focus-within:ring-0 focus-within:ring-inset focus-within:ring-brand-600"
+                    >
+                      <QuillEditor theme="snow" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+
             <TextArea
               name="jobDesc"
               label="Job Description"
@@ -320,6 +359,7 @@ const schema = Yup.object().shape({
               <BaseButton
                 label="Cancel"
                 color="gray"
+                type="button"
                 :outline="true"
                 class="order-2 md:order-1"
               />
@@ -356,7 +396,7 @@ const schema = Yup.object().shape({
           class="hidden md:block lg:max-w-sm p-4 border border-gray-200 rounded-lg shadow"
         >
           <div class="flex-col items-start gap-5 flex w-full">
-            <UploadImageIcon class="h-12" />
+            <SvgoUpload class="h-12" />
             <div class="w-full flex-col justify-between items-start gap-5 flex">
               <div class="w-full">
                 <p class="text-gray-900 text-base font-medium leading-normal">
@@ -371,13 +411,13 @@ const schema = Yup.object().shape({
                 class="justify-between w-full xl:items-center gap-4 flex lg:flex-col xl:flex-row"
               >
                 <div class="flex items-center space-x-1.5">
-                  <ClockIcon class="h-5" />
+                  <SvgoClock class="h-5" />
                   <p class="text-gray-600 text-sm font-medium leading-tight">
                     Full-time
                   </p>
                 </div>
                 <div class="flex items-center space-x-1.5">
-                  <DollarIcon class="h-5" />
+                  <SvgoCurrencyDollar class="h-5" />
                   <p class="text-gray-600 text-sm font-medium leading-tight">
                     80k - 100k
                   </p>

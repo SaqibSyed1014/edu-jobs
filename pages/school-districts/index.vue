@@ -1,20 +1,18 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import ListIcon from "~/assets/icons/list.svg";
-import GridIcon from "~/assets/icons/grid.svg";
-
-import {
-  Dialog,
-  DialogPanel,
-  TransitionChild,
-  TransitionRoot,
-} from "@headlessui/vue";
-import { XMarkIcon } from "@heroicons/vue/24/outline";
-import FilterLines from "~/assets/icons/filterLines.svg";
-import SearchIcon from "~/assets/icons/search-icon.svg";
 import BriefCase from "~/assets/icons/brief-case.svg";
 import GraduationHat from "~/assets/icons/graduation-hat.svg";
 import Building from "~/assets/icons/building.svg";
+let toggleSideBar = ref(false);
+
+function togglingSidebarVisibility() {
+  toggleSideBar.value = !toggleSideBar.value;
+  if (toggleSideBar.value) {
+    document.body.classList.add("overflow-hidden");
+  } else {
+    document.body.classList.remove("overflow-hidden");
+  }
+}
 
 const jobOptions = ref([
   { id: "1", label: "0 to 10", checked: false },
@@ -60,7 +58,6 @@ for (let i = 65; i <= 90; i++) {
   capitals.value.push(String.fromCharCode(i));
 }
 
-const sidebarOpen = ref(false);
 const isGridView = ref(true); // Reactive variable to store the current view mode
 const selectedAlphabet = ref<number>(0); // Reactive variable to store the selected alphabet index
 
@@ -134,111 +131,70 @@ const selectAlphabet = (index: number) => {
 <template>
   <div class="container flex pb-20 w-full">
     <!-- For Mobile -->
-    <TransitionRoot as="template" :show="sidebarOpen">
-      <Dialog
-        as="div"
-        class="relative z-50 xl:hidden"
-        @close="sidebarOpen = false"
+    <div class="block xl:hidden">
+      <DistrickSideBarWrapper
+        class="transform transition-all"
+        :class="[toggleSideBar ? 'translate-x-0' : '-translate-x-full ']"
       >
-        <TransitionChild
-          as="template"
-          enter="transition-opacity ease-linear duration-300"
-          enter-from="opacity-0"
-          enter-to="opacity-100"
-          leave="transition-opacity ease-linear duration-300"
-          leave-from="opacity-100"
-          leave-to="opacity-0"
-        >
-          <div class="fixed inset-0 bg-gray-900/80" />
-        </TransitionChild>
-
-        <div class="fixed inset-0 flex">
-          <TransitionChild
-            as="template"
-            enter="transition ease-in-out duration-300 transform"
-            enter-from="-translate-x-full"
-            enter-to="translate-x-0"
-            leave="transition ease-in-out duration-300 transform"
-            leave-from="translate-x-0"
-            leave-to="-translate-x-full"
+        <div class="relative">
+          <SvgoXClose
+            v-if="toggleSideBar"
+            class="block xl:hidden w-4 h-4 absolute right-0 -top-3"
+            @click="togglingSidebarVisibility"
+          />
+          <div
+            class="py-2 flex-col justify-start items-start gap-2.5 inline-flex"
           >
-            <DialogPanel
-              class="relative flex pb-20 overflow-scroll w-full max-w-xs flex-1 px-4 pt-5 bg-white"
+            <div
+              class="justify-between items-center inline-flex w-full border-b border-gray-200 pb-2"
             >
-              <TransitionChild
-                as="template"
-                enter="ease-in-out duration-300"
-                enter-from="opacity-0"
-                enter-to="opacity-100"
-                leave="ease-in-out duration-300"
-                leave-from="opacity-100"
-                leave-to="opacity-0"
-              >
+              <div class="justify-start items-center gap-3 flex">
+                <SvgoFilterLines class="size-6" />
                 <div
-                  class="absolute -right-16 top-0 flex w-16 justify-center pt-5"
+                  class="text-gray-700 text-base font-semibold leading-normal"
                 >
-                  <button
-                    type="button"
-                    class="-m-2.5 p-2.5"
-                    @click="sidebarOpen = false"
-                  >
-                    <span class="sr-only">Close sidebar</span>
-                    <XMarkIcon class="h-6 w-6 text-white" aria-hidden="true" />
-                  </button>
-                </div>
-              </TransitionChild>
-              <div
-                class="py-2 flex-col justify-start items-start gap-2.5 inline-flex"
-              >
-                <div
-                  class="justify-between items-center inline-flex w-full border-b border-gray-200 pb-2"
-                >
-                  <div class="justify-start items-center gap-3 flex">
-                    <FilterLines class="size-6" />
-                    <div
-                      class="text-gray-700 text-base font-semibold leading-normal"
-                    >
-                      Filters
-                    </div>
-                  </div>
-                  <div class="justify-center items-center gap-1.5 flex">
-                    <button
-                      @click="clearAll"
-                      class="text-brand-800 text-sm font-semibold leading-tight"
-                    >
-                      Clear All
-                    </button>
-                  </div>
-                </div>
-
-                <div class="divide-y divide-gray-200">
-                  <FilterSection
-                    title="No. of Jobs"
-                    :options="jobOptions"
-                    :icon-component="BriefCase"
-                    total-jobs="125"
-                  />
-
-                  <FilterSection
-                    title="No. of students"
-                    :options="stuOptions"
-                    :icon-component="GraduationHat"
-                    total-jobs="12,000"
-                  />
-
-                  <FilterSection
-                    title="No. of schools"
-                    :options="schOptions"
-                    :icon-component="Building"
-                    total-jobs="13"
-                  />
+                  Filters
                 </div>
               </div>
-            </DialogPanel>
-          </TransitionChild>
+              <div class="justify-center items-center gap-1.5 flex">
+                <button
+                  @click="clearAll"
+                  class="text-brand-800 text-sm font-semibold leading-tight"
+                >
+                  Clear All
+                </button>
+              </div>
+            </div>
+
+            <div class="divide-y divide-gray-200">
+              <FilterSection
+                title="No. of Jobs"
+                :options="jobOptions"
+                :icon-component="BriefCase"
+                total-jobs="125"
+              />
+
+              <FilterSection
+                title="No. of students"
+                :options="stuOptions"
+                :icon-component="GraduationHat"
+                total-jobs="12,000"
+              />
+
+              <FilterSection
+                title="No. of schools"
+                :options="schOptions"
+                :icon-component="Building"
+                total-jobs="13"
+              />
+            </div>
+            <div class="pt-[18px] w-full">
+              <BaseButton label="Apply" color="primary" :fullSized="true" />
+            </div>
+          </div>
         </div>
-      </Dialog>
-    </TransitionRoot>
+      </DistrickSideBarWrapper>
+    </div>
 
     <!-- for desktop -->
     <div class="hidden xl:inset-y-0 xl:z-50 xl:flex xl:w-1/5 xl:flex-col">
@@ -252,7 +208,7 @@ const selectAlphabet = (index: number) => {
             class="justify-between items-center inline-flex w-full border-b border-gray-200 pb-2"
           >
             <div class="justify-start items-center gap-3 flex">
-              <FilterLines class="size-6" />
+              <SvgoFilterLines class="size-6" />
               <div class="text-gray-700 text-base font-semibold leading-normal">
                 Filters
               </div>
@@ -269,7 +225,7 @@ const selectAlphabet = (index: number) => {
 
           <div class="divide-y divide-gray-200">
             <FilterSection
-              title="No. of Jobs"
+              title="No. of jobs"
               :options="jobOptions"
               :icon-component="BriefCase"
               total-jobs="125"
@@ -304,11 +260,11 @@ const selectAlphabet = (index: number) => {
       </div>
 
       <div class="pt-8 flex sm:flex-row flex-col gap-4 justify-between">
-        <div class="flex">
+        <div class="flex gap-4">
           <form class="flex flex-1" action="#" method="GET">
             <label for="search-field" class="sr-only">Search</label>
             <div class="relative">
-              <SearchIcon
+              <SvgoSearchIcon
                 class="pointer-events-none absolute inset-y-0 left-2 h-full w-5 text-gray-500"
                 aria-hidden="true"
               />
@@ -325,10 +281,10 @@ const selectAlphabet = (index: number) => {
             <button
               type="button"
               class="size-11 flex items-center text-black xl:hidden rounded-lg shadow border border-gray-300 justify-center"
-              @click="sidebarOpen = true"
+              @click="togglingSidebarVisibility"
             >
               <span class="sr-only">Open sidebar</span>
-              <FilterLines class="size-6" />
+              <SvgoFilterLines class="size-6" />
             </button>
           </div>
         </div>
@@ -345,7 +301,7 @@ const selectAlphabet = (index: number) => {
                   !isGridView,
               }"
             >
-              <ListIcon class="size-5" />
+              <SvgoList class="size-5" />
               <div class="text-slate-700 text-sm font-semibold leading-tight">
                 List
               </div>
@@ -360,7 +316,7 @@ const selectAlphabet = (index: number) => {
                   !isGridView,
               }"
             >
-              <GridIcon class="size-5" />
+              <SvgoGrid class="size-5" />
               <div class="text-gray-800 text-sm font-semibold leading-tight">
                 Grid
               </div>
@@ -390,7 +346,7 @@ const selectAlphabet = (index: number) => {
               :class="[
                 index === selectedAlphabet
                   ? 'text-blue-800 border-b-2 px-[5px] border-blue-800'
-                  : '',
+                  : 'md:px-[5px]',
               ]"
               @click="selectAlphabet(index)"
             >

@@ -1,15 +1,9 @@
 <script setup lang="ts">
-import { CheckIcon } from "@heroicons/vue/20/solid";
-import UploadImageIcon from "~/assets/icons/upload.svg";
-import ClockIcon from "~/assets/icons/clock.svg";
-import DollarIcon from "~/assets/icons/currency-dollar.svg";
-import FileUpload from "~/assets/icons/file-upload.svg";
-import Step1Ring from "~/assets/icons/ring-1-4.svg";
 import * as Yup from "yup";
 import { Form } from "vee-validate";
 
 const steps = ref([
-  { name: "District Information", href: "/post-a-job", status: "current" },
+  { name: "Institution Information", href: "/post-a-job", status: "current" },
   { name: "Job Details", href: "/post-a-job/job-details", status: "upcoming" },
   {
     name: "Application Details",
@@ -63,13 +57,13 @@ const schema = Yup.object().shape({
         <div class="flex items-center justify-between">
           <div>
             <h2 class="text-lg font-semibold leading-7 text-gray-900">
-              District Information
+              Institution Information
             </h2>
             <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-600">
-              Please fill the fields below regarding district information.
+              Please fill the fields below regarding institution information.
             </p>
           </div>
-          <Step1Ring class="h-14 lg:hidden" />
+          <SvgoRing14 class="h-14 lg:hidden" />
         </div>
         <div
           class="mt-5 space-y-8 border-b border-gray-900/10 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0"
@@ -87,7 +81,7 @@ const schema = Yup.object().shape({
             <label
               for="username"
               class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
-              >Your photo <br />
+              >Business Logo/Icon <br />
               <span
                 class="w-[228px] text-slate-600 text-sm font-normal leading-normal"
                 >This will be displayed on your profile.
@@ -95,7 +89,7 @@ const schema = Yup.object().shape({
             </label>
             <div class="mt-2 sm:col-span-2 sm:mt-0">
               <div class="flex flex-col md:flex-row items-start gap-x-5">
-                <UploadImageIcon class="h-12" />
+                <SvgoUpload class="h-12" />
                 <div class="mt-2 sm:mt-0 w-full">
                   <div
                     class="flex w-full justify-center rounded-lg border border-gray-200 px-6 py-3.5"
@@ -103,7 +97,7 @@ const schema = Yup.object().shape({
                     <div
                       class="text-center flex flex-col justify-center items-center"
                     >
-                      <FileUpload class="h-10 w-10" />
+                      <SvgoFileUpload class="h-10 w-10" />
                       <div
                         class="mt-4 flex text-sm leading-6 text-center justify-center items-center text-gray-600"
                       >
@@ -159,6 +153,7 @@ const schema = Yup.object().shape({
         </div>
         <div class="flex flex-col md:flex-row justify-end gap-3 pt-5 md:pb-8">
           <BaseButton
+            type="button"
             label="Cancel"
             color="gray"
             :outline="true"
@@ -190,7 +185,7 @@ const schema = Yup.object().shape({
           class="hidden md:block lg:max-w-sm p-4 border border-gray-200 rounded-lg shadow"
         >
           <div class="flex-col items-start gap-5 flex w-full">
-            <UploadImageIcon class="h-12" />
+            <SvgoUpload class="h-12" />
             <div class="w-full flex-col justify-between items-start gap-5 flex">
               <div class="w-full">
                 <p class="text-gray-900 text-base font-medium leading-normal">
@@ -204,13 +199,13 @@ const schema = Yup.object().shape({
                 class="justify-between w-full xl:items-center gap-4 flex lg:flex-col xl:flex-row"
               >
                 <div class="flex items-center space-x-1.5">
-                  <ClockIcon class="h-5" />
+                  <SvgoClock class="h-5" />
                   <p class="text-gray-600 text-sm font-medium leading-tight">
                     Full-time
                   </p>
                 </div>
                 <div class="flex items-center space-x-1.5">
-                  <DollarIcon class="h-5" />
+                  <SvgoCurrencyDollar class="h-5" />
                   <p class="text-gray-600 text-sm font-medium leading-tight">
                     80k - 100k
                   </p>

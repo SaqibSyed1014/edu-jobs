@@ -1,13 +1,8 @@
 <script setup lang="ts">
-import UploadImageIcon from "~/assets/icons/upload.svg";
-import ClockIcon from "~/assets/icons/clock.svg";
-import DollarIcon from "~/assets/icons/currency-dollar.svg";
-import EditPensil from "~/assets/icons/edit-pensil.svg";
-import StepRing from "~/assets/icons/ring-4-4.svg";
 import { Tooltip } from "flowbite";
 
 const steps = ref([
-  { name: "District Information", href: "/post-a-job", status: "complete" },
+  { name: "Institution Information", href: "/post-a-job", status: "complete" },
   { name: "Job Details", href: "/post-a-job/job-details", status: "complete" },
   {
     name: "Application Details",
@@ -75,7 +70,7 @@ onMounted(() => {
               Please review your application before submitting.
             </p>
           </div>
-          <StepRing class="h-14 lg:hidden" />
+          <SvgoRing44 class="h-14 lg:hidden" />
         </div>
         <div
           class="mt-5 border-b border-gray-900/10 divide-y divide-gray-900/10 border-t pb-0"
@@ -84,7 +79,7 @@ onMounted(() => {
             class="flex-col justify-start items-start inline-flex w-full gap-6 py-4 md:py-6"
           >
             <h4 class="text-gray-900 text-base font-semibold leading-normal">
-              District Information
+              Institution Information
             </h4>
             <div class="grid sm:grid-cols-2 gap-4 w-full">
               <div class="justify-start items-start gap-8 inline-flex">
@@ -95,10 +90,10 @@ onMounted(() => {
                     <p
                       class="text-slate-700 text-base font-semibold leading-normal"
                     >
-                      School district name*
+                      Institution Name*
                     </p>
                     <button id="tooltipButton" type="button">
-                      <EditPensil class="h-4" />
+                      <SvgoEditPensil class="h-4" />
                     </button>
 
                     <div
@@ -379,13 +374,14 @@ onMounted(() => {
               </div>
               <div class="flex flex-row gap-3 items-start">
                 <div class="flex items-center">
-                  <input
-                    checked
-                    id="checked-checkbox"
-                    type="checkbox"
-                    value=""
-                    class="w-4 h-4 text-brand-600 rounded-md bg-gray-100 mt-1 border-gray-300 focus:ring-brand-500 dark:focus:ring-brand-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
+                  <div class="flex items-center mb-4">
+                    <input
+                      id="default-checkbox"
+                      type="checkbox"
+                      value=""
+                      class="w-4 h-4 text-brand-600 mt-1 bg-gray-100 border-gray-300 rounded focus:ring-brand-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    />
+                  </div>
                 </div>
                 <div class="max-w-[303px]">
                   <h3 class="text-gray-700 text-base font-medium">
@@ -433,6 +429,7 @@ onMounted(() => {
             class="flex flex-col md:flex-row justify-end gap-3 md:pt-5 md:pb-8 w-full md:w-fit"
           >
             <BaseButton
+              type="button"
               label="Cancel"
               color="gray"
               :outline="true"
@@ -449,7 +446,7 @@ onMounted(() => {
 
       <div class="w-full lg:w-1/5 flex flex-col gap-4 md:pt-8">
         <div
-          class="block lg:max-w-sm p-4 border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+          class="block lg:max-w-sm p-4 border border-gray-200 rounded-lg shadow"
         >
           <p class="text-gray-900 text-base font-medium">Order Summary</p>
 
@@ -473,10 +470,10 @@ onMounted(() => {
         </div>
 
         <div
-          class="hidden md:block lg:max-w-sm p-4 border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+          class="hidden md:block lg:max-w-sm p-4 border border-gray-200 rounded-lg shadow"
         >
           <div class="flex-col items-start gap-5 flex w-full">
-            <UploadImageIcon class="h-12" />
+            <SvgoUpload class="h-12" />
             <div class="w-full flex-col justify-between items-start gap-5 flex">
               <div class="w-full">
                 <p class="text-gray-900 text-base font-medium leading-normal">
@@ -491,13 +488,13 @@ onMounted(() => {
                 class="justify-between w-full xl:items-center gap-4 flex lg:flex-col xl:flex-row"
               >
                 <div class="flex items-center space-x-1.5">
-                  <ClockIcon class="h-5" />
+                  <SvgoClock class="h-5" />
                   <p class="text-gray-600 text-sm font-medium leading-tight">
                     Full-time
                   </p>
                 </div>
                 <div class="flex items-center space-x-1.5">
-                  <DollarIcon class="h-5" />
+                  <SvgoCurrencyDollar class="h-5" />
                   <p class="text-gray-600 text-sm font-medium leading-tight">
                     80k - 100k
                   </p>
@@ -508,7 +505,7 @@ onMounted(() => {
         </div>
 
         <div
-          class="block lg:max-w-sm p-4 border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+          class="block lg:max-w-sm p-4 border border-gray-200 rounded-lg shadow"
         >
           <div class="flex-col items-start gap-5 flex w-full">
             <div class="w-full flex-col justify-between items-start gap-5 flex">

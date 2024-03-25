@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import { CheckIcon } from "@heroicons/vue/20/solid";
-import StepIcon from "~/assets/icons/step.svg";
-import StepCompIcon from "~/assets/icons/step-comp.svg";
-
 defineProps<{ steps: any[] }>();
 </script>
 
@@ -21,15 +17,12 @@ defineProps<{ steps: any[] }>();
               class="absolute left-[9%] top-3.5 -ml-px mt-7 h-[30%] w-0.5 bg-brand-600"
               aria-hidden="true"
             />
-            <NuxtLink :to="step.href" class="group relative flex items-center">
-              <!-- <span class="flex h-9 items-center">
-                <span
-                  class="relative z-10 flex h-9 w-9 items-center justify-center rounded-full bg-brand-600 group-hover:bg-brand-700"
-                >
-                  <CheckIcon class="h-5 w-5 text-white" aria-hidden="true" />
-                </span>
-              </span> -->
-              <StepCompIcon class="h-9 w-9" />
+            <NuxtLink
+              :to="step.href"
+              class="group relative flex items-center"
+              :aria-disabled="step.status !== 'complete'"
+            >
+              <SvgoStepComp class="h-9 w-9" />
               <span class="ml-4 flex min-w-0 flex-col">
                 <span class="text-xs lg:text-base font-semibold">{{
                   step.name
@@ -56,8 +49,6 @@ defineProps<{ steps: any[] }>();
               >
                 <span class="h-2.5 w-2.5 rounded-full bg-white" />
               </span>
-
-              <!-- <StepIcon class="h-9 rounded-full" /> -->
               <span class="ml-4 flex min-w-0 flex-col">
                 <span
                   class="text-xs lg:text-base font-semibold text-brand-700"
@@ -72,7 +63,11 @@ defineProps<{ steps: any[] }>();
               class="absolute left-[9%] top-3.5 mt-7 h-[30%] w-0.5 bg-gray-200"
               aria-hidden="true"
             />
-            <NuxtLink :to="step.href" class="group relative flex items-center">
+            <button disabled="true" class="group relative flex items-center">
+              <!-- <NuxtLink
+                :to="step.href"
+                class="group relative flex items-center"
+              > -->
               <span class="flex h-9 items-center" aria-hidden="true">
                 <span
                   class="relative z-10 flex h-9 w-9 items-center justify-center rounded-full border-2 border-gray-200 bg-white group-hover:border-gray-400"
@@ -85,7 +80,8 @@ defineProps<{ steps: any[] }>();
                   step.name
                 }}</span>
               </span>
-            </NuxtLink>
+              <!-- </NuxtLink> -->
+            </button>
           </template>
         </li>
       </ol>
