@@ -48,3 +48,12 @@ swiper-container::part(wrapper) {
 .reviews-slider swiper-container::part(swiper-pagination-bullet) {
     padding-top: 3rem;
 }
+
+
+.dp__input_icons{
+    @apply !hidden
+}
+
+.dp__input{
+   @apply !bg-transparent !py-[9px] !px-3.5
+}

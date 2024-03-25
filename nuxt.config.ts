@@ -8,7 +8,7 @@ export default defineNuxtConfig({
         }
     },
     build: {
-        transpile: ['vue-google-maps-community-fork', '@googlemaps/markercluster'],
+        transpile: ['vue-google-maps-community-fork', '@googlemaps/markercluster', '@vuepic/vue-datepicker'],
     },
     vite: {
         optimizeDeps: {
