@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import {SvgoBarChart, SvgoClock, SvgoCurrencyDollar, SvgoGrid, SvgoLineChartUp, SvgoList} from "#components";
-import LocationPinIcon from "assets/icons/location-pin.svg";
-import SearchIcon from "assets/icons/search.svg";
 import Pagination from "~/components/core/Pagination.vue";
 import ListingFilters from "~/components/core/ListingFilters.vue";
 import JobCTA from "~/components/pages/job-listings/JobCTA.vue";
@@ -179,11 +176,11 @@ const jobList = [
 const itemsViewOptions = [
   {
     label: 'List',
-    icon: SvgoList
+    icon: 'SvgoList'
   },
   {
     label: 'Grid',
-    icon: SvgoGrid
+    icon: 'SvgoGrid'
   }
 ]
 
@@ -249,7 +246,7 @@ const isFilterSidebarVisible = ref(false)
           <div class="grid gap-6" :class="[isGridOptionSelected ? 'md:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1']">
             <template v-for="job in jobList">
               <NuxtLink to="/job-listings/details">
-                <JobCard :job="job" :card-form="isGridOptionSelected"/>
+                <JobCard :job="job" :card-form="isGridOptionSelected" :show-job-description="false" />
               </NuxtLink>
             </template>
           </div>
