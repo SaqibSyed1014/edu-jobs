@@ -1,15 +1,19 @@
 <script setup lang="ts">
+const screenWidth = ref<number>(0);
 
+onMounted(() => {
+  screenWidth.value = window.innerWidth;
+});
 </script>
 
 <template>
   <div class="pagination border-t border-[#EAECF0] flex justify-between text-sm pt-5">
-    <BaseButton color="gray" :outline="true" label="Previous">
+    <BaseButton color="gray" :outline="true" :label="screenWidth >= 768 ? 'Previous' : ''">
       <template #prepend-icon>
         <SvgoArrowLeft class="w-4 h-4 text-gray-600"/>
       </template>
     </BaseButton>
-    <p class="flex items-center text-sm text-[#344054] block md:hidden font-medium">Page 1 of 10</p>
+    <p class="flex items-center text-sm text-[#344054] md:hidden font-medium">Page 1 of 10</p>
     <ul class="hidden md:flex pagination font-medium">
       <li class="active">1</li>
       <li>2</li>
@@ -19,7 +23,7 @@
       <li>9</li>
       <li>10</li>
     </ul>
-    <BaseButton color="gray" :outline="true" label="Next">
+    <BaseButton color="gray" :outline="true" :label="screenWidth >= 768 ? 'Next' : ''">
       <template #append-icon>
         <SvgoArrowRight class="w-4 h-4 text-gray-600"/>
       </template>

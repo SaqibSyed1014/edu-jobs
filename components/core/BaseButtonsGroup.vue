@@ -26,7 +26,8 @@ function selectingOption(index :number) {
         :class="{
           'rounded-e-none': i === 0,
            'rounded-s-none': i === btnsGroup.length - 1,
-           'bg-gray-200': i === selectedOption
+           'bg-gray-200': i === selectedOption,
+           '!py-[.575rem] text-sm': true
         }"
         @click="selectingOption(i)"
     >

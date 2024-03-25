@@ -3,6 +3,10 @@
 /*@import url('https://fonts.googleapis.com/css2?family=Courier+Prime&family=Unica+One&display=swap');*/
 
 @tailwind base;
+input[type=text], input[type=email], input[type=password], .form-input, .form-textarea{
+    --tw-ring-shadow: 0 0 #000 !important;
+    @apply bg-white rounded-lg border border-gray-200 py-2.5 px-3.5 field-shadow placeholder-gray-400
+}
 @tailwind components;
 @tailwind utilities;
 
@@ -16,9 +20,7 @@ body{
     @apply font-inter
 }
 
-input[type=text], input[type=email], input[type=password], .form-input, .form-textarea{
-    @apply bg-white rounded-lg border border-gray-200 py-2.5 px-3.5 field-shadow outline-0 transition focus:outline-1 focus:outline-brand-500 placeholder-gray-400
-}
+
 input[type=checkbox]{
     @apply appearance-none w-5 h-5 border border-gray-300 rounded-md focus:ring-0 cursor-pointer
 }

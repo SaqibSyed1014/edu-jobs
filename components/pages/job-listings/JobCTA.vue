@@ -15,7 +15,7 @@ const checkList = [
             Find your desired job
           </h2>
 
-          <ul class="flex flex-col gap-4 mb-6 md:mb-12 text-lg">
+          <ul class="flex flex-col gap-4 mb-6 md:mb-12 md:text-lg">
             <template v-for="item in checkList">
               <li class="flex lg:items-center gap-3">
                 <svg class="shrink-0" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 28 28" fill="none">

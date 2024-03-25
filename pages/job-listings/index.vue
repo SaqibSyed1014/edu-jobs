@@ -215,7 +215,7 @@ const isFilterSidebarVisible = ref(false)
         </template>
 
         <template #cards-list>
-          <div class="flex gap-4 justify-between items-stretch md:items-center">
+          <div class="flex gap-4 justify-between md:items-center">
             <div class="max-md:flex-1">
               <BaseButton color="gray" :outline="true" :full-sized-on-small="true" label="Most Relevant" class="justify-between">
                 <template #prepend-icon>
