@@ -88,9 +88,13 @@ const footerLinks = [
           </span>
           <div class="hidden md:block w-2 h-2 rounded-full bg-gray-500"/>
           <div class="flex items-center gap-4">
-            <span>Terms and conditions</span>
+            <NuxtLink to="/website-terms-conditions" class="hover:underline">
+              Terms and conditions
+            </NuxtLink>
             <div class="w-2 h-2 rounded-full bg-gray-500"/>
-            <span>Privacy Policy</span></div>
+            <NuxtLink to="privacy-policy" class="hover:underline">
+              Privacy Policy
+            </NuxtLink></div>
         </div>
         <div class="social-links flex flex-1 gap-6 md:justify-end">
           <TwitterIcon class="w-6 h-6" />

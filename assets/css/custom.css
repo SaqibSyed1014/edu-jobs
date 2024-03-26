@@ -57,3 +57,23 @@ swiper-container::part(wrapper) {
 .dp__input{
    @apply !bg-transparent !py-[9px] !px-3.5
 }
+
+/* Content List View CSS (privacy policy, terms & conditions) */
+.content-list-view{
+    @apply py-24
+}
+.content-list-view .content-body{
+    @apply pt-16 md:pt-24 md:px-8 max-w-[720px] mx-auto
+}
+.content-list-view .content-body p{
+    @apply md:text-lg pb-4 last:pb-0
+}
+.content-list-view .content-body h2{
+    @apply pt-8 md:pt-10 pb-4 md:pb-5 text-3xl text-gray-900
+}
+.content-list-view .content-body h3{
+    @apply pt-8 pb-3 md:pb-4 text-2xl text-gray-900
+}
+.content-list-view .content-body ol{
+    @apply md:text-lg
+}
