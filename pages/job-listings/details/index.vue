@@ -205,22 +205,22 @@ const faqList = [
             <div class="flex flex-col gap-4">
               <div class="w-full bg-white border border-[#EAECF0] rounded-2xl p-4">
                 <div
-                    class="flex items-center justify-center border border-[#EAECF0] bg-gray-100 rounded-full w-14 h-14 mb-5">
+                    class="flex items-center justify-center border border-[#EAECF0] bg-gray-100 rounded-full w-12 h-12 mb-5">
                   <SvgoAnnouncement class="w-6 h-6 text-gray-600"/>
                 </div>
-                <h2 class="text-2xl mb-2">Interested in this job?</h2>
-                <p class="text-gray-600 mb-3">Don’t miss the chance. Apply now here.</p>
-                <p class="text-gray-600 mb-5">Job code: EXMPL123</p>
+                <h2 class="mb-2">Interested in this job?</h2>
+                <p class="text-gray-600 text-sm mb-3">Don’t miss the chance. Apply now here.</p>
+                <p class="text-gray-600 text-sm mb-5">Job code: EXMPL123</p>
                 <BaseButton label="Apply Now" :full-sized="true" />
               </div>
 
               <div class="w-full bg-white border border-[#EAECF0] rounded-2xl p-4">
-                <h2 class="text-2xl mb-2">Benefits</h2>
-                <p class="text-gray-600 mb-3">
+                <h2 class="mb-2">Benefits</h2>
+                <p class="text-gray-600 text-sm mb-3">
                   Following benefits are offered along wih basic salary package
                 </p>
 
-                <ul class="flex flex-col gap-4">
+                <ul class="flex flex-col gap-4 text-sm text-gray-600">
                   <li class="flex gap-2">
                     <svg class="shrink-0" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 28 28" fill="none">
                       <rect width="28" height="28" rx="14" fill="#C2D4FD"/>
@@ -228,7 +228,7 @@ const faqList = [
                     </svg>
 
                     <div>
-                      <span class="font-medium text-gray-700">Health benefits</span>
+                      <span class="font-medium text-base text-gray-700">Health benefits</span>
                       <p class="text-sm">Following benefits are offered along wih basic salary package</p>
                     </div>
                   </li>
@@ -240,7 +240,7 @@ const faqList = [
                     </svg>
 
                     <div>
-                      <span class="font-medium text-gray-700">Dental Benefit</span>
+                      <span class="font-medium text-base text-gray-700">Dental Benefit</span>
                       <p class="text-sm">Following benefits are offered along wih basic salary package</p>
                     </div>
                   </li>
@@ -252,7 +252,7 @@ const faqList = [
                     </svg>
 
                     <div>
-                      <span class="font-medium text-gray-700">Gym membership</span>
+                      <span class="font-medium text-base text-gray-700">Gym membership</span>
                       <p class="text-sm">Following benefits are offered along wih basic salary package</p>
                     </div>
                   </li>
@@ -261,8 +261,8 @@ const faqList = [
               </div>
 
               <div class="w-full bg-white border border-[#EAECF0] rounded-2xl p-4">
-                <h2 class="text-2xl mb-2">Pin location</h2>
-                <p class="text-gray-600 mb-5">Find on map where this job is located</p>
+                <h2 class="mb-2">Pin location</h2>
+                <p class="text-gray-600 text-sm mb-5">Find on map where this job is located</p>
 
                 <div>
                   <client-only>
@@ -284,10 +284,10 @@ const faqList = [
               </div>
 
               <div class="w-full bg-white border border-[#EAECF0] rounded-2xl p-4">
-                <h2 class="text-2xl mb-2">Published on</h2>
-                <p class="text-gray-600 mb-5">February 20, 2024</p>
+                <h2 class="mb-2">Published on</h2>
+                <p class="text-gray-600 text-sm mb-5">February 20, 2024</p>
 
-                <h2 class="text-2xl mb-5">Share this job</h2>
+                <h2 class="mb-5">Share this job</h2>
                 <div class="flex gap-6">
                   <SvgoTwitterX class="w-6 h-6" />
                   <SvgoInstagram class="w-6 h-6" />
