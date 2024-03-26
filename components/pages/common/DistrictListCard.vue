@@ -3,10 +3,11 @@ defineProps<{ data: any }>();
 </script>
 
 <template>
-  <div
+  <NuxtLink
+    to="/school-districts/123"
     class="p-4 flex flex-col gap-5 sm:gap-0 sm:flex-row justify-between items-start rounded-xl border border-gray-200"
   >
-    <div class="inline-flex space-x-3">
+    <div class="flex flex-col md:flex-row gap-3">
       <img :src="data.avatar" class="size-12" alt="Avatar" />
       <div>
         <h4
@@ -15,7 +16,7 @@ defineProps<{ data: any }>();
           {{ data?.schoolName }}
         </h4>
 
-        <div class="inline-flex space-x-5">
+        <div class="inline-flex flex-wrap gap-5 pt-2 md:pt-0">
           <div class="inline-flex items-center text-center space-x-2">
             <SvgoBriefCase class="size-5" />
             <span
@@ -53,7 +54,7 @@ defineProps<{ data: any }>();
         </span>
       </div>
     </div>
-  </div>
+  </NuxtLink>
 </template>
 
 <style scoped lang="postcss"></style>

@@ -2,7 +2,7 @@
 import { Tooltip } from "flowbite";
 
 const steps = ref([
-  { name: "Institution Information", href: "/post-a-job", status: "complete" },
+  { name: "Organization Information", href: "/post-a-job", status: "complete" },
   { name: "Job Details", href: "/post-a-job/job-details", status: "complete" },
   {
     name: "Application Details",
@@ -79,7 +79,7 @@ onMounted(() => {
             class="flex-col justify-start items-start inline-flex w-full gap-6 py-4 md:py-6"
           >
             <h4 class="text-gray-900 text-base font-semibold leading-normal">
-              Institution Information
+              Organization Information
             </h4>
             <div class="grid sm:grid-cols-2 gap-4 w-full">
               <div class="justify-start items-start gap-8 inline-flex">
@@ -90,7 +90,7 @@ onMounted(() => {
                     <p
                       class="text-slate-700 text-base font-semibold leading-normal"
                     >
-                      Institution Name*
+                      Organization Name*
                     </p>
                     <button id="tooltipButton" type="button">
                       <SvgoEditPensil class="h-4" />
@@ -454,7 +454,7 @@ onMounted(() => {
             <div class="flex flex-col gap-2">
               <div class="flex items-start justify-between gap-4">
                 <p class="text-gray-600 text-sm font-medium">Job posting fee</p>
-                <p class="text-gray-900 text-sm font-medium">$200</p>
+                <p class="text-gray-900 text-sm font-medium">$49</p>
               </div>
               <div class="flex items-start justify-between gap-4">
                 <p class="text-gray-600 text-sm font-medium">Featuring fee</p>
@@ -533,7 +533,7 @@ onMounted(() => {
           </div>
         </div>
         <BaseButton
-          label="Post a Job for $200"
+          label="Post a Job for $49"
           :outline="true"
           color="primary"
           full-sized

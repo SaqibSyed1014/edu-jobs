@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import { Form } from "vee-validate";
 
 const steps = ref([
-  { name: "Institution Information", href: "/post-a-job", status: "current" },
+  { name: "Organization Information", href: "/post-a-job", status: "current" },
   { name: "Job Details", href: "/post-a-job/job-details", status: "upcoming" },
   {
     name: "Application Details",
@@ -57,7 +57,7 @@ const schema = Yup.object().shape({
         <div class="flex items-center justify-between">
           <div>
             <h2 class="text-lg font-semibold leading-7 text-gray-900">
-              Institution Information
+              Organization Information
             </h2>
             <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-600">
               Please fill the fields below regarding institution information.
@@ -71,7 +71,7 @@ const schema = Yup.object().shape({
           <TextInput
             name="schoolName"
             type="text"
-            label="School district name*"
+            label="Organization Name*"
             placeholder="e.g. Unified School District"
             subLabel=""
             className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6"
@@ -81,7 +81,7 @@ const schema = Yup.object().shape({
             <label
               for="username"
               class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
-              >Business Logo/Icon <br />
+              >Organization Logo/Icon <br />
               <span
                 class="w-[228px] text-slate-600 text-sm font-normal leading-normal"
                 >This will be displayed on your profile.
@@ -171,12 +171,12 @@ const schema = Yup.object().shape({
           <div class="w-full mt-5">
             <div class="flex items-start justify-between gap-4">
               <p class="text-gray-600 text-sm font-medium">Job posting fee</p>
-              <p class="text-gray-900 text-sm font-medium">$200</p>
+              <p class="text-gray-900 text-sm font-medium">$49</p>
             </div>
             <hr class="border-b border-gray-200 my-3 w-full" />
             <div class="flex items-center justify-between gap-4">
               <p class="text-gray-600 text-sm font-medium">Total</p>
-              <p class="text-gray-900 text-lg font-semibold leading-7">$200</p>
+              <p class="text-gray-900 text-lg font-semibold leading-7">$49</p>
             </div>
           </div>
         </div>
@@ -244,7 +244,7 @@ const schema = Yup.object().shape({
           </div>
         </div>
         <BaseButton
-          label="Post a Job for $200"
+          label="Post a Job for $49"
           :outline="true"
           color="primary"
           full-sized

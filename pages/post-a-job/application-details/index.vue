@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
 
 const steps = ref([
-  { name: "Institution Information", href: "/post-a-job", status: "complete" },
+  { name: "Organization Information", href: "/post-a-job", status: "complete" },
   { name: "Job Details", href: "/post-a-job/job-details", status: "complete" },
   {
     name: "Application Details",
@@ -151,12 +151,12 @@ const schema = Yup.object().shape({
           <div class="w-full mt-5">
             <div class="flex items-start justify-between gap-4">
               <p class="text-gray-600 text-sm font-medium">Job posting fee</p>
-              <p class="text-gray-900 text-sm font-medium">$200</p>
+              <p class="text-gray-900 text-sm font-medium">$49</p>
             </div>
             <hr class="border-b border-gray-200 my-3 w-full" />
             <div class="flex items-center justify-between gap-4">
               <p class="text-gray-600 text-sm font-medium">Total</p>
-              <p class="text-gray-900 text-lg font-semibold leading-7">$200</p>
+              <p class="text-gray-900 text-lg font-semibold leading-7">$49</p>
             </div>
           </div>
         </div>
@@ -225,7 +225,7 @@ const schema = Yup.object().shape({
           </div>
         </div>
         <BaseButton
-          label="Post a Job for $200"
+          label="Post a Job for $49"
           :outline="true"
           color="primary"
           full-sized
