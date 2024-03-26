@@ -127,7 +127,7 @@ const jobPostsList = [
         class="jobs-slider z-20"
     >
         <swiper-slide v-for="(job, i) in jobPostsList" :key="i" class="!w-[340px]">
-          <JobCard :job="job" :card-form="true" :show-job-description="true" />
+          <JobCard :job="job" :card-form="true" :show-job-description="false" />
         </swiper-slide>
     </swiper-container>
   </section>

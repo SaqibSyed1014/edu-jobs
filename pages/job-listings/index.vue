@@ -184,7 +184,7 @@ const itemsViewOptions = [
   }
 ]
 
-const isGridOptionSelected = ref(true)
+const isGridOptionSelected = ref(1)
 
 const isFilterSidebarVisible = ref(false)
 </script>
@@ -229,10 +229,10 @@ const isFilterSidebarVisible = ref(false)
 
             <div class="hidden md:inline-flex rounded-md shadow-sm" role="group">
               <BaseButtonsGroup
+                  v-model="isGridOptionSelected"
                   color="gray"
                   :outline="true"
                   :btns-group="itemsViewOptions"
-                  @option-selected="(val :number) => isGridOptionSelected = val === 0"
               />
             </div>
 
@@ -246,7 +246,7 @@ const isFilterSidebarVisible = ref(false)
           <div class="grid gap-6" :class="[isGridOptionSelected ? 'md:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1']">
             <template v-for="job in jobList">
               <NuxtLink to="/job-listings/details">
-                <JobCard :job="job" :card-form="isGridOptionSelected" :show-job-description="false" />
+                <JobCard :job="job" :card-form="isGridOptionSelected === 1" :show-job-description="false" />
               </NuxtLink>
             </template>
           </div>

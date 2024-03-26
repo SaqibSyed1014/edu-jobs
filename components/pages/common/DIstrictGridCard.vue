@@ -3,7 +3,10 @@ defineProps<{ data: any }>();
 </script>
 
 <template>
-  <div class="p-5 flex flex-col rounded-xl border border-gray-200">
+  <NuxtLink
+    to="/school-districts/123"
+    class="p-5 flex flex-col rounded-xl border border-gray-200"
+  >
     <div class="inline-flex space-x-3">
       <img :src="data.avatar" class="size-12" alt="Avatar" />
       <h4
@@ -50,7 +53,7 @@ defineProps<{ data: any }>();
         </div>
       </div>
     </div>
-  </div>
+  </NuxtLink>
 </template>
 
 <style scoped lang="postcss"></style>

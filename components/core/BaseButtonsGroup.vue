@@ -2,18 +2,20 @@
 type ColorVariant = 'primary' | 'secondary' | 'gray' | 'plain'
 const props = defineProps<{
   btnsGroup: any[]
-  color? : ColorVariant,
+  color? : ColorVariant
   label: String
   outline? : Boolean
+  modelValue: number
 }>()
 
-const emits = defineEmits(['optionSelected'])
+const emits = defineEmits(['optionSelected', 'update:modelValue'])
 
-let selectedOption = ref<number>(0)
+let selectedOption = ref<number>(props.modelValue)
 
 function selectingOption(index :number) {
   selectedOption.value = index
   emits('optionSelected', index)
+  emits('update:modelValue', index)
 }
 </script>
 
@@ -26,7 +28,8 @@ function selectingOption(index :number) {
         :class="{
           'rounded-e-none': i === 0,
            'rounded-s-none': i === btnsGroup.length - 1,
-           'bg-gray-200': i === selectedOption,
+           'bg-gray-50 text-gray-800': i === selectedOption,
+           'bg-white': i !== selectedOption,
            '!py-[.575rem] text-sm': true
         }"
         @click="selectingOption(i)"
