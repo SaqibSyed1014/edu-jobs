@@ -13,7 +13,7 @@
           <h2 class="text-4xl md:text-5xl mb-6">Bill Walsh leadership lessons</h2>
           <p class="text-black-light text-lg md:text-xl font-normal">Like to know the secrets of transforming a 2-14 team into a 3x Super Bowl winning Dynasty? Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
         </div>
-        <div class="">
+        <div>
           <div class="mb-8 w-full md:w-[65%] h-[140px] md:h-[240px]">
               <img src="/images/blogs/blog-two.png" alt="" class="h-full w-full object-cover" />
           </div>
