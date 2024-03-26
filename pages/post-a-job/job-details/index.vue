@@ -2,11 +2,9 @@
 import "@vuepic/vue-datepicker/dist/main.css";
 import * as Yup from "yup";
 import { Form, Field, ErrorMessage, useField } from "vee-validate";
-// import { QuillEditor } from "@vueup/vue-quill";
-// import "@vueup/vue-quill/dist/vue-quill.snow.css";
 
 const steps = ref([
-  { name: "Institution Information", href: "/post-a-job", status: "complete" },
+  { name: "Organization Information", href: "/post-a-job", status: "complete" },
   { name: "Job Details", href: "/post-a-job/job-details", status: "current" },
   {
     name: "Application Details",
@@ -23,6 +21,8 @@ const steps = ref([
 const jobRoles = ref(["Role 1", "Role 2"]);
 const grades = ref(["Grade 1", "Grade 2"]);
 const subjects = ref(["English", "Math"]);
+const paymentType = ref(["Cash", "Card"]);
+const jobDesc = ref("");
 const date = ref();
 const message = ref("");
 const format = (date: any) => {
@@ -50,7 +50,7 @@ const schema = Yup.object().shape({
   paymenttype: Yup.string().required("Please select payment type"),
   paymentRange: Yup.string().required("Please select payment range"),
   subjects: Yup.string().required("You must choose your subjects"),
-  jobDesc: Yup.string().required("Please enter the job description"),
+  // jobDesc: Yup.string().required("Please enter the job description"),
   startDate: Yup.string().required("Start Date is required"),
 });
 </script>
@@ -201,7 +201,7 @@ const schema = Yup.object().shape({
               <SelectBox
                 name="paymenttype"
                 label="Payment Type"
-                :data="[]"
+                :data="paymentType"
                 subLabel=""
                 :errorMessage="errors.paymenttype"
                 className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
@@ -210,8 +210,8 @@ const schema = Yup.object().shape({
               <PayRangeSelectBox
                 name="paymentRange"
                 label="Pay Range"
-                :data="[]"
-                :data2="[]"
+                :data="['1', '2']"
+                :data2="['2', '2']"
                 subLabel="(USD)"
                 :errorMessage="errors.paymentRange"
                 className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
@@ -311,36 +311,27 @@ const schema = Yup.object().shape({
               </div>
             </div> -->
 
-            <!-- <div
+            <div
               class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
             >
               <label
                 for="jobDesc"
                 class="block text-sm font-medium md:font-semibold text-gray-700 sm:pt-1.5"
               >
-                jobDesc
+                Job Description
               </label>
               <div class="mt-2 sm:col-span-2 sm:mt-0">
-                
-                <div class="relative">
-                  <div class="flex flex-col gap-y-1.5">
-                    <div
-                      class="flex relative rounded-md ring-1 ring-inset ring-gray-300 focus-within:ring-0 focus-within:ring-inset focus-within:ring-brand-600"
-                    >
-                      <QuillEditor theme="snow" />
-                    </div>
-                  </div>
-                </div>
+                <quill-editor theme="snow" style="min-height: 102px" />
               </div>
-            </div> -->
+            </div>
 
-            <TextArea
+            <!-- <TextArea
               name="jobDesc"
               label="Job Description"
               placeholder="Enter a description.."
               subLabel=""
               className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
-            />
+            /> -->
           </div>
           <div
             class="flex flex-col md:flex-row items-center justify-between gap-3 mt-4 md:mt-0"
@@ -382,12 +373,12 @@ const schema = Yup.object().shape({
           <div class="w-full mt-5">
             <div class="flex items-start justify-between gap-4">
               <p class="text-gray-600 text-sm font-medium">Job posting fee</p>
-              <p class="text-gray-900 text-sm font-medium">$200</p>
+              <p class="text-gray-900 text-sm font-medium">$49</p>
             </div>
             <hr class="border-b border-gray-200 my-3 w-full" />
             <div class="flex items-center justify-between gap-4">
               <p class="text-gray-600 text-sm font-medium">Total</p>
-              <p class="text-gray-900 text-lg font-semibold leading-7">$200</p>
+              <p class="text-gray-900 text-lg font-semibold leading-7">$49</p>
             </div>
           </div>
         </div>
@@ -448,15 +439,15 @@ const schema = Yup.object().shape({
                   ><span
                     class="text-brand-500 text-xs font-normal underline leading-[18px]"
                   >
-                    DonorsChoose.org.</span
-                  >
+                    DonorsChoose.org.
+                  </span>
                 </div>
               </div>
             </div>
           </div>
         </div>
         <BaseButton
-          label="Post a Job for $200"
+          label="Post a Job for $49"
           :outline="true"
           color="primary"
           full-sized

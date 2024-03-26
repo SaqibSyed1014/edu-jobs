@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import ArrowLeftIcon from "assets/icons/arrowLeft.svg";
+// import ArrowLeftIcon from "assets/icons/arrowLeft.svg";
 
 const currentPage = ref(1); // Example current page
 const totalPages = ref(10); // Example total pages
@@ -61,7 +61,7 @@ const paginate = (page: number | "prev" | "next") => {
           class="flex items-center gap-x-1.5 py-2 justify-center text-sm px-3 ms-0 leading-tight text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
           @click.prevent="paginate('prev')"
         >
-          <ArrowLeftIcon class="size-5" />
+          <SvgoArrowLeft class="size-5" />
           <span class="hidden sm:block">Previous</span></a
         >
       </li>
@@ -94,7 +94,7 @@ const paginate = (page: number | "prev" | "next") => {
           @click.prevent="paginate('next')"
         >
           <span class="hidden sm:block"> Next </span>
-          <ArrowLeftIcon class="size-5 rotate-180" />
+          <SvgoArrowLeft class="size-5 rotate-180" />
         </a>
       </li>
     </ul>

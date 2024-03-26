@@ -31,6 +31,124 @@ const listData = ref([
     desc: "Like many high-performing school districts, PAUSD faces challenges related to academic pressure, student well-being, and maintaining a balance between achievement and the overall well-rounded development of students.",
   },
 ]);
+
+const schoolList = ref([
+  {
+    avatar: "/images/schoolDistrict/Avatar1.png",
+    schoolName: "Palo Alto Unified School District",
+  },
+  {
+    avatar: "/images/schoolDistrict/avatar2.png",
+    schoolName: "San Dieguito Union High School District",
+  },
+  {
+    avatar: "/images/schoolDistrict/avatar3.png",
+    schoolName: "Arcadia Unified School District",
+  },
+  {
+    avatar: "/images/schoolDistrict/avatar4.png",
+    schoolName: "Saratoga Joint Union High School District",
+  },
+  {
+    avatar: "/images/schoolDistrict/avatar5.png",
+    schoolName: "Palo Alto Unified School Districts",
+  },
+  {
+    avatar: "/images/schoolDistrict/avatar6.png",
+    schoolName: "San Dieguito Union High School District",
+  },
+  {
+    avatar: "/images/schoolDistrict/avatar7.png",
+    schoolName: "Arcadia Unified School District",
+  },
+  {
+    avatar: "/images/schoolDistrict/avatar8.png",
+    schoolName: "Saratoga Joint Union High School District",
+  },
+
+  {
+    avatar: "/images/schoolDistrict/avatar9.png",
+    schoolName: "Palo Alto Unified School Districts",
+  },
+  {
+    avatar: "/images/schoolDistrict/avatar10.png",
+    schoolName: "San Dieguito Union High School District",
+  },
+  {
+    avatar: "/images/schoolDistrict/avatar11.png",
+    schoolName: "Arcadia Unified School District",
+  },
+  {
+    avatar: "/images/schoolDistrict/avatar12.png",
+    schoolName: "Saratoga Joint Union High School District",
+  },
+]);
+
+const photoList = ref([
+  {
+    image: "/images/schoolDistrict/photo1.jpg",
+    title: "Practical education",
+    date: "20 Jan 2024",
+  },
+  {
+    image: "/images/schoolDistrict/photo2.jpg",
+    title: "Practical education",
+    date: "20 Jan 2024",
+  },
+  {
+    image: "/images/schoolDistrict/photo3.jpg",
+    title: "Practical education",
+    date: "20 Jan 2024",
+  },
+  {
+    image: "/images/schoolDistrict/photo4.jpg",
+    title: "Practical education",
+    date: "20 Jan 2024",
+  },
+  {
+    image: "/images/schoolDistrict/photo5.jpg",
+    title: "Practical education",
+    date: "20 Jan 2024",
+  },
+  {
+    image: "/images/schoolDistrict/photo6.jpg",
+    title: "Practical education",
+    date: "20 Jan 2024",
+  },
+]);
+
+const videoList = ref([
+  {
+    image: "/images/schoolDistrict/video1.jpg",
+    title: "Practical education",
+    date: "20 Jan 2024",
+  },
+  {
+    image: "/images/schoolDistrict/video2.jpg",
+    title: "Practical education",
+    date: "20 Jan 2024",
+  },
+  {
+    image: "/images/schoolDistrict/video3.jpg",
+    title: "Practical education",
+    date: "20 Jan 2024",
+  },
+  {
+    image: "/images/schoolDistrict/video4.jpg",
+    title: "Practical education",
+    date: "20 Jan 2024",
+  },
+  {
+    image: "/images/schoolDistrict/video5.jpg",
+    title: "Practical education",
+    date: "20 Jan 2024",
+  },
+  {
+    image: "/images/schoolDistrict/video6.jpg",
+    title: "Practical education",
+    date: "20 Jan 2024",
+  },
+]);
 </script>
 
 <style>
@@ -38,12 +156,14 @@ const listData = ref([
 </style>
 
 <template>
-  <div class="border-t border-b border-gray-200 mb-24">
-    <div class="container flex">
+  <div class="border-t md:border-b border-gray-200 mb-24">
+    <div class="md:container flex">
       <!-- Sidebar -->
-      <aside class="w-64 flex flex-col border-r border-gray-200 pt-8">
+      <aside
+        class="w-[260px] hidden lg:flex flex-col border-r border-gray-200 pt-8"
+      >
         <!-- Tabs -->
-        <div class="flex flex-col flex-grow">
+        <div class="flex flex-col">
           <!-- Loop through tabs -->
           <button
             v-for="(tab, index) in tabs"
@@ -61,11 +181,13 @@ const listData = ref([
       </aside>
 
       <!-- Main Content -->
-      <main class="flex-grow pt-8 pb-10">
+      <main class="pt-8 md:pb-10 w-full">
         <!-- Content for each tab -->
-        <div v-show="activeTab === 0">
-          <div class="w-full h-5 justify-between items-start inline-flex">
-            <div class="pl-3 justify-start items-center gap-3 flex">
+        <div>
+          <div
+            class="w-full h-5 justify-between items-start inline-flex pl-6 sm:pl-0"
+          >
+            <div class="pl-3 justify-start items-center gap-3 hidden lg:flex">
               <div class="justify-center items-center flex">
                 <div class="text-slate-600 text-sm font-medium leading-tight">
                   School districts
@@ -78,39 +200,45 @@ const listData = ref([
                 </div>
               </div>
             </div>
-            <div class="justify-center items-center gap-1.5 flex">
+            <NuxtLink
+              to="/school-districts"
+              class="justify-center items-center gap-1.5 flex"
+            >
               <SvgoArrowLeftBlue class="size-5" />
               <div class="text-blue-800 text-sm font-semibold leading-tight">
                 Back
               </div>
-            </div>
+            </NuxtLink>
           </div>
 
           <div class="pt-5">
             <img
               src="/images/schoolDistrict/cover.webp"
-              class="h-60 w-full object-cover"
+              class="h-[140px] md:h-60 w-full object-cover"
             />
           </div>
-
-          <div class="-mt-5 px-6 max-w-[936px]">
-            <div class="h-24 justify-start items-center gap-6 inline-flex">
-              <div
-                class="w-24 h-24 rounded-[10px] justify-center items-center flex"
-              >
+          <div class="-mt-5 px-4 lg:px-8">
+            <div
+              class="justify-start lg:items-center lg:gap-6 flex flex-col lg:flex-row"
+            >
+              <div class="w-24 rounded-[10px] justify-center items-center flex">
                 <img
                   src="/images/schoolDistrict/logo-avatar.png"
                   class="object-cover scale-110"
                 />
               </div>
               <div class="flex-col justify-start items-start gap-5 inline-flex">
-                <p class="text-gray-900 text-3xl font-semibold leading-[38px]">
+                <p
+                  class="text-gray-900 text-2xl lg:text-3xl font-semibold leading-[38px]"
+                >
                   Palo Alto Unified School District
                 </p>
               </div>
             </div>
 
-            <div class="flex flex-wrap gap-9 pb-6">
+            <div
+              class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 lg:gap-9 pb-6 pt-6 lg:pt-0 border-b border-gray-200"
+            >
               <div class="flex flex-col gap-2">
                 <span class="text-gray-900 text-sm font-medium leading-tight"
                   >Location
@@ -163,7 +291,7 @@ const listData = ref([
                 </div>
               </div>
 
-              <div class="flex flex-col gap-2">
+              <div class="flex flex-col gap-2 col-span-2 sm:col-span-1">
                 <span class="text-gray-900 text-sm font-medium leading-tight"
                   >Website
                 </span>
@@ -179,68 +307,98 @@ const listData = ref([
               </div>
             </div>
 
+            <form class="w-full mx-auto block lg:hidden pt-8">
+              <select
+                v-model="activeTab"
+                id="countries"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              >
+                <option disabled value="">Choose an option</option>
+                <option
+                  v-for="(option, index) in tabs"
+                  :key="index"
+                  :value="index"
+                  @click="activeTab = index"
+                >
+                  {{ option.name }}
+                </option>
+              </select>
+            </form>
+
             <div
-              class="flex-col justify-start items-start gap-5 inline-flex w-full pt-8 border-t pb-5 border-gray-200"
+              :class="
+                activeTab === 1
+                  ? 'flex-col sm:flex-row w-full justify-end items-end gap-5 flex pt-8  pb-5'
+                  : 'flex-col sm:flex-row w-full justify-start items-start gap-5 flex pt-8  pb-5'
+              "
             >
-              <div class="justify-start items-start gap-4 inline-flex">
+              <div class="justify-start items-start gap-4 inline-flex w-full">
                 <div
                   class="flex-col justify-start items-start gap-1 inline-flex"
                 >
                   <p
-                    class="text-gray-900 text-3xl font-semibold leading-[38px]"
+                    class="text-gray-900 text-2xl md:text-3xl font-semibold leading-[38px]"
                   >
-                    About School District
+                    {{
+                      activeTab === 0
+                        ? "About School District"
+                        : activeTab === 1
+                        ? "List of Schools"
+                        : activeTab === 2
+                        ? "Photos"
+                        : activeTab === 3
+                        ? "Videos"
+                        : ""
+                    }}
                   </p>
                   <p
                     class="text-slate-600 text-base font-normal leading-normal"
                   >
-                    Read out the information about patlo alto unified school.
+                    {{
+                      activeTab === 0
+                        ? "Read out the information about patlo alto unified school."
+                        : activeTab === 1
+                        ? "Have a look to the list of schools."
+                        : activeTab === 2
+                        ? "Have a glimpse of some cherished moments from Palo Alto Unified District"
+                        : activeTab === 3
+                        ? "Here are some videos to help you learn more"
+                        : ""
+                    }}
                   </p>
                 </div>
               </div>
-            </div>
 
-            <div class="pt-5">
-              <p class="text-base font-normal leading-normal text-gray-600">
-                Palo Alto Unified School District (PAUSD) is located in Palo
-                Alto, California, and serves the educational needs of students
-                in the city. Palo Alto is known for its proximity to major
-                technology hubs, including Silicon Valley, and the district
-                reflects a community with high academic expectations.
-              </p>
-
-              <br />
-
-              <p class="text-base font-normal leading-normal text-gray-600">
-                Key points about the Palo Alto Unified School District include:
-              </p>
-
-              <ol class="list-decimal pl-5">
-                <li
-                  v-for="(item, index) in listData"
-                  :key="index"
-                  class="pt-2.5"
-                >
-                  <span
-                    class="text-base font-medium leading-normal text-gray-600"
-                    >{{ item.title }}</span
-                  >
-                  <span
-                    class="text-base font-normal leading-normal text-gray-600"
-                  >
-                    {{ item.desc }}
-                  </span>
-                </li>
-              </ol>
-
-              <div
-                class="pt-5 justify-end items-center w-full gap-1.5 inline-flex"
+              <form
+                v-if="activeTab === 1"
+                class="w-full sm:w-1/2 sm:flex sm:items-end sm:justify-end"
+                action="#"
+                method="GET"
               >
-                <div class="text-blue-800 text-sm font-semibold leading-tight">
-                  Read Less
+                <label for="search-field" class="sr-only">Search</label>
+                <div class="relative">
+                  <SvgoSearchIcon
+                    class="pointer-events-none absolute inset-y-0 left-2 h-full w-5 text-gray-500"
+                    aria-hidden="true"
+                  />
+                  <input
+                    id="search-field"
+                    class="block h-full w-full md:w-[320px] shadow border border-gray-300 bg-transparent py-[13px] pl-8 pr-0 text-black focus:ring-0 sm:text-sm"
+                    placeholder="Search..."
+                    type="search"
+                    name="search"
+                  />
                 </div>
-              </div>
+              </form>
             </div>
+
+            <AboutSD :data="listData" v-if="activeTab === 0" />
+
+            <ListSchools :data="schoolList" v-if="activeTab === 1" />
+
+            <PhotoCard :data="photoList" v-if="activeTab === 2" />
+
+            <VideoCard v-if="activeTab === 3" :data="videoList" />
           </div>
         </div>
       </main>
