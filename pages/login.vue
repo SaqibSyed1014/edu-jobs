@@ -2,10 +2,16 @@
 definePageMeta({
   layout: 'auth-form'
 })
+
+const passwordVisibility = ref(false)
+
+const passwordFieldIcon = computed(() => {
+  return passwordVisibility.value ? 'SvgoEyeOff' : 'SvgoEye'
+})
 </script>
 
 <template>
-  <div class="flex flex-col justify-center gap-8 w-full">
+  <div class="flex flex-col justify-center gap-8 w-full h-full">
     <div class="flex flex-col gap-3">
       <h1 class="font-semibold text-3xl">Welcome back</h1>
       <p>Welcome back! Please enter your details.</p>
@@ -18,7 +24,16 @@ definePageMeta({
         </div>
         <div class="form-control">
           <label for="password" class="text-custom-secondary-700">Password</label>
-          <input type="password" id="password" placeholder="Enter your password" class="form-input"/>
+          <div class="relative">
+            <div class="absolute inset-y-0 top-0 flex items-center right-3">
+              <component
+                  :is="passwordFieldIcon"
+                  class="w-5 h-5 text-gray-600 cursor-pointer"
+                  @click="passwordVisibility = !passwordVisibility"
+              />
+            </div>
+            <input  :type="passwordVisibility ? 'text' : 'password'" id="password" placeholder="Enter your password" class="form-input"/>
+          </div>
         </div>
       </form>
       <div class="flex w-full my-6 justify-between font-semibold items-center">

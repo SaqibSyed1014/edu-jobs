@@ -98,9 +98,9 @@ const date = new Date()
     </div>
 
 
-    <div class="w-full flex justify-center items-center bg-white">
-      <div class="max-w-[400px] px-5 w-full gap-8 flex flex-col justify-center items-center">
-        <div class="w-full">
+    <div class="w-full flex justify-center bg-white overflow-y-auto">
+      <div class="max-w-[400px] px-5 w-full gap-8 flex flex-col items-center">
+        <div class="w-full h-full">
           <slot />
         </div>
       </div>
