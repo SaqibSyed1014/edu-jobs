@@ -31,9 +31,9 @@ const format = (date: any) => {
 const router = useRouter();
 function onSubmit(values: any) {
   // console.log("🚀 ~ onSubmit ~ values:", values);
-  // router.push({
-  //   path: "/post-a-job/review-information",
-  // });
+  router.push({
+    path: "/post-a-job/review-information",
+  });
 }
 
 // Using yup to generate a validation schema

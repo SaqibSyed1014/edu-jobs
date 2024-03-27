@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref } from "vue";
+
 let toggleSideBar = ref(false);
 
 function togglingSidebarVisibility() {
@@ -60,52 +62,52 @@ const selectedAlphabet = ref<number>(0); // Reactive variable to store the selec
 const schoolList = ref([
   {
     avatar: "/images/schoolDistrict/Avatar1.png",
-    schoolName: "Palo Alto Unified School District",
+    schoolName: "Palo Alto Unified College District",
   },
   {
     avatar: "/images/schoolDistrict/avatar2.png",
-    schoolName: "San Dieguito Union High School District",
+    schoolName: "San Dieguito Union High College District",
   },
   {
     avatar: "/images/schoolDistrict/avatar3.png",
-    schoolName: "Arcadia Unified School District",
+    schoolName: "Arcadia Unified College District",
   },
   {
     avatar: "/images/schoolDistrict/avatar4.png",
-    schoolName: "Saratoga Joint Union High School District",
+    schoolName: "Saratoga Joint Union High College District",
   },
   {
     avatar: "/images/schoolDistrict/avatar5.png",
-    schoolName: "Palo Alto Unified School Districts",
+    schoolName: "Palo Alto Unified College Districts",
   },
   {
     avatar: "/images/schoolDistrict/avatar6.png",
-    schoolName: "San Dieguito Union High School District",
+    schoolName: "San Dieguito Union High College District",
   },
   {
     avatar: "/images/schoolDistrict/avatar7.png",
-    schoolName: "Arcadia Unified School District",
+    schoolName: "Arcadia Unified College District",
   },
   {
     avatar: "/images/schoolDistrict/avatar8.png",
-    schoolName: "Saratoga Joint Union High School District",
+    schoolName: "Saratoga Joint Union High College District",
   },
 
   {
     avatar: "/images/schoolDistrict/avatar9.png",
-    schoolName: "Palo Alto Unified School Districts",
+    schoolName: "Palo Alto Unified College Districts",
   },
   {
     avatar: "/images/schoolDistrict/avatar10.png",
-    schoolName: "San Dieguito Union High School District",
+    schoolName: "San Dieguito Union High College District",
   },
   {
     avatar: "/images/schoolDistrict/avatar11.png",
-    schoolName: "Arcadia Unified School District",
+    schoolName: "Arcadia Unified College District",
   },
   {
     avatar: "/images/schoolDistrict/avatar12.png",
-    schoolName: "Saratoga Joint Union High School District",
+    schoolName: "Saratoga Joint Union High College District",
   },
 ]);
 
@@ -179,7 +181,7 @@ const selectAlphabet = (index: number) => {
                 />
 
                 <FilterSection
-                  title="No. of schools"
+                  title="No. of colleges"
                   :options="schOptions"
                   icon="SvgoBuilding"
                   total-jobs="13"
@@ -238,7 +240,7 @@ const selectAlphabet = (index: number) => {
               />
 
               <FilterSection
-                title="No. of schools"
+                title="No. of colleges"
                 :options="schOptions"
                 icon="SvgoBuilding"
                 total-jobs="13"
@@ -251,10 +253,10 @@ const selectAlphabet = (index: number) => {
       <div class="w-full xl:w-4/5 xl:px-8 pt-8 pb-8">
         <div class="flex-col justify-start items-start gap-1 inline-flex">
           <div class="text-gray-900 text-3xl font-semibold leading-[38px]">
-            School Districts
+            Colleges
           </div>
           <div class="text-gray-600 text-base font-normal leading-normal">
-            Find job openings at any school in any district.
+            Find job openings at any college in any district.
           </div>
         </div>
 
@@ -367,13 +369,13 @@ const selectAlphabet = (index: number) => {
             class="grid sm:grid-cols-2 pt-8 lg:grid-cols-3 gap-6"
           >
             <div v-for="(item, index) in schoolList" :key="index">
-              <DIstrictGridCard :data="item" :isSchool="true" />
+              <DIstrictGridCard :data="item" :isSchool="false" />
             </div>
           </div>
           <!-- Lsit View -->
           <div v-if="!isGridView" class="grid gap-6 pt-8">
             <div v-for="(item, index) in schoolList" :key="index">
-              <DistrictListCard :data="item" :isSchool="true" />
+              <DistrictListCard :data="item" :isSchool="false" />
             </div>
           </div>
         </div>

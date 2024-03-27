@@ -1,10 +1,10 @@
 <script setup lang="ts">
-defineProps<{ data: any }>();
+defineProps<{ data: any; isSchool: Boolean }>();
 </script>
 
 <template>
   <NuxtLink
-    to="/school-districts/123"
+    :to="isSchool ? '/school-districts/123' : '/colleges/123'"
     class="p-4 flex flex-col gap-5 sm:gap-0 sm:flex-row justify-between items-start rounded-xl border border-gray-200"
   >
     <div class="flex flex-col md:flex-row gap-3">
