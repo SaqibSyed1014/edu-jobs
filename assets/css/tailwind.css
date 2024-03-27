@@ -4,7 +4,6 @@
 
 @tailwind base;
 input[type=text], input[type=email], input[type=password], .form-input, .form-textarea{
-    --tw-ring-shadow: 0 0 #000 !important;
     @apply bg-white rounded-lg border border-gray-200 py-2.5 px-3.5 field-shadow placeholder-gray-400
 }
 @tailwind components;
@@ -55,5 +54,12 @@ h1, h2, h3, h4, h5, h6{
 }
 .page-subheading{
     @apply max-md:text-sm text-brand-700 font-semibold
+}
+
+.input-error{
+    @apply text-error-400 text-sm
+}
+.form-input.has-error{
+    @apply ring-2 !border-0 !ring-error-400
 }
 

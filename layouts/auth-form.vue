@@ -41,9 +41,9 @@ const date = new Date()
 <template>
   <div class="auth-form-layout w-full h-screen flex">
     <div class="flex h-screen justify-between flex-col pl-8 py-8 w-full items-center max-lg:hidden bg-gray-50">
-      <div class="flex items-center gap-2.5 w-full">
+      <NuxtLink to="/" class="flex items-center gap-2.5 w-full">
         <img src="/images/logo.svg" alt="EduJob Logo" />
-      </div>
+      </NuxtLink>
 
       <div class="flex flex-col max-w-[560px] gap-8 justify-center items-center">
         <div class="flex flex-col items-center gap-8 my-8 justify-center max-lg:hidden relative">
@@ -98,7 +98,7 @@ const date = new Date()
     </div>
 
 
-    <div class="w-full flex justify-center bg-white overflow-y-auto">
+    <div class="w-full h-screen flex justify-center bg-white overflow-y-auto">
       <div class="max-w-[400px] px-5 w-full gap-8 flex flex-col items-center">
         <div class="w-full h-full">
           <slot />
