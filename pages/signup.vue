@@ -9,15 +9,11 @@ definePageMeta({
 
 const passwordVisibility = ref(false)
 
-const passwordFieldIcon = computed(() => {
-  return passwordVisibility.value ? 'SvgoEyeOff' : 'SvgoEye'
-})
+const passwordFieldIcon = computed(() => passwordVisibility.value ? 'SvgoEyeOff' : 'SvgoEye')
 
-const selectedUserType = ref('organization')
-
-const isOrganizationSelected = computed(() => selectedUserType.value === 'organization')
 
 const initialValues = ref({
+  userType: "organization",
   orgName: "",
   name: "",
   email: "",
@@ -26,7 +22,8 @@ const initialValues = ref({
 
 // validation schema
 const schema = Yup.object().shape({
-  orgName: Yup.string().when('selectedUserType', {
+  userType: Yup.string(),
+  orgName: Yup.string().when('userType', {
     is: (selectedUserType :string) => selectedUserType === 'organization',
     then: () => Yup.string().required("Please enter your organization name"),
     otherwise: () => Yup.string()
@@ -42,6 +39,7 @@ const { handleSubmit, defineField, errors, meta, resetForm } = useForm({
 });
 
 // define form fields with their attributes
+const [userType] = defineField("userType");
 const [orgName, orgNameAttrs] = defineField("orgName");
 const [name, nameAttrs] = defineField("name");
 const [email, emailAttrs] = defineField("email");
@@ -51,11 +49,15 @@ const canProceed = computed(() => {
   return meta.value.dirty && meta.value.valid;
 });
 
-watch(() => selectedUserType.value, () => resetForm())
-
-const onSubmit = handleSubmit(() => {
-  console.log('val')
+watch(() => userType.value, (val) => {
+  resetForm({
+    values: { ...initialValues.value, userType: val }
+  })
 })
+
+const isOrganizationSelected = computed(() => userType.value === 'organization')
+
+const onSubmit = handleSubmit(() => {})
 </script>
 
 <template>
@@ -71,18 +73,18 @@ const onSubmit = handleSubmit(() => {
       >
         <div class="flex gap-12">
           <div class="flex items-center">
-            <input v-model="selectedUserType" id="org-cb" type="radio" value="organization" name="user-type" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2">
+            <input v-model="userType" id="org-cb" type="radio" value="organization" name="user-type" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2">
             <label for="org-cb" class="ms-2">Organization</label>
           </div>
           <div class="flex items-center">
-            <input v-model="selectedUserType" id="job-seeker-cb" type="radio" name="user-type" value="jobSeeker" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+            <input v-model="userType" id="job-seeker-cb" type="radio" name="user-type" value="jobSeeker" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
             <label for="job-seeker-cb" class="ms-2">Job Seeker</label>
           </div>
         </div>
         <div v-if="isOrganizationSelected" class="form-control">
           <label for="orgName">Organization Name</label>
           <input v-bind="orgNameAttrs" v-model="orgName" type="text" id="orgName" placeholder="Enter your organization name" class="form-input" :class="{ 'has-error': errors.orgName }" />
-          <span class="input-error" v-if="errors.orgName">{{ errors.name }}</span>
+          <span class="input-error" v-if="errors.orgName">{{ errors.orgName }}</span>
         </div>
         <div class="form-control">
           <label for="name">Name</label>

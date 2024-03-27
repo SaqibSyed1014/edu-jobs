@@ -8,9 +8,7 @@ definePageMeta({
 
 const passwordVisibility = ref(false)
 
-const passwordFieldIcon = computed(() => {
-  return passwordVisibility.value ? 'SvgoEyeOff' : 'SvgoEye'
-})
+const passwordFieldIcon = computed(() => passwordVisibility.value ? 'SvgoEyeOff' : 'SvgoEye')
 
 const initialValues = ref({
   orgName: "",
