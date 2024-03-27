@@ -2,7 +2,7 @@
 defineProps<{
   title: String;
   options: any[];
-  iconComponent: Object;
+  icon: Object;
   totalJobs: string;
 }>();
 </script>
@@ -13,7 +13,8 @@ defineProps<{
   >
     <div class="justify-between items-center inline-flex w-full pb-2">
       <div class="justify-start items-center gap-3 flex">
-        <component :is="iconComponent" class="size-6" />
+        <!-- <component :is="" class="w-5 h-5 text-gray-500" /> -->
+        <component :is="icon" class="size-6" />
         <div class="text-gray-700 text-base font-semibold leading-normal">
           {{ title }}
         </div>
