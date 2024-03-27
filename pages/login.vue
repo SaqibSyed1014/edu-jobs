@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import * as Yup from "yup";
+import {useForm} from "vee-validate";
+
 definePageMeta({
   layout: 'auth-form'
 })
@@ -8,6 +11,29 @@ const passwordVisibility = ref(false)
 const passwordFieldIcon = computed(() => {
   return passwordVisibility.value ? 'SvgoEyeOff' : 'SvgoEye'
 })
+
+const initialValues = ref({
+  orgName: "",
+  name: "",
+  email: "",
+  password: ""
+});
+const schema = Yup.object().shape({
+  email: Yup.string().email().required("Please enter your email"),
+  password: Yup.string().min(6).required(),
+});
+
+const { handleSubmit, defineField, errors, meta } = useForm({
+  initialValues: initialValues.value,
+  validationSchema: schema,
+});
+
+const [email, emailAttrs] = defineField("email");
+const [password, passAttrs] = defineField("password");
+
+const canProceed = computed(() => {
+  return meta.value.dirty && meta.value.valid;
+});
 </script>
 
 <template>
@@ -20,7 +46,9 @@ const passwordFieldIcon = computed(() => {
       <form action="" class="flex flex-col gap-5">
         <div class="form-control">
           <label for="email" class="text-custom-secondary-700">Email</label>
-          <input type="email" id="email" placeholder="Enter your email" class="form-input"/>
+          <input v-model="email" v-bind="emailAttrs" type="email" id="email" placeholder="Enter your email" class="form-input" :class="{ 'has-error': errors.email }"/>
+          <span class="input-error" v-if="errors.email">{{ errors.email }}</span>
+
         </div>
         <div class="form-control">
           <label for="password" class="text-custom-secondary-700">Password</label>
@@ -32,8 +60,9 @@ const passwordFieldIcon = computed(() => {
                   @click="passwordVisibility = !passwordVisibility"
               />
             </div>
-            <input  :type="passwordVisibility ? 'text' : 'password'" id="password" placeholder="Enter your password" class="form-input"/>
+            <input v-model="password" v-bind="passAttrs" :type="passwordVisibility ? 'text' : 'password'" id="password" placeholder="Enter your password" class="form-input" :class="{ 'has-error': errors.password }" />
           </div>
+          <span class="input-error" v-if="errors.password">{{ errors.password }}</span>
         </div>
       </form>
       <div class="flex w-full my-6 justify-between font-semibold items-center">
@@ -46,7 +75,7 @@ const passwordFieldIcon = computed(() => {
         </NuxtLink>
       </div>
       <div class="flex flex-col gap-4">
-        <BaseButton label="Sign in" :full-sized="true"/>
+        <BaseButton :disabled="!canProceed" label="Sign in" :full-sized="true"/>
       </div>
     </div>
     <p class="text-sm text-center">

@@ -92,7 +92,7 @@ const sliderBreakpoints = {
             <p class="supporting-text pb-8">
               Discover tech stacks, employee benefits, and open roles.
             </p>
-            <BaseButton class="max-md:hidden" label="Explore More" color="primary">
+            <BaseButton navigate-to="/job-listings" class="max-md:hidden" label="Explore More" color="primary">
               <template #append-icon>
                 <ArrowUpRightIcon class="w-3 h-3" />
               </template>
@@ -133,7 +133,7 @@ const sliderBreakpoints = {
 
         </div>
 
-        <BaseButton class="md:hidden" label="Explore More" color="primary" :full-sized-on-small="true">
+        <BaseButton navigate-to="/job-listings" class="md:hidden" label="Explore More" color="primary" :full-sized-on-small="true">
           <template #append-icon>
             <ArrowUpRightIcon class="w-3 h-3" />
           </template>

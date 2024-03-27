@@ -8,7 +8,7 @@
     <ForCandidates />
     <ForEmployers />
     <Blogs />
-    <ContactForm />
+<!--    <ContactForm />-->
   </div>
 </template>
 

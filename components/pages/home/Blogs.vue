@@ -90,7 +90,7 @@ const blogsSlider = ref(null)
         </div>
 
         <div>
-          <BaseButton label="See Our Blog" color="primary" :full-sized-on-small="true">
+          <BaseButton navigate-to="/blogs" label="See Our Blog" color="primary" :full-sized-on-small="true">
             <template #append-icon>
               <ArrowUpRightIcon class="w-3 h-3" />
             </template>

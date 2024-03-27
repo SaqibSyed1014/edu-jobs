@@ -7,13 +7,14 @@ const props = defineProps<{
   fullSized?: Boolean
   fullSizedOnSmall?: Boolean
   navigateTo?: String
+  disabled: Boolean
 }>()
 
-const defaultStyles = 'flex items-center justify-center gap-3 shrink-0'
+const defaultStyles = 'inline-flex items-center justify-center gap-3 shrink-0 disabled:cursor-not-allowed'
 
 const btnStyles = computed(() => {
   const colorStyles = {
-    primary: props.outline ? 'border border-brand-600 text-brand-600 hover:bg-brand-600 hover:text-white' : 'bg-brand-600 text-white hover:bg-brand-500',
+    primary: props.outline ? 'border border-brand-600 text-brand-600 hover:bg-brand-600 hover:text-white' : 'bg-brand-600 text-white hover:bg-brand-500 disabled:bg-brand-300',
     secondary: props.outline ? 'border border-brand-600 text-brand-600 hover:bg-brand-600 hover:text-white' : 'bg-brand-600 text-white hover:bg-brand-500',
     gray: props.outline ? 'border border-gray-300 text-gray-700 hover:bg-gray-200' : 'bg-gray-300 text-white hover:bg-gray-200',
     plain: props.outline ? 'border border-gray-700 transparent text-gray-600' : 'bg-transparent text-gray-600 hover:bg-gray-200',
@@ -24,10 +25,11 @@ const btnStyles = computed(() => {
 
   const outlineStyles = props.outline ? 'hover:bg-gray-200' : '';
 
+
   return [
     colorStyles[props.color || 'primary'],
     outlineStyles,
-    baseStyles
+    baseStyles,
   ].filter(Boolean).join(' ');
 });
 
@@ -48,7 +50,7 @@ const component = computed(() => {
 </script>
 
 <template>
-  <component :is="component" :to="navigateTo" :class="[defaultStyles, btnStyleClasses]">
+  <component :is="component" :to="navigateTo" :class="[defaultStyles, btnStyleClasses]" :disabled="disabled">
     <slot name="prepend-icon" />
     {{ label }}
     <slot name="append-icon" />
