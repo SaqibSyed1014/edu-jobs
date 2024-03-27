@@ -3,8 +3,8 @@ const activeTab = ref(0); // Default to first tab
 
 // Array of tab names and icons
 const tabs = ref([
-  { name: "About School District" },
-  { name: "List of Schools" },
+  { name: "About College District" },
+  { name: "List of Colleges" },
   { name: "Photos" },
   { name: "Videos" },
 ]);
@@ -35,52 +35,52 @@ const listData = ref([
 const schoolList = ref([
   {
     avatar: "/images/schoolDistrict/Avatar1.png",
-    schoolName: "Palo Alto Unified School District",
+    schoolName: "Palo Alto Unified College District",
   },
   {
     avatar: "/images/schoolDistrict/avatar2.png",
-    schoolName: "San Dieguito Union High School District",
+    schoolName: "San Dieguito Union High College District",
   },
   {
     avatar: "/images/schoolDistrict/avatar3.png",
-    schoolName: "Arcadia Unified School District",
+    schoolName: "Arcadia Unified College District",
   },
   {
     avatar: "/images/schoolDistrict/avatar4.png",
-    schoolName: "Saratoga Joint Union High School District",
+    schoolName: "Saratoga Joint Union High College District",
   },
   {
     avatar: "/images/schoolDistrict/avatar5.png",
-    schoolName: "Palo Alto Unified School Districts",
+    schoolName: "Palo Alto Unified College Districts",
   },
   {
     avatar: "/images/schoolDistrict/avatar6.png",
-    schoolName: "San Dieguito Union High School District",
+    schoolName: "San Dieguito Union High College District",
   },
   {
     avatar: "/images/schoolDistrict/avatar7.png",
-    schoolName: "Arcadia Unified School District",
+    schoolName: "Arcadia Unified College District",
   },
   {
     avatar: "/images/schoolDistrict/avatar8.png",
-    schoolName: "Saratoga Joint Union High School District",
+    schoolName: "Saratoga Joint Union High College District",
   },
 
   {
     avatar: "/images/schoolDistrict/avatar9.png",
-    schoolName: "Palo Alto Unified School Districts",
+    schoolName: "Palo Alto Unified College Districts",
   },
   {
     avatar: "/images/schoolDistrict/avatar10.png",
-    schoolName: "San Dieguito Union High School District",
+    schoolName: "San Dieguito Union High College District",
   },
   {
     avatar: "/images/schoolDistrict/avatar11.png",
-    schoolName: "Arcadia Unified School District",
+    schoolName: "Arcadia Unified College District",
   },
   {
     avatar: "/images/schoolDistrict/avatar12.png",
-    schoolName: "Saratoga Joint Union High School District",
+    schoolName: "Saratoga Joint Union High College District",
   },
 ]);
 
@@ -186,21 +186,21 @@ const videoList = ref([
             <div class="pl-3 justify-start items-center gap-3 hidden lg:flex">
               <div class="justify-center items-center flex">
                 <NuxtLink
-                  to="/school-districts"
+                  to="/colleges"
                   class="text-slate-600 text-sm font-medium leading-tight"
                 >
-                  School districts
+                  College districts
                 </NuxtLink>
               </div>
               <SvgoChevronRight class="size-4" />
               <div class="justify-center items-center flex">
                 <div class="text-blue-800 text-sm font-semibold leading-tight">
-                  Palo alto unified school districts
+                  Palo alto unified College districts
                 </div>
               </div>
             </div>
             <NuxtLink
-              to="/school-districts"
+              to="/colleges"
               class="justify-center items-center gap-1.5 flex group"
             >
               <SvgoArrowLeftBlue
@@ -214,7 +214,7 @@ const videoList = ref([
 
           <div class="pt-5">
             <img
-              src="/images/schoolDistrict/cover.webp"
+              src="/images/college/banner.png"
               class="h-[140px] md:h-60 w-full object-cover"
             />
           </div>
@@ -232,7 +232,7 @@ const videoList = ref([
                 <p
                   class="text-gray-900 text-2xl lg:text-3xl font-semibold leading-[38px]"
                 >
-                  Palo Alto Unified School District
+                  Palo Alto Unified College District
                 </p>
               </div>
             </div>
@@ -255,7 +255,7 @@ const videoList = ref([
 
               <div class="flex flex-col gap-2">
                 <span class="text-gray-900 text-sm font-medium leading-tight"
-                  >Number of Schools
+                  >Number of Colleges
                 </span>
                 <div class="inline-flex gap-2">
                   <SvgoBuilding class="size-5" />
@@ -287,8 +287,8 @@ const videoList = ref([
                   <SvgoBriefCase class="size-5" />
                   <span
                     class="text-slate-600 text-base font-medium leading-normal"
-                    >19</span
-                  >
+                    >19
+                  </span>
                 </div>
               </div>
 
@@ -342,9 +342,9 @@ const videoList = ref([
                   >
                     {{
                       activeTab === 0
-                        ? "About School District"
+                        ? "About College District"
                         : activeTab === 1
-                        ? "List of Schools"
+                        ? "List of College"
                         : activeTab === 2
                         ? "Photos"
                         : activeTab === 3
