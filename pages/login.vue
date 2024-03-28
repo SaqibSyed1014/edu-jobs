@@ -7,8 +7,8 @@ definePageMeta({
 })
 
 const passwordVisibility = ref(false)
-
 const passwordFieldIcon = computed(() => passwordVisibility.value ? 'SvgoEyeOff' : 'SvgoEye')
+
 
 const initialValues = ref({
   orgName: "",
@@ -16,6 +16,8 @@ const initialValues = ref({
   email: "",
   password: ""
 });
+
+// validation schema
 const schema = Yup.object().shape({
   email: Yup.string().email().required("Please enter your email"),
   password: Yup.string().min(6).required(),
