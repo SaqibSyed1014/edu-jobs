@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{ steps: any[] }>();
+defineProps<{ steps: any[]; currentStep: number }>();
 </script>
 
 <template>
