@@ -83,13 +83,13 @@ const sliderBreakpoints = {
   <section class="py-24 overflow-hidden">
     <div class="content">
       <div class="container">
-        <div class="grid grid-cols-1 lg:grid-cols-3 items-center">
+        <div class="grid grid-cols-1 lg:grid-cols-3 items-start">
           <div class="col-span-1">
             <p class="section-subheading">Featured</p>
             <h3 class="section-heading pt-3 pb-5">
               Jobs of the day
             </h3>
-            <p class="supporting-text pb-8">
+            <p class="supporting-text md:pb-8">
               Discover tech stacks, employee benefits, and open roles.
             </p>
             <BaseButton navigate-to="/job-listings" class="max-md:hidden" label="Explore More" color="primary">
@@ -107,21 +107,21 @@ const sliderBreakpoints = {
               </div>
             </div>
           </div>
-          <div class="col-span-2 pt-16">
+          <div class="col-span-2">
             <swiper-container
                 ref="jobSlider"
                 :loop="true"
                 :free-mode="true"
                 :space-between="20"
                 :breakpoints="sliderBreakpoints"
-                class="jobs-slider z-20"
+                class="jobs-slider z-20 mt-8"
             >
-              <swiper-slide v-for="job in jobPostsList" class="md:!w-[340px]">
+              <swiper-slide v-for="job in jobPostsList" class="md:!w-[340px] my-1">
                 <JobCard :job="job" :card-form="true" :show-job-description="false" />
               </swiper-slide>
             </swiper-container>
 
-            <div class="flex md:hidden justify-between gap-8 pt-8">
+            <div class="flex md:hidden justify-between gap-8 py-8">
               <div @click="jobSlider?.swiper?.slidePrev()" class="slider-nav-arrows right">
                 <ArrowLeftIcon class="w-4 h-4" />
               </div>
