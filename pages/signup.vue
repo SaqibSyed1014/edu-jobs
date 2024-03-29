@@ -8,7 +8,6 @@ definePageMeta({
 })
 
 const passwordVisibility = ref(false)
-
 const passwordFieldIcon = computed(() => passwordVisibility.value ? 'SvgoEyeOff' : 'SvgoEye')
 
 
@@ -61,7 +60,7 @@ const onSubmit = handleSubmit(() => {})
 </script>
 
 <template>
-  <div class="flex flex-col justify-center gap-8 w-full py-12 md:py-20">
+  <div class="flex flex-col justify-center gap-8 w-full py-12 lg:py-28">
     <div class="flex flex-col gap-3">
       <h1 class="font-semibold text-3xl">Sign up</h1>
       <p>Get started today and join EduJobs!</p>
