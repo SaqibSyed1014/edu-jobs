@@ -17,12 +17,12 @@ const emits = defineEmits(['toggleSidebar'])
         </template>
       </ul>
 
-      <div class="CTA-btns flex flex-col gap-3 py-6">
-        <BaseButton label="Post a Job" color="primary" full-sized />
+      <div class="cta-btns flex flex-col sm:hidden gap-3 py-6">
+        <BaseButton label="Post a Job" color="primary" full-sized/>
 
-        <BaseButton label="Log in" :plane="true" full-sized />
+        <BaseButton label="Log in" :plane="true" full-sized/>
 
-        <BaseButton label="Sign up" :outline="true" full-sized />
+        <BaseButton label="Sign up" :outline="true" full-sized/>
       </div>
     </nav>
   </SideBarWrapper>

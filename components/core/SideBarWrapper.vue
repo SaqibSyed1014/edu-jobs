@@ -9,8 +9,10 @@ watch(() => props.isSidebarVisible, (val) => {
 
 <template>
   <div class="fixed top-0 left-0 z-30 transform transition-all" :class="[isSidebarVisible ? 'translate-x-0' : '-translate-x-full']">
-    <div class="mt-[62px] bg-white py-6 h-screen w-screen overflow-auto px-4">
-      <slot />
+    <div class="mt-[62px] bg-white py-6 h-screen w-screen overflow-auto">
+      <div class="container">
+        <slot/>
+      </div>
     </div>
   </div>
 </template>

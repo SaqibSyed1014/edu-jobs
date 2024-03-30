@@ -17,7 +17,7 @@ const updateChecked = (index: number, subIndex: number, checked: boolean) => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-3 max-md:h-screen max-md:overflow-y-auto">
+  <div class="flex flex-col gap-3 max-md:h-screen">
     <div @click="emits('closeFilterSidebar')" class="flex justify-end md:hidden">
       <SvgoXClose class="w-4 h-4" />
     </div>

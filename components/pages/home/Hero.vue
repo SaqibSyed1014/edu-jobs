@@ -103,7 +103,7 @@ const jobPostsList = [
           from start to finish.
         </p>
 
-        <SearchBar class="md:max-w-[650px] mx-auto" />
+        <SearchBar class="md:max-w-[800px] mx-auto" />
       </div>
 
       <div class="dashed-ring forth-ring" />
