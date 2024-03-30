@@ -8,8 +8,8 @@ const menuLinks = [
     path: "/",
   },
   {
-    label: 'Jobs',
-    path: '/job-listings'
+    label: "Jobs",
+    path: "/job-listings",
   },
   {
     label: "School districts",
@@ -17,17 +17,17 @@ const menuLinks = [
   },
   {
     label: "Colleges",
-    path: "",
+    path: "/colleges",
   },
   {
     label: "Pricing",
     path: "/pricing",
   },
   {
-    label: 'Our Blogs',
-    path: '/blogs'
-  }
-]
+    label: "Our Blogs",
+    path: "/blogs",
+  },
+];
 
 let toggleSideBar = ref(false);
 
@@ -100,16 +100,16 @@ function togglingSidebarVisibility() {
     </div>
 
     <MenuSideBar
-        :is-sidebar-visible="toggleSideBar"
-        :menu-links="menuLinks"
-        @toggle-sidebar="toggleSideBar = false"
+      :is-sidebar-visible="toggleSideBar"
+      :menu-links="menuLinks"
+      @toggle-sidebar="toggleSideBar = false"
     />
   </header>
 </template>
 
 <style>
-header nav ul li .router-link-active{
-  color: theme('colors.brand.600');
+header nav ul li .router-link-active {
+  color: theme("colors.brand.600");
   font-weight: 600;
 }
 </style>

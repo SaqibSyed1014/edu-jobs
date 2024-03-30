@@ -85,7 +85,7 @@ const schema = Yup.object().shape({
         <Form
           @submit="onSubmit"
           :validation-schema="schema"
-          v-slot="{ errors }"
+          v-slot="{ errors, values }"
         >
           <div
             class="mt-5 border-b border-gray-900/10 divide-y divide-gray-900/10 border-t pb-0"
@@ -111,7 +111,6 @@ const schema = Yup.object().shape({
                 <DatePicker name="startDate" />
               </div>
             </div>
-
             <div
               class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
             >
@@ -141,7 +140,7 @@ const schema = Yup.object().shape({
                       name="employment"
                       type="radio"
                       value="part-time"
-                      class="h-5 w-5 !border !border-gray-300"
+                      class="h-5 w-5"
                     />
                     <label
                       for="part-time"
@@ -451,6 +450,7 @@ const schema = Yup.object().shape({
           :outline="true"
           color="primary"
           full-sized
+          type="button"
         />
       </div>
     </div>
