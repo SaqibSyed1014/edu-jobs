@@ -21,6 +21,7 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_SSH_KEY }}
           REMOTE_HOST: ${{ secrets.SERVER_IP }}
+          REMOTE_PORT: ${{ secrets.REMOTE_PORT }}  # Add this line to specify the SSH port
           REMOTE_USER: ${{ secrets.SERVER_USER }}
           TARGET: ${{ secrets.REMOTE_TARGET }}
         run: |
