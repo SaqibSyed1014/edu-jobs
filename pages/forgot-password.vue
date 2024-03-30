@@ -24,8 +24,8 @@ definePageMeta({
         <div>
           <form class="flex flex-col gap-6">
             <div class="form-control">
-              <label class="font-medium mb-1.5 text-sm" for="school-email">School Email</label>
-              <input class="form-input" id="school-email" type="email" placeholder="Enter your school email"/>
+              <label class="font-medium mb-1.5 text-sm" for="school-email">Email Address</label>
+              <input class="form-input" id="school-email" type="email" placeholder="Please enter your email"/>
             </div>
             <BaseButton label="Reset password" :full-sized="true"/>
           </form>

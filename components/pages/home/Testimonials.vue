@@ -134,8 +134,8 @@ const sliderBreakpoints = {
         <div class="heading-and-supporting-content flex max-md:flex-col justify-between md:items-center gap-5 pb-16">
           <div class="heading-and-subheading flex flex-col gap-3">
             <p class="section-subheading">Testimonials</p>
-            <h2 class="section-heading">Over 100+ people trust us</h2>
-            <p class="supporting-text">Hear from some of our amazing customers</p>
+            <h2 class="section-heading">Trusted by the Education Community</h2>
+            <p class="supporting-text">See what candidates and hiring teams at organizations are saying</p>
           </div>
           <div>
             <BaseButton label="Search Jobs" color="primary">

@@ -1,14 +1,16 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import InstagramIcon from "assets/icons/instagram.svg";
 import FacebookIcon from "assets/icons/facebook.svg";
 import TwitterIcon from "~/assets/icons/twitter-x.svg";
+const currentYear = computed(() => new Date().getFullYear());
 
 const footerLinks = [
   {
-    heading: 'For School Districts',
+    heading: 'For Organizations',
     links: [
-      { label: 'Why Us', path: '' },
-      { label: 'Post Job', path: '' },
+      { label: 'Why Us', path: '/why-us-organizations' },
+      { label: 'Post Job', path: '/post-a-job' },
       { label: 'Pricing', path: '/pricing' },
       { label: 'Sign Up', path: '/signup' },
     ]
@@ -16,16 +18,15 @@ const footerLinks = [
   {
     heading: 'For Candidates',
     links: [
-      { label: 'Why Us', path: '' },
+      { label: 'Why Us', path: '/why-us-candidates' },
       { label: 'Sign Up', path: '/signup' },
-      { label: 'Browse Jobs', path: '' },
+      { label: 'Browse Jobs', path: '/jobs' },
     ]
   },
   {
     heading: 'Company',
     links: [
-      { label: 'About Us', path: '' },
-      { label: 'Careers', path: '/signup' },
+      { label: 'About Us', path: '/about-us' },
       { label: 'Blog', path: '/blogs' },
       { label: 'Contact Us', path: '/contact-us' },
     ]
@@ -65,12 +66,13 @@ const footerLinks = [
         </template>
       </div>
     </div>
+    <!---
     <section class="bg-gray-25 py-12">
       <div class="container">
         <div class="content flex max-md:flex-col justify-between md:items-center gap-8">
           <div class="supporting-text">
-            <p class="font-semibold text-lg text-gray-900">Join our newsletter</p>
-            <p class="text-gray-600 text-base">We’ll send you a nice letter once per week. No spam.</p>
+            <p class="font-semibold text-lg text-gray-900">Join our monthly newsletter</p>
+            <p class="text-gray-600 text-base">We’ll send you updates on EduJobs, new blog posts, and resources monthly. No spam.</p>
           </div>
           <form class="flex max-md:flex-col md:justify-end gap-4 w-full">
             <input type="email" placeholder="Enter your email">
@@ -79,17 +81,18 @@ const footerLinks = [
         </div>
       </div>
     </section>
+    --->
     <div class="container py-12">
       <hr class="border-b border-gray-200 mb-8">
       <div class="flex justify-between max-md:flex-col-reverse md:items-center text-gray-500 font-normal max-md:gap-6">
         <div class="flex max-md:flex-col md:items-center gap-4">
           <span class="max-md:block flex-1">
-            © 2024 EduJobs.org
+            &copy; {{ currentYear }} EduJobs.org
           </span>
           <div class="hidden md:block w-2 h-2 rounded-full bg-gray-500"/>
           <div class="flex items-center gap-4">
             <NuxtLink to="/website-terms-conditions" class="hover:underline">
-              Terms and conditions
+              Terms and Conditions
             </NuxtLink>
             <div class="w-2 h-2 rounded-full bg-gray-500"/>
             <NuxtLink to="privacy-policy" class="hover:underline">
@@ -97,9 +100,15 @@ const footerLinks = [
             </NuxtLink></div>
         </div>
         <div class="social-links flex flex-1 gap-6 md:justify-end">
-          <TwitterIcon class="w-6 h-6" />
+          <a href="https://twitter.com/edujobsorg" target="_blank" rel="noopener noreferrer">
+            <TwitterIcon class="w-6 h-6" />
+          </a>
+          <a href="https:/instagram.com/edujobsorg" target="_blank" rel="noopener noreferrer">
           <InstagramIcon class="w-6 h-6" />
+          </a>
+          <a href="https:/facebook.com/edujobs.org/" target="_blank" rel="noopener noreferrer">
           <FacebookIcon class="w-6 h-6" />
+         </a>
         </div>
       </div>
     </div>

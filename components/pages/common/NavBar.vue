@@ -3,17 +3,21 @@ import HamburgerIcon from "~/assets/icons/hamburger.svg";
 import XCloseIcon from "~/assets/icons/x-close.svg";
 
 const menuLinks = [
-  {
+ /* {
     label: "Home",
     path: "/",
-  },
+  },*/
   {
     label: "Jobs",
     path: "/job-listings",
   },
   {
-    label: "School districts",
+    label: "School Districts",
     path: "/school-districts",
+  },
+  {
+    label: "Charter & Private Schools",
+    path: "/charter-schools-private-schools",
   },
   {
     label: "Colleges",
@@ -24,7 +28,7 @@ const menuLinks = [
     path: "/pricing",
   },
   {
-    label: "Our Blogs",
+    label: "Our Blog",
     path: "/blogs",
   },
 ];
@@ -48,7 +52,9 @@ function togglingSidebarVisibility() {
     >
       <div class="content flex items-center justify-between gap-7 xl:gap-10">
         <div class="logo shrink-0">
-          <img src="/images/logo.svg" alt="EduJobs Logo" />
+          <NuxtLink to="/">
+            <img src="/images/logo.svg" alt="EduJobs Logo" />
+          </NuxtLink>
         </div>
         <!-- Menu Links -->
         <nav class="shrink-0 hidden md:block">

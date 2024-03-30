@@ -53,7 +53,7 @@ const citiesList = [
             <p class="supporting-text">Dive into a variety of educational roles in cities and towns alike, where your skills make a difference</p>
           </div>
           <div>
-            <BaseButton label="View Jobs" color="primary" :full-sized-on-small="true">
+            <BaseButton label="View Jobs" navigate-to="/jobs" color="primary" :full-sized-on-small="true">
               <template #append-icon>
                 <ArrowUpRightIcon class="w-3 h-3" />
               </template>
