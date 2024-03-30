@@ -17,8 +17,7 @@ defineProps<{ steps: any[] }>();
               class="absolute left-[9%] top-3.5 -ml-px mt-7 h-[30%] w-0.5 bg-brand-600"
               aria-hidden="true"
             />
-            <NuxtLink
-              :to="step.href"
+            <div
               class="group relative flex items-center"
               :aria-disabled="step.status !== 'complete'"
             >
@@ -28,7 +27,7 @@ defineProps<{ steps: any[] }>();
                   step.name
                 }}</span>
               </span>
-            </NuxtLink>
+            </div>
           </template>
           <template v-else-if="step.status === 'current'">
             <div
@@ -36,11 +35,7 @@ defineProps<{ steps: any[] }>();
               class="absolute left-[9%] top-3.5 -ml-px mt-7 h-[30%] w-0.5 bg-gray-200"
               aria-hidden="true"
             />
-            <NuxtLink
-              :to="step.href"
-              class="group relative flex items-center"
-              aria-current="step"
-            >
+            <div class="group relative flex items-center" aria-current="step">
               <span
                 class="bg-brand-100 rounded-full h-11 w-11 -left-1 absolute"
               ></span>
@@ -55,7 +50,7 @@ defineProps<{ steps: any[] }>();
                   >{{ step.name }}</span
                 >
               </span>
-            </NuxtLink>
+            </div>
           </template>
           <template v-else>
             <div
