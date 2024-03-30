@@ -25,8 +25,18 @@ jobs:
           REMOTE_USER: ${{ secrets.SERVER_USER }}
           TARGET: ${{ secrets.REMOTE_TARGET }}
         run: |
+          echo "Starting deployment/..."
           mkdir -p ~/.ssh/
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H $REMOTE_HOST >> ~/.ssh/known_hosts
-          scp -r .output/* $REMOTE_USER@$REMOTE_HOST:$TARGET
+          scp -r -P $REMOTE_PORT .output/* $SERVER_USER@$SERVER_IP:$REMOTE_TARGET
+          
+          if [ $? -eq 0 ]; then
+            echo "File transfer completed successfully."
+          else
+            echo "File transfer failed."
+            exit 1
+          fi
+          
+          echo "Deployment completed."
