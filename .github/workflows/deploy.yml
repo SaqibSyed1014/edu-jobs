@@ -1,30 +1,43 @@
 name: Deploy to Server
+
 on:
   push:
     branches:
       - staging
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: 18.x
+
       - name: Install dependencies
         run: npm ci
+
       - name: Build project
         run: npm run build
+
       - name: Deploy to server
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.SERVER_IP }}
-          REMOTE_PORT: ${{ secrets.REMOTE_PORT }}  # Add this line to specify the SSH port
-          REMOTE_USER: ${{ secrets.SERVER_USER }}
-          TARGET: ${{ secrets.REMOTE_TARGET }}
+          PRIVATE_SSH_KEY: ${{ secrets.PRIVATE_SSH_KEY }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          REMOTE_TARGET: ${{ secrets.REMOTE_TARGET }}
         run: |
+          echo "PRIVATE_SSH_KEY: $PRIVATE_SSH_KEY"
+          echo "SERVER_IP: $SERVER_IP"
+          echo "REMOTE_PORT: $REMOTE_PORT"
+          echo "SERVER_USER: $SERVER_USER"
+          echo "REMOTE_TARGET: $REMOTE_TARGET"
+          
           mkdir -p ~/.ssh/
           echo "$PRIVATE_SSH_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
