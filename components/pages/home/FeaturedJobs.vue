@@ -85,14 +85,14 @@ const sliderBreakpoints = {
       <div class="container">
         <div class="grid grid-cols-1 lg:grid-cols-3 items-start">
           <div class="col-span-1">
-            <p class="section-subheading">Featured</p>
+            <p class="section-subheading">Spotlight Opportunities</p>
             <h3 class="section-heading pt-3 pb-5">
-              Jobs of the day
+              Featured Jobs
             </h3>
             <p class="supporting-text md:pb-8">
-              Discover tech stacks, employee benefits, and open roles.
+              These organizations are actively hiring.
             </p>
-            <BaseButton navigate-to="/job-listings" class="max-md:hidden" label="Explore More" color="primary">
+            <BaseButton navigate-to="/job-listings" class="max-md:hidden" label="View Featured Jobs" color="primary">
               <template #append-icon>
                 <ArrowUpRightIcon class="w-3 h-3" />
               </template>

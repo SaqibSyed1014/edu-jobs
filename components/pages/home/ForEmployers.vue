@@ -7,21 +7,21 @@ import ArrowIcon from "assets/icons/arrow-right.svg";
 
 const cardsList = [
   {
-    title: 'Create Company Profile',
-    text: 'Use your company profile to tell your story, build up your remote brand, and recruit the best. Job seekers come to us to research and discover remote companies.',
-    linkText: 'Create a free company profile',
+    title: 'Get Started',
+    text: 'Set up a profile that highlights your schools\'s ethos and mission. Attract potential candidates by showcasing what makes your institution unique.',
+    linkText: 'Create your organization profile today',
     icon: UsersIcon
   },
   {
-    title: 'Define your hiring criteria',
-    text: 'Specify time zone, visa, and skill requirements and get in front of the most relevant candidates. Promote your jobs to the world\'s best remote talent.',
-    linkText: 'Post a job',
+    title: 'Post Your Open Roles',
+    text: 'Define and share the roles you\'re looking to fill, detailing key requirements and expectations to attract well-matched candidates.',
+    linkText: 'Post a job today!',
     icon: SearchRefractionIcon
   },
   {
-    title: 'Be your company’s voice',
-    text: 'Showcase your tech stack, company culture, perks and benefits, and more. We\'ll help you tell your story to make sure you attract the best talent.',
-    linkText: 'Showcase employee brand',
+    title: 'Attract Top Talent',
+    text: 'Showcase your tech, company culture, perks and benefits, and more. We\'ll help you tell your story to make sure you attract the best talent.',
+    linkText: 'Showcase your organization',
     icon: AnnouncementIcon
   }
 ]
@@ -32,7 +32,7 @@ const cardsList = [
     <div class="container">
       <div class="content">
         <div class="heading-and-subheading flex flex-col justify-center items-center gap-3 text-center">
-          <p class="section-subheading">For Employers</p>
+          <p class="section-subheading">For Organizations</p>
           <h2 class="section-heading">
             Find out what we have for your company
           </h2>
@@ -63,7 +63,7 @@ const cardsList = [
           </template>
         </div>
 
-        <div class="text-center">
+        <div>
           <BaseButton label="Create Company Profile" color="primary" :full-sized-on-small="true">
             <template #append-icon>
               <ArrowUpRightIcon class="w-3 h-3" />

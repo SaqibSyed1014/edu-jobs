@@ -115,7 +115,7 @@ const faqs = [
       <div class="container md:px-8">
         <h3 class="text-brand-600 text-sm md:text-base mb-3">Pricing</h3>
         <h2 class="text-4xl md:text-5xl mb-6">Simple, transparent pricing</h2>
-        <p class="text-black-light md:text-xl font-normal">We believe Untitled should be accessible to all companies, no matter the size.</p>
+        <p class="text-black-light md:text-xl font-normal">Cost-effective plans designed to meet the needs of school districts, colleges, and other educational organizations.</p>
       </div>
     </section>
     <section class="pb-16 md:pb-24">
