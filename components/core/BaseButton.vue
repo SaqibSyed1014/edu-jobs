@@ -7,7 +7,7 @@ const props = defineProps<{
   fullSized?: Boolean
   fullSizedOnSmall?: Boolean
   navigateTo?: String
-  disabled: Boolean
+  disabled?: Boolean
 }>()
 
 const defaultStyles = 'inline-flex items-center justify-center gap-3 shrink-0 disabled:cursor-not-allowed'

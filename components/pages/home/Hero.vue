@@ -102,7 +102,7 @@ const jobPostsList = [
           Embark on a rewarding educational career, from classroom teaching to district office roles
         </p>
 
-        <SearchBar class="md:max-w-[650px] mx-auto" />
+        <SearchBar class="md:max-w-[800px] xl:max-w-[875px] mx-auto" />
       </div>
 
       <div class="dashed-ring forth-ring" />
