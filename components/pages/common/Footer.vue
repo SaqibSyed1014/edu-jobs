@@ -26,7 +26,7 @@ const footerLinks = [
     links: [
       { label: 'About Us', path: '' },
       { label: 'Careers', path: '/signup' },
-      { label: 'Blog', path: '/blogs' },
+      { label: 'Blog', path: '/blog' },
       { label: 'Contact Us', path: '/contact-us' },
     ]
   },

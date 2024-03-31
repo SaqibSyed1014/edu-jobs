@@ -138,7 +138,7 @@ const sliderBreakpoints = {
             <p class="supporting-text">Hear from some of our amazing customers</p>
           </div>
           <div>
-            <BaseButton label="Search Jobs" color="primary">
+            <BaseButton navigate-to="/jobs" label="Search Jobs" color="primary">
               <template #append-icon>
                 <ArrowUpRightIcon class="w-3 h-3" />
               </template>

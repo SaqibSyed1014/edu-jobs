@@ -10,7 +10,7 @@ defineProps<{
 </script>
 
 <template>
-  <NuxtLink to="/job-listings/details">
+  <NuxtLink to="/jobs/details">
     <div v-if="cardForm" class="job-card flex flex-col gap-5 bg-white border border-gray-200 shadow-xs rounded-xl p-5">
       <div class="job-card-header">
         <div class="flex justify-between">

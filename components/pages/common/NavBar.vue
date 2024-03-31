@@ -9,7 +9,7 @@ const menuLinks = [
   },
   {
     label: "Jobs",
-    path: "/job-listings",
+    path: "/jobs",
   },
   {
     label: "School districts",
@@ -25,7 +25,7 @@ const menuLinks = [
   },
   {
     label: "Our Blogs",
-    path: "/blogs",
+    path: "/blog",
   },
 ];
 
