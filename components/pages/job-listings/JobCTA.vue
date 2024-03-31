@@ -4,6 +4,8 @@ const checkList = [
     'Streamline the hiring and onboarding process',
     'Make your skills stand out beyond a resume'
 ]
+
+const userType = useState('userType')
 </script>
 
 <template>
@@ -28,7 +30,7 @@ const checkList = [
           </ul>
 
           <div>
-            <BaseButton navigate-to="/signup" label="Sign up for free" :full-sized-on-small="true" class="md:inline-block" />
+            <BaseButton navigate-to="/signup" label="Sign up for free" :full-sized-on-small="true" @click.stop="userType = 'jobSeeker'" class="md:inline-block" />
           </div>
         </div>
         <div class="flex justify-center">
