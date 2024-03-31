@@ -10,14 +10,14 @@ const footerLinks = [
       { label: 'Why Us', path: '' },
       { label: 'Post Job', path: '' },
       { label: 'Pricing', path: '/pricing' },
-      { label: 'Sign Up', path: '/signup' },
+      { label: 'Sign Up', path: '/signup', type: 'organization' },
     ]
   },
   {
     heading: 'For Candidates',
     links: [
       { label: 'Why Us', path: '' },
-      { label: 'Sign Up', path: '/signup' },
+      { label: 'Sign Up', path: '/signup', type: 'jobSeeker' },
       { label: 'Browse Jobs', path: '' },
     ]
   },
@@ -26,7 +26,7 @@ const footerLinks = [
     links: [
       { label: 'About Us', path: '' },
       { label: 'Careers', path: '/signup' },
-      { label: 'Blog', path: '/blogs' },
+      { label: 'Blog', path: '/blog' },
       { label: 'Contact Us', path: '/contact-us' },
     ]
   },
@@ -40,6 +40,11 @@ const footerLinks = [
     ]
   }
 ]
+
+const userType = useState('userType')
+const selectUserType = (type :string) => {
+  if (type) userType.value = type
+}
 </script>
 
 <template>
@@ -57,7 +62,12 @@ const footerLinks = [
             <ul class="flex flex-col gap-3 text-gray-600 pt-4">
               <template v-for="link in linkSection.links">
                 <li class="hover:text-gray-500 hover:underline cursor-pointer">
-                  <NuxtLink :to="link.path">{{ link.label }}</NuxtLink>
+                  <NuxtLink
+                      :to="link.path"
+                      @click.stop="selectUserType(link?.type)"
+                  >
+                    {{ link.label }}
+                  </NuxtLink>
                 </li>
               </template>
             </ul>
@@ -94,7 +104,8 @@ const footerLinks = [
             <div class="w-2 h-2 rounded-full bg-gray-500"/>
             <NuxtLink to="privacy-policy" class="hover:underline">
               Privacy Policy
-            </NuxtLink></div>
+            </NuxtLink>
+          </div>
         </div>
         <div class="social-links flex flex-1 gap-6 md:justify-end">
           <TwitterIcon class="w-6 h-6" />

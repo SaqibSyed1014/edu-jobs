@@ -10,9 +10,10 @@ definePageMeta({
 const passwordVisibility = ref(false)
 const passwordFieldIcon = computed(() => passwordVisibility.value ? 'SvgoEyeOff' : 'SvgoEye')
 
+const selectedUserType = useState('userType')
 
 const initialValues = ref({
-  userType: "organization",
+  userType: selectedUserType.value,
   orgName: "",
   name: "",
   email: "",
@@ -56,13 +57,16 @@ watch(() => userType.value, (val) => {
 
 const isOrganizationSelected = computed(() => userType.value === 'organization')
 
-const onSubmit = handleSubmit(() => {})
+const onSubmit = () => {}
+
+// resetting the userType store to its default value
+onUnmounted(() => selectedUserType.value = 'organization')
 </script>
 
 <template>
   <div class="flex flex-col justify-center gap-8 w-full py-12 lg:py-28">
     <div class="flex flex-col gap-3">
-      <h1 class="font-semibold text-3xl">Sign up</h1>
+      <h1 class="font-semibold text-3xl">Sign up {{selectedUserType}}</h1>
       <p>Get started today and join EduJobs!</p>
     </div>
     <div class="w-full">
@@ -113,7 +117,7 @@ const onSubmit = handleSubmit(() => {})
         </div>
       </form>
       <div class="flex flex-col gap-4">
-        <BaseButton :disabled="!canProceed" label="Get Started" :full-sized="true"/>
+        <BaseButton @click="onSubmit" :disabled="!canProceed" label="Get Started" :full-sized="true"/>
       </div>
     </div>
     <p class="text-sm text-center">
