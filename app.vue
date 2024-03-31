@@ -1,3 +1,11 @@
+<script setup>
+const nuxtApp = useNuxtApp()
+
+nuxtApp.hook("page:finish", () => {
+  window.scrollTo(0, 0); // emphasize scroll to top on route change
+})
+</script>
+
 <template>
   <Html lang="en-US">
     <Body
