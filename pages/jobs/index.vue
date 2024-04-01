@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import Pagination from "~/components/core/Pagination.vue";
-import ListingFilters from "~/components/core/ListingFilters.vue";
-import JobCTA from "~/components/pages/job-listings/JobCTA.vue";
 
 const filters = [
   {

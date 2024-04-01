@@ -38,11 +38,11 @@ const faqList = [
           <div class="md:col-span-9">
             <div class="flex md:justify-between mb-5">
               <div class="hidden md:flex items-center gap-3">
-                <NuxtLink to="/job-listings">Jobs</NuxtLink>
+                <NuxtLink to="/jobs">Jobs</NuxtLink>
                 <SvgoChevronRight class="w-4 h-4 text-gray-300" />
                 <span class="text-brand-700 font-medium">Polymath</span>
               </div>
-              <NuxtLink to="/job-listings" class="flex items-center gap-3 group text-brand-700 font-medium cursor-pointer">
+              <NuxtLink to="/jobs" class="flex items-center gap-3 group text-brand-700 font-medium cursor-pointer">
                 <SvgoArrowLeft class="w-4 h-4 group-hover:-translate-x-[8px] transition" />
                 Back
               </NuxtLink>

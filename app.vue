@@ -1,3 +1,13 @@
+<script setup>
+const nuxtApp = useNuxtApp()
+
+nuxtApp.hook("page:finish", () => {
+  window.scrollTo(0, 0); // emphasize scroll to top on route change
+})
+
+useState('userType', () => 'organization') // setting visitor as organization user
+</script>
+
 <template>
   <Html lang="en-US">
     <Body

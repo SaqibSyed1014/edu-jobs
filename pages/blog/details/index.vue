@@ -190,7 +190,7 @@
             <p class="text-brand-600 mb-3">Latest</p>
             <h2 class="text-3xl md:text-4xl mb-5">From the blog</h2>
             <p class="md:text-lg text-black-light sm:mb-8 font-normal">The latest industry news, interviews, technologies, and resources.</p>
-            <BaseButton navigate-to="/blogs" label="View all posts" class="hidden sm:inline-flex" />
+            <BaseButton navigate-to="/blog" label="View all posts" class="hidden sm:inline-flex" />
           </div>
           <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-8">
             <div class="">
@@ -202,7 +202,7 @@
                   10 min read
               </span>
               <h3 class="mb-2">
-                <NuxtLink to="/blogs/detail" class="flex justify-between items-center gap-1 text-2xl hover:text-brand-600">
+                <NuxtLink to="/blog/details" class="flex justify-between items-center gap-1 text-2xl hover:text-brand-600">
                   UX review presentations
                   <span class="shrink-0">
                       <SvgoArrowNarrowUpRight class="w-4 h-4" />
@@ -229,7 +229,7 @@
                   8 min read
               </span>
               <h3 class="mb-2">
-                <NuxtLink to="/blogs/detail" class="flex justify-between items-center gap-1 text-2xl hover:text-brand-600">
+                <NuxtLink to="/blog/details" class="flex justify-between items-center gap-1 text-2xl hover:text-brand-600">
                   UX review presentations
                   <span class="shrink-0">
                     <SvgoArrowNarrowUpRight class="w-4 h-4" />

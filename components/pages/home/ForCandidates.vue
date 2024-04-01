@@ -20,7 +20,7 @@ const selectedTab = ref(0)
                 Seamlessly Discover Your Next Opportunity
               </h4>
               <p class="text-gray-600 pt-1 pb-5">
-                Dive into a user-friendly, modern job search experience with Edujobs. Uncover new openings effortlessly, where clarity meets convenience, guiding 
+                Dive into a user-friendly, modern job search experience with Edujobs. Uncover new openings effortlessly, where clarity meets convenience, guiding
                 you to your ideal educational role."
               </p>
 
@@ -34,7 +34,7 @@ const selectedTab = ref(0)
                 Exceptional Support on Your Job Journey
               </h4>
               <p class="text-gray-600 pt-1 pb-5">
-                We're more than just a platform; we're your career partner. Our dedicated team is committed to assisting you in pinpointing the perfect position that aligns 
+                We're more than just a platform; we're your career partner. Our dedicated team is committed to assisting you in pinpointing the perfect position that aligns
                 with your career aspirations and timing.
               </p>
 
