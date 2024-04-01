@@ -1,9 +1,9 @@
 <script setup lang="ts">
-defineProps<{ steps: any[]; currentStep: number }>();
+defineProps<{ steps: any[] }>();
 </script>
 
 <template>
-  <div class="hidden lg:flex flex-row justify-between gap-8">
+  <div class="hidden xl:flex flex-row justify-between gap-8">
     <nav aria-label="Progress" class="">
       <ol role="list" class="overflow-hidden pl-1 pt-1">
         <li
@@ -14,11 +14,11 @@ defineProps<{ steps: any[]; currentStep: number }>();
           <template v-if="step.status === 'complete'">
             <div
               v-if="stepIdx !== steps.length - 1"
-              class="absolute left-[9%] top-3.5 -ml-px mt-7 h-[30%] w-0.5 bg-brand-600"
+              class="absolute left-[8%] top-3.5 -ml-px mt-7 h-[30%] w-0.5 bg-brand-600"
               aria-hidden="true"
             />
             <div
-              class="group relative flex items-center"
+              class="group relative flex items-center cursor-pointer"
               :aria-disabled="step.status !== 'complete'"
             >
               <SvgoStepComp class="h-9 w-9" />
@@ -32,10 +32,13 @@ defineProps<{ steps: any[]; currentStep: number }>();
           <template v-else-if="step.status === 'current'">
             <div
               v-if="stepIdx !== steps.length - 1"
-              class="absolute left-[9%] top-3.5 -ml-px mt-7 h-[30%] w-0.5 bg-gray-200"
+              class="absolute left-[8%] top-3.5 -ml-px mt-7 h-[30%] w-0.5 bg-gray-200"
               aria-hidden="true"
             />
-            <div class="group relative flex items-center" aria-current="step">
+            <div
+              class="group relative flex items-center cursor-pointer"
+              aria-current="step"
+            >
               <span
                 class="bg-brand-100 rounded-full h-11 w-11 -left-1 absolute"
               ></span>
@@ -55,10 +58,13 @@ defineProps<{ steps: any[]; currentStep: number }>();
           <template v-else>
             <div
               v-if="stepIdx !== steps.length - 1"
-              class="absolute left-[9%] top-3.5 mt-7 h-[30%] w-0.5 bg-gray-200"
+              class="absolute left-[8%] top-3.5 mt-7 h-[30%] w-0.5 bg-gray-200"
               aria-hidden="true"
             />
-            <button disabled="true" class="group relative flex items-center">
+            <button
+              disabled="true"
+              class="group relative flex items-center cursor-pointer"
+            >
               <!-- <NuxtLink
                 :to="step.href"
                 class="group relative flex items-center"
