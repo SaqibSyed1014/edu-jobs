@@ -188,8 +188,6 @@ watch(
     currentStep.value = newValue;
   }
 );
-
-console.log("🚀 ~ jobDesc:", jobDesc.value);
 </script>
 
 <template>
@@ -211,7 +209,11 @@ console.log("🚀 ~ jobDesc:", jobDesc.value);
         keep-values
         class="flex flex-col md:flex-row justify-between gap-8"
       >
-        <Stepper :steps="steps" class="w-1/5 pt-8 border-r border-gray-200" />
+        <Stepper
+          :steps="steps"
+          :currentStep="currentStep"
+          class="w-1/5 pt-8 border-r border-gray-200"
+        />
         <div class="w-full md:w-3/4 xl:w-3/5 pt-8">
           <div class="">
             <div class="flex items-center justify-between">

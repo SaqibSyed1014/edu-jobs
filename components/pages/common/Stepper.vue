@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{ steps: any[] }>();
+defineProps<{ steps: any[]; currentStep: number }>();
 </script>
 
 <template>
@@ -23,9 +23,14 @@ defineProps<{ steps: any[] }>();
             >
               <SvgoStepComp class="h-9 w-9" />
               <span class="ml-4 flex min-w-0 flex-col">
-                <span class="text-xs lg:text-base font-semibold">{{
-                  step.name
-                }}</span>
+                <span
+                  :class="
+                    currentStep === 0
+                      ? 'text-xs lg:text-base font-semibold text-brand-700'
+                      : 'text-xs lg:text-base font-semibold'
+                  "
+                  >{{ step.name }}</span
+                >
               </span>
             </div>
           </template>
@@ -49,7 +54,11 @@ defineProps<{ steps: any[] }>();
               </span>
               <span class="ml-4 flex min-w-0 flex-col">
                 <span
-                  class="text-xs lg:text-base font-semibold text-brand-700"
+                  :class="
+                    currentStep === 0
+                      ? 'text-xs lg:text-base font-semibold text-gray-700'
+                      : 'text-xs lg:text-base font-semibold text-brand-700'
+                  "
                   >{{ step.name }}</span
                 >
               </span>
