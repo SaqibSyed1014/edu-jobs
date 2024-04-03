@@ -24,10 +24,14 @@
     "@vueup/vue-quill": "^1.2.0",
     "defu": "^6.1.4",
     "flowbite": "^2.2.0",
-    "nuxt-swiper": "^1.2.2",
-    "vue-google-maps-community-fork": "^0.3.1",
     "flowbite-datepicker": "^1.2.6",
+    "nuxt-swiper": "^1.2.2",
+    "pinia": "^2.1.7",
     "vee-validate": "^4.12.6",
+    "vue-google-maps-community-fork": "^0.3.1",
     "yup": "^1.4.0"
+  },
+  "overrides": {
+    "vue": "latest"
   }
 }

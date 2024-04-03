@@ -3,17 +3,21 @@ import HamburgerIcon from "~/assets/icons/hamburger.svg";
 import XCloseIcon from "~/assets/icons/x-close.svg";
 
 const menuLinks = [
-  {
+ /* {
     label: "Home",
     path: "/",
-  },
+  },*/
   {
     label: "Jobs",
-    path: "/job-listings",
+    path: "/jobs",
   },
   {
-    label: "School districts",
+    label: "School Districts",
     path: "/school-districts",
+  },
+  {
+    label: "Charter & Private Schools",
+    path: "/charter-schools-private-schools",
   },
   {
     label: "Colleges",
@@ -24,8 +28,8 @@ const menuLinks = [
     path: "/pricing",
   },
   {
-    label: "Our Blogs",
-    path: "/blogs",
+    label: "Our Blog",
+    path: "/blog",
   },
 ];
 
@@ -42,16 +46,18 @@ function togglingSidebarVisibility() {
 </script>
 
 <template>
-  <header>
+  <header class="max-md:sticky bg-gray-25 top-0 w-full z-[500]">
     <div
       class="container mx-auto flex items-center justify-between bg-transparent py-4 relative z-40"
     >
       <div class="content flex items-center justify-between gap-7 xl:gap-10">
         <div class="logo shrink-0">
-          <img src="/images/logo.svg" alt="EduJobs Logo" />
+          <NuxtLink to="/">
+            <img src="/images/logo.svg" alt="EduJobs Logo" />
+          </NuxtLink>
         </div>
         <!-- Menu Links -->
-        <nav class="shrink-0 hidden md:block">
+        <nav class="shrink-0 hidden lg:block">
           <ul
             class="flex gap-5 xl:gap-8 flex-nowrap items-center font-medium text-gray-600"
           >
@@ -64,34 +70,38 @@ function togglingSidebarVisibility() {
         </nav>
       </div>
 
-      <!--  Hamburger Icon    -->
-      <HamburgerIcon
-        v-if="!toggleSideBar"
-        class="block md:hidden w-6 h-6"
-        @click="togglingSidebarVisibility"
-      />
-      <XCloseIcon
-        v-else
-        class="block md:hidden w-4 h-4"
-        @click="togglingSidebarVisibility"
-      />
+      <div class="flex items-center gap-3">
+        <!--  CTA Btns  -->
+        <div class="nav-actions hidden sm:flex shrink-0 gap-2 xl:gap-3">
+          <BaseButton label="Log in" color="plain" navigate-to="/login"/>
 
-      <!--  CTA Btns  -->
-      <div class="nav-actions hidden md:flex shrink-0 gap-2 xl:gap-3">
-        <BaseButton label="Log in" color="plain" navigate-to="/login" />
+          <BaseButton
+              label="Sign up"
+              color="gray"
+              :outline="true"
+              navigate-to="/signup"
+          />
 
-        <BaseButton
-          label="Sign up"
-          color="gray"
-          :outline="true"
-          navigate-to="/signup"
-        />
+          <BaseButton
+              label="Post a Job"
+              color="primary"
+              navigate-to="/post-a-job"
+          />
+        </div>
 
-        <BaseButton
-          label="Post a Job"
-          color="primary"
-          navigate-to="/post-a-job"
-        />
+        <!--  Hamburger Icon    -->
+        <div class="block lg:hidden">
+          <HamburgerIcon
+              v-if="!toggleSideBar"
+              class=" w-6 h-6"
+              @click="togglingSidebarVisibility"
+          />
+          <XCloseIcon
+              v-else
+              class="w-4 h-4"
+              @click="togglingSidebarVisibility"
+          />
+        </div>
       </div>
     </div>
 

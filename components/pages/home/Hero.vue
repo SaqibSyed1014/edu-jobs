@@ -95,15 +95,14 @@ const jobPostsList = [
     <div class="container relative">
       <div class="content text-center relative z-20 py-24">
         <h1 class="font-inter font-semibold text-4xl md:text-5xl lg:text-6xl tracking-[-2%] w-full md:w-10/12 2xl:w-8/12 mx-auto">
-          Find the most <span class="text-brand-600">exciting jobs</span> in the easiest way possible
+          Your Future in Education <span class="text-brand-600">Awaits</span>
         </h1>
 
         <p class="text-gray-600 text-lg md:text-xl w-full md:w-8/12 mx-auto pt-6 pb-12">
-          Explore thousands of job opportunities with all the information you need and manage all your job applications
-          from start to finish.
+          Embark on a rewarding educational career, from classroom teaching to district office roles
         </p>
 
-        <SearchBar class="md:max-w-[650px] mx-auto" />
+        <SearchBar class="md:max-w-[800px] xl:max-w-[875px] mx-auto" />
       </div>
 
       <div class="dashed-ring forth-ring" />

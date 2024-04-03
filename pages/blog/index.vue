@@ -89,7 +89,7 @@ const blogList = [
             <div class="flex flex-col gap-2 mb-6">
               <p class="text-brand-600 text-sm">{{ blog.writtenBy }} • {{ blog.writtenAt }}</p>
               <h3>
-                <NuxtLink to="/blogs/detail" class="flex items-center justify-between gap-1 text-lg hover:text-brand-600">
+                <NuxtLink to="/blog/details" class="flex items-center justify-between gap-1 text-lg hover:text-brand-600">
                   {{ blog.title }}
                   <span class="shrink-0">
                       <SvgoArrowNarrowUpRight class="w-4 h-4" />
@@ -115,7 +115,7 @@ const blogList = [
                 <div class="flex flex-col gap-2 mb-6">
                   <p class="text-brand-600 text-sm">{{ blog.writtenBy }} • {{ blog.writtenAt }}</p>
                   <h3>
-                    <NuxtLink to="/blogs/detail" class="flex justify-between gap-1 text-lg hover:text-brand-600">
+                    <NuxtLink to="/blog/details" class="flex justify-between gap-1 text-lg hover:text-brand-600">
                       {{ blog.title }}
                     </NuxtLink>
                   </h3>
@@ -145,7 +145,7 @@ const blogList = [
               <div class="flex flex-col gap-2 mb-6">
                 <p class="text-brand-600 text-sm">{{ blog.writtenBy }} • {{ blog.writtenAt }}</p>
                 <h3>
-                  <NuxtLink to="/blogs/detail" class="flex items-center justify-between gap-1 text-lg hover:text-brand-600">
+                  <NuxtLink to="/blog/details" class="flex items-center justify-between gap-1 text-lg hover:text-brand-600">
                     {{ blog.title }}
                     <span class="shrink-0">
                       <SvgoArrowNarrowUpRight class="w-4 h-4" />
