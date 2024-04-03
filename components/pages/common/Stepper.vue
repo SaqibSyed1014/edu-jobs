@@ -9,7 +9,10 @@ defineProps<{ steps: any[]; currentStep: number }>();
         <li
           v-for="(step, stepIdx) in steps"
           :key="step.name"
-          :class="[stepIdx !== steps.length - 1 ? 'pb-8' : '', 'relative']"
+          :class="[
+            stepIdx !== steps.length - 1 ? 'pb-8' : '',
+            'relative flex items-center',
+          ]"
         >
           <template v-if="step.status === 'complete'">
             <div
@@ -22,7 +25,7 @@ defineProps<{ steps: any[]; currentStep: number }>();
               :aria-disabled="step.status !== 'complete'"
             >
               <SvgoStepComp class="h-9 w-9" />
-              <span class="ml-4 flex min-w-0 flex-col">
+              <!-- <span class="ml-4 flex min-w-0 flex-col">
                 <span
                   :class="
                     currentStep === 0
@@ -31,7 +34,7 @@ defineProps<{ steps: any[]; currentStep: number }>();
                   "
                   >{{ step.name }}</span
                 >
-              </span>
+              </span> -->
             </div>
           </template>
           <template v-else-if="step.status === 'current'">
@@ -52,7 +55,7 @@ defineProps<{ steps: any[]; currentStep: number }>();
               >
                 <span class="h-2.5 w-2.5 rounded-full bg-white" />
               </span>
-              <span class="ml-4 flex min-w-0 flex-col">
+              <!-- <span class="ml-4 flex min-w-0 flex-col">
                 <span
                   :class="
                     currentStep === 0
@@ -61,7 +64,7 @@ defineProps<{ steps: any[]; currentStep: number }>();
                   "
                   >{{ step.name }}</span
                 >
-              </span>
+              </span> -->
             </div>
           </template>
           <template v-else>
@@ -85,14 +88,27 @@ defineProps<{ steps: any[]; currentStep: number }>();
                   <span class="h-2.5 w-2.5 rounded-full bg-gray-200" />
                 </span>
               </span>
-              <span class="ml-4 flex min-w-0 flex-col">
+              <!-- <span class="ml-4 flex min-w-0 flex-col">
                 <span class="text-base font-semibold text-gray-700">{{
                   step.name
                 }}</span>
-              </span>
+              </span> -->
               <!-- </NuxtLink> -->
             </button>
           </template>
+
+          <div class="flex flex-col cursor-pointer">
+            <span class="ml-4 flex min-w-0 flex-col">
+              <span
+                :class="
+                  currentStep === stepIdx
+                    ? 'text-base font-semibold text-brand-700'
+                    : 'text-base font-semibold text-gray-700'
+                "
+                >{{ step.name }}</span
+              >
+            </span>
+          </div>
         </li>
       </ol>
     </nav>

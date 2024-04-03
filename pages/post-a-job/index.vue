@@ -11,6 +11,7 @@ const paymentType = ref(["Cash", "Card"]);
 const appMethods = ref(["Email", "Text"]);
 const jobDesc = ref("");
 const router = useRouter();
+const startDate = ref("");
 const errorMessage = ref(false);
 const toolbarOptions = [
   ["bold", "italic", "underline", "strike"], // toggled buttons
@@ -93,7 +94,12 @@ const schemas = [
     applicationMethod: Yup.string().required(
       "You must choose your application method"
     ),
-    detail: Yup.string().required("Please enter detail"),
+    detail: Yup.string()
+      .matches(
+        /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+        "Enter correct url!"
+      )
+      .required("Please enter detail"),
     deadlineDate: Yup.string().required("Please enter Date"),
   }),
   Yup.object().shape({
@@ -367,8 +373,9 @@ watch(
                   >
                     Start Date
                   </label>
+                  {{ startDate }}
                   <div class="mt-2 sm:col-span-2 sm:mt-0 relative">
-                    <DatePicker name="startDate" />
+                    <DatePicker v-model="startDate" name="startDate" />
                   </div>
                 </div>
                 <div
@@ -963,21 +970,10 @@ watch(
                             <div class="tooltip-arrow" data-popper-arrow></div>
                           </div>
                         </div>
-
                         <p
                           class="text-gray-600 text-base font-normal leading-normal"
-                        >
-                          Dynamic Project Manager adept at orchestrating complex
-                          projects from initiation to completion. Skilled in
-                          strategic planning, resource allocation, and team
-                          leadership. Proven track record of delivering
-                          high-quality results within deadlines and budgets.
-                          Effective communicator, collaborator, and
-                          problem-solver, ensuring seamless project execution.
-                          Expertise in Agile methodologies and project
-                          management tools. Ready to drive success in a
-                          collaborative and challenging environment.
-                        </p>
+                          v-html="jobDesc"
+                        ></p>
                       </div>
                     </div>
                   </div>
@@ -1064,7 +1060,9 @@ watch(
                         <p
                           class="text-gray-600 text-base font-normal leading-normal"
                         >
-                          https://example.com/apply-here
+                          {{
+                            values.detail ? "http://" + values.detail : "N/a"
+                          }}
                         </p>
                       </div>
                     </div>
