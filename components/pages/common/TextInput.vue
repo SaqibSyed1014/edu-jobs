@@ -35,6 +35,10 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  autofocus: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // use `toRef` to create reactive references to `name` prop which is passed to `useField`
@@ -50,9 +54,17 @@ const {
   handleBlur,
   handleChange,
   meta,
+  setValue,
 } = useField(name, undefined, {
   initialValue: props.value,
 });
+
+watch(
+  () => props.value,
+  (newValue: any) => {
+    setValue(newValue);
+  }
+);
 </script>
 
 <template>
@@ -87,11 +99,12 @@ const {
               :name="name"
               :id="name"
               :type="type"
-              :value="value !== undefined ? value : inputValue"
+              :value="inputValue"
               :placeholder="placeholder"
+              :autofocus="autofocus"
               @input="handleChange"
               @blur="handleBlur"
-              class="block flex-1 border-0 bg-transparent placeholder:pl-1.5 py-2.5 pl-3.5 text-gray-900 placeholder:text-gray-500 placeholder:text-base placeholder:font-normal focus:ring-0 sm:text-sm sm:leading-6"
+              class="block flex-1 placeholder:pl-1.5 py-2.5 pl-3.5 text-gray-900 placeholder:text-gray-500 placeholder:text-base placeholder:font-normal sm:text-sm sm:leading-6"
             />
           </div>
           <p

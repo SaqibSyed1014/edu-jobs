@@ -1,41 +1,52 @@
 <script setup lang="ts">
-defineProps<{ steps: any[] }>();
+defineProps<{ steps: any[]; currentStep: number }>();
 </script>
 
 <template>
-  <div class="hidden lg:flex flex-row justify-between gap-8">
+  <div class="hidden xl:flex flex-row justify-between gap-8">
     <nav aria-label="Progress" class="">
       <ol role="list" class="overflow-hidden pl-1 pt-1">
         <li
           v-for="(step, stepIdx) in steps"
           :key="step.name"
-          :class="[stepIdx !== steps.length - 1 ? 'pb-8' : '', 'relative']"
+          :class="[
+            stepIdx !== steps.length - 1 ? 'pb-8' : '',
+            'relative flex items-center',
+          ]"
         >
           <template v-if="step.status === 'complete'">
             <div
               v-if="stepIdx !== steps.length - 1"
-              class="absolute left-[9%] top-3.5 -ml-px mt-7 h-[30%] w-0.5 bg-brand-600"
+              class="absolute left-[8%] top-3.5 -ml-px mt-7 h-[30%] w-0.5 bg-brand-600"
               aria-hidden="true"
             />
             <div
-              class="group relative flex items-center"
+              class="group relative flex items-center cursor-pointer"
               :aria-disabled="step.status !== 'complete'"
             >
               <SvgoStepComp class="h-9 w-9" />
-              <span class="ml-4 flex min-w-0 flex-col">
-                <span class="text-xs lg:text-base font-semibold">{{
-                  step.name
-                }}</span>
-              </span>
+              <!-- <span class="ml-4 flex min-w-0 flex-col">
+                <span
+                  :class="
+                    currentStep === 0
+                      ? 'text-xs lg:text-base font-semibold text-brand-700'
+                      : 'text-xs lg:text-base font-semibold'
+                  "
+                  >{{ step.name }}</span
+                >
+              </span> -->
             </div>
           </template>
           <template v-else-if="step.status === 'current'">
             <div
               v-if="stepIdx !== steps.length - 1"
-              class="absolute left-[9%] top-3.5 -ml-px mt-7 h-[30%] w-0.5 bg-gray-200"
+              class="absolute left-[8%] top-3.5 -ml-px mt-7 h-[30%] w-0.5 bg-gray-200"
               aria-hidden="true"
             />
-            <div class="group relative flex items-center" aria-current="step">
+            <div
+              class="group relative flex items-center cursor-pointer"
+              aria-current="step"
+            >
               <span
                 class="bg-brand-100 rounded-full h-11 w-11 -left-1 absolute"
               ></span>
@@ -44,21 +55,28 @@ defineProps<{ steps: any[] }>();
               >
                 <span class="h-2.5 w-2.5 rounded-full bg-white" />
               </span>
-              <span class="ml-4 flex min-w-0 flex-col">
+              <!-- <span class="ml-4 flex min-w-0 flex-col">
                 <span
-                  class="text-xs lg:text-base font-semibold text-brand-700"
+                  :class="
+                    currentStep === 0
+                      ? 'text-xs lg:text-base font-semibold text-gray-700'
+                      : 'text-xs lg:text-base font-semibold text-brand-700'
+                  "
                   >{{ step.name }}</span
                 >
-              </span>
+              </span> -->
             </div>
           </template>
           <template v-else>
             <div
               v-if="stepIdx !== steps.length - 1"
-              class="absolute left-[9%] top-3.5 mt-7 h-[30%] w-0.5 bg-gray-200"
+              class="absolute left-[8%] top-3.5 mt-7 h-[30%] w-0.5 bg-gray-200"
               aria-hidden="true"
             />
-            <button disabled="true" class="group relative flex items-center">
+            <button
+              disabled="true"
+              class="group relative flex items-center cursor-pointer"
+            >
               <!-- <NuxtLink
                 :to="step.href"
                 class="group relative flex items-center"
@@ -70,14 +88,27 @@ defineProps<{ steps: any[] }>();
                   <span class="h-2.5 w-2.5 rounded-full bg-gray-200" />
                 </span>
               </span>
-              <span class="ml-4 flex min-w-0 flex-col">
+              <!-- <span class="ml-4 flex min-w-0 flex-col">
                 <span class="text-base font-semibold text-gray-700">{{
                   step.name
                 }}</span>
-              </span>
+              </span> -->
               <!-- </NuxtLink> -->
             </button>
           </template>
+
+          <div class="flex flex-col cursor-pointer">
+            <span class="ml-4 flex min-w-0 flex-col">
+              <span
+                :class="
+                  currentStep === stepIdx
+                    ? 'text-base font-semibold text-brand-700'
+                    : 'text-base font-semibold text-gray-700'
+                "
+                >{{ step.name }}</span
+              >
+            </span>
+          </div>
         </li>
       </ol>
     </nav>
