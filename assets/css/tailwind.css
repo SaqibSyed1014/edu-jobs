@@ -4,7 +4,7 @@
 
 @tailwind base;
 input[type=text], input[type=email], input[type=password], .form-input, .form-textarea{
-    @apply bg-white rounded-lg border border-gray-200 py-2.5 px-3.5 field-shadow placeholder-gray-400
+    @apply bg-transparent rounded-lg border border-gray-200 py-2.5 px-3.5 field-shadow placeholder-gray-400
 }
 @tailwind components;
 @tailwind utilities;

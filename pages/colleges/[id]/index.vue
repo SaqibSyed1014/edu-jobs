@@ -155,27 +155,30 @@ const videoList = ref([
   <div class="border-t md:border-b border-gray-200 mb-24">
     <div class="md:container flex">
       <!-- Sidebar -->
-      <aside
-        class="w-[260px] hidden lg:flex flex-col border-r border-gray-200 pt-8"
-      >
-        <!-- Tabs -->
-        <div class="flex flex-col">
-          <!-- Loop through tabs -->
-          <button
-            v-for="(tab, index) in tabs"
-            :key="index"
-            :class="
-              activeTab === index
-                ? 'text-brand-800 text-sm font-semibold py-2 px-3 flex items-center justify-between border-l-2 border-brand-600'
-                : 'py-2 px-3 flex items-center justify-between text-sm text-gray-500 '
-            "
-            @click="activeTab = index"
+      <div class="flex flex-col">
+        <div class="sticky right-0 top-0 w-full">
+          <aside
+            class="sticky top-0 z-[1] w-[260px] hidden lg:flex flex-col border-r border-gray-200 pt-8"
           >
-            <span>{{ tab.name }}</span>
-          </button>
+            <!-- Tabs -->
+            <div class="flex flex-col">
+              <!-- Loop through tabs -->
+              <button
+                v-for="(tab, index) in tabs"
+                :key="index"
+                :class="
+                  activeTab === index
+                    ? 'text-brand-800 text-sm font-semibold py-2 px-3 flex items-center justify-between border-l-2 border-brand-600'
+                    : 'py-2 px-3 flex items-center justify-between text-sm text-gray-500 '
+                "
+                @click="activeTab = index"
+              >
+                <span>{{ tab.name }}</span>
+              </button>
+            </div>
+          </aside>
         </div>
-      </aside>
-
+      </div>
       <!-- Main Content -->
       <main class="pt-8 md:pb-10 w-full">
         <!-- Content for each tab -->
