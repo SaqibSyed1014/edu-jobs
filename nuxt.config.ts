@@ -21,7 +21,8 @@ export default defineNuxtConfig({
         '@nuxtjs/tailwindcss',
         'nuxt-swiper',
         'nuxt-svgo',
-        '@nuxtjs/robots'
+        '@nuxtjs/robots',
+        '@pinia/nuxt'
     ],
     components: [
         {

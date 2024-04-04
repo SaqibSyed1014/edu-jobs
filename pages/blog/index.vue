@@ -55,6 +55,12 @@ const blogList = [
     tags: ['SaaS']
   },
 ]
+
+const blogsStore = useBlogStore()
+
+onMounted(async () => {
+  await blogsStore.fetchBlogs()
+})
 </script>
 
 <template>
