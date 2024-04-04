@@ -55,6 +55,14 @@ const blogList = [
     tags: ['SaaS']
   },
 ]
+
+const blogsStore = useBlogStore()
+
+const { blogs } = storeToRefs(blogsStore)
+
+onMounted(async () => {
+  await blogsStore.fetchBlogs()
+})
 </script>
 
 <template>
@@ -81,50 +89,50 @@ const blogList = [
       <div class="container md:px-8">
         <h2 class="text-xl md:text-2xl mb-8">Recent blog posts</h2>
       <div class="grid lg:grid-cols-2 gap-8">
-        <template v-for="blog in blogList.slice(0, 1)">
+        <template v-for="blog in blogs.slice(0, 1)">
           <div class="flex flex-col justify-around">
             <div class="overflow-hidden rounded-2xl mb-5">
-              <img :src="`/images/blogs/${blog.image}`" alt="blog-list-img" class="w-full h-full object-cover object-top">
+              <img :src="blog.post_photo.url" alt="blog-list-img" class="w-full h-full object-cover object-top">
             </div>
             <div class="flex flex-col gap-2 mb-6">
-              <p class="text-brand-600 text-sm">{{ blog.writtenBy }} • {{ blog.writtenAt }}</p>
+              <p class="text-brand-600 text-sm">{{ blog.author.name }} • {{ blog.post_date }}</p>
               <h3>
-                <NuxtLink to="/blog/details" class="flex items-center justify-between gap-1 text-lg hover:text-brand-600">
+                <NuxtLink :to="`/blog/${blog.slug}`" class="flex items-center justify-between gap-3 text-lg hover:text-brand-600">
                   {{ blog.title }}
                   <span class="shrink-0">
                       <SvgoArrowNarrowUpRight class="w-4 h-4" />
                     </span>
                 </NuxtLink>
               </h3>
-              <p class="text-black-light font-normal">{{ blog.text }}</p>
+              <p class="text-black-light font-normal">{{ blog.post_excerpt }}</p>
             </div>
             <div class="flex flex-wrap gap-2 font-medium text-sm">
-              <template v-for="tag in blog.tags">
-                <div class="text-[#6941C6] bg-[#F9F5FF] border border-[#E9D7FE] rounded-full px-2.5 py-0.5">{{ tag }}</div>
-              </template>
+              <div class="text-[#6941C6] bg-[#F9F5FF] border border-[#E9D7FE] rounded-full px-2.5 py-0.5">
+                {{ blog.category.category_name }}
+              </div>
             </div>
           </div>
         </template>
         <div class="grid grid-cols-1 gap-8">
-          <template v-for="blog in blogList.slice(1, 3)">
+          <template v-for="blog in blogs.slice(1, 3)">
             <div class="flex flex-col sm:flex-row gap-5">
               <div class="flex-none sm:w-60 2xl:w-80 overflow-hidden rounded-2xl">
-                <img :src="`/images/blogs/${blog.image}`" alt="blog-list-img" class="w-full h-full object-cover object-top">
+                <img :src="blog.post_photo.url" alt="blog-list-img" class="w-full h-full object-cover object-top">
               </div>
               <div class="">
                 <div class="flex flex-col gap-2 mb-6">
-                  <p class="text-brand-600 text-sm">{{ blog.writtenBy }} • {{ blog.writtenAt }}</p>
+                  <p class="text-brand-600 text-sm">{{ blog.author.name }} • {{ blog.post_date }}</p>
                   <h3>
-                    <NuxtLink to="/blog/details" class="flex justify-between gap-1 text-lg hover:text-brand-600">
+                    <NuxtLink to="/blog/details" class="flex justify-between gap-3 text-lg hover:text-brand-600">
                       {{ blog.title }}
                     </NuxtLink>
                   </h3>
-                  <p class="text-black-light font-normal line-clamp-3">{{ blog.text }}</p>
+                  <p class="text-black-light font-normal line-clamp-3">{{ blog.post_excerpt }}</p>
                 </div>
                 <div class="flex flex-wrap gap-2 font-medium text-sm">
-                  <template v-for="tag in blog.tags">
-                    <div class="text-[#6941C6] bg-[#F9F5FF] border border-[#E9D7FE] rounded-full px-2.5 py-0.5">{{ tag }}</div>
-                  </template>
+                    <div class="text-[#6941C6] bg-[#F9F5FF] border border-[#E9D7FE] rounded-full px-2.5 py-0.5">
+                      {{ blog.category.category_name }}
+                    </div>
                 </div>
               </div>
             </div>
@@ -137,27 +145,27 @@ const blogList = [
       <div class="container md:px-8">
         <h2 class="text-2xl mb-8"> All blog posts</h2>
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 pb-16">
-          <template v-for="blog in blogList">
+          <template v-for="blog in blogs">
             <div class="flex flex-col justify-around">
               <div class="overflow-hidden rounded-2xl mb-5">
-                <img :src="`/images/blogs/${blog.image}`" alt="blog-list-img4" class="w-full h-full object-cover object-top">
+                <img :src="blog.post_photo.url" alt="blog-list-img4" class="w-full h-full object-cover object-top">
               </div>
               <div class="flex flex-col gap-2 mb-6">
-                <p class="text-brand-600 text-sm">{{ blog.writtenBy }} • {{ blog.writtenAt }}</p>
+                <p class="text-brand-600 text-sm">{{ blog.author.name }} • {{ blog.post_date }}</p>
                 <h3>
-                  <NuxtLink to="/blog/details" class="flex items-center justify-between gap-1 text-lg hover:text-brand-600">
+                  <NuxtLink to="/blog/details" class="flex items-center justify-between gap-3 text-lg hover:text-brand-600">
                     {{ blog.title }}
                     <span class="shrink-0">
                       <SvgoArrowNarrowUpRight class="w-4 h-4" />
                     </span>
                   </NuxtLink>
                 </h3>
-                <p class="text-black-light font-normal">{{ blog.text }}</p>
+                <p class="text-black-light font-normal">{{ blog.post_excerpt }}</p>
               </div>
               <div class="flex flex-wrap gap-2 font-medium text-sm">
-                <template v-for="tag in blog.tags">
-                  <div class="text-[#6941C6] bg-[#F9F5FF] border border-[#E9D7FE] rounded-full px-2.5 py-0.5">{{ tag }}</div>
-                </template>
+                  <div class="text-[#6941C6] bg-[#F9F5FF] border border-[#E9D7FE] rounded-full px-2.5 py-0.5">
+                    {{ blog.category.category_name }}
+                  </div>
               </div>
             </div>
           </template>
