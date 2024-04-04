@@ -381,7 +381,8 @@ function changeStep(stepIdx: number) {
                 <label
                   for="username"
                   class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
-                  >Organization Logo/Icon <br />
+                  >Organization Logo/Icon
+                  <br />
                   <span
                     class="w-[228px] text-gray-600 text-sm font-normal leading-normal"
                     >This will be displayed on your profile.
@@ -506,7 +507,7 @@ function changeStep(stepIdx: number) {
                           name="employment"
                           type="radio"
                           value="Full-time"
-                          class="h-5 w-5"
+                          class="h-5 w-5 cursor-pointer"
                         />
                         <label
                           for="Full-time"
@@ -519,7 +520,7 @@ function changeStep(stepIdx: number) {
                           name="employment"
                           type="radio"
                           value="Part-time"
-                          class="h-5 w-5"
+                          class="h-5 w-5 cursor-pointer"
                         />
                         <label
                           for="Part-time"
@@ -532,7 +533,7 @@ function changeStep(stepIdx: number) {
                           name="employment"
                           type="radio"
                           value="Contractor"
-                          class="h-5 w-5"
+                          class="h-5 w-5 cursor-pointer"
                         />
                         <label
                           for="Contractor"
@@ -545,7 +546,7 @@ function changeStep(stepIdx: number) {
                           name="employment"
                           type="radio"
                           value="Intern"
-                          class="h-5 w-5"
+                          class="h-5 w-5 cursor-pointer"
                         />
                         <label
                           for="Intern"
@@ -559,7 +560,7 @@ function changeStep(stepIdx: number) {
                           name="employment"
                           type="radio"
                           value="Volunteer"
-                          class="h-5 w-5"
+                          class="h-5 w-5 cursor-pointer"
                         />
                         <label
                           for="Volunteer"
@@ -1423,8 +1424,8 @@ function changeStep(stepIdx: number) {
                     ><span
                       class="text-gray-600 text-sm font-normal leading-tight"
                     >
-                    </span
-                    ><NuxtLink
+                    </span>
+                    <NuxtLink
                       to="#"
                       class="text-brand-500 text-xs font-normal underline leading-[18px]"
                     >

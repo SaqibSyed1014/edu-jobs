@@ -92,7 +92,7 @@ watch(
             :class="
               errorMessage
                 ? 'border border-red-300 flex relative rounded-md ring-0 ring-inset ring-gray-300 '
-                : 'flex relative rounded-md ring-1 ring-inset ring-gray-300 focus-within:ring-0 focus-within:ring-inset focus-within:ring-brand-600'
+                : 'flex relative rounded-md '
             "
           >
             <input
@@ -104,9 +104,11 @@ watch(
               :autofocus="autofocus"
               @input="handleChange"
               @blur="handleBlur"
-              class="block flex-1 placeholder:pl-1.5 py-2.5 pl-3.5 text-gray-900 placeholder:text-gray-500 placeholder:text-base placeholder:font-normal sm:text-sm sm:leading-6"
+              class="form-input w-full"
+              :class="{ 'has-error': errorMessage }"
             />
           </div>
+          <!-- class="block flex-1 placeholder:pl-1.5 py-2.5 pl-3.5 text-gray-900 placeholder:text-gray-500 placeholder:text-base placeholder:font-normal sm:text-sm sm:leading-6" -->
           <p
             class="text-red-500 text-sm font-normal leading-tight"
             v-show="errorMessage || meta.valid"
