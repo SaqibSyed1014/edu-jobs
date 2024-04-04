@@ -3,7 +3,7 @@ defineProps<{ steps: any[]; currentStep: number }>();
 </script>
 
 <template>
-  <div class="hidden xl:flex flex-row justify-between gap-8">
+  <div class="flex flex-row justify-between gap-8">
     <nav aria-label="Progress" class="">
       <ol role="list" class="overflow-hidden pl-1 pt-1">
         <li

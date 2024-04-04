@@ -34,6 +34,7 @@ const format = (date: any) => {
       class="fixed-input-icon"
       :format="format"
       placeholder="March 25, 2024"
+      autoApply
       :enable-time-picker="enableTimePicker"
     >
       <template #input-icon> </template>

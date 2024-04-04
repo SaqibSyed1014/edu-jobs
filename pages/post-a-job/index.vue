@@ -141,6 +141,10 @@ function nextStep(values: any) {
   errorMessage.value = false;
   // Proceed to the next step if jobDesc is not empty
   currentStep.value++;
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
 }
 
 function prevStep() {
@@ -149,6 +153,10 @@ function prevStep() {
   }
 
   currentStep.value--;
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
 }
 
 onMounted(() => {
@@ -194,6 +202,10 @@ watch(
     currentStep.value = newValue;
   }
 );
+
+function changeStep(stepIdx: number) {
+  currentStep.value = stepIdx;
+}
 </script>
 
 <template>
@@ -215,11 +227,96 @@ watch(
         keep-values
         class="flex flex-col md:flex-row justify-between gap-8"
       >
-        <Stepper
-          :steps="steps"
-          :currentStep="currentStep"
-          class="w-1/5 pt-8 border-r border-gray-200"
-        />
+        <div class="hidden xl:block w-1/5 border-r border-gray-200">
+          <div class="sticky right-0 top-0 w-full pt-8">
+            <div class="flex flex-row justify-between gap-8">
+              <nav aria-label="Progress" class="">
+                <ol role="list" class="overflow-hidden pl-1 pt-1">
+                  <li
+                    v-for="(step, stepIdx) in steps"
+                    :key="step.name"
+                    :class="[
+                      stepIdx !== steps.length - 1 ? 'pb-8' : '',
+                      'relative flex items-center',
+                    ]"
+                    @click="
+                      step.status === 'complete' ? changeStep(stepIdx) : ''
+                    "
+                  >
+                    <template v-if="step.status === 'complete'">
+                      <div
+                        v-if="stepIdx !== steps.length - 1"
+                        class="absolute left-[8%] top-3.5 -ml-px mt-7 h-[30%] w-0.5 bg-brand-600"
+                        aria-hidden="true"
+                      />
+                      <div
+                        class="group relative flex items-center cursor-pointer"
+                        :aria-disabled="step.status !== 'complete'"
+                      >
+                        <SvgoStepComp class="h-9 w-9" />
+                      </div>
+                    </template>
+                    <template v-else-if="step.status === 'current'">
+                      <div
+                        v-if="stepIdx !== steps.length - 1"
+                        class="absolute left-[8%] top-3.5 -ml-px mt-7 h-[30%] w-0.5 bg-gray-200"
+                        aria-hidden="true"
+                      />
+                      <div
+                        class="group relative flex items-center cursor-pointer"
+                        aria-current="step"
+                      >
+                        <span
+                          class="bg-brand-100 rounded-full h-11 w-11 -left-1 absolute"
+                        ></span>
+                        <span
+                          class="relative z-10 flex h-9 w-9 items-center justify-center rounded-full border-2 border-brand-600 bg-brand-600"
+                        >
+                          <span class="h-2.5 w-2.5 rounded-full bg-white" />
+                        </span>
+                      </div>
+                    </template>
+                    <template v-else>
+                      <div
+                        v-if="stepIdx !== steps.length - 1"
+                        class="absolute left-[8%] top-3.5 mt-7 h-[30%] w-0.5 bg-gray-200"
+                        aria-hidden="true"
+                      />
+                      <button
+                        disabled="true"
+                        class="group relative flex items-center cursor-pointer"
+                      >
+                        <span class="flex h-9 items-center" aria-hidden="true">
+                          <span
+                            class="relative z-10 flex h-9 w-9 items-center justify-center rounded-full border-2 border-gray-200 bg-white group-hover:border-gray-400"
+                          >
+                            <span
+                              class="h-2.5 w-2.5 rounded-full bg-gray-200"
+                            />
+                          </span>
+                        </span>
+                      </button>
+                    </template>
+
+                    <div class="flex flex-col cursor-pointer">
+                      <span class="ml-4 flex min-w-0 flex-col">
+                        <span
+                          :class="
+                            currentStep === stepIdx
+                              ? 'text-base font-semibold text-brand-700'
+                              : 'text-base font-semibold text-gray-700'
+                          "
+                          >{{ step.name }}</span
+                        >
+                      </span>
+                    </div>
+                  </li>
+                </ol>
+              </nav>
+              <slot />
+            </div>
+          </div>
+        </div>
         <div class="w-full md:w-3/4 xl:w-3/5 pt-8">
           <div class="">
             <div class="flex items-center justify-between">
@@ -251,7 +348,18 @@ watch(
                   }}
                 </p>
               </div>
-              <SvgoRing14 class="h-14 xl:hidden" />
+              <div>
+                <SvgoRing14 v-if="currentStep === 0" class="h-14 xl:hidden" />
+                <SvgoRing24
+                  v-else-if="currentStep === 1"
+                  class="h-14 xl:hidden"
+                />
+                <SvgoRing34
+                  v-else-if="currentStep === 2"
+                  class="h-14 xl:hidden"
+                />
+                <SvgoRing44 v-else class="h-14 xl:hidden" />
+              </div>
             </div>
             <div
               v-if="currentStep === 0"
@@ -373,9 +481,12 @@ watch(
                   >
                     Start Date
                   </label>
-                  {{ startDate }}
                   <div class="mt-2 sm:col-span-2 sm:mt-0 relative">
-                    <DatePicker v-model="startDate" name="startDate" />
+                    <DatePicker
+                      v-model="startDate"
+                      name="startDate"
+                      :values="values.startDate"
+                    />
                   </div>
                 </div>
                 <div
