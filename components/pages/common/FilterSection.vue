@@ -1,8 +1,7 @@
 <script setup lang="ts">
 defineProps<{
   title: String;
-  options: any[];
-  icon: Object;
+  options: any;
   totalJobs: string;
 }>();
 </script>
@@ -14,7 +13,7 @@ defineProps<{
     <div class="justify-between items-center inline-flex w-full pb-2">
       <div class="justify-start items-center gap-3 flex">
         <!-- <component :is="" class="w-5 h-5 text-gray-500" /> -->
-        <component :is="icon" class="size-6" />
+        <component :is="options.icon" class="size-6" />
         <div class="text-gray-700 text-base font-semibold leading-normal">
           {{ title }}
         </div>
@@ -27,20 +26,20 @@ defineProps<{
     <!-- Checkbox inputs -->
     <div
       class="pl-9 relative flex gap-x-6"
-      v-for="option in options"
-      :key="option.id"
+      v-for="item in options?.data"
+      :key="item.id"
     >
       <div class="flex h-6 items-center">
         <input
-          :id="option.id"
-          :name="option.id"
+          :id="item.id"
+          :name="item.id"
           type="checkbox"
           class="h-4 w-4 rounded-md border border-gray-300 text-brand-600 focus:ring-brand-600"
-          :checked="option.checked"
+          :checked="item.checked"
         />
       </div>
-      <label :for="option.id" class="text-gray-700 text-base font-medium">{{
-        option.label
+      <label :for="item.id" class="text-gray-700 text-base font-medium">{{
+        item.label
       }}</label>
     </div>
   </div>

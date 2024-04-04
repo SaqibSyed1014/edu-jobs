@@ -500,8 +500,8 @@ const jobList = [
                 <template v-for="job in jobList">
                   <JobCard
                     :job="job"
-                    :card-form="isGridOptionSelected === 1"
                     :show-job-description="false"
+                    :card-form="false"
                   />
                 </template>
               </div>

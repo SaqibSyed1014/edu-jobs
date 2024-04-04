@@ -190,7 +190,6 @@ onMounted(() => {
 
 // Function to handle button click
 function handleButtonClick(e: number) {
-  console.log("Button clicked with value:", e);
   // Update currentStep value
   currentStep.value = e;
 }
@@ -240,7 +239,9 @@ function changeStep(stepIdx: number) {
                       'relative flex items-center',
                     ]"
                     @click="
-                      step.status === 'complete' ? changeStep(stepIdx) : ''
+                      step.status === 'complete' || step.status === 'current'
+                        ? changeStep(stepIdx)
+                        : ''
                     "
                   >
                     <template v-if="step.status === 'complete'">
@@ -263,7 +264,7 @@ function changeStep(stepIdx: number) {
                         aria-hidden="true"
                       />
                       <div
-                        class="group relative flex items-center cursor-pointer"
+                        class="group relative flex items-center"
                         aria-current="step"
                       >
                         <span
@@ -284,7 +285,7 @@ function changeStep(stepIdx: number) {
                       />
                       <button
                         disabled="true"
-                        class="group relative flex items-center cursor-pointer"
+                        class="group relative flex items-center"
                       >
                         <span class="flex h-9 items-center" aria-hidden="true">
                           <span
@@ -1423,11 +1424,12 @@ function changeStep(stepIdx: number) {
                       class="text-gray-600 text-sm font-normal leading-tight"
                     >
                     </span
-                    ><span
+                    ><NuxtLink
+                      to="#"
                       class="text-brand-500 text-xs font-normal underline leading-[18px]"
                     >
-                      DonorsChoose.org.</span
-                    >
+                      DonorsChoose.org.
+                    </NuxtLink>
                   </div>
                 </div>
               </div>
