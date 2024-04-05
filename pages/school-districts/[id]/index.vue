@@ -247,10 +247,10 @@ const jobList = [
   <div class="border-t md:border-b border-gray-200 mb-24">
     <div class="md:container flex">
       <!-- Sidebar -->
-      <div class="flex flex-col">
+      <div class="flex flex-col border-r border-gray-200">
         <div class="sticky right-0 top-0 w-full">
           <aside
-            class="sticky top-0 z-[1] w-[260px] hidden lg:flex flex-col border-r border-gray-200 pt-8"
+            class="sticky top-0 z-[1] w-[260px] hidden lg:flex flex-col pt-8"
           >
             <!-- Tabs -->
             <div class="flex flex-col">

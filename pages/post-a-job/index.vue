@@ -622,7 +622,7 @@ function changeStep(stepIdx: number) {
                 />
 
                 <div
-                  class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+                  class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6 mb-0 sm:mb-12 xl:mb-0"
                 >
                   <label
                     for="jobDesc"
@@ -652,8 +652,6 @@ function changeStep(stepIdx: number) {
             </div>
 
             <div v-if="currentStep === 2" class="w-full">
-              {{ startDate }}
-              {{ values }}
               <div
                 class="mt-5 space-y-0 border-b border-gray-900/10 divide-y divide-gray-900/10 border-t sm:pb-0"
               >
