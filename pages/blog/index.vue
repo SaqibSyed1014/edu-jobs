@@ -123,7 +123,7 @@ onMounted(async () => {
                 <div class="flex flex-col gap-2 mb-6">
                   <p class="text-brand-600 text-sm">{{ blog.author.name }} • {{ blog.post_date }}</p>
                   <h3>
-                    <NuxtLink to="/blog/details" class="flex justify-between gap-3 text-lg hover:text-brand-600">
+                    <NuxtLink :to="`/blog/${blog.slug}`" class="flex justify-between gap-3 text-lg hover:text-brand-600">
                       {{ blog.title }}
                     </NuxtLink>
                   </h3>
@@ -153,14 +153,14 @@ onMounted(async () => {
               <div class="flex flex-col gap-2 mb-6">
                 <p class="text-brand-600 text-sm">{{ blog.author.name }} • {{ blog.post_date }}</p>
                 <h3>
-                  <NuxtLink to="/blog/details" class="flex items-center justify-between gap-3 text-lg hover:text-brand-600">
-                    {{ blog.title }}
+                  <NuxtLink :to="`/blog/${blog.slug}`" class="flex items-center justify-between gap-3 text-lg hover:text-brand-600">
+                    <div class="line-clamp-2">{{ blog.title }}</div>
                     <span class="shrink-0">
                       <SvgoArrowNarrowUpRight class="w-4 h-4" />
                     </span>
                   </NuxtLink>
                 </h3>
-                <p class="text-black-light font-normal">{{ blog.post_excerpt }}</p>
+                <p class="font-normal line-clamp-2">{{ blog.post_excerpt }}</p>
               </div>
               <div class="flex flex-wrap gap-2 font-medium text-sm">
                   <div class="text-[#6941C6] bg-[#F9F5FF] border border-[#E9D7FE] rounded-full px-2.5 py-0.5">
