@@ -56,7 +56,7 @@ const steps = ref([
   },
 ]);
 
-watch(currentStep, (newValue, oldValue) => {
+const unwatch = watch(currentStep, (newValue, oldValue) => {
   if (oldValue === 0 && newValue === 1) {
     // Update the status of Organization Information to 'complete'
     steps.value[0].status = "complete";
@@ -69,6 +69,7 @@ watch(currentStep, (newValue, oldValue) => {
     // Update the status of Application Details to 'complete'
     steps.value[2].status = "complete";
     steps.value[3].status = "complete";
+    unwatch(); // Stop watching for further changes
   }
 });
 
@@ -484,11 +485,7 @@ function changeStep(stepIdx: number) {
                     Start Date
                   </label>
                   <div class="mt-2 sm:col-span-2 sm:mt-0 relative">
-                    <DatePicker
-                      v-model="startDate"
-                      name="startDate"
-                      :values="values.startDate"
-                    />
+                    <DatePicker name="startDate" :values="values.startDate" />
                   </div>
                 </div>
                 <div
@@ -655,6 +652,8 @@ function changeStep(stepIdx: number) {
             </div>
 
             <div v-if="currentStep === 2" class="w-full">
+              {{ startDate }}
+              {{ values }}
               <div
                 class="mt-5 space-y-0 border-b border-gray-900/10 divide-y divide-gray-900/10 border-t sm:pb-0"
               >

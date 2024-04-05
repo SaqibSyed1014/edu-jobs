@@ -39,6 +39,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // use `toRef` to create reactive references to `name` prop which is passed to `useField`
@@ -102,6 +106,7 @@ watch(
               :value="inputValue"
               :placeholder="placeholder"
               :autofocus="autofocus"
+              :disabled="disabled"
               @input="handleChange"
               @blur="handleBlur"
               class="form-input w-full"

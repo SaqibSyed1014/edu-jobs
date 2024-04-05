@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import Datepicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
-import CalendarSvg from "~/assets/icons/calendar.svg";
 
 interface Props {
   name?: string;
@@ -44,12 +43,11 @@ const format = (date: any) => {
           placeholder="March 25, 2024"
           :value="value"
           input-class="pl-5"
-          type="text"
           label=""
           subLabel=""
         />
       </template>
     </Datepicker>
-    <CalendarSvg class="absolute h-5 top-4 right-3" />
+    <SvgoCalendar class="absolute h-5 top-4 right-3" />
   </div>
 </template>
