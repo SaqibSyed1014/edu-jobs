@@ -6,9 +6,10 @@ const showSpinner = ref<boolean>(true)
 const { params } = useRoute();
 const blogsStore = useBlogStore();
 
-const { blogDetails } = storeToRefs(blogsStore)
+const { blogDetails, blogs } = storeToRefs(blogsStore)
 
 onMounted(async () => {
+  if (!blogs.value.length) await blogsStore.fetchBlogs()
   await blogsStore.fetchBlogDetails(params.slug as string)
       .then(() => showSpinner.value = false)
 })
@@ -153,70 +154,41 @@ function copyURL() {
                 <BaseButton navigate-to="/blog" label="View all posts" class="hidden sm:inline-flex"/>
               </div>
               <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-8">
-                <div class="">
-                  <div class="mb-5">
-                    <img src="/images/blogs/blog-two.png" alt="blog-list-img1"
-                         class="w-full h-[240px] rounded-lg object-cover object-top">
-                  </div>
-                  <span
-                      class="bg-[#F9F5FF] rounded-full p-1 pr-2.5 border border-[#E9D7FE] text-xs text-brand-600 inline-flex items-center gap-2 mb-4">
+                <template v-for="blog in blogs.slice(1, 3)">
+                  <div class="">
+                    <div class="mb-5">
+                      <img :src="blog.post_photo.url" alt=""
+                           class="w-full h-[240px] rounded-lg object-cover object-top">
+                    </div>
+                    <span
+                        class="bg-[#F9F5FF] rounded-full p-1 pr-2.5 border border-[#E9D7FE] text-xs text-brand-600 inline-flex items-center gap-2 mb-4">
                     <span class="bg-white rounded-full py-0.5 px-2 border border-[#E9D7FE]">Design</span>
                     10 min read
                 </span>
-                  <h3 class="mb-2">
-                    <NuxtLink to="/blog/details"
-                              class="flex justify-between items-center gap-1 text-2xl hover:text-brand-600">
-                      UX review presentations
-                      <span class="shrink-0">
-                        <SvgoArrowNarrowUpRight class="w-4 h-4"/>
-                    </span>
-                    </NuxtLink>
-                  </h3>
-                  <p class="text-black-light font-normal mb-6">How do you create compelling presentations that wow your
-                    colleagues and impress your managers?</p>
-                  <div class="flex gap-3">
-                    <div class="overflow-hidden rounded-full w-12 h-12 shrink-0">
-                      <img src="/images/people/olivia.png" alt="" class="w-full h-full object-cover object-top">
-                    </div>
-                    <div class="">
-                      <h4>Olivia Rhye</h4>
-                      <p class="text-black-light font-normal">20 Jan 2024</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="">
-                  <div class="mb-5">
-                    <img src="/images/blogs/blog-one.png" alt="blog-detail"
-                         class="w-full h-[240px] rounded-lg object-cover object-top">
-                  </div>
-                  <span
-                      class="bg-[#F9F5FF] rounded-full p-1 pr-2.5 border border-[#E9D7FE] text-xs text-[#6941C6] inline-flex items-center gap-2 mb-4">
-                    <span class="bg-white rounded-full py-0.5 px-2 border border-[#E9D7FE]">Design</span>
-                    8 min read
-                </span>
-                  <h3 class="mb-2">
-                    <NuxtLink to="/blog/details"
-                              class="flex justify-between items-center gap-1 text-2xl hover:text-brand-600">
-                      UX review presentations
-                      <span class="shrink-0">
-                      <SvgoArrowNarrowUpRight class="w-4 h-4"/>
-                    </span>
-                    </NuxtLink>
-                  </h3>
-                  <p class="text-black-light font-normal mb-6">How do you create compelling presentations that wow your
-                    colleagues and impress your managers?</p>
-                  <div class="flex gap-3">
-                    <div class="overflow-hidden rounded-full w-12 h-12 shrink-0">
-                      <img src="/images/people/lana.png" alt="" class="w-full h-full object-cover object-top">
-                    </div>
-                    <div class="">
-                      <h4>Phoenix Baker</h4>
-                      <p class="text-black-light font-normal">19 Jan 2024</p>
+                    <h3 class="mb-2">
+                      <NuxtLink :to="`/blog/${blog.slug}`"
+                                class="flex justify-between items-center gap-2 text-2xl hover:text-brand-600">
+                        <div class="line-clamp-2">{{ blog.title }}</div>
+                        <span class="shrink-0">
+                            <SvgoArrowNarrowUpRight class="w-4 h-4"/>
+                        </span>
+                      </NuxtLink>
+                    </h3>
+                    <p class="line-clamp-2 font-normal mb-6">
+                      {{ blog.post_excerpt  }}
+                    </p>
+                    <div class="flex gap-3">
+                      <div class="overflow-hidden rounded-full w-12 h-12 shrink-0">
+                        <img :src="blog.author.avatar" alt="" class="w-full h-full object-cover object-top">
+                      </div>
+                      <div class="">
+                        <h4>{{ blog.author.name }}</h4>
+                        <p class="text-black-light font-normal">{{ blog.post_date }}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </template>
               </div>
-              <a href="blog-list.html" class="btn w-full sm:hidden">View all posts</a>
             </div>
           </div>
         </section>

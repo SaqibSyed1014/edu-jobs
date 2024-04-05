@@ -22,7 +22,6 @@ export const useBlogStore = defineStore('blogStore', {
             return await getBlogDetails(blogSlug)
                 .then(({ data }) => {
                     this.$state.blogDetails = data[0]
-                    console.log('Resp ', this.$state.blogDetails)
                 })
         }
     }
