@@ -123,7 +123,7 @@ onMounted(async () => {
                 <div class="flex flex-col gap-2 mb-6">
                   <p class="text-brand-600 text-sm">{{ blog.author.name }} • {{ blog.post_date }}</p>
                   <h3>
-                    <NuxtLink to="/blog/details" class="flex justify-between gap-3 text-lg hover:text-brand-600">
+                    <NuxtLink :to="`/blog/${blog.slug}`" class="flex justify-between gap-3 text-lg hover:text-brand-600">
                       {{ blog.title }}
                     </NuxtLink>
                   </h3>
@@ -153,7 +153,7 @@ onMounted(async () => {
               <div class="flex flex-col gap-2 mb-6">
                 <p class="text-brand-600 text-sm">{{ blog.author.name }} • {{ blog.post_date }}</p>
                 <h3>
-                  <NuxtLink to="/blog/details" class="flex items-center justify-between gap-3 text-lg hover:text-brand-600">
+                  <NuxtLink :to="`/blog/${blog.slug}`" class="flex items-center justify-between gap-3 text-lg hover:text-brand-600">
                     {{ blog.title }}
                     <span class="shrink-0">
                       <SvgoArrowNarrowUpRight class="w-4 h-4" />
