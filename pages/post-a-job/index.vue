@@ -198,13 +198,19 @@ function handleButtonClick(e: number) {
 // Watch for changes in currentStep prop
 watch(
   () => currentStep.value,
-  (newValue) => {
+  (newValue: number) => {
     currentStep.value = newValue;
   }
 );
 
 function changeStep(stepIdx: number) {
+  
   currentStep.value = stepIdx;
+  // nextStep(currentStep.value)
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
 }
 </script>
 
