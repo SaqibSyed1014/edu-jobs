@@ -16,6 +16,9 @@ onMounted(async () => {
 function copyURL() {
   const currentURL = window.location.href;
   navigator.clipboard.writeText(currentURL)
+  useNuxtApp().$toast.success('Link Copied!', {
+    icon: false
+  })
 }
 </script>
 
