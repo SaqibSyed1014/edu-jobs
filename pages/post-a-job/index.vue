@@ -11,7 +11,7 @@ const paymentType = ref(["Cash", "Card"]);
 const appMethods = ref(["Email", "Text"]);
 const jobDesc = ref("");
 const router = useRouter();
-const startDate = ref("");
+const startDate = ref(new Date());
 const errorMessage = ref(false);
 const toolbarOptions = [
   ["bold", "italic", "underline", "strike"], // toggled buttons
@@ -485,7 +485,7 @@ function changeStep(stepIdx: number) {
                     Start Date
                   </label>
                   <div class="mt-2 sm:col-span-2 sm:mt-0 relative">
-                    <DatePicker name="startDate" :values="values.startDate" />
+                    <DatePicker v-model="startDate" name="startDate" :values="values.startDate" />
                   </div>
                 </div>
                 <div
@@ -683,7 +683,7 @@ function changeStep(stepIdx: number) {
                     Application deadline date
                   </label>
                   <div class="mt-2 sm:col-span-2 relative">
-                    <DatePicker name="deadlineDate" />
+                    <DatePicker name="deadlineDate" :values="values.deadlineDate" />
                   </div>
                 </div>
               </div>
@@ -1296,6 +1296,7 @@ function changeStep(stepIdx: number) {
                 <BaseButton
                   label="Back"
                   color="brand"
+                  type="button"
                   class="md:mt-5 md:mb-8 w-full"
                   :disabled="false"
                   v-if="currentStep != 0"

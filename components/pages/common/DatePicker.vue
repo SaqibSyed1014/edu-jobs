@@ -6,15 +6,17 @@ interface Props {
   name?: string;
   placeholder?: string;
   enableTimePicker?: boolean;
+  values: string
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   name: "",
   placeholder: "",
   enableTimePicker: true,
+  values: "values"
 });
 
-const date = ref("");
+const date = ref(props?.values?  props?.values : '');
 
 const format = (date: any) => {
   return date.toLocaleDateString("en-US", {
