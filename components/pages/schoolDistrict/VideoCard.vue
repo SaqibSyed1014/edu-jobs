@@ -4,11 +4,12 @@ defineProps<{ data: any[] }>();
 
 <template>
   <div
-    class="grid md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8 border-t border-gray-200"
+    class="grid sm:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8 border-t border-gray-200"
   >
     <div
       v-for="(item, index) in data"
-      class="flex-col justify-start items-start gap-4 inline-flex lg:pt-6"
+      :key="index"
+      class="flex-col justify-start items-start gap-4 inline-flex pt-6"
     >
       <div class="relative">
         <img
