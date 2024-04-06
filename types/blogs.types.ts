@@ -10,6 +10,7 @@ interface Blog {
     updatedAt: Date
     createdAt: Date
     slug: string
+    reading_time: string
     post_photo: {
         id: string
         url: string

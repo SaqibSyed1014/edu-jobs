@@ -40,7 +40,8 @@ function copyURL() {
                 class="bg-[#F9F5FF] rounded-full p-1 pr-2.5 border border-[#E9D7FE] text-xs text-brand-600 inline-flex items-center gap-2 mb-4">
                 <span class="bg-white rounded-full py-0.5 px-2 border border-[#E9D7FE]">
                   {{ blogDetails.category.category_name }}
-                </span> 8 min read
+                </span>
+              {{ blogDetails.reading_time }}
             </span>
               <h2 class="text-4xl md:text-5xl mb-6">
                 {{ blogDetails.title }}
@@ -51,7 +52,7 @@ function copyURL() {
             </div>
             <div>
               <div class="mb-8 w-full md:w-[65%] h-[140px] md:h-[240px]">
-                <img :src="blogDetails.post_photo.url" alt="" class="h-full w-full object-cover"/>
+                <img :src="blogDetails.post_photo?.url ?? '/images/others/blog-mockup.jpg'" alt="" class="h-full w-full object-cover"/>
               </div>
               <div class="flex items-center gap-24">
                 <div class="flex gap-12">
@@ -157,13 +158,15 @@ function copyURL() {
                 <template v-for="blog in blogs.slice(1, 3)">
                   <div class="">
                     <div class="mb-5">
-                      <img :src="blog.post_photo.url" alt=""
-                           class="w-full h-[240px] rounded-lg object-cover object-top">
+                      <img :src="blog.post_photo?.url ?? '/images/others/blog-mockup.jpg'" alt=""
+                           class="w-full h-[240px] rounded-lg object-cover">
                     </div>
                     <span
                         class="bg-[#F9F5FF] rounded-full p-1 pr-2.5 border border-[#E9D7FE] text-xs text-brand-600 inline-flex items-center gap-2 mb-4">
-                    <span class="bg-white rounded-full py-0.5 px-2 border border-[#E9D7FE]">Design</span>
-                    10 min read
+                    <span class="bg-white rounded-full py-0.5 px-2 border border-[#E9D7FE]">
+                      {{ blog.category.category_name }}
+                    </span>
+                    {{ blog.reading_time }}
                 </span>
                     <h3 class="mb-2">
                       <NuxtLink :to="`/blog/${blog.slug}`"
@@ -179,7 +182,7 @@ function copyURL() {
                     </p>
                     <div class="flex gap-3">
                       <div class="overflow-hidden rounded-full w-12 h-12 shrink-0">
-                        <img :src="blog.author.avatar" alt="" class="w-full h-full object-cover object-top">
+                        <img :src="blog.author.avatar ?? '/images/others/avatar-mockup.jpg'" alt="" class="w-full h-full object-cover object-top">
                       </div>
                       <div class="">
                         <h4>{{ blog.author.name }}</h4>

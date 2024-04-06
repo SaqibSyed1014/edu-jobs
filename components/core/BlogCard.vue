@@ -3,9 +3,12 @@ defineProps<{ blog: Blog }>()
 </script>
 
 <template>
-  <div class="blog-post-card grid md:grid-cols-2 gap-5">
+  <div class="blog-post-card grid lg:grid-cols-2 gap-5">
     <div class="blog-image rounded-2xl overflow-hidden">
-      <img :src="blog.post_photo.url" alt="Blog Image" class="w-full h-full object-cover">
+      <div class="h-60 sm:h-52">
+        <img :src="blog.post_photo?.url ?? '/images/others/blog-mockup.jpg'" alt="Blog Image"
+              class="w-full h-full object-cover">
+      </div>
     </div>
     <div class="flex flex-col gap-6">
       <div class="blog-details">
@@ -23,7 +26,7 @@ defineProps<{ blog: Blog }>()
       </div>
       <div class="author-details flex gap-3">
         <div class="w-10 h-10 rounded-full overflow-hidden">
-          <img v-if="blog.author.avatar" :src="`/images/people/${blog.author.avatar}`" alt="Author Image" class="w-full h-full object-cover">
+          <img :src="blog.author.avatar ?? '/images/others/avatar-mockup.jpg'" alt="Author Image" class="w-full h-full object-cover">
         </div>
         <div class="text-sm">
           <p class="font-semibold">
