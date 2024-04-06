@@ -44,6 +44,14 @@ const blogList = [
 ]
 
 const blogsSlider = ref(null)
+
+const blogsStore = useBlogStore()
+
+const { blogs } = storeToRefs(blogsStore)
+
+onMounted(async () => {
+  await blogsStore.fetchBlogs()
+})
 </script>
 
 <template>
@@ -59,13 +67,13 @@ const blogsSlider = ref(null)
           </p>
         </div>
 
-        <div class="hidden sm:grid grid-cols-2 gap-x-8 gap-y-12 py-24">
-          <template v-for="blog in blogList">
+        <div v-if="blogs.length" class="hidden sm:grid grid-cols-2 gap-x-8 gap-y-12 py-24">
+          <template v-for="blog in blogs">
             <BlogCard :blog="blog" />
           </template>
         </div>
 
-        <div class="sm:hidden">
+        <div v-if="blogs.length" class="sm:hidden">
           <swiper-container
               ref="blogsSlider"
               :loop="true"
@@ -74,7 +82,7 @@ const blogsSlider = ref(null)
               :space-between="20"
               class="blogs-mobile-slider"
           >
-            <swiper-slide v-for="blog in blogList">
+            <swiper-slide v-for="blog in blogs">
               <BlogCard :blog="blog" />
             </swiper-slide>
           </swiper-container>
