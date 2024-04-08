@@ -1,6 +1,53 @@
 <script setup lang="ts">
 let toggleSideBar = ref(false);
 
+const showSpinner = ref<boolean>(true);
+const districtStore = useDisrictsStore();
+const { distictsList, total_page } = storeToRefs(districtStore);
+const currentPage = ref<number>(1);
+const totalPages = ref(total_page);
+const itemsPerPage = ref<number>(12);
+
+onMounted(async () => {
+  await fetchDistricts(); // Initial fetch
+  // Watch for changes in currentPage value and recall the API
+  watchEffect(() => {
+    fetchDistricts();
+  });
+});
+
+async function fetchDistricts() {
+  showSpinner.value = true;
+  const query = {
+    itemsPerPage: itemsPerPage.value,
+    page: currentPage.value,
+  };
+  await districtStore.fetchDistricts(query);
+  showSpinner.value = false;
+}
+// Function to handle pagination
+const paginate = (page: number | "prev" | "next") => {
+  if (page === "prev") {
+    currentPage.value--;
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  } else if (page === "next") {
+    currentPage.value++;
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  } else {
+    currentPage.value = page;
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }
+};
+
 function togglingSidebarVisibility() {
   toggleSideBar.value = !toggleSideBar.value;
   if (toggleSideBar.value) {
@@ -135,7 +182,17 @@ const selectAlphabet = (index: number) => {
 
 <template>
   <div class="border-t border-b border-gray-200 mb-20">
-    <div class="container flex w-full">
+    <div v-if="showSpinner">
+      <div class="container">
+        <div
+          class="flex justify-center items-center h-[calc(100vh-80px)] w-full"
+        >
+          <BaseSpinner size="lg" :show-loader="showSpinner" />
+        </div>
+      </div>
+    </div>
+
+    <div v-else class="container flex w-full">
       <!-- For Mobile -->
       <div class="block xl:hidden">
         <DistrickSideBarWrapper
@@ -369,19 +426,22 @@ const selectAlphabet = (index: number) => {
             v-if="isGridView"
             class="grid sm:grid-cols-2 pt-8 lg:grid-cols-3 gap-6"
           >
-            <div v-for="(item, index) in schoolList" :key="index">
-              <DIstrictGridCard :data="item" :isSchool="true" />
+            <div v-for="(item, index) in distictsList" :key="index">
+              <DIstrictsGridCard :data="item" :isSchool="true" />
             </div>
           </div>
           <!-- Lsit View -->
           <div v-if="!isGridView" class="grid gap-6 pt-8">
-            <div v-for="(item, index) in schoolList" :key="index">
-              <DistrictListCard :data="item" :isSchool="true" />
+            <div v-for="(item, index) in distictsList" :key="index">
+              <DistrictsListCard :data="item" :isSchool="true" />
             </div>
           </div>
         </div>
-
-        <Pagination />
+        <CustomPagination
+          :current-page="currentPage"
+          :total-pages="totalPages"
+          @paginate="paginate"
+        />
       </div>
     </div>
   </div>

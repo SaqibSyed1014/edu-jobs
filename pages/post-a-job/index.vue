@@ -204,7 +204,6 @@ watch(
 );
 
 function changeStep(stepIdx: number) {
-  
   currentStep.value = stepIdx;
   // nextStep(currentStep.value)
   window.scrollTo({
@@ -491,7 +490,12 @@ function changeStep(stepIdx: number) {
                     Start Date
                   </label>
                   <div class="mt-2 sm:col-span-2 sm:mt-0 relative">
-                    <DatePicker v-model="startDate" name="startDate" :values="values.startDate" />
+                    <DatePicker
+                      v-model="startDate"
+                      name="startDate"
+                      :values="values.startDate"
+                      :error="errors.startDate"
+                    />
                   </div>
                 </div>
                 <div
@@ -689,7 +693,11 @@ function changeStep(stepIdx: number) {
                     Application deadline date
                   </label>
                   <div class="mt-2 sm:col-span-2 relative">
-                    <DatePicker name="deadlineDate" :values="values.deadlineDate" />
+                    <DatePicker
+                      name="deadlineDate"
+                      :values="values.deadlineDate"
+                      :error="errors.deadlineDate"
+                    />
                   </div>
                 </div>
               </div>

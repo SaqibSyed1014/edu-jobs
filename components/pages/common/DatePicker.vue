@@ -1,22 +1,25 @@
 <script lang="ts" setup>
 import Datepicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
+import { Form, Field, ErrorMessage } from "vee-validate";
 
 interface Props {
   name?: string;
   placeholder?: string;
   enableTimePicker?: boolean;
-  values: string
+  values: string;
+  error: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   name: "",
   placeholder: "",
   enableTimePicker: true,
-  values: "values"
+  values: "values",
+  error: "",
 });
 
-const date = ref(props?.values?  props?.values : '');
+const date = ref(props?.values ? props?.values : "");
 
 const format = (date: any) => {
   return date.toLocaleDateString("en-US", {
@@ -39,17 +42,49 @@ const format = (date: any) => {
       :enable-time-picker="enableTimePicker"
     >
       <template #input-icon> </template>
-      <template #dp-input="{ value }">
+      <template
+        #dp-input="{
+          value,
+          onInput,
+          onEnter,
+          onTab,
+          onClear,
+          onBlur,
+          onKeypress,
+          onPaste,
+          isMenuOpen,
+        }"
+      >
+        <input
+          type="text"
+          class="form-input w-full"
+          placeholder="March 25, 2024"
+          :value="value"
+          @change="(event: Event) => onInput((event.target as HTMLInputElement).value)"
+          @keydown.enter="onEnter"
+          @blur="onBlur"
+          @keydown.tab="onTab"
+          @paste="onPaste"
+          :class="{ 'has-error': error }"
+        />
+        <!-- -->
         <TextInput
           :name="name"
+          class="sr-only"
           placeholder="March 25, 2024"
           :value="value"
           input-class="pl-5"
           label=""
           subLabel=""
+          :onInput="onInput"
         />
       </template>
     </Datepicker>
     <SvgoCalendar class="absolute h-5 top-4 right-3" />
+
+    <ErrorMessage
+      class="text-red-500 text-sm font-normal leading-tight"
+      :name="name"
+    />
   </div>
 </template>

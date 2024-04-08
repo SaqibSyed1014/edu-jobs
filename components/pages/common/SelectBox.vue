@@ -78,7 +78,7 @@ const {
         as="select"
         :class="[
           'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-[11px] px-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
-          [errorMessage && 'border border-red-300'], // Apply border-red-300 class if errorMessage exists
+          [errorMessage && 'ring-2 !border-0 !ring-error-400'], // Apply border-red-300 class if errorMessage exists
         ]"
       >
         <option value="" disabled>Select</option>
