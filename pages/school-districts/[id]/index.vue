@@ -4,6 +4,7 @@ const activeTab = ref(0); // Default to first tab
 // Array of tab names and icons
 const tabs = ref([
   { name: "About School District" },
+  { name: "Open Jobs" },
   { name: "List of Schools" },
   { name: "Photos" },
   { name: "Videos" },
@@ -149,16 +150,107 @@ const videoList = ref([
     date: "20 Jan 2024",
   },
 ]);
+
+const jobList = [
+  {
+    logo: "logo-one.jpg",
+    postedAt: "1h ago",
+    title: "Marketing Associate",
+    country: "Polymath, Melbourne, AU",
+    category: "Design",
+    description:
+      "We’re looking for a mid-level product designer to join our team.",
+    duration: "Full-time",
+    wage: "80k - 100k",
+  },
+  {
+    logo: "logo-two.jpg",
+    postedAt: "6h ago",
+    title: "Senior Graphic Designer",
+    country: "Polymath, Melbourne, AU",
+    category: "Design",
+    description:
+      "We’re looking for a mid-level product designer to join our team.",
+    duration: "Full-time",
+    wage: "80k - 100k",
+  },
+  {
+    logo: "logo-three.jpg",
+    postedAt: "2h ago",
+    title: "Lead Product Designer",
+    country: "Polymath, Melbourne, AU",
+    category: "Design",
+    description:
+      "We’re looking for a mid-level product designer to join our team.",
+    duration: "Full-time",
+    wage: "80k - 100k",
+  },
+  {
+    logo: "logo-four.jpg",
+    postedAt: "6h ago",
+    title: "Senior Graphic Designer",
+    country: "Polymath, Melbourne, AU",
+    category: "Design",
+    description:
+      "We’re looking for a mid-level product designer to join our team.",
+    duration: "Full-time",
+    wage: "80k - 100k",
+  },
+  {
+    logo: "logo-two.jpg",
+    postedAt: "6h ago",
+    title: "Senior Graphic Designer",
+    country: "Polymath, Melbourne, AU",
+    category: "Design",
+    description:
+      "We’re looking for a mid-level product designer to join our team.",
+    duration: "Full-time",
+    wage: "80k - 100k",
+  },
+  {
+    logo: "logo-one.jpg",
+    postedAt: "6h ago",
+    title: "Senior Graphic Designer",
+    country: "Polymath, Melbourne, AU",
+    category: "Design",
+    description:
+      "We’re looking for a mid-level product designer to join our team.",
+    duration: "Full-time",
+    wage: "80k - 100k",
+  },
+  {
+    logo: "logo-two.jpg",
+    postedAt: "2h ago",
+    title: "Lead Product Designer",
+    country: "Polymath, Melbourne, AU",
+    category: "Design",
+    description:
+      "We’re looking for a mid-level product designer to join our team.",
+    duration: "Full-time",
+    wage: "80k - 100k",
+  },
+  {
+    logo: "logo-three.jpg",
+    postedAt: "2h ago",
+    title: "Lead Product Designer",
+    country: "Polymath, Melbourne, AU",
+    category: "Design",
+    description:
+      "We’re looking for a mid-level product designer to join our team.",
+    duration: "Full-time",
+    wage: "80k - 100k",
+  },
+];
 </script>
 
 <template>
   <div class="border-t md:border-b border-gray-200 mb-24">
     <div class="md:container flex">
       <!-- Sidebar -->
-      <div class="flex flex-col">
+      <div class="flex flex-col border-r border-gray-200">
         <div class="sticky right-0 top-0 w-full">
           <aside
-            class="sticky top-0 z-[1] w-[260px] hidden lg:flex flex-col border-r border-gray-200 pt-8"
+            class="sticky top-0 z-[1] w-[260px] hidden lg:flex flex-col pt-8"
           >
             <!-- Tabs -->
             <div class="flex flex-col">
@@ -348,10 +440,12 @@ const videoList = ref([
                       activeTab === 0
                         ? "About School District"
                         : activeTab === 1
-                        ? "List of Schools"
+                        ? "List of Jobs"
                         : activeTab === 2
-                        ? "Photos"
+                        ? "List of Schools"
                         : activeTab === 3
+                        ? "Photos"
+                        : activeTab === 4
                         ? "Videos"
                         : ""
                     }}
@@ -363,10 +457,12 @@ const videoList = ref([
                       activeTab === 0
                         ? "Read out the information about patlo alto unified school."
                         : activeTab === 1
-                        ? "Have a look to the list of schools."
+                        ? "Have a look to the list of Jobs."
                         : activeTab === 2
-                        ? "Have a glimpse of some cherished moments from Palo Alto Unified District"
+                        ? "Have a look to the list of schools."
                         : activeTab === 3
+                        ? "Have a glimpse of some cherished moments from Palo Alto Unified District"
+                        : activeTab === 4
                         ? "Here are some videos to help you learn more"
                         : ""
                     }}
@@ -399,11 +495,23 @@ const videoList = ref([
 
             <AboutSD :data="listData" v-if="activeTab === 0" />
 
-            <ListSchools :data="schoolList" v-if="activeTab === 1" />
+            <div v-if="activeTab === 1">
+              <div class="grid gap-6 grid-cols-1">
+                <template v-for="job in jobList">
+                  <JobCard
+                    :job="job"
+                    :show-job-description="false"
+                    :card-form="false"
+                  />
+                </template>
+              </div>
+              <Pagination />
+            </div>
+            <ListSchools :data="schoolList" v-if="activeTab === 2" />
 
-            <PhotoCard :data="photoList" v-if="activeTab === 2" />
+            <PhotoCard :data="photoList" v-if="activeTab === 3" />
 
-            <VideoCard v-if="activeTab === 3" :data="videoList" />
+            <VideoCard v-if="activeTab === 4" :data="videoList" />
           </div>
         </div>
       </main>

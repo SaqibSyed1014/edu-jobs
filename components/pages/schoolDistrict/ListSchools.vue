@@ -6,11 +6,11 @@ defineProps<{ data: any[] }>();
   <div class="pt-5 border-t border-gray-200">
     <div class="grid gap-6">
       <div v-for="(item, index) in data" :key="index">
-        <DistrictListCard :data="item" />
+        <DistrictListCard :data="item" :is-school="true" />
       </div>
     </div>
 
-    <div class="mt-6 pt-5 border-t border-gray-200">
+    <div class="mt-6">
       <Pagination />
     </div>
   </div>
