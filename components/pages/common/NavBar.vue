@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import HamburgerIcon from "~/assets/icons/hamburger.svg";
 import XCloseIcon from "~/assets/icons/x-close.svg";
+import OrganizationsMegaMenu from "~/components/pages/common/OrganizationsMegaMenu.vue";
 
-const menuLinks = [
+const menuLinks : { label:string, path?: string, type?: 'link' | 'megaMenu' }[] = [
  /* {
     label: "Home",
     path: "/",
@@ -10,26 +11,21 @@ const menuLinks = [
   {
     label: "Jobs",
     path: "/jobs",
+    type: 'link'
   },
   {
-    label: "School Districts",
-    path: "/school-districts",
-  },
-  {
-    label: "Charter & Private Schools",
-    path: "/charter-schools-private-schools",
-  },
-  {
-    label: "Colleges",
-    path: "/colleges",
+    label: "Organizations",
+    type: 'megaMenu'
   },
   {
     label: "Pricing",
     path: "/pricing",
+    type: 'link'
   },
   {
     label: "Our Blog",
     path: "/blog",
+    type: 'link'
   },
 ];
 
@@ -62,8 +58,11 @@ function togglingSidebarVisibility() {
             class="flex gap-5 xl:gap-8 flex-nowrap items-center font-medium text-gray-600"
           >
             <template v-for="link in menuLinks">
-              <li class="hover:text-brand-500 transition">
-                <NuxtLink :to="link.path">{{ link.label }}</NuxtLink>
+              <li>
+                <NuxtLink v-if="link.type === 'link'" :to="link.path" class="hover:text-brand-500 transition">{{ link.label }}</NuxtLink>
+                <MegaMenu v-else-if="link.type === 'megaMenu'" :label="link.label">
+                  <OrganizationsMegaMenu />
+                </MegaMenu>
               </li>
             </template>
           </ul>
