@@ -202,7 +202,7 @@ const selectAlphabet = (index: number) => {
       </div>
 
       <!-- for desktop -->
-      <div class="hidden xl:inset-y-0 xl:z-50 xl:flex xl:w-1/5 xl:flex-col">
+      <div class="hidden xl:inset-y-0 xl:z-30 xl:flex xl:w-1/5 xl:flex-col">
         <div
           class="flex grow flex-col gap-y-5 pt-8 overflow-y-auto border-r pr-4 border-gray-200 bg-transparent ring-1 ring-white/5"
         >
