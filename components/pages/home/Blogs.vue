@@ -98,7 +98,7 @@ onMounted(async () => {
         </div>
 
         <div>
-          <BaseButton navigate-to="/blog" label="More from the blog" color="primary" :full-sized-on-small="true">
+          <BaseButton navigate-to="/blog" label="More from the Blog" color="primary" :full-sized-on-small="true">
             <template #append-icon>
               <ArrowUpRightIcon class="w-3 h-3" />
             </template>

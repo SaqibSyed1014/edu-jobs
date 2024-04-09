@@ -116,8 +116,8 @@ const mapOptions = {
             </div>
             <div class="col-span-2">
               <label for="contact-checkbox" class="text-black-light font-normal inline-flex items-start sm:items-center gap-3">
-                <input type="checkbox" class="form-checkbox text-black" id="contact-checkbox" />
-                <span>By checking this box, I consent to the <a href="#" class="underline hover:no-underline">privacy policy</a>.</span>
+                <input type="checkbox" class="form-checkbox" id="contact-checkbox" />
+                <span>By checking this box, I consent to the <NuxtLink to="/privacy-policy" class="underline hover:no-underline">privacy policy</NuxtLink>.</span>
               </label>
             </div>
             <BaseButton label="Send message" :full-sized="true" />

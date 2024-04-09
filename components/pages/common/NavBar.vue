@@ -27,6 +27,11 @@ const menuLinks : { label:string, path?: string, type?: 'link' | 'megaMenu' }[] 
     path: "/blog",
     type: 'link'
   },
+  {
+    label: "Request a Demo",
+    path: "/contact-us",
+    type: 'link'
+  },
 ];
 
 let toggleSideBar = ref(false);

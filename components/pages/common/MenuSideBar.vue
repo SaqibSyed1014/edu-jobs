@@ -18,11 +18,11 @@ const emits = defineEmits(['toggleSidebar'])
       </ul>
 
       <div class="cta-btns flex flex-col sm:hidden gap-3 py-6">
-        <BaseButton label="Post a Job" color="primary" full-sized/>
+        <BaseButton navigate-to="/post-a-job" label="Post a Job" color="primary" full-sized @click.stop="emits('toggleSidebar')" />
 
-        <BaseButton label="Log in" :plane="true" full-sized/>
+        <BaseButton navigate-to="/login" label="Log in" :plane="true" full-sized @click.stop="emits('toggleSidebar')" />
 
-        <BaseButton label="Sign up" :outline="true" full-sized/>
+        <BaseButton navigate-to="/signup" label="Sign up" :outline="true" full-sized @click.stop="emits('toggleSidebar')" />
       </div>
     </nav>
   </SideBarWrapper>

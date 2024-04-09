@@ -76,7 +76,7 @@ const organizations = [
                 </div>
                 <p class="text-sm shrink-0 text-ellipsis">{{ org.name }}</p>
               </div>
-              <div class="border border-gray-300 text-gray-900 shrink-0 text-sm px-1">
+              <div class="border border-gray-300 shadow-xs rounded-md shrink-0 text-sm px-1">
                 {{ org.counts }} jobs
               </div>
             </div>
@@ -84,8 +84,11 @@ const organizations = [
         </div>
       </div>
     </div>
-    <div class="text-end pt-4">
-      <BaseButton navigate-to="" label="Create an organization account" />
+
+    <hr class="my-4">
+
+    <div class="text-end">
+      <BaseButton navigate-to="" label="Create an Organization Account" />
     </div>
   </div>
 </template>
