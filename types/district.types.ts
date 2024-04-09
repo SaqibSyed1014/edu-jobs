@@ -1,37 +1,3 @@
-// interface Hit {
-//   document: {
-//     active: number;
-//     city: string;
-//     country: string;
-//     country_code: string;
-//     county_name: string;
-//     district_description: string;
-//     district_display_name: string;
-//     district_name: string;
-//     facebook_page: string;
-//     geo_lat: number;
-//     geo_lng: number;
-//     id: string;
-//     instagram_handle: string;
-//     logo_path: string;
-//     nces_district_id: string;
-//     phone: string;
-//     school_count: number;
-//     state_code: string;
-//     state_name: string;
-//     street_address: string;
-//     student_count: number;
-//     teacher_count: number;
-//     twitter_handle: string;
-//     verified: number;
-//     website_url: string;
-//     zip_code: string;
-//     zip_code_ext: string;
-//   };
-//   highlight: any; // You may want to define a specific type for highlight
-//   highlights: any[]; // You may want to define a specific type for highlights
-// }
-
 interface Document {
   active: number;
   city: string;

@@ -14,8 +14,8 @@ export const useDisrictsStore = defineStore('districtStore', {
         async fetchDistricts(query:any) {
             const { hits, out_of} = await getDistrictList(query)
             // const response = await useGet(`/collections/districts/documents/search?q=*&per_page=10`)
-            this.distictsList = hits
-            this.total_page = out_of
+            this.$state.distictsList = hits
+            this.$state.total_page = out_of
         },
     }
 })

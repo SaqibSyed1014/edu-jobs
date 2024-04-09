@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   title: String;
   options: any;
   totalJobs: string;
@@ -12,14 +12,13 @@ defineProps<{
   >
     <div class="justify-between items-center inline-flex w-full pb-2">
       <div class="justify-start items-center gap-3 flex">
-        <!-- <component :is="" class="w-5 h-5 text-gray-500" /> -->
         <component :is="options.icon" class="size-6" />
         <div class="text-gray-700 text-base font-semibold leading-normal">
           {{ title }}
         </div>
         <span class="text-gray-400 text-base font-normal leading-normal"
-          >({{ totalJobs }})</span
-        >
+          >({{ totalJobs }})
+        </span>
       </div>
     </div>
 

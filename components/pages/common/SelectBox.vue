@@ -60,7 +60,7 @@ const {
     <label
       v-if="label"
       :for="name"
-      class="block text-sm font-medium md:font-semibold text-gray-700 sm:pt-1.5"
+      class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
     >
       {{ label }}
       <span
@@ -71,7 +71,7 @@ const {
         {{ subLabel }}
       </span>
     </label>
-    <div class="mt-2 sm:col-span-2 sm:mt-0 pt-5 sm:pt-0">
+    <div class="sm:col-span-2 sm:mt-0 pt-1">
       <Field
         v-slot="{ value }"
         :name="name"

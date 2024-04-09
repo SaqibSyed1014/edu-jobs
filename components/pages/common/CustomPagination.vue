@@ -82,7 +82,7 @@ const displayedPages = computed(() => {
             type="button"
             :class="[
               pageNumber === currentPage
-                ? 'flex items-center justify-center px-3 py-2 leading-tight text-gray-800 bg-gray-100 hover:text-gray-700'
+                ? 'flex items-center justify-center px-3 py-2 leading-tight text-gray-800 bg-gray-100 hover:text-gray-700 rounded-lg'
                 : 'flex items-center justify-center px-3 py-2 leading-tight text-gray-600 hover:text-gray-700',
             ]"
             @click="pageNumber === '...' ? '' : $emit('paginate', pageNumber)"

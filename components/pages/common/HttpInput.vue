@@ -61,7 +61,7 @@ const {
   >
     <label
       :for="name"
-      class="block text-sm font-medium md:font-semibold text-gray-700 sm:pt-1.5"
+      class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
     >
       {{ label }}
       <span

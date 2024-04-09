@@ -19,8 +19,10 @@ onMounted(async () => {
 async function fetchDistricts() {
   showSpinner.value = true;
   const query = {
-    itemsPerPage: itemsPerPage.value,
+    q: "*",
+    per_page: itemsPerPage.value,
     page: currentPage.value,
+    // filter_by: `school_count:<${25}`,
   };
   await districtStore.fetchDistricts(query);
   showSpinner.value = false;

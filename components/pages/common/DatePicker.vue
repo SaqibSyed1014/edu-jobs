@@ -15,11 +15,16 @@ const props = withDefaults(defineProps<Props>(), {
   name: "",
   placeholder: "",
   enableTimePicker: true,
-  values: "values",
+  values: "",
   error: "",
 });
 
-const date = ref(props?.values ? props?.values : "");
+const date = ref(props?.values ?? "");
+
+const onInput = (event: Event) => {
+  // Update the value of `date` with the input's value
+  date.value = (event.target as HTMLInputElement).value;
+};
 
 const format = (date: any) => {
   return date.toLocaleDateString("en-US", {
@@ -28,46 +33,35 @@ const format = (date: any) => {
     year: "numeric",
   });
 };
+const textInputOptions = {
+  format: "MM.dd.yyyy HH:mm",
+};
 </script>
 
 <template>
   <div class="relative">
     <Datepicker
       v-model="date"
-      :min-date="new Date()"
       class="fixed-input-icon"
       :format="format"
       placeholder="March 25, 2024"
       autoApply
-      :enable-time-picker="enableTimePicker"
+      :text-input="textInputOptions"
     >
       <template #input-icon> </template>
-      <template
-        #dp-input="{
-          value,
-          onInput,
-          onEnter,
-          onTab,
-          onClear,
-          onBlur,
-          onKeypress,
-          onPaste,
-          isMenuOpen,
-        }"
-      >
+      <template #dp-input="{ value, onEnter, onTab, onBlur, onPaste }">
         <input
           type="text"
           class="form-input w-full"
           placeholder="March 25, 2024"
           :value="value"
-          @change="(event: Event) => onInput((event.target as HTMLInputElement).value)"
+          @input="onInput"
           @keydown.enter="onEnter"
           @blur="onBlur"
           @keydown.tab="onTab"
           @paste="onPaste"
           :class="{ 'has-error': error }"
         />
-        <!-- -->
         <TextInput
           :name="name"
           class="sr-only"
@@ -76,7 +70,6 @@ const format = (date: any) => {
           input-class="pl-5"
           label=""
           subLabel=""
-          :onInput="onInput"
         />
       </template>
     </Datepicker>
