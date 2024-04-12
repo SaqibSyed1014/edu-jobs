@@ -23,6 +23,12 @@ const showMenu = ref(false);
 const props = defineProps<{
   label: string
 }>();
+
+const route = useRoute();
+
+watch(() => route.name, () => {
+  if (showMenu.value) showMenu.value = false
+})
 </script>
 
 <style>
