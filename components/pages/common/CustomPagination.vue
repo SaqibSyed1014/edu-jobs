@@ -19,7 +19,7 @@ watch(
 watch(
   () => props.totalPages,
   (newValue) => {
-    totalPages.value = newValue;
+    totalPages.value = Math.ceil(newValue / 12);
   }
 );
 

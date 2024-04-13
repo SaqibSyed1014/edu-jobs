@@ -8,7 +8,7 @@ function convertQueryToString(query: { [key: string]: any }): string {
         .join('&');
 }
 
-const getJobsList = (query: any) :Promise<any> => {
+const getJobsList = (query: any) :Promise<JobResponseType> => {
     const queryString = convertQueryToString(query);
     return $fetch(`https://9gj45ofprzq1yhi2p-1.a1.typesense.net/collections/jobs/documents/search?${queryString}`, {
         method: 'get',

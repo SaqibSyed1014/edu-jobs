@@ -5,7 +5,7 @@ interface Job {
     organization_id: string
     organization_slug: string
     organization_type?: string
-    date_posted: string
+    date_posted: Date
     date_posting_expires?: string
     start_date?: string
     job_title: string
@@ -28,4 +28,21 @@ interface Job {
     employment_type?: string
     geo_location?: string
     application_deadline?: string
+}
+
+interface JobHit {
+    document: Job;
+    highlight: Record<string, any>;
+    highlights: any[];
+}
+
+interface JobResponseType {
+    facet_counts: any[];
+    found: number;
+    hits: JobHit[];
+    out_of: number;
+    page: number;
+    request_params: RequestParams;
+    search_cutoff: boolean;
+    search_time_ms: number;
 }

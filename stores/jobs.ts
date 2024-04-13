@@ -3,19 +3,23 @@ import {
 } from "~/stores/services/jobs.services";
 
 interface JobsState {
-    jobs: Blog[]
+    jobsList: Job[]
+    total_page: number
     jobDetails: Blog | null
 }
 
 export const useJobStore = defineStore('jobStore', {
     state: () => ({
-        jobs: [],
-        jobDetails: null
+        jobsList: [],
+        total_page: 0,
+        jobDetails: null,
     } as JobsState),
     actions: {
         async fetchJobs(query :any) {
-            const resp = await getJobsList(query)
-            console.log('resp ', resp)
+            const { hits, out_of} = await getJobsList(query)
+            this.$state.jobsList = hits.map((hit :JobHit) => hit.document)
+            this.$state.total_page = out_of
+            console.log('resp ', hits, out_of, this.$state.jobsList)
         },
     }
 })
