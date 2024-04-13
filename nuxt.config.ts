@@ -7,6 +7,12 @@ export default defineNuxtConfig({
             viewport: 'width=device-width, initial-scale=1',
         }
     },
+    runtimeConfig: {
+        API_URL: process.env.API_URL,
+        public: {
+          API_URL: process.env.API_URL,
+        },
+      },
     build: {
         transpile: ['vue-google-maps-community-fork', '@googlemaps/markercluster', '@vuepic/vue-datepicker'],
     },
