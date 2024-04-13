@@ -193,6 +193,10 @@ onMounted(() => {
 function handleButtonClick(e: number) {
   // Update currentStep value
   currentStep.value = e;
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
 }
 
 // Watch for changes in currentStep prop
@@ -204,7 +208,6 @@ watch(
 );
 
 function changeStep(stepIdx: number) {
-  
   currentStep.value = stepIdx;
   // nextStep(currentStep.value)
   window.scrollTo({
@@ -321,7 +324,6 @@ function changeStep(stepIdx: number) {
                   </li>
                 </ol>
               </nav>
-              <slot />
             </div>
           </div>
         </div>
@@ -382,65 +384,12 @@ function changeStep(stepIdx: number) {
                 className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6"
               />
 
-              <div
-                class="sm:grid sm:grid-cols-3 sm:items-center sm:gap-4 sm:py-6"
-              >
-                <label
-                  for="username"
-                  class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
-                  >Organization Logo/Icon
-                  <br />
-                  <span
-                    class="w-[228px] text-gray-600 text-sm font-normal leading-normal"
-                    >This will be displayed on your profile.
-                  </span>
-                </label>
-                <div class="mt-2 sm:col-span-2 sm:mt-0">
-                  <div class="flex flex-col md:flex-row items-start gap-x-5">
-                    <div>
-                      <img
-                        :src="uploadedImage"
-                        v-if="uploadedImage"
-                        class="size-12 rounded-full object-cover"
-                      />
-                      <SvgoUpload v-else class="size-12" />
-                    </div>
-                    <div class="mt-2 sm:mt-0 w-full">
-                      <div
-                        class="flex w-full justify-center rounded-lg border border-gray-200 px-6 py-3.5"
-                      >
-                        <div
-                          class="text-center flex flex-col justify-center items-center"
-                        >
-                          <SvgoFileUpload class="h-10 w-10" />
-                          <div
-                            class="mt-4 flex text-sm leading-6 text-center justify-center items-center text-gray-600"
-                          >
-                            <label
-                              for="file-upload"
-                              class="relative cursor-pointer rounded-md bg-white font-semibold text-brand-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-brand-600 focus-within:ring-offset-2 hover:text-brand-500"
-                            >
-                              <span>Upload a file</span>
-                              <input
-                                id="file-upload"
-                                name="file-upload"
-                                type="file"
-                                class="sr-only"
-                                @change="handleImageUpload"
-                                accept="image/*"
-                              />
-                            </label>
-                            <p class="pl-1">or drag and drop</p>
-                          </div>
-                          <p class="text-xs leading-5 text-gray-600">
-                            SVG, PNG, JPG or GIF (max. 800x400px)
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <ImageFileUpload
+                label="Organization Logo/Icon"
+                subLabel="This will be displayed on your profile."
+                :uploaded-image="uploadedImage"
+                :handle-image-upload="handleImageUpload"
+              />
 
               <div
                 class="mt-5 space-y-8 divide-b divide-gray-900/10 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0"
@@ -491,7 +440,12 @@ function changeStep(stepIdx: number) {
                     Start Date
                   </label>
                   <div class="mt-2 sm:col-span-2 sm:mt-0 relative">
-                    <DatePicker v-model="startDate" name="startDate" :values="values.startDate" />
+                    <DatePicker
+                      v-model="startDate"
+                      name="startDate"
+                      :values="values.startDate"
+                      :error="errors.startDate"
+                    />
                   </div>
                 </div>
                 <div
@@ -632,7 +586,7 @@ function changeStep(stepIdx: number) {
                 >
                   <label
                     for="jobDesc"
-                    class="block text-sm font-medium md:font-semibold text-gray-700 sm:pt-1.5"
+                    class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
                   >
                     Job Description
                   </label>
@@ -689,7 +643,11 @@ function changeStep(stepIdx: number) {
                     Application deadline date
                   </label>
                   <div class="mt-2 sm:col-span-2 relative">
-                    <DatePicker name="deadlineDate" :values="values.deadlineDate" />
+                    <DatePicker
+                      name="deadlineDate"
+                      :values="values.deadlineDate"
+                      :error="errors.deadlineDate"
+                    />
                   </div>
                 </div>
               </div>

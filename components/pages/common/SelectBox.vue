@@ -60,7 +60,7 @@ const {
     <label
       v-if="label"
       :for="name"
-      class="block text-sm font-medium md:font-semibold text-gray-700 sm:pt-1.5"
+      class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
     >
       {{ label }}
       <span
@@ -71,14 +71,14 @@ const {
         {{ subLabel }}
       </span>
     </label>
-    <div class="mt-2 sm:col-span-2 sm:mt-0 pt-5 sm:pt-0">
+    <div class="sm:col-span-2 sm:mt-0 pt-1">
       <Field
         v-slot="{ value }"
         :name="name"
         as="select"
         :class="[
           'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-[11px] px-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
-          [errorMessage && 'border border-red-300'], // Apply border-red-300 class if errorMessage exists
+          [errorMessage && 'ring-2 !border-0 !ring-error-400'], // Apply border-red-300 class if errorMessage exists
         ]"
       >
         <option value="" disabled>Select</option>
