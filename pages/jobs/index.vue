@@ -93,7 +93,7 @@ const jobList = [
     logo: 'logo-one.jpg',
     postedAt: '1h ago',
     title: 'Marketing Associate',
-    country: 'Polymath, Melbourne, AU',
+    country: 'Polymath, Melbourne',
     category: 'Design',
     description: 'We’re looking for a mid-level product designer to join our team.',
     duration: 'Full-time',
@@ -103,7 +103,7 @@ const jobList = [
     logo: 'logo-two.jpg',
     postedAt: '6h ago',
     title: 'Senior Graphic Designer',
-    country: 'Polymath, Melbourne, AU',
+    country: 'Polymath, Melbourne',
     category: 'Design',
     description: 'We’re looking for a mid-level product designer to join our team.',
     duration: 'Full-time',
@@ -113,7 +113,7 @@ const jobList = [
     logo: 'logo-three.jpg',
     postedAt: '2h ago',
     title: 'Lead Product Designer',
-    country: 'Polymath, Melbourne, AU',
+    country: 'Polymath, Melbourne',
     category: 'Design',
     description: 'We’re looking for a mid-level product designer to join our team.',
     duration: 'Full-time',
@@ -123,7 +123,7 @@ const jobList = [
     logo: 'logo-four.jpg',
     postedAt: '6h ago',
     title: 'Senior Graphic Designer',
-    country: 'Polymath, Melbourne, AU',
+    country: 'Polymath, Melbourne',
     category: 'Design',
     description: 'We’re looking for a mid-level product designer to join our team.',
     duration: 'Full-time',
@@ -133,7 +133,7 @@ const jobList = [
     logo: 'logo-two.jpg',
     postedAt: '6h ago',
     title: 'Senior Graphic Designer',
-    country: 'Polymath, Melbourne, AU',
+    country: 'Polymath, Melbourne',
     category: 'Design',
     description: 'We’re looking for a mid-level product designer to join our team.',
     duration: 'Full-time',
@@ -143,7 +143,7 @@ const jobList = [
     logo: 'logo-one.jpg',
     postedAt: '6h ago',
     title: 'Senior Graphic Designer',
-    country: 'Polymath, Melbourne, AU',
+    country: 'Polymath, Melbourne',
     category: 'Design',
     description: 'We’re looking for a mid-level product designer to join our team.',
     duration: 'Full-time',
@@ -153,7 +153,7 @@ const jobList = [
     logo: 'logo-two.jpg',
     postedAt: '2h ago',
     title: 'Lead Product Designer',
-    country: 'Polymath, Melbourne, AU',
+    country: 'Polymath, Melbourne',
     category: 'Design',
     description: 'We’re looking for a mid-level product designer to join our team.',
     duration: 'Full-time',
@@ -163,7 +163,7 @@ const jobList = [
     logo: 'logo-three.jpg',
     postedAt: '2h ago',
     title: 'Lead Product Designer',
-    country: 'Polymath, Melbourne, AU',
+    country: 'Polymath, Melbourne',
     category: 'Design',
     description: 'We’re looking for a mid-level product designer to join our team.',
     duration: 'Full-time',
@@ -185,6 +185,8 @@ const itemsViewOptions = [
 const isGridOptionSelected = ref(1)
 
 const isFilterSidebarVisible = ref(false)
+
+const jobsLoading = ref(true)
 </script>
 
 <template>
@@ -243,7 +245,7 @@ const isFilterSidebarVisible = ref(false)
 
           <div class="grid gap-6" :class="[isGridOptionSelected ? 'md:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1']">
             <template v-for="job in jobList">
-              <JobCard :job="job" :card-form="isGridOptionSelected === 1" :show-job-description="false" />
+              <JobCard :job="job" :card-form="isGridOptionSelected === 1" :show-job-description="false" :is-job-loading="jobsLoading" />
             </template>
           </div>
 

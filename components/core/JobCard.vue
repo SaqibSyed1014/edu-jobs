@@ -6,6 +6,7 @@ defineProps<{
   job :any,
   cardForm: Boolean
   showJobDescription: Boolean
+  isJobLoading: Boolean
 }>()
 </script>
 
@@ -15,38 +16,55 @@ defineProps<{
       <div class="job-card-header">
         <div class="flex justify-between">
           <div class="rounded-full overflow-hidden w-12 h-12">
-            <img :src="`/images/logos/${job.logo}`" alt="Job Logo" class="w-full h-full object-cover">
+            <Skeleton v-if="isJobLoading" type="circle" class="w-full h-full" />
+            <img v-else :src="`/images/logos/${job.logo}`" alt="Job Logo" class="w-full h-full object-cover">
           </div>
-          <div class="job-badge flex justify-center items-center bg-brand-500 text-white rounded-2xl text-sm h-fit px-2.5 py-0.5">
+
+          <Skeleton v-if="isJobLoading" class="w-16 h-6 !rounded-2xl" />
+          <div v-else class="job-badge flex justify-center items-center bg-brand-500 text-white rounded-2xl text-sm h-fit px-2.5 py-0.5">
             {{ job.postedAt }}
           </div>
         </div>
         <div class="pt-3">
-          <p class="font-semibold">{{ job.title }}</p>
-          <p class="text-gray-600 text-sm">{{ job.country }}</p>
+          <Skeleton v-if="isJobLoading" class="h-5 mb-2" />
+          <p v-else class="font-semibold">{{ job.title }}</p>
+
+          <Skeleton v-if="isJobLoading" class="h-5" />
+          <p v-else class="text-gray-600 text-sm">{{ job.country }}</p>
         </div>
       </div>
       <div class="job-post-body flex flex-col gap-4">
         <div class="flex gap-3 text-xs font-medium">
-          <div class="badges-outline">
+          <Skeleton v-if="isJobLoading" class="flex-grow h-5 shrink-0" />
+          <div v-else class="badges-outline">
             {{ job.country }}
           </div>
-          <div class="badges-outline">
+
+          <Skeleton v-if="isJobLoading" class="flex-grow h-5 shrink-0" />
+          <div v-else class="badges-outline">
             <div class="w-2 h-2 rounded-full bg-blue-500"/>
             {{ job.category }}
           </div>
         </div>
-        <p v-if="showJobDescription" class="text-gray-600">
-          {{ job.description }}
-        </p>
+
+        <template v-if="showJobDescription">
+          <div v-if="isJobLoading">
+            <Skeleton v-for="i in 4" class="h-3 shrink-0 mb-1.5" />
+          </div>
+          <p v-else class="text-gray-600">
+            {{ job.description }}
+          </p>
+        </template>
       </div>
       <div class="job-post-footer flex items-center gap-5 font-medium text-gray-600">
-        <div class="flex items-center gap-2">
+        <Skeleton v-if="isJobLoading" class="w-1/4 h-5 shrink-0" />
+        <div v-else class="flex items-center gap-2">
           <ClockIcon class="w-5 h-5 text-gray-400" />
           <span>{{ job.duration }}</span>
         </div>
 
-        <div class="flex items-center gap-2">
+        <Skeleton v-if="isJobLoading" class="w-1/4 h-5 shrink-0" />
+        <div v-else class="flex items-center gap-2">
           <DollarIcon class="w-5 h-5 text-gray-400" />
           <span>{{ job.wage }}</span>
         </div>
@@ -57,35 +75,46 @@ defineProps<{
     <div class="job-card-left">
       <div class="flex gap-3 items-center">
         <div class="rounded-full overflow-hidden w-12 h-12">
-          <img :src="`/images/logos/${job.logo}`" alt="Job Logo" class="w-full h-full object-cover">
+          <Skeleton v-if="isJobLoading" type="circle" class="w-full h-full" />
+          <img v-else :src="`/images/logos/${job.logo}`" alt="Job Logo" class="w-full h-full object-cover">
         </div>
         <div>
-          <p class="font-semibold">{{ job.title }}</p>
-          <p class="text-gray-600 text-sm">{{ job.country }}</p>
+          <Skeleton v-if="isJobLoading" class="w-32 h-5 mb-2" />
+          <p v-else class="font-semibold">{{ job.title }}</p>
+
+          <Skeleton v-if="isJobLoading" class="w-32 h-5" />
+          <p v-else class="text-gray-600 text-sm">{{ job.country }}</p>
         </div>
       </div>
       <div class="flex items-center gap-5 text-gray-600 font-medium pt-5">
-        <div class="flex items-center gap-2">
+        <Skeleton v-if="isJobLoading" class="w-24 h-5 shrink-0" />
+        <div v-else class="flex items-center gap-2">
           <ClockIcon class="w-5 h-5 text-gray-400" />
           <span>{{ job.duration }}</span>
         </div>
 
-        <div class="flex items-center gap-2">
+        <Skeleton v-if="isJobLoading" class="w-24 h-5 shrink-0" />
+        <div v-else class="flex items-center gap-2">
           <DollarIcon class="w-5 h-5 text-gray-400" />
           <span>{{ job.wage }}</span>
         </div>
       </div>
     </div>
     <div class="jo-card-right flex flex-col items-end ">
-        <div
+      <Skeleton v-if="isJobLoading" class="w-16 h-6 !rounded-2xl" />
+      <div
+          v-else
             class="job-badge flex justify-center items-center bg-brand-500 text-white rounded-2xl text-sm h-fit px-2.5 py-0.5">
           {{ job.postedAt }}
         </div>
         <div class="flex gap-3 mt-auto">
-          <div class="badges-outline">
+          <Skeleton v-if="isJobLoading" class="w-24 h-5" />
+          <div v-else class="badges-outline">
             {{ job.country }}
           </div>
-          <div class="badges-outline">
+
+          <Skeleton v-if="isJobLoading" class="w-24 h-5" />
+          <div v-else class="badges-outline">
             <div class="w-2 h-2 rounded-full bg-blue-500"/>
             {{ job.category }}
           </div>
