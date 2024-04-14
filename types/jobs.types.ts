@@ -5,11 +5,12 @@ interface Job {
     organization_id: string
     organization_slug: string
     organization_type?: string
-    date_posted: Date
+    date_posted: string
     date_posting_expires?: string
     start_date?: string
     job_title: string
     job_role: string
+    job_slug: string
     grade_levels?: string[]
     subjects?: string[]
     job_description: string
@@ -26,7 +27,7 @@ interface Job {
     active: boolean
     employment_type_id?: string
     employment_type?: string
-    geo_location?: string
+    geo_location?: number[]
     application_deadline?: string
 }
 

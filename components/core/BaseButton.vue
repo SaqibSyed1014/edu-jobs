@@ -1,14 +1,18 @@
 <script setup lang="ts">
 type ColorVariant = 'primary' | 'secondary' | 'gray' | 'plain' | 'brand'
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   color?: ColorVariant,
-  label: String
-  outline?: Boolean
-  fullSized?: Boolean
-  fullSizedOnSmall?: Boolean
-  navigateTo?: String
-  disabled?: Boolean
-}>()
+  label: string
+  outline?: boolean
+  fullSized?: boolean
+  fullSizedOnSmall?: boolean
+  navigateTo?: string
+  disabled?: boolean
+  isExternalLink?: boolean
+}>(), {
+  color: 'primary',
+  isExternalLink: false
+})
 
 const defaultStyles = 'inline-flex items-center justify-center gap-3 shrink-0 disabled:cursor-not-allowed'
 
@@ -50,7 +54,7 @@ const component = computed(() => {
 </script>
 
 <template>
-  <component :is="component" :to="navigateTo" :class="[defaultStyles, btnStyleClasses]" :disabled="disabled">
+  <component :is="component" :to="navigateTo" :target="isExternalLink ?? '_blank'" :class="[defaultStyles, btnStyleClasses]" :disabled="disabled">
     <slot name="prepend-icon" />
     {{ label }}
     <slot name="append-icon" />

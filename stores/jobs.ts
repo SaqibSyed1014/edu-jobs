@@ -6,7 +6,7 @@ interface JobsState {
     jobsList: Job[]
     itemsFound: number
     totalPages: number
-    jobDetails: Blog | null
+    jobDetails: Job | null
 }
 
 export const useJobStore = defineStore('jobStore', {
@@ -24,5 +24,12 @@ export const useJobStore = defineStore('jobStore', {
             this.$state.totalPages = Math.ceil(found / 12)
             console.log('resp ', hits, found, this.$state.jobsList)
         },
+    },
+    getters: {
+        jobListings: (state) => state.jobsList.map(job => ({
+            ...job,
+            date_posting_expires: job.date_posting_expires ? job?.date_posting_expires.slice(0, job?.date_posting_expires.indexOf('00:00:00')) : 'N/A',
+            date_posted: job.date_posted.slice(0, job.date_posted.indexOf('00:00:00'))
+        }))
     }
 })

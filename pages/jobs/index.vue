@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Pagination from "~/components/core/Pagination.vue";
 import JobSkeleton from "~/components/pages/job-listings/JobSkeleton.vue";
 
 const filters = [
@@ -113,7 +112,7 @@ const query :{ q: string, per_page: number, page: number, query_by ?:string, fil
 };
 
 const jobStore = useJobStore();
-const { jobsList, totalPages } = storeToRefs(jobStore);
+const { jobListings, totalPages } = storeToRefs(jobStore);
 
 
 onMounted(async () => {
@@ -217,7 +216,7 @@ const fetchOnSearching = (searchValues :{ keyword: string, coordinates: { lng: s
               <JobSkeleton :card-form="isGridOptionSelected === 1" />
             </template>
 
-            <template v-else v-for="job in jobsList">
+            <template v-else v-for="job in jobListings">
               <JobCard :job="job" :card-form="isGridOptionSelected === 1" :show-job-description="false" :is-job-loading="jobsLoading" />
             </template>
           </div>
