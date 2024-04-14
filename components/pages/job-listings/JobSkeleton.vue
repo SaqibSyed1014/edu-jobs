@@ -31,9 +31,9 @@ defineProps<{
           <Skeleton class="flex-grow h-5 shrink-0" />
         </div>
 
-          <div>
-            <Skeleton v-for="i in 4" class="h-3 shrink-0 mb-1.5" />
-          </div>
+<!--          <div>-->
+<!--            <Skeleton v-for="i in 4" class="h-3 shrink-0 mb-1.5" />-->
+<!--          </div>-->
       </div>
       <div class="job-post-footer flex items-center gap-5 font-medium text-gray-600">
         <Skeleton class="w-1/4 h-5 shrink-0" />

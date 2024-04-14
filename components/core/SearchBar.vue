@@ -2,9 +2,18 @@
 const emit = defineEmits(['updatedValues'])
 
 const searchedValue = ref<string>('')
+const coordinates = {
+  lng: null,
+  lat: null
+}
 
 function performSearch() {
-  emit('updatedValues', searchedValue.value)
+  emit('updatedValues', { keyword: searchedValue.value, coordinates })
+}
+
+function setPlace(location :any) {
+  coordinates.lat = location.geometry.location.lat();
+  coordinates.lng = location.geometry.location.lng();
 }
 </script>
 
@@ -29,15 +38,10 @@ function performSearch() {
               placeholder="Anywhere"
               class="form-input w-full"
               :options="{
-                  bounds: {
-                    north: 49.384358,
-                    south: 24.396308,
-                    east: -66.93457,
-                    west: -125.001318,
-                  },
                   componentRestrictions: { country: 'US' },
                   strictBounds: true
              }"
+              @place_changed="setPlace"
           />
         </client-only>
       </div>

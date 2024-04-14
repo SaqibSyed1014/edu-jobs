@@ -58,7 +58,7 @@ function getDaysDifference(givenDateString :Date) {
         </div>
 
         <div class="flex items-center capitalize gap-2">
-          <DollarIcon class="w-5 h-5 text-gray-400" />
+          <SvgoBuilding class="w-5 h-5 text-gray-400" />
           <span>{{ job.organization_type }}</span>
         </div>
       </div>
