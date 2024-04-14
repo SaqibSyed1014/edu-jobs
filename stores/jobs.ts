@@ -4,22 +4,25 @@ import {
 
 interface JobsState {
     jobsList: Job[]
-    total_page: number
+    itemsFound: number
+    totalPages: number
     jobDetails: Blog | null
 }
 
 export const useJobStore = defineStore('jobStore', {
     state: () => ({
         jobsList: [],
-        total_page: 0,
+        itemsFound: 0,
+        totalPages: 0,
         jobDetails: null,
     } as JobsState),
     actions: {
         async fetchJobs(query :any) {
-            const { hits, out_of} = await getJobsList(query)
+            const { hits, found} = await getJobsList(query)
             this.$state.jobsList = hits.map((hit :JobHit) => hit.document)
-            this.$state.total_page = out_of
-            console.log('resp ', hits, out_of, this.$state.jobsList)
+            this.$state.itemsFound = found
+            this.$state.totalPages = Math.ceil(found / 12)
+            console.log('resp ', hits, found, this.$state.jobsList)
         },
     }
 })

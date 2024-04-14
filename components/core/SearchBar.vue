@@ -1,4 +1,11 @@
 <script setup lang="ts">
+const emit = defineEmits(['updatedValues'])
+
+const searchedValue = ref<string>('')
+
+function performSearch() {
+  emit('updatedValues', searchedValue.value)
+}
 </script>
 
 <template>
@@ -7,6 +14,7 @@
       <div class="flex flex-1 items-center">
         <SvgoSearch class="w-4 h-4 text-gray-400" />
         <input
+            v-model="searchedValue"
             type="text"
             placeholder="Keyword, Job title..."
             class="w-full"
@@ -35,7 +43,7 @@
       </div>
     </div>
     <div class="max-md:w-full">
-      <BaseButton label="Search" color="primary" :full-sized-on-small="true"/>
+      <BaseButton @click="performSearch" label="Search" color="primary" :full-sized-on-small="true"/>
     </div>
   </div>
 </template>

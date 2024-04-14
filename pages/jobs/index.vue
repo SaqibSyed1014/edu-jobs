@@ -106,8 +106,15 @@ const pageInfo = ref({
   totalPages: 0
 })
 
+const query :{ q: string, per_page: number, page: number, query_by ?:string } = {
+  q: "*",
+  per_page: pageInfo.value.itemsPerPage,
+  page: pageInfo.value.currentPage,
+};
+
 const jobStore = useJobStore();
-const { jobsList, total_page } = storeToRefs(jobStore);
+const { jobsList, totalPages } = storeToRefs(jobStore);
+
 
 onMounted(async () => {
   await fetchJobs(); // Initial fetch
@@ -116,13 +123,8 @@ onMounted(async () => {
 const jobsLoading = ref(true);
 async function fetchJobs() {
   jobsLoading.value = true;
-  const query = {
-    q: "*",
-    per_page: pageInfo.value.itemsPerPage,
-    page: pageInfo.value.currentPage,
-  };
   await jobStore.fetchJobs(query);
-  pageInfo.value.totalPages = total_page.value
+  pageInfo.value.totalPages = totalPages.value
   jobsLoading.value = false;
 }
 
@@ -146,6 +148,11 @@ const isGridOptionSelected = ref(1)
 
 const isFilterSidebarVisible = ref(false);
 
+const fetchOnSearching = (val :string) => {
+  query.q = val
+  query.query_by = 'job_title'
+  fetchJobs()
+}
 </script>
 
 <template>
@@ -170,7 +177,9 @@ const isFilterSidebarVisible = ref(false);
         </template>
 
         <template #search-filters>
-          <SearchBar />
+          <SearchBar
+            @updated-values="fetchOnSearching"
+          />
         </template>
 
         <template #cards-list>
