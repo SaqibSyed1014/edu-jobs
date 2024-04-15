@@ -2,18 +2,33 @@
 const emit = defineEmits(['updatedValues'])
 
 const searchedValue = ref<string>('')
-const coordinates = {
+const coordinates = ref({
   lng: null,
   lat: null
-}
+})
+
 
 function performSearch() {
-  emit('updatedValues', { keyword: searchedValue.value, coordinates })
+  emit('updatedValues', { keyword: searchedValue.value, coordinates: coordinates.value})
 }
 
 function setPlace(location :any) {
-  coordinates.lat = location.geometry.location.lat();
-  coordinates.lng = location.geometry.location.lng();
+  coordinates.value.lat = location.geometry.location.lat();
+  coordinates.value.lng = location.geometry.location.lng();
+}
+
+const enableSearching = computed(() => {
+  const isSearchValueNotEmpty = searchedValue.value.length > 0;
+  const isAnyCoordinateNotNull = coordinates.value.lat !== null || coordinates.value.lng !== null;
+  return isSearchValueNotEmpty || isAnyCoordinateNotNull;
+});
+
+
+// Resets coordinates if user inputs anything in the field. The logic is to prompt user to
+// select one of the suggested options offered by Google Maps api
+function checkFieldInput() {
+  coordinates.value.lat = null
+  coordinates.value.lng = null
 }
 </script>
 
@@ -40,14 +55,15 @@ function setPlace(location :any) {
               :options="{
                   componentRestrictions: { country: 'US' },
                   strictBounds: true
-             }"
+              }"
               @place_changed="setPlace"
+              @input="checkFieldInput"
           />
         </client-only>
       </div>
     </div>
     <div class="max-md:w-full">
-      <BaseButton @click="performSearch" label="Search" color="primary" :full-sized-on-small="true"/>
+      <BaseButton :disabled="!enableSearching" @click="performSearch" label="Search" color="primary" :full-sized-on-small="true"/>
     </div>
   </div>
 </template>

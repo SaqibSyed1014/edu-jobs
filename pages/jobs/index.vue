@@ -105,7 +105,7 @@ const pageInfo = ref({
   totalPages: 0
 })
 
-const query :{ q: string, per_page: number, page: number, query_by ?:string, filter_by?: string } = {
+const query :{ q: string, per_page: number, page: number, query_by ?:string, filter_by?: string | null } = {
   q: "*",
   per_page: pageInfo.value.itemsPerPage,
   page: pageInfo.value.currentPage,
@@ -148,9 +148,9 @@ const isGridOptionSelected = ref(1)
 const isFilterSidebarVisible = ref(false);
 
 const fetchOnSearching = (searchValues :{ keyword: string, coordinates: { lng: string, lat: string } }) => {
-  query.q = searchValues.keyword
+  query.q = searchValues.keyword.length ? searchValues.keyword : '*'
   query.query_by = 'job_title'
-  // query.filter_by = `geo_location:(${searchValues.coordinates.lat}, ${searchValues.coordinates.lng}, 5 km)`
+  query.filter_by = searchValues.coordinates.lat && searchValues.coordinates.lng ? `geo_location:(${searchValues.coordinates.lat}, ${searchValues.coordinates.lng}, 5 mi)` : null
   fetchJobs();
 }
 </script>
