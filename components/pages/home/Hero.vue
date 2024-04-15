@@ -116,6 +116,7 @@ const jobPostsList = [
     </div>
 
     <swiper-container
+        v-if="false"
         :loop="true"
         :space-between="20"
         slides-per-view="auto"
