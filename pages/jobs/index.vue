@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Pagination from "~/components/core/Pagination.vue";
+import JobSkeleton from "~/components/pages/job-listings/JobSkeleton.vue";
 
 const filters = [
   {
@@ -88,89 +88,6 @@ const filters = [
   }
 ]
 
-const jobList = [
-  {
-    logo: 'logo-one.jpg',
-    postedAt: '1h ago',
-    title: 'Marketing Associate',
-    country: 'Polymath, Melbourne, AU',
-    category: 'Design',
-    description: 'We’re looking for a mid-level product designer to join our team.',
-    duration: 'Full-time',
-    wage: '80k - 100k'
-  },
-  {
-    logo: 'logo-two.jpg',
-    postedAt: '6h ago',
-    title: 'Senior Graphic Designer',
-    country: 'Polymath, Melbourne, AU',
-    category: 'Design',
-    description: 'We’re looking for a mid-level product designer to join our team.',
-    duration: 'Full-time',
-    wage: '80k - 100k'
-  },
-  {
-    logo: 'logo-three.jpg',
-    postedAt: '2h ago',
-    title: 'Lead Product Designer',
-    country: 'Polymath, Melbourne, AU',
-    category: 'Design',
-    description: 'We’re looking for a mid-level product designer to join our team.',
-    duration: 'Full-time',
-    wage: '80k - 100k'
-  },
-  {
-    logo: 'logo-four.jpg',
-    postedAt: '6h ago',
-    title: 'Senior Graphic Designer',
-    country: 'Polymath, Melbourne, AU',
-    category: 'Design',
-    description: 'We’re looking for a mid-level product designer to join our team.',
-    duration: 'Full-time',
-    wage: '80k - 100k'
-  },
-  {
-    logo: 'logo-two.jpg',
-    postedAt: '6h ago',
-    title: 'Senior Graphic Designer',
-    country: 'Polymath, Melbourne, AU',
-    category: 'Design',
-    description: 'We’re looking for a mid-level product designer to join our team.',
-    duration: 'Full-time',
-    wage: '80k - 100k'
-  },
-  {
-    logo: 'logo-one.jpg',
-    postedAt: '6h ago',
-    title: 'Senior Graphic Designer',
-    country: 'Polymath, Melbourne, AU',
-    category: 'Design',
-    description: 'We’re looking for a mid-level product designer to join our team.',
-    duration: 'Full-time',
-    wage: '80k - 100k'
-  },
-  {
-    logo: 'logo-two.jpg',
-    postedAt: '2h ago',
-    title: 'Lead Product Designer',
-    country: 'Polymath, Melbourne, AU',
-    category: 'Design',
-    description: 'We’re looking for a mid-level product designer to join our team.',
-    duration: 'Full-time',
-    wage: '80k - 100k'
-  },
-  {
-    logo: 'logo-three.jpg',
-    postedAt: '2h ago',
-    title: 'Lead Product Designer',
-    country: 'Polymath, Melbourne, AU',
-    category: 'Design',
-    description: 'We’re looking for a mid-level product designer to join our team.',
-    duration: 'Full-time',
-    wage: '80k - 100k'
-  },
-]
-
 const itemsViewOptions = [
   {
     label: 'List',
@@ -182,9 +99,60 @@ const itemsViewOptions = [
   }
 ]
 
+const pageInfo = ref({
+  currentPage: 1,
+  itemsPerPage: 12,
+  totalPages: 0
+})
+
+const query :{ q: string, per_page: number, page: number, query_by ?:string, filter_by?: string | null } = {
+  q: "*",
+  per_page: pageInfo.value.itemsPerPage,
+  page: pageInfo.value.currentPage,
+};
+
+const jobStore = useJobStore();
+const { jobListings, totalPages } = storeToRefs(jobStore);
+
+
+onMounted(async () => {
+  await fetchJobs(); // Initial fetch
+});
+
+const jobsLoading = ref(true);
+async function fetchJobs() {
+  jobsLoading.value = true;
+  await jobStore.fetchJobs(query);
+  pageInfo.value.totalPages = totalPages.value
+  jobsLoading.value = false;
+}
+
+const paginate = (page: number | "prev" | "next") => {
+  if (page === "prev") {
+    pageInfo.value.currentPage--;
+  } else if (page === "next") {
+    pageInfo.value.currentPage++;
+  } else {
+    pageInfo.value.currentPage = page;
+  }
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+  fetchJobs()
+};
+
+
 const isGridOptionSelected = ref(1)
 
-const isFilterSidebarVisible = ref(false)
+const isFilterSidebarVisible = ref(false);
+
+const fetchOnSearching = (searchValues :{ keyword: string, coordinates: { lng: string, lat: string } }) => {
+  query.q = searchValues.keyword.length ? searchValues.keyword : '*'
+  query.query_by = 'job_title'
+  query.filter_by = searchValues.coordinates.lat && searchValues.coordinates.lng ? `geo_location:(${searchValues.coordinates.lat}, ${searchValues.coordinates.lng}, 5 mi)` : null
+  fetchJobs();
+}
 </script>
 
 <template>
@@ -209,7 +177,9 @@ const isFilterSidebarVisible = ref(false)
         </template>
 
         <template #search-filters>
-          <SearchBar />
+          <SearchBar
+            @updated-values="fetchOnSearching"
+          />
         </template>
 
         <template #cards-list>
@@ -242,12 +212,20 @@ const isFilterSidebarVisible = ref(false)
           </div>
 
           <div class="grid gap-6" :class="[isGridOptionSelected ? 'md:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1']">
-            <template v-for="job in jobList">
-              <JobCard :job="job" :card-form="isGridOptionSelected === 1" :show-job-description="false" />
+            <template v-if="jobsLoading" v-for="i in 12">
+              <JobSkeleton :card-form="isGridOptionSelected === 1" />
+            </template>
+
+            <template v-else v-for="job in jobListings">
+              <JobCard :job="job" :card-form="isGridOptionSelected === 1" :show-job-description="false" :is-job-loading="jobsLoading" />
             </template>
           </div>
 
-          <Pagination />
+          <CustomPagination
+              :current-page="pageInfo.currentPage"
+              :total-pages="pageInfo.totalPages"
+              @paginate="paginate"
+          />
         </template>
       </ListingView>
 

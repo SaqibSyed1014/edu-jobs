@@ -109,6 +109,7 @@ const sliderBreakpoints = {
           </div>
           <div class="col-span-2">
             <swiper-container
+                v-if="false"
                 ref="jobSlider"
                 :loop="true"
                 :free-mode="true"

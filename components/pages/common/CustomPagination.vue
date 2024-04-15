@@ -6,7 +6,7 @@ const props = defineProps<{ currentPage: number; totalPages: number }>();
 
 // State
 const currentPage = ref(props.currentPage);
-const totalPages = ref(Math.ceil(props.totalPages / 12));
+const totalPages = ref(props.totalPages);
 
 // Watch for changes in props
 watch(
@@ -27,6 +27,14 @@ watch(
 const displayedPages = computed(() => {
   const pages = [];
   const numPages = totalPages.value;
+
+  // Display number of pages as it is without ellipsis if <= 10
+  if (numPages <= 10) {
+    for (let i = 1; i <= numPages; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
 
   // Display the first three pages
   for (let i = 1; i <= Math.min(3, numPages); i++) {

@@ -43,10 +43,10 @@ defineProps<{ data: any; isSchool: Boolean }>();
       </div>
 
       <div class="inline-flex space-x-3">
-        <div class="inline-flex items-center text-center space-x-2">
+        <div class="inline-flex items-center text-center space-x-2 text-gray-600">
           <SvgoBuilding class="size-5" />
           <span
-            class="text-gray-600 text-xs md:text-sm font-medium leading-tight"
+            class="text-xs md:text-sm font-medium leading-tight"
           >
             {{ data?.document?.school_count.toLocaleString() }} schools
           </span>

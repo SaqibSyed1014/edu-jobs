@@ -1,4 +1,35 @@
 <script setup lang="ts">
+const emit = defineEmits(['updatedValues'])
+
+const searchedValue = ref<string>('')
+const coordinates = ref({
+  lng: null,
+  lat: null
+})
+
+
+function performSearch() {
+  emit('updatedValues', { keyword: searchedValue.value, coordinates: coordinates.value})
+}
+
+function setPlace(location :any) {
+  coordinates.value.lat = location.geometry.location.lat();
+  coordinates.value.lng = location.geometry.location.lng();
+}
+
+const enableSearching = computed(() => {
+  const isSearchValueNotEmpty = searchedValue.value.length > 0;
+  const isAnyCoordinateNotNull = coordinates.value.lat !== null || coordinates.value.lng !== null;
+  return isSearchValueNotEmpty || isAnyCoordinateNotNull;
+});
+
+
+// Resets coordinates if user inputs anything in the field. The logic is to prompt user to
+// select one of the suggested options offered by Google Maps api
+function checkFieldInput() {
+  coordinates.value.lat = null
+  coordinates.value.lng = null
+}
 </script>
 
 <template>
@@ -7,6 +38,7 @@
       <div class="flex flex-1 items-center">
         <SvgoSearch class="w-4 h-4 text-gray-400" />
         <input
+            v-model="searchedValue"
             type="text"
             placeholder="Keyword, Job title..."
             class="w-full"
@@ -21,21 +53,17 @@
               placeholder="Anywhere"
               class="form-input w-full"
               :options="{
-                  bounds: {
-                    north: 49.384358,
-                    south: 24.396308,
-                    east: -66.93457,
-                    west: -125.001318,
-                  },
                   componentRestrictions: { country: 'US' },
                   strictBounds: true
-             }"
+              }"
+              @place_changed="setPlace"
+              @input="checkFieldInput"
           />
         </client-only>
       </div>
     </div>
     <div class="max-md:w-full">
-      <BaseButton label="Search" color="primary" :full-sized-on-small="true"/>
+      <BaseButton :disabled="!enableSearching" @click="performSearch" label="Search" color="primary" :full-sized-on-small="true"/>
     </div>
   </div>
 </template>
