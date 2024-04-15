@@ -1,14 +1,7 @@
 <script setup lang="ts">
-const center = { lat: 38.0400, lng: -122.7400 }
-const mapOptions = {
-  markers: [
-    {
-      position: {
-        lat: 38.0400, lng: -122.7400
-      },
-    }
-  ]
-}
+import { initModals } from 'flowbite'
+import QuickSignUpModal from "~/components/pages/job-listings/QuickSignUpModal.vue";
+const center = ref({ lat: 0, lng: 0 })
 
 const faqList = [
   {
@@ -28,6 +21,40 @@ const faqList = [
     answer: 'Yes, you can try us for free for 30 days. If you want, we’ll provide you with a free, personalized 30-minute onboarding call to get you up and running as soon as possible.'
   }
 ]
+
+const jobStore = useJobStore();
+const { jobListings } = storeToRefs(jobStore);
+
+const route = useRoute();
+
+const selectedJobDetail = computed(() => {
+  return jobListings.value.filter((job :Job) => job.job_slug === route.params.id)[0] as Job
+})
+
+const mapOptions = computed(() => {
+  const lat = selectedJobDetail?.value?.geo_location?.[0] ?? 0;
+  const lng = selectedJobDetail?.value?.geo_location?.[1] ?? 0;
+  center.value = { lat, lng }
+  return [
+      {
+        position: { lat, lng },
+      }
+    ]
+})
+
+onMounted(() => {
+  initModals();
+})
+
+const showSignupModal = ref<boolean>(false)
+
+function applyBtnAction() {
+  showSignupModal.value = true
+}
+
+function redirectToURL() {
+  window.open(selectedJobDetail.value.apply_url, '_target')
+}
 </script>
 
 <template>
@@ -62,11 +89,12 @@ const faqList = [
                     </div>
 
                     <div>
-                      <h2 class="text-3xl">
+                      <h2 class="text-3xl text-ellipsis line-clamp-1">
+                        {{ selectedJobDetail.job_title }}
                         Lead Product Designer
                       </h2>
                       <p class="text-gray-600">
-                        Polymath
+                        {{ selectedJobDetail.organization_type }}
                       </p>
                     </div>
                   </div>
@@ -102,7 +130,7 @@ const faqList = [
                 <div>
                   <p class="font-medium text-sm">Location</p>
                   <div class="text-gray-600">
-                    Palo Alto, CA
+                    {{ selectedJobDetail.job_location }}
                   </div>
                 </div>
 
@@ -110,7 +138,7 @@ const faqList = [
                   <p class="font-medium text-sm">Pay Range</p>
                   <div class="text-gray-600 flex items-center gap-2">
                     <SvgoCurrencyDollar class="w-4 h-4"/>
-                    80k - 100k
+                    N/A
                   </div>
                 </div>
 
@@ -118,7 +146,7 @@ const faqList = [
                   <p class="font-medium text-sm">Employment type</p>
                   <div class="text-gray-600 flex items-center gap-2">
                     <SvgoClock class="w-4 h-4"/>
-                    Full-time
+                    {{ selectedJobDetail.employment_type }}
                   </div>
                 </div>
 
@@ -126,7 +154,7 @@ const faqList = [
                   <p class="font-medium text-sm">Deadline</p>
                   <div class="text-gray-600 flex items-center gap-2">
                     <SvgoClock class="w-4 h-4"/>
-                    April 10, 2024
+                    {{ selectedJobDetail.date_posting_expires }}
                   </div>
                 </div>
 
@@ -134,7 +162,7 @@ const faqList = [
                   <p class="font-medium text-sm">Job role</p>
                   <div class="text-gray-600 flex items-center gap-2">
                     <SvgoClock class="w-4 h-4"/>
-                    Team lead
+                    {{ selectedJobDetail.job_role }}
                   </div>
                 </div>
 
@@ -142,40 +170,43 @@ const faqList = [
                   <p class="font-medium text-sm">Length of Work Year</p>
                   <div class="text-gray-600 flex items-center gap-2">
                     <SvgoClock class="w-4 h-4"/>
-                    185 days
+                    N/A
                   </div>
                 </div>
               </div>
 
               <hr/>
               <div class="job-content">
-                <h3 class="section-heading">Job Description</h3>
-                <hr>
+                <div v-html="selectedJobDetail.job_description"></div>
 
-                <h4 class="pb-2">Overview</h4>
-                <p class="pb-3">With a presence in more than 60 countries, we’re a growing global organization that
-                  helps
-                  amazing companies engage with customers through mobile messaging, email, voice and video.</p>
-                <p>We are looking for a Senior Product Designer to who can lead a team, posses management and creativity
-                  skills.</p>
 
-                <h4 class="pt-5 pb-2">Requirements</h4>
-                <ul class="list-disc ml-6">
-                  <li>Be heavily involved in turning user stories into testable, maintainable and high-quality code.
-                    This
-                    is a hands-on code design and coding role!
-                  </li>
-                  <li>Be a valued member of an autonomous, cross-functional team delivering our messaging experience to
-                    businesses around the world
-                  </li>
-                  <li>Promote and share knowledge for improvement of methodologies and best practices</li>
-                </ul>
+<!--                <h3 class="section-heading">Job Description</h3>-->
+<!--                <hr>-->
 
-                <h4 class="pt-5 pb-2">Skills and Expertise</h4>
-                <ul class="list-disc ml-6">
-                  <li>You have at least 3 years of experience working as a Product Designer.</li>
-                  <li>You have experience using Sketch and InVision or Framer X</li>
-                </ul>
+<!--                <h4 class="pb-2">Overview</h4>-->
+<!--                <p class="pb-3">With a presence in more than 60 countries, we’re a growing global organization that-->
+<!--                  helps-->
+<!--                  amazing companies engage with customers through mobile messaging, email, voice and video.</p>-->
+<!--                <p>We are looking for a Senior Product Designer to who can lead a team, posses management and creativity-->
+<!--                  skills.</p>-->
+
+<!--                <h4 class="pt-5 pb-2">Requirements</h4>-->
+<!--                <ul class="list-disc ml-6">-->
+<!--                  <li>Be heavily involved in turning user stories into testable, maintainable and high-quality code.-->
+<!--                    This-->
+<!--                    is a hands-on code design and coding role!-->
+<!--                  </li>-->
+<!--                  <li>Be a valued member of an autonomous, cross-functional team delivering our messaging experience to-->
+<!--                    businesses around the world-->
+<!--                  </li>-->
+<!--                  <li>Promote and share knowledge for improvement of methodologies and best practices</li>-->
+<!--                </ul>-->
+
+<!--                <h4 class="pt-5 pb-2">Skills and Expertise</h4>-->
+<!--                <ul class="list-disc ml-6">-->
+<!--                  <li>You have at least 3 years of experience working as a Product Designer.</li>-->
+<!--                  <li>You have experience using Sketch and InVision or Framer X</li>-->
+<!--                </ul>-->
               </div>
 
               <hr>
@@ -211,7 +242,7 @@ const faqList = [
                 <h2 class="mb-2">Interested in this job?</h2>
                 <p class="text-gray-600 text-sm mb-3">Don’t miss the chance. Apply now here.</p>
                 <p class="text-gray-600 text-sm mb-5">Job code: EXMPL123</p>
-                <BaseButton label="Apply Now" :full-sized="true" />
+                <BaseButton @click="applyBtnAction" label="Apply Now" :full-sized="true" />
               </div>
 
               <div class="w-full bg-white border border-[#EAECF0] rounded-2xl p-4">
@@ -272,7 +303,7 @@ const faqList = [
                         style="height: 500px;"
                     >
                       <GMapMarker
-                          v-for="(m, index) in mapOptions.markers"
+                          v-for="(m, index) in mapOptions"
                           :position="m.position"
                           :key="index"
                           :clickable="true"
@@ -285,7 +316,7 @@ const faqList = [
 
               <div class="w-full bg-white border border-[#EAECF0] rounded-2xl p-4">
                 <h2 class="mb-2">Published on</h2>
-                <p class="text-gray-600 text-sm mb-5">February 20, 2024</p>
+                <p class="text-gray-600 text-sm mb-5">{{ selectedJobDetail.date_posted }}</p>
 
                 <h2 class="mb-5">Share this job</h2>
                 <div class="flex gap-6">
@@ -308,6 +339,8 @@ const faqList = [
     </section>
 
     <JobCTA />
+
+    <QuickSignUpModal v-model="showSignupModal" @proceed="redirectToURL" />
   </div>
 </template>
 
@@ -318,5 +351,11 @@ hr{
 
 .section-heading{
   @apply text-lg
+}
+.job-content :deep(ul) {
+  @apply list-disc ml-6 mb-4
+}
+.job-content :deep(p) {
+  @apply mb-2
 }
 </style>

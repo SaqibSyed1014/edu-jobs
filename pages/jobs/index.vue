@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Pagination from "~/components/core/Pagination.vue";
 import JobSkeleton from "~/components/pages/job-listings/JobSkeleton.vue";
 
 const filters = [
@@ -106,8 +105,15 @@ const pageInfo = ref({
   totalPages: 0
 })
 
+const query :{ q: string, per_page: number, page: number, query_by ?:string, filter_by?: string | null } = {
+  q: "*",
+  per_page: pageInfo.value.itemsPerPage,
+  page: pageInfo.value.currentPage,
+};
+
 const jobStore = useJobStore();
-const { jobsList, total_page } = storeToRefs(jobStore);
+const { jobListings, totalPages } = storeToRefs(jobStore);
+
 
 onMounted(async () => {
   await fetchJobs(); // Initial fetch
@@ -116,13 +122,8 @@ onMounted(async () => {
 const jobsLoading = ref(true);
 async function fetchJobs() {
   jobsLoading.value = true;
-  const query = {
-    q: "*",
-    per_page: pageInfo.value.itemsPerPage,
-    page: pageInfo.value.currentPage,
-  };
   await jobStore.fetchJobs(query);
-  pageInfo.value.totalPages = total_page.value
+  pageInfo.value.totalPages = totalPages.value
   jobsLoading.value = false;
 }
 
@@ -146,6 +147,12 @@ const isGridOptionSelected = ref(1)
 
 const isFilterSidebarVisible = ref(false);
 
+const fetchOnSearching = (searchValues :{ keyword: string, coordinates: { lng: string, lat: string } }) => {
+  query.q = searchValues.keyword.length ? searchValues.keyword : '*'
+  query.query_by = 'job_title'
+  query.filter_by = searchValues.coordinates.lat && searchValues.coordinates.lng ? `geo_location:(${searchValues.coordinates.lat}, ${searchValues.coordinates.lng}, 5 mi)` : null
+  fetchJobs();
+}
 </script>
 
 <template>
@@ -170,7 +177,9 @@ const isFilterSidebarVisible = ref(false);
         </template>
 
         <template #search-filters>
-          <SearchBar />
+          <SearchBar
+            @updated-values="fetchOnSearching"
+          />
         </template>
 
         <template #cards-list>
@@ -207,7 +216,7 @@ const isFilterSidebarVisible = ref(false);
               <JobSkeleton :card-form="isGridOptionSelected === 1" />
             </template>
 
-            <template v-else v-for="job in jobsList">
+            <template v-else v-for="job in jobListings">
               <JobCard :job="job" :card-form="isGridOptionSelected === 1" :show-job-description="false" :is-job-loading="jobsLoading" />
             </template>
           </div>

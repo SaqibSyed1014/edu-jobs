@@ -16,7 +16,7 @@ function getDaysDifference(givenDateString :Date) {
 </script>
 
 <template>
-  <NuxtLink to="/jobs/details">
+  <NuxtLink :to="`/jobs/${job.job_slug}`">
     <div v-if="cardForm" class="job-card flex flex-col gap-5 bg-white border border-gray-200 shadow-xs rounded-xl p-5">
       <div class="job-card-header">
         <div class="flex justify-between">
@@ -58,7 +58,7 @@ function getDaysDifference(givenDateString :Date) {
         </div>
 
         <div class="flex items-center capitalize gap-2">
-          <DollarIcon class="w-5 h-5 text-gray-400" />
+          <SvgoBuilding class="w-5 h-5 text-gray-400" />
           <span>{{ job.organization_type }}</span>
         </div>
       </div>
