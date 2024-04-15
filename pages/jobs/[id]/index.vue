@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { initModals } from 'flowbite'
+import QuickSignUpModal from "~/components/pages/job-listings/QuickSignUpModal.vue";
 const center = ref({ lat: 0, lng: 0 })
 
 const faqList = [
@@ -39,6 +41,20 @@ const mapOptions = computed(() => {
       }
     ]
 })
+
+onMounted(() => {
+  initModals();
+})
+
+const showSignupModal = ref<boolean>(false)
+
+function applyBtnAction() {
+  showSignupModal.value = true
+}
+
+function redirectToURL() {
+  window.open(selectedJobDetail.value.apply_url, '_target')
+}
 </script>
 
 <template>
@@ -226,7 +242,7 @@ const mapOptions = computed(() => {
                 <h2 class="mb-2">Interested in this job?</h2>
                 <p class="text-gray-600 text-sm mb-3">Don’t miss the chance. Apply now here.</p>
                 <p class="text-gray-600 text-sm mb-5">Job code: EXMPL123</p>
-                <BaseButton :navigate-to="selectedJobDetail.apply_url" :is-external-link="true" label="Apply Now" :full-sized="true" />
+                <BaseButton @click="applyBtnAction" label="Apply Now" :full-sized="true" />
               </div>
 
               <div class="w-full bg-white border border-[#EAECF0] rounded-2xl p-4">
@@ -323,6 +339,8 @@ const mapOptions = computed(() => {
     </section>
 
     <JobCTA />
+
+    <QuickSignUpModal v-model="showSignupModal" @proceed="redirectToURL" />
   </div>
 </template>
 
