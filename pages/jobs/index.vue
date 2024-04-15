@@ -122,6 +122,7 @@ onMounted(async () => {
 const jobsLoading = ref(true);
 async function fetchJobs() {
   jobsLoading.value = true;
+  query.page = pageInfo.value.currentPage
   await jobStore.fetchJobs(query);
   pageInfo.value.totalPages = totalPages.value
   jobsLoading.value = false;
@@ -150,7 +151,9 @@ const isFilterSidebarVisible = ref(false);
 const fetchOnSearching = (searchValues :{ keyword: string, coordinates: { lng: string, lat: string } }) => {
   query.q = searchValues.keyword.length ? searchValues.keyword : '*'
   query.query_by = 'job_title'
-  query.filter_by = searchValues.coordinates.lat && searchValues.coordinates.lng ? `geo_location:(${searchValues.coordinates.lat}, ${searchValues.coordinates.lng}, 5 mi)` : null
+  if (searchValues.coordinates.lat && searchValues.coordinates.lng) {
+    query.filter_by = `geo_location:(${searchValues.coordinates.lat}, ${searchValues.coordinates.lng}, 5 mi)`;
+  }
   fetchJobs();
 }
 </script>
