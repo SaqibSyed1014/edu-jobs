@@ -15,7 +15,7 @@ export const useDisrictsStore = defineStore('districtStore', {
             const { hits, out_of} = await getDistrictList(query)
             // const response = await useGet(`/collections/districts/documents/search?q=*&per_page=10`)
             this.$state.distictsList = hits
-            this.$state.total_page = out_of
+            this.$state.total_page = Math.ceil(out_of / 12) 
         },
     }
 })

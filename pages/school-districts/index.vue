@@ -2,8 +2,9 @@
 let toggleSideBar = ref(false);
 const route = useRoute();
 const router = useRouter();
-const showSpinner = ref<boolean>(true);
+const isLoading = ref<boolean>(true);
 const districtStore = useDisrictsStore();
+const selectedAlphabet = ref<number>(0); // Reactive variable to store the selected alphabet index
 const { distictsList, total_page } = storeToRefs(districtStore);
 const currentPage = ref<number>(
   route?.query?.page ? Number(route?.query?.page) : 1
@@ -19,46 +20,42 @@ const isGridView = ref(
 ); // Reactive variable to store the current view mode
 
 // Function to switch to list view
-const switchToListView = () => {
-  isGridView.value = "list";
+const switchView = (view: any) => {
+  isGridView.value = view;
   router.push({
     path: "/school-districts",
     query: {
       page: currentPage.value,
-      view: "list",
+      view: view,
     },
   });
 };
 
-// Function to switch to grid view
+const switchToListView = () => {
+  switchView("list");
+};
+
 const switchToGridView = () => {
-  isGridView.value = "grid";
-  router.push({
-    path: "/school-districts",
-    query: {
-      page: currentPage.value,
-      view: "grid",
-    },
-  });
+  switchView("grid");
 };
 
 onMounted(async () => {
   await fetchDistricts(); // Initial fetch
-  // Watch for changes in currentPage value and recall the API
+  // Watch for changes in query parameter and recall the API
   watchEffect(() => {
     fetchDistricts();
   });
 });
 
 async function fetchDistricts() {
-  showSpinner.value = true;
+  isLoading.value = true;
   const query = {
     per_page: itemsPerPage.value,
     page: route?.query?.page ? route?.query?.page : currentPage.value,
     // filter_by: `school_count:<${25}`,
   };
   await districtStore.fetchDistricts(query);
-  showSpinner.value = false;
+  isLoading.value = false;
 }
 // Function to handle pagination
 const paginate = (page: number | "prev" | "next") => {
@@ -73,6 +70,7 @@ const paginate = (page: number | "prev" | "next") => {
     path: "/school-districts",
     query: {
       page: currentPage.value,
+      view: isGridView.value,
     },
   });
 
@@ -145,60 +143,6 @@ for (let i = 65; i <= 90; i++) {
   capitals.value.push(String.fromCharCode(i));
 }
 
-const selectedAlphabet = ref<number>(0); // Reactive variable to store the selected alphabet index
-
-const schoolList = ref([
-  {
-    avatar: "/images/schoolDistrict/Avatar1.png",
-    schoolName: "Palo Alto Unified School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar2.png",
-    schoolName: "San Dieguito Union High School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar3.png",
-    schoolName: "Arcadia Unified School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar4.png",
-    schoolName: "Saratoga Joint Union High School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar5.png",
-    schoolName: "Palo Alto Unified School Districts",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar6.png",
-    schoolName: "San Dieguito Union High School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar7.png",
-    schoolName: "Arcadia Unified School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar8.png",
-    schoolName: "Saratoga Joint Union High School District",
-  },
-
-  {
-    avatar: "/images/schoolDistrict/avatar9.png",
-    schoolName: "Palo Alto Unified School Districts",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar10.png",
-    schoolName: "San Dieguito Union High School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar11.png",
-    schoolName: "Arcadia Unified School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar12.png",
-    schoolName: "Saratoga Joint Union High School District",
-  },
-]);
-
 const selectAlphabet = (index: number) => {
   selectedAlphabet.value = index;
 };
@@ -206,18 +150,7 @@ const selectAlphabet = (index: number) => {
 
 <template>
   <div class="border-t border-b border-gray-200 mb-20">
-    <div v-if="showSpinner">
-      <div class="container">
-        <div
-          class="flex justify-center items-center h-[calc(100vh-80px)] w-full"
-        >
-          <BaseSpinner size="lg" :show-loader="showSpinner" />
-        </div>
-      </div>
-    </div>
-
-    <div v-else class="container flex w-full">
-      {{ isGridView }}
+    <div class="container flex w-full">
       <!-- For Mobile -->
       <div class="block xl:hidden">
         <DistrickSideBarWrapper
@@ -451,13 +384,19 @@ const selectAlphabet = (index: number) => {
             v-if="isGridView === 'grid'"
             class="grid sm:grid-cols-2 pt-8 lg:grid-cols-3 gap-6"
           >
-            <div v-for="(item, index) in distictsList" :key="index">
+            <div v-if="isLoading" v-for="i in 12">
+              <SDGridSkelton />
+            </div>
+            <div v-else v-for="(item, index) in distictsList" :key="index">
               <DIstrictsGridCard :data="item" :isSchool="true" />
             </div>
           </div>
           <!-- Lsit View -->
           <div v-if="isGridView === 'list'" class="grid gap-6 pt-8">
-            <div v-for="(item, index) in distictsList" :key="index">
+            <div v-if="isLoading" v-for="i in 12">
+              <SDListSkelton />
+            </div>
+            <div v-else v-for="(item, index) in distictsList" :key="index">
               <DistrictsListCard :data="item" :isSchool="true" />
             </div>
           </div>

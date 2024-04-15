@@ -25,11 +25,11 @@ defineProps<{ data: any; isSchool: Boolean }>();
               0 jobs
             </span>
           </div>
-          <div class="inline-flex items-center text-center space-x-2 text-gray-600">
+          <div
+            class="inline-flex items-center text-center space-x-2 text-gray-600"
+          >
             <SvgoBuilding class="size-5" />
-            <span
-              class="text-xs md:text-sm font-medium leading-tight"
-            >
+            <span class="text-xs md:text-sm font-medium leading-tight">
               {{ data?.document?.school_count.toLocaleString() }} schools
             </span>
           </div>
@@ -51,7 +51,7 @@ defineProps<{ data: any; isSchool: Boolean }>();
         <span
           class="text-center text-gray-700 text-xs md:text-sm font-medium leading-tight"
           >{{ data?.document?.state_name }},
-          {{ data?.document?.country }}
+          {{ data?.document?.country_code }}
         </span>
       </div>
     </div>

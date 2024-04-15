@@ -464,7 +464,7 @@ function changeStep(stepIdx: number) {
                           name="employment"
                           type="radio"
                           value="Full-time"
-                          class="h-5 w-5 cursor-pointer"
+                          class="cursor-pointer"
                         />
                         <label
                           for="Full-time"
@@ -477,7 +477,7 @@ function changeStep(stepIdx: number) {
                           name="employment"
                           type="radio"
                           value="Part-time"
-                          class="h-5 w-5 cursor-pointer"
+                          class="cursor-pointer"
                         />
                         <label
                           for="Part-time"
@@ -490,7 +490,7 @@ function changeStep(stepIdx: number) {
                           name="employment"
                           type="radio"
                           value="Contractor"
-                          class="h-5 w-5 cursor-pointer"
+                          class="cursor-pointer"
                         />
                         <label
                           for="Contractor"
@@ -503,7 +503,7 @@ function changeStep(stepIdx: number) {
                           name="employment"
                           type="radio"
                           value="Intern"
-                          class="h-5 w-5 cursor-pointer"
+                          class="cursor-pointer"
                         />
                         <label
                           for="Intern"
@@ -517,7 +517,7 @@ function changeStep(stepIdx: number) {
                           name="employment"
                           type="radio"
                           value="Volunteer"
-                          class="h-5 w-5 cursor-pointer"
+                          class="cursor-pointer"
                         />
                         <label
                           for="Volunteer"

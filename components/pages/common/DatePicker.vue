@@ -70,7 +70,7 @@ const textInputOptions = {
         />
       </template>
     </Datepicker>
-    <SvgoCalendar class="absolute h-5 top-4 right-3" />
+    <SvgoCalendar class="absolute h-5 top-3 right-3" />
 
     <ErrorMessage
       class="text-red-500 text-sm font-normal leading-tight"
@@ -102,7 +102,7 @@ const textInputOptions = {
 }
 
 .dp__cell_inner {
-  @apply text-gray-900 font-semibold text-sm;
+  @apply font-semibold text-sm;
 }
 
 .dp__icon {
