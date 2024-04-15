@@ -61,7 +61,7 @@ const {
   >
     <label
       :for="name"
-      class="block text-sm font-medium md:font-semibold text-gray-700 sm:pt-1.5"
+      class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
     >
       {{ label }}
       <span
@@ -78,12 +78,13 @@ const {
           <div
             :class="
               errorMessage
-                ? 'border border-red-300 flex relative rounded-md ring-0 ring-inset ring-gray-300 '
+                ? 'ring-2 !border-0 !ring-error-400 flex relative rounded-md  '
                 : 'flex relative rounded-md ring-1 ring-inset ring-gray-300 focus-within:ring-0 focus-within:ring-inset focus-within:ring-brand-600'
             "
           >
             <span
               class="inline-flex items-center rounded-tl-lg rounded-bl-lg px-3 font-normal border border-gray-300 leading-normal text-gray-500 sm:text-base"
+              :class="{ 'ring-2 !border-0 !ring-error-400': errorMessage }"
               >http://</span
             >
             <input
@@ -94,7 +95,8 @@ const {
               :placeholder="placeholder"
               @input="handleChange"
               @blur="handleBlur"
-              class="block w-full min-w-0 flex-1 !rounded-l-none !rounded-r-md border-0 py-2,5 text-gray-900 sm:text-sm sm:leading-6"
+              class="form-input w-full"
+              :class="{ 'ring-2 !border-0 !ring-error-400': errorMessage }"
             />
           </div>
           <p

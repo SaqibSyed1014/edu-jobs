@@ -4,15 +4,20 @@ defineProps<{ data: any; isSchool: Boolean }>();
 
 <template>
   <NuxtLink
-    :to="isSchool ? '/school-districts/123' : '/colleges/123'"
+    :to="isSchool ? `/school-districts/${data?.document?.id}` : '/colleges/123'"
     class="p-5 flex flex-col rounded-xl border border-gray-200"
   >
     <div class="inline-flex space-x-3">
-      <img :src="data.avatar" class="size-12" alt="Avatar" />
+      <!-- <img
+        :src="`/images/schoolDistrict/Avatar1.png`"
+        class="size-12"
+        alt="Avatar"
+      /> -->
+      <SvgoBuilding class="size-6" />
       <h4
         class="text-gray-900 text-sm md:text-base font-semibold leading-normal"
       >
-        {{ data?.schoolName }}
+        {{ data?.document?.district_name }}
       </h4>
     </div>
 
@@ -23,7 +28,8 @@ defineProps<{ data: any; isSchool: Boolean }>();
         <SvgoUsFlag class="size-4" />
         <span
           class="text-center text-gray-700 text-xs md:text-sm font-medium leading-tight"
-          >Palo Alto, CA
+          >{{ data?.document?.state_name }},
+          {{ data?.document?.country }}
         </span>
       </div>
 
@@ -32,7 +38,7 @@ defineProps<{ data: any; isSchool: Boolean }>();
         <span
           class="text-gray-600 text-xs md:text-sm font-medium leading-tight"
         >
-          14 jobs
+          0 jobs
         </span>
       </div>
 
@@ -42,13 +48,13 @@ defineProps<{ data: any; isSchool: Boolean }>();
           <span
             class="text-xs md:text-sm font-medium leading-tight"
           >
-            19 schools
+            {{ data?.document?.school_count.toLocaleString() }} schools
           </span>
         </div>
         <div class="inline-flex items-center text-center space-x-2">
           <SvgoGraduationHat class="size-5" />
           <span class="text-gray-600 text-sm font-medium leading-tight">
-            11,820 students
+            {{ data?.document?.student_count.toLocaleString() }} students
           </span>
         </div>
       </div>
