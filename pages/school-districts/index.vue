@@ -1,12 +1,46 @@
 <script setup lang="ts">
 let toggleSideBar = ref(false);
-
+const route = useRoute();
+const router = useRouter();
 const showSpinner = ref<boolean>(true);
 const districtStore = useDisrictsStore();
 const { distictsList, total_page } = storeToRefs(districtStore);
-const currentPage = ref<number>(1);
+const currentPage = ref<number>(
+  route?.query?.page ? Number(route?.query?.page) : 1
+);
 const totalPages = ref(total_page);
 const itemsPerPage = ref<number>(12);
+const isGridView = ref(
+  route?.query?.view
+    ? route?.query?.view === "grid"
+      ? "grid"
+      : "list"
+    : "grid"
+); // Reactive variable to store the current view mode
+
+// Function to switch to list view
+const switchToListView = () => {
+  isGridView.value = "list";
+  router.push({
+    path: "/school-districts",
+    query: {
+      page: currentPage.value,
+      view: "list",
+    },
+  });
+};
+
+// Function to switch to grid view
+const switchToGridView = () => {
+  isGridView.value = "grid";
+  router.push({
+    path: "/school-districts",
+    query: {
+      page: currentPage.value,
+      view: "grid",
+    },
+  });
+};
 
 onMounted(async () => {
   await fetchDistricts(); // Initial fetch
@@ -19,9 +53,8 @@ onMounted(async () => {
 async function fetchDistricts() {
   showSpinner.value = true;
   const query = {
-    q: "*",
     per_page: itemsPerPage.value,
-    page: currentPage.value,
+    page: route?.query?.page ? route?.query?.page : currentPage.value,
     // filter_by: `school_count:<${25}`,
   };
   await districtStore.fetchDistricts(query);
@@ -31,23 +64,23 @@ async function fetchDistricts() {
 const paginate = (page: number | "prev" | "next") => {
   if (page === "prev") {
     currentPage.value--;
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
   } else if (page === "next") {
     currentPage.value++;
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
   } else {
     currentPage.value = page;
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
   }
+  router.push({
+    path: "/school-districts",
+    query: {
+      page: currentPage.value,
+    },
+  });
+
+  // Scroll to the top
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
 };
 
 function togglingSidebarVisibility() {
@@ -112,7 +145,6 @@ for (let i = 65; i <= 90; i++) {
   capitals.value.push(String.fromCharCode(i));
 }
 
-const isGridView = ref(true); // Reactive variable to store the current view mode
 const selectedAlphabet = ref<number>(0); // Reactive variable to store the selected alphabet index
 
 const schoolList = ref([
@@ -167,16 +199,6 @@ const schoolList = ref([
   },
 ]);
 
-// Function to switch to list view
-const switchToListView = () => {
-  isGridView.value = false;
-};
-
-// Function to switch to grid view
-const switchToGridView = () => {
-  isGridView.value = true;
-};
-
 const selectAlphabet = (index: number) => {
   selectedAlphabet.value = index;
 };
@@ -195,6 +217,7 @@ const selectAlphabet = (index: number) => {
     </div>
 
     <div v-else class="container flex w-full">
+      {{ isGridView }}
       <!-- For Mobile -->
       <div class="block xl:hidden">
         <DistrickSideBarWrapper
@@ -425,7 +448,7 @@ const selectAlphabet = (index: number) => {
         <div class="mt-1.5 mb-8">
           <!-- Grid View -->
           <div
-            v-if="isGridView"
+            v-if="isGridView === 'grid'"
             class="grid sm:grid-cols-2 pt-8 lg:grid-cols-3 gap-6"
           >
             <div v-for="(item, index) in distictsList" :key="index">
@@ -433,7 +456,7 @@ const selectAlphabet = (index: number) => {
             </div>
           </div>
           <!-- Lsit View -->
-          <div v-if="!isGridView" class="grid gap-6 pt-8">
+          <div v-if="isGridView === 'list'" class="grid gap-6 pt-8">
             <div v-for="(item, index) in distictsList" :key="index">
               <DistrictsListCard :data="item" :isSchool="true" />
             </div>

@@ -34,7 +34,7 @@ const format = (date: any) => {
   });
 };
 const textInputOptions = {
-  format: "MM.dd.yyyy HH:mm",
+  format: "MM/dd/yyyy",
 };
 </script>
 
@@ -47,19 +47,16 @@ const textInputOptions = {
       placeholder="March 25, 2024"
       autoApply
       :text-input="textInputOptions"
+      :enable-time-picker="false"
     >
       <template #input-icon> </template>
-      <template #dp-input="{ value, onEnter, onTab, onBlur, onPaste }">
+      <template #dp-input="{ value }">
         <input
           type="text"
           class="form-input w-full"
           placeholder="March 25, 2024"
           :value="value"
           @input="onInput"
-          @keydown.enter="onEnter"
-          @blur="onBlur"
-          @keydown.tab="onTab"
-          @paste="onPaste"
           :class="{ 'has-error': error }"
         />
         <TextInput
@@ -81,3 +78,34 @@ const textInputOptions = {
     />
   </div>
 </template>
+
+<style>
+.dp__month_year_select {
+  width: 20%;
+}
+
+.dp__month_year_wrap {
+  align-items: center;
+  justify-content: center;
+}
+
+.dp__active_date {
+  @apply bg-brand-600 !text-white;
+}
+
+.dp__today {
+  @apply border border-brand-600;
+}
+
+.dp__calendar_header {
+  @apply leading-6 text-sm font-medium text-gray-500;
+}
+
+.dp__cell_inner {
+  @apply text-gray-900 font-semibold text-sm;
+}
+
+.dp__icon {
+  @apply stroke-gray-600;
+}
+</style>
