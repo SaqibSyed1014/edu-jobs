@@ -4,6 +4,7 @@ const apiHeaders = {
 
 function convertQueryToString(query: { [key: string]: any }): string {
     return Object.entries(query)
+        .filter(([key, value]) => value !== null)
         .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
         .join('&');
 }
