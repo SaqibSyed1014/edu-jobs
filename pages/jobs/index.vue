@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import JobSkeleton from "~/components/pages/job-listings/JobSkeleton.vue";
+import {useJobStore} from "~/segments/jobs/store";
+import NoRecordFound from "~/components/core/NoRecordFound.vue";
 
 const filters = [
   {
@@ -9,7 +11,7 @@ const filters = [
     list: [
       {
         label: 'Full-time',
-        checked: true,
+        checked: false,
         counts: 15
       },
       {
@@ -37,7 +39,7 @@ const filters = [
     list: [
       {
         label: 'Instructional',
-        checked: true,
+        checked: false,
         counts: 54
       },
       {
@@ -54,7 +56,7 @@ const filters = [
     list: [
       {
         label: 'Entry-level',
-        checked: true,
+        checked: false,
         counts: 15
       },
       {
@@ -153,7 +155,7 @@ const fetchOnSearching = (searchValues :{ keyword: string, coordinates: { lng: s
   query.query_by = 'job_title'
   if (searchValues.coordinates.lat && searchValues.coordinates.lng) {
     query.filter_by = `geo_location:(${searchValues.coordinates.lat}, ${searchValues.coordinates.lng}, 5 mi)`;
-  }
+  } else query.filter_by = null
   fetchJobs();
 }
 </script>
@@ -214,15 +216,20 @@ const fetchOnSearching = (searchValues :{ keyword: string, coordinates: { lng: s
             </BaseButton>
           </div>
 
-          <div class="grid gap-6" :class="[isGridOptionSelected ? 'md:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1']">
+          <div v-if="jobsLoading || jobListings.length" class="grid gap-6" :class="[isGridOptionSelected ? 'md:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1']">
             <template v-if="jobsLoading" v-for="i in 12">
-              <JobSkeleton :card-form="isGridOptionSelected === 1" />
+              <JobSkeleton :card-form="isGridOptionSelected === 1"/>
             </template>
 
             <template v-else v-for="job in jobListings">
-              <JobCard :job="job" :card-form="isGridOptionSelected === 1" :show-job-description="false" :is-job-loading="jobsLoading" />
+              <JobCard :job="job" :card-form="isGridOptionSelected === 1" :show-job-description="false"
+                       :is-job-loading="jobsLoading"/>
             </template>
           </div>
+
+          <template v-else>
+            <NoRecordFound name="job" :search-value="query.q" />
+          </template>
 
           <CustomPagination
               :current-page="pageInfo.currentPage"

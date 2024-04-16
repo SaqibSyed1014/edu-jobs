@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import {useBlogStore} from "~/segments/blogs/store";
+
 import BaseSpinner from "~/components/core/BaseSpinner.vue";
 
 const showSpinner = ref<boolean>(true)

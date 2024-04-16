@@ -3,6 +3,7 @@ import BlogCard from "~/components/core/BlogCard.vue";
 import ArrowUpRightIcon from "assets/icons/arrow-narrow-up-right.svg";
 import ArrowLeftIcon from "assets/icons/arrow-left.svg";
 import ArrowRightIcon from "assets/icons/arrow-right.svg";
+import {useBlogStore} from "~/segments/blogs/store";
 
 const blogList = [
   {

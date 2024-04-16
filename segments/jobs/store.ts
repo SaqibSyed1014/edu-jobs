@@ -1,6 +1,6 @@
 import {
     getJobsList
-} from "~/stores/services/jobs.services";
+} from "~/segments/jobs/services";
 
 interface JobsState {
     jobsList: Job[]
@@ -30,6 +30,6 @@ export const useJobStore = defineStore('jobStore', {
             ...job,
             date_posting_expires: job.date_posting_expires ? job?.date_posting_expires.slice(0, job?.date_posting_expires.indexOf('00:00:00')) : 'N/A',
             date_posted: job.date_posted.slice(0, job.date_posted.indexOf('00:00:00'))
-        }))
+        })) as Job[]
     }
 })

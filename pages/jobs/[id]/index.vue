@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { initModals } from 'flowbite'
+import {useJobStore} from "~/segments/jobs/store";
 import QuickSignUpModal from "~/components/pages/job-listings/QuickSignUpModal.vue";
 const center = ref({ lat: 0, lng: 0 })
 

@@ -13,6 +13,8 @@
 </template>
 
 <script setup>
+import {useJobStore} from "~/segments/jobs/store";
+
 const jobStore = useJobStore();
 
 onMounted(async () => {
