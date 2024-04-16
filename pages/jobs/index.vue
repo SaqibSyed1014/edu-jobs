@@ -10,7 +10,7 @@ const filters = [
     list: [
       {
         label: 'Full-time',
-        checked: true,
+        checked: false,
         counts: 15
       },
       {
@@ -38,7 +38,7 @@ const filters = [
     list: [
       {
         label: 'Instructional',
-        checked: true,
+        checked: false,
         counts: 54
       },
       {
@@ -55,7 +55,7 @@ const filters = [
     list: [
       {
         label: 'Entry-level',
-        checked: true,
+        checked: false,
         counts: 15
       },
       {
