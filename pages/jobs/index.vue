@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import JobSkeleton from "~/components/pages/job-listings/JobSkeleton.vue";
+import {useJobStore} from "~/segments/jobs/store";
 
 const filters = [
   {

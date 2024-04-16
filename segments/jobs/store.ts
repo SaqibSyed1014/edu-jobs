@@ -1,6 +1,6 @@
 import {
     getJobsList
-} from "~/stores/services/jobs.services";
+} from "~/segments/jobs/services";
 
 interface JobsState {
     jobsList: Job[]

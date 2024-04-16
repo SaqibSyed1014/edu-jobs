@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import {useDisrictsStore} from "~/segments/districts/store";
+
 let toggleSideBar = ref(false);
 
 const showSpinner = ref<boolean>(true);

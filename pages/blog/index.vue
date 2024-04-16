@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import {useBlogStore} from "~/segments/blogs/store";
+
 const blogsStore = useBlogStore()
 
 const { blogs } = storeToRefs(blogsStore)

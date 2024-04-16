@@ -1,4 +1,4 @@
-import { getDistrictList } from "~/stores/services/districts.services"
+import { getDistrictList } from "~/segments/districts/services"
 
 interface DistrictState {
     distictsList: Hit[],

@@ -1,4 +1,4 @@
-// import { useErrorStore } from "~/stores/error"
+import { useErrorStore } from "~/segments/error"
 
 const CSRF_COOKIE = 'XSRF-TOKEN'
 const CSRF_HEADER = 'X-XSRF-TOKEN'
@@ -49,7 +49,7 @@ export const useFetchData: any = async (url = '/', options: any = {}) => {
   // if (accessToken) {
   //   headers['Authorization'] = `Bearer ${accessToken}`
   // }
-  
+
   try {
     const errorStore = useErrorStore()
 
