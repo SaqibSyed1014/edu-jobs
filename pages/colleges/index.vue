@@ -13,7 +13,7 @@ function togglingSidebarVisibility() {
 }
 
 const jobOptions = ref({
-  icon: "SvgoBriefCase",
+  icon: "SvgoBriefCaseLight",
   data: [
     { id: "1", label: "0 to 10", checked: false },
     { id: "2", label: "11 to 50", checked: true },
@@ -37,7 +37,7 @@ const stuOptions = ref({
 });
 
 const schOptions = ref({
-  icon: "SvgoBuilding",
+  icon: "SvgoBuildingLight",
   data: [
     { id: "1", label: "0 to 10", checked: false },
     { id: "2", label: "11 to 25", checked: true },

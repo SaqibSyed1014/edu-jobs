@@ -121,7 +121,7 @@ watch(
             {{ errorMessage || successMessage }}
           </p>
         </div>
-        <div v-if="errorMessage && value" class="absolute right-2 top-3">
+        <div v-if="errorMessage" class="absolute right-2 top-3">
           <SvgoAlertCircle class="h-4" />
         </div>
       </div>
