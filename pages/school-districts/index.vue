@@ -148,6 +148,8 @@ const handleInput = _debounce(() => {
 
 const search = () => {
   query.value.q = searchedValue.value || "*";
+  query.value.page = 1;
+  currentPage.value = 1;
   router.push({
     path: "/school-districts",
     query: {
