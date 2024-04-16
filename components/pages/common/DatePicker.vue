@@ -21,18 +21,18 @@ const props = withDefaults(defineProps<Props>(), {
 
 const date = ref(props?.values ?? "");
 
-const onInput = (event: Event) => {
-  // Update the value of `date` with the input's value
-  date.value = (event.target as HTMLInputElement).value;
-};
+// const onInput = (event: Event) => {
+//   // Update the value of `date` with the input's value
+//   date.value = (event.target as HTMLInputElement).value;
+// };
 
-const format = (date: any) => {
-  return date.toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-};
+// const format = (date: any) => {
+//   return date.toLocaleDateString("en-US", {
+//     month: "long",
+//     day: "numeric",
+//     year: "numeric",
+//   });
+// };
 const textInputOptions = {
   format: "MM/dd/yyyy",
 };
@@ -43,20 +43,22 @@ const textInputOptions = {
     <Datepicker
       v-model="date"
       class="fixed-input-icon"
-      :format="format"
-      placeholder="March 25, 2024"
       autoApply
       :text-input="textInputOptions"
       :enable-time-picker="false"
     >
       <template #input-icon> </template>
-      <template #dp-input="{ value }">
+      <template #dp-input="{ value, onBlur, onInput, onEnter, onTab, onPaste }">
         <input
           type="text"
           class="form-input w-full"
-          placeholder="March 25, 2024"
+          placeholder="MM/DD/YYYY"
           :value="value"
           @input="onInput"
+          @keydown.enter="onEnter"
+          @blur="onBlur"
+          @keydown.tab="onTab"
+          @paste="onPaste"
           :class="{ 'has-error': error }"
         />
         <TextInput
@@ -80,6 +82,13 @@ const textInputOptions = {
 </template>
 
 <style>
+.dp__menu_inner {
+  @apply rounded-lg bg-white p-4 shadow-lg;
+}
+
+.dp__arrow_bottom {
+  @apply bg-white transform-none;
+}
 .dp__month_year_select {
   width: 20%;
 }

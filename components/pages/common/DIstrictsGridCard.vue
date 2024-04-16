@@ -5,17 +5,12 @@ defineProps<{ data: any; isSchool: Boolean }>();
 <template>
   <NuxtLink
     :to="isSchool ? `/school-districts/${data?.document?.id}` : '/colleges/123'"
-    class="p-5 flex flex-col rounded-xl border border-gray-200"
+    class="p-5 flex flex-col justify-between rounded-xl border border-gray-200 min-h-[208px]"
   >
-    <div class="inline-flex space-x-3">
-      <!-- <img
-        :src="`/images/schoolDistrict/Avatar1.png`"
-        class="size-12"
-        alt="Avatar"
-      /> -->
-      <SvgoBuilding class="size-6" />
+    <div class="">
+      <SvgoBuilding class="size-6 float-left" />
       <h4
-        class="text-gray-900 text-sm md:text-base font-semibold leading-normal"
+        class="text-gray-900 pl-3 text-sm md:text-base font-semibold leading-normal text-pretty line-clamp-2"
       >
         {{ data?.document?.district_name }}
       </h4>

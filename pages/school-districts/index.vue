@@ -1,14 +1,13 @@
 <script setup lang="ts">
-let toggleSideBar = ref(false);
+let toggleSideBar = ref<boolean>(false);
 const route = useRoute();
 const router = useRouter();
 const isLoading = ref<boolean>(true);
 const districtStore = useDisrictsStore();
-const selectedAlphabet = ref<number>(0); // Reactive variable to store the selected alphabet index
+const selectedAlphabet = ref<number>(0);
 const { distictsList, total_page } = storeToRefs(districtStore);
-const currentPage = ref<number>(
-  route?.query?.page ? Number(route?.query?.page) : 1
-);
+const currentPage = ref<number>(Number(route?.query?.page) || 1);
+const searchedValue = ref(route?.query?.q === "*" ? "" : route?.query?.q || "");
 const totalPages = ref(total_page);
 const itemsPerPage = ref<number>(12);
 const isGridView = ref(
@@ -25,8 +24,8 @@ const switchView = (view: any) => {
   router.push({
     path: "/school-districts",
     query: {
-      page: currentPage.value,
       view: view,
+      ...query?.value,
     },
   });
 };
@@ -41,21 +40,20 @@ const switchToGridView = () => {
 
 onMounted(async () => {
   await fetchDistricts(); // Initial fetch
-  // Watch for changes in query parameter and recall the API
-  watchEffect(() => {
-    fetchDistricts();
-  });
+});
+
+const query = ref({
+  q: route?.query?.q || "*",
+  per_page: itemsPerPage.value,
+  page: currentPage.value,
+  query_by: "district_name",
 });
 
 async function fetchDistricts() {
   isLoading.value = true;
-  const query = {
-    per_page: itemsPerPage.value,
-    page: route?.query?.page ? route?.query?.page : currentPage.value,
-    // filter_by: `school_count:<${25}`,
-  };
-  await districtStore.fetchDistricts(query);
+  await districtStore.fetchDistricts(query?.value);
   isLoading.value = false;
+  totalPages.value = total_page?.value;
 }
 // Function to handle pagination
 const paginate = (page: number | "prev" | "next") => {
@@ -66,11 +64,13 @@ const paginate = (page: number | "prev" | "next") => {
   } else {
     currentPage.value = page;
   }
+  query.value.page = currentPage?.value;
+
   router.push({
     path: "/school-districts",
     query: {
-      page: currentPage.value,
       view: isGridView.value,
+      ...query.value,
     },
   });
 
@@ -79,6 +79,7 @@ const paginate = (page: number | "prev" | "next") => {
     top: 0,
     behavior: "smooth",
   });
+  fetchDistricts();
 };
 
 function togglingSidebarVisibility() {
@@ -91,7 +92,7 @@ function togglingSidebarVisibility() {
 }
 
 const jobOptions = ref({
-  icon: "SvgoBriefCase",
+  icon: "SvgoBriefCaseLight",
   data: [
     { id: "1", label: "0 to 10", checked: false },
     { id: "2", label: "11 to 50", checked: true },
@@ -115,7 +116,7 @@ const stuOptions = ref({
 });
 
 const schOptions = ref({
-  icon: "SvgoBuilding",
+  icon: "SvgoBuildingLight",
   data: [
     { id: "1", label: "0 to 10", checked: false },
     { id: "2", label: "11 to 25", checked: true },
@@ -125,16 +126,10 @@ const schOptions = ref({
 });
 
 const clearAll = () => {
-  jobOptions?.value?.data?.forEach((option: any) => {
-    option.checked = false;
-  });
-
-  stuOptions?.value?.data?.forEach((option: any) => {
-    option.checked = false;
-  });
-
-  schOptions?.value?.data?.forEach((option: any) => {
-    option.checked = false;
+  [jobOptions, stuOptions, schOptions].forEach((option) => {
+    option.value.data.forEach((opt: any) => {
+      opt.checked = false;
+    });
   });
 };
 
@@ -145,6 +140,22 @@ for (let i = 65; i <= 90; i++) {
 
 const selectAlphabet = (index: number) => {
   selectedAlphabet.value = index;
+};
+
+const handleInput = _debounce(() => {
+  search();
+}, 500); // Adjust the debounce delay as needed (in milliseconds)
+
+const search = () => {
+  query.value.q = searchedValue.value || "*";
+  router.push({
+    path: "/school-districts",
+    query: {
+      view: isGridView.value,
+      ...query.value,
+    },
+  });
+  fetchDistricts();
 };
 </script>
 
@@ -278,7 +289,12 @@ const selectAlphabet = (index: number) => {
 
         <div class="pt-8 flex sm:flex-row flex-col gap-4 justify-between">
           <div class="flex justify-between gap-4">
-            <form class="w-full" action="#" method="GET">
+            <form
+              @submit.prevent="search"
+              class="w-full"
+              action="#"
+              method="GET"
+            >
               <label for="search-field" class="sr-only">Search</label>
               <div class="relative">
                 <SvgoSearchIcon
@@ -286,11 +302,13 @@ const selectAlphabet = (index: number) => {
                   aria-hidden="true"
                 />
                 <input
+                  v-model="searchedValue"
                   id="search-field"
                   class="block h-full rounded-lg w-full md:w-[320px] shadow border border-gray-300 bg-transparent py-[13px] pl-8 pr-0 text-black sm:text-sm"
                   placeholder="Search..."
                   type="search"
                   name="search"
+                  @input="handleInput"
                 />
               </div>
             </form>
@@ -380,15 +398,18 @@ const selectAlphabet = (index: number) => {
 
         <div class="mt-1.5 mb-8">
           <!-- Grid View -->
-          <div
-            v-if="isGridView === 'grid'"
-            class="grid sm:grid-cols-2 pt-8 lg:grid-cols-3 gap-6"
-          >
-            <div v-if="isLoading" v-for="i in 12">
-              <SDGridSkelton />
-            </div>
-            <div v-else v-for="(item, index) in distictsList" :key="index">
-              <DIstrictsGridCard :data="item" :isSchool="true" />
+
+          <div>
+            <div
+              v-if="isGridView === 'grid'"
+              class="grid sm:grid-cols-2 pt-8 lg:grid-cols-3 gap-6"
+            >
+              <div v-if="isLoading" v-for="i in 12">
+                <SDGridSkelton />
+              </div>
+              <div v-else v-for="(item, index) in distictsList" :key="index">
+                <DIstrictsGridCard :data="item" :isSchool="true" />
+              </div>
             </div>
           </div>
           <!-- Lsit View -->
@@ -400,12 +421,32 @@ const selectAlphabet = (index: number) => {
               <DistrictsListCard :data="item" :isSchool="true" />
             </div>
           </div>
+          <div
+            v-if="isLoading === false && distictsList?.length === 0"
+            class="pt-20 flex items-center justify-center"
+          >
+            <div class="flex-col justify-start items-center gap-1 inline-flex">
+              <div
+                class="self-stretch text-center text-gray-900 text-base font-semibold leading-normal"
+              >
+                No Record found
+              </div>
+              <div
+                class="self-stretch text-center text-slate-600 text-sm font-normal leading-tight"
+              >
+                Your search "{{ searchedValue }}" did not match any record.
+                Please try again.
+              </div>
+            </div>
+          </div>
         </div>
-        <CustomPagination
-          :current-page="currentPage"
-          :total-pages="totalPages"
-          @paginate="paginate"
-        />
+        <div v-if="distictsList?.length > 0">
+          <CustomPagination
+            :current-page="currentPage"
+            :total-pages="totalPages"
+            @paginate="paginate"
+          />
+        </div>
       </div>
     </div>
   </div>

@@ -10,7 +10,7 @@ function convertQueryToString(query: { [key: string]: any }): string {
 
 const getDistrictList = (query: any) :Promise<DisrictResponseType> => {
     const queryString = convertQueryToString(query);
-    return $fetch(`https://9gj45ofprzq1yhi2p-1.a1.typesense.net/collections/districts/documents/search?q=*&${queryString}`, {
+    return $fetch(`https://9gj45ofprzq1yhi2p-1.a1.typesense.net/collections/districts/documents/search?${queryString}`, {
         method: 'get',
         headers: apiHeaders,
     })
