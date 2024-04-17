@@ -1,12 +1,13 @@
 <script setup lang="ts">
 const props = defineProps<{
-  params: any
+  queryValue?: any
+  location?: string
 }>()
 const emit = defineEmits(['updatedValues'])
 
 const searchedValue = ref<string>('')
 
-watch(() => props.params, (val) => {
+watch(() => props.queryValue, (val) => {
   searchedValue.value = val.q === '*' ? '' : val.q
 })
 
@@ -14,11 +15,23 @@ const coordinates = ref({
   lng: null,
   lat: null
 })
+let locationName = ''
 
+onMounted(() => {
+  setTimeout(() => {
+    const field = document.getElementById('mapInput') as HTMLInputElement
+    if (props.location) {
+      field.value = props.location
+      field.focus()
+    }
+  }, 1000);
+})
 
 
 function performSearch() {
-  emit('updatedValues', { keyword: searchedValue.value, coordinates: coordinates.value})
+  const locationField = document.getElementById('mapInput') as HTMLInputElement
+  locationName = locationField.value
+  emit('updatedValues', { keyword: searchedValue.value, coordinates: coordinates.value, location: locationName })
 }
 
 function setPlace(location :any) {
@@ -38,6 +51,7 @@ const enableSearching = computed(() => {
 function checkFieldInput() {
   coordinates.value.lat = null
   coordinates.value.lng = null
+  locationName = ''
 }
 </script>
 
@@ -59,6 +73,7 @@ function checkFieldInput() {
         <SvgoLocationPin class="w-4 h-4 text-gray-400" />
         <client-only>
           <GMapAutocomplete
+              id="mapInput"
               placeholder="Anywhere"
               class="form-input w-full"
               :options="{

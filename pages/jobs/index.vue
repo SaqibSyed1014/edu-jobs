@@ -2,7 +2,7 @@
 import JobSkeleton from "~/components/pages/job-listings/JobSkeleton.vue";
 import {useJobStore} from "~/segments/jobs/store";
 import NoRecordFound from "~/components/core/NoRecordFound.vue";
-import type {PaginationInfo, QueryParams, TypesenseQueryParam} from "~/segments/common.types";
+import type {JobQueryParams, PaginationInfo, TypesenseQueryParam} from "~/segments/common.types";
 
 const filters = [
   {
@@ -110,8 +110,8 @@ const pageInfo = ref<PaginationInfo>({
 
 const query = ref<TypesenseQueryParam>({
   q: "*",
-  per_page: pageInfo.value.itemsPerPage,
   page: pageInfo.value.currentPage,
+  per_page: pageInfo.value.itemsPerPage,
 })
 
 
@@ -120,23 +120,37 @@ const router = useRouter();
 const jobStore = useJobStore();
 const { jobListings, totalPages } = storeToRefs(jobStore);
 
-const layoutOptionSelected = ref(route.params.view === 'list' ? 0 : 1)
+const layoutOptionSelected = ref(1);
+const searchedLocationText = ref('');
+
+const queryParams = computed(() => {
+  const urlParams :JobQueryParams = {
+    q: query.value.q,
+    location: searchedLocationText.value,
+    page: query.value.page,
+    mode: layoutOptionSelected.value === 0 ? 'list' : 'grid',
+  }
+  if (!searchedLocationText.value?.length) delete urlParams.location
+  return urlParams
+})
 
 watch(() => layoutOptionSelected.value, (val) => {
   router.replace({
     path: "/jobs",
-    query: {
-      view: val === 0 ? 'list' : 'grid',
-      ...query?.value,
-    },
+    query: queryParams.value,
   });
 })
 
 
 onMounted(async () => {
   if (Object.keys(route.query).length) {
-    const {view, ...otherParams} = route.query
-    query.value = otherParams as unknown as TypesenseQueryParam
+    const { mode, location, ...otherParams } = route.query
+    query.value = {
+      ...query.value,
+      ...otherParams as unknown as TypesenseQueryParam
+    }
+    layoutOptionSelected.value = mode === 'list' ? 0 : 1
+    searchedLocationText.value = location as string // assign location in url for google map field
   }
   await doSearch(); // Initial fetch
 });
@@ -144,15 +158,12 @@ onMounted(async () => {
 const jobsLoading = ref(true);
 async function doSearch(resetToDefaultPage = false) {
   jobsLoading.value = true;
-  query.value.page = resetToDefaultPage ? 1 : pageInfo.value.currentPage
-  const filteredQueries = Object.fromEntries(Object.entries(query.value).filter(([key, value]) => value !== null))
+  query.value.page = resetToDefaultPage ? 1 : pageInfo.value.currentPage;
   await router.replace({
     path: '/jobs',
-    query: {
-      view: layoutOptionSelected.value === 0 ? 'list' : 'grid',
-      ...filteredQueries
-    }
+    query: queryParams.value
   })
+  if (query.value.q && query.value.q !== '*')query.value.query_by = 'job_title'
   await jobStore.fetchJobs(query.value);
   pageInfo.value.totalPages = totalPages.value
   jobsLoading.value = false;
@@ -175,12 +186,15 @@ const paginate = (page: number | "prev" | "next") => {
 
 const isFilterSidebarVisible = ref(false);
 
-const fetchOnSearching = (searchValues :{ keyword: string, coordinates: { lng: string, lat: string } }) => {
+const fetchOnSearching = (searchValues :{ keyword: string, coordinates: { lng: string, lat: string }, location: string }) => {
   query.value.q = searchValues.keyword.length ? searchValues.keyword : '*'
-  query.value.query_by = 'job_title'
   if (searchValues.coordinates.lat && searchValues.coordinates.lng) { // check if both lat and lng are propagated by SearchBar
     query.value.filter_by = `geo_location:(${searchValues.coordinates.lat}, ${searchValues.coordinates.lng}, 5 mi)`;
-  } else query.value.filter_by = null
+    searchedLocationText.value = searchValues.location // saving location string for route query
+  } else {
+    query.value.filter_by = null
+    searchedLocationText.value = ''
+  }
   doSearch(true);
 }
 </script>
@@ -208,7 +222,8 @@ const fetchOnSearching = (searchValues :{ keyword: string, coordinates: { lng: s
 
         <template #search-filters>
           <SearchBar
-            :params="query"
+            :query-value="query"
+            :location="searchedLocationText as string"
             @updated-values="fetchOnSearching"
           />
         </template>

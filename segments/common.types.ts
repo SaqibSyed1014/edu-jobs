@@ -1,3 +1,5 @@
+import type {LocationQueryRaw} from "vue-router";
+
 export interface QueryParams {
     [key: string]: string | string[] | number | null
 }
@@ -13,4 +15,11 @@ export interface TypesenseQueryParam {
     per_page: number,
     page: number, query_by ?:string,
     filter_by?: string | null
+}
+
+export interface JobQueryParams extends LocationQueryRaw{
+    mode: string
+    q: string
+    page: number
+    location?: string
 }
