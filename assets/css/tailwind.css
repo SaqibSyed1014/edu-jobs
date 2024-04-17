@@ -23,6 +23,17 @@ body{
 input[type=checkbox]{
     @apply appearance-none w-5 h-5 border border-gray-300 rounded-md focus:ring-0 cursor-pointer
 }
+input[type=radio]{
+    @apply appearance-none w-5 h-5  border border-gray-300 rounded-full focus:ring-0 cursor-pointer
+}
+input[type='radio']:checked{
+    @apply bg-brand-600
+}
+input[type="search"]::-webkit-search-cancel-button {
+    /* Remove default */
+    -webkit-appearance: none;
+  }
+  
 .form-control{
     @apply flex flex-col gap-1.5
 }

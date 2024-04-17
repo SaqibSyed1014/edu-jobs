@@ -35,6 +35,9 @@ export const useFetchData: any = async (url = '/', options: any = {}) => {
 
   let headers: any = {
     'X-TYPESENSE-API-KEY': '3bxhPnXQCcA2Ubg5jYOJu0IbFoEnU7Fq',
+    'Content-Type': 'application/json',
+    "Access-Control-Allow-Origin": "*", 
+    'Access-Control-Allow-Headers': '*',
     ...options?.headers,
     // ...(token && { [CSRF_HEADER]: token }),
   }
