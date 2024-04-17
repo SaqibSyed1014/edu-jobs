@@ -28,7 +28,8 @@ export default defineNuxtConfig({
         'nuxt-swiper',
         'nuxt-svgo',
         '@nuxtjs/robots',
-        '@pinia/nuxt'
+        '@pinia/nuxt',
+        'nuxt-lodash'
     ],
     components: [
         {
@@ -50,5 +51,16 @@ export default defineNuxtConfig({
             UserAgent: '*',
             Disallow: '/'
         }
-    }
+    },
+    lodash: {
+        prefix: "_",
+        prefixSkip: ["string"],
+        upperAfterPrefix: false,
+        exclude: ["map"],
+        alias: [
+          ["camelCase", "stringToCamelCase"], // => stringToCamelCase
+          ["kebabCase", "stringToKebab"], // => stringToKebab
+          ["isDate", "isLodashDate"], // => _isLodashDate
+        ],
+      },
 })

@@ -1,55 +1,87 @@
 <script setup lang="ts">
 import {useDisrictsStore} from "~/segments/districts/store";
 
-let toggleSideBar = ref(false);
-
-const showSpinner = ref<boolean>(true);
+let toggleSideBar = ref<boolean>(false);
+const route = useRoute();
+const router = useRouter();
+const isLoading = ref<boolean>(true);
 const districtStore = useDisrictsStore();
+const selectedAlphabet = ref<number>(0);
 const { distictsList, total_page } = storeToRefs(districtStore);
-const currentPage = ref<number>(1);
+const currentPage = ref<number>(Number(route?.query?.page) || 1);
+const searchedValue = ref(route?.query?.q === "*" ? "" : route?.query?.q || "");
 const totalPages = ref(total_page);
 const itemsPerPage = ref<number>(12);
+const isGridView = ref(
+  route?.query?.view
+    ? route?.query?.view === "grid"
+      ? "grid"
+      : "list"
+    : "grid"
+); // Reactive variable to store the current view mode
+
+// Function to switch to list view
+const switchView = (view: any) => {
+  isGridView.value = view;
+  router.push({
+    path: "/school-districts",
+    query: {
+      view: view,
+      ...query?.value,
+    },
+  });
+};
+
+const switchToListView = () => {
+  switchView("list");
+};
+
+const switchToGridView = () => {
+  switchView("grid");
+};
 
 onMounted(async () => {
   await fetchDistricts(); // Initial fetch
-  // Watch for changes in currentPage value and recall the API
-  watchEffect(() => {
-    fetchDistricts();
-  });
+});
+
+const query = ref({
+  q: route?.query?.q || "*",
+  per_page: itemsPerPage.value,
+  page: currentPage.value,
+  query_by: "district_name",
 });
 
 async function fetchDistricts() {
-  showSpinner.value = true;
-  const query = {
-    q: "*",
-    per_page: itemsPerPage.value,
-    page: currentPage.value,
-    // filter_by: `school_count:<${25}`,
-  };
-  await districtStore.fetchDistricts(query);
-  showSpinner.value = false;
+  isLoading.value = true;
+  await districtStore.fetchDistricts(query?.value);
+  isLoading.value = false;
+  totalPages.value = total_page?.value;
 }
 // Function to handle pagination
 const paginate = (page: number | "prev" | "next") => {
   if (page === "prev") {
     currentPage.value--;
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
   } else if (page === "next") {
     currentPage.value++;
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
   } else {
     currentPage.value = page;
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
   }
+  query.value.page = currentPage?.value;
+
+  router.push({
+    path: "/school-districts",
+    query: {
+      view: isGridView.value,
+      ...query.value,
+    },
+  });
+
+  // Scroll to the top
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+  fetchDistricts();
 };
 
 function togglingSidebarVisibility() {
@@ -62,7 +94,7 @@ function togglingSidebarVisibility() {
 }
 
 const jobOptions = ref({
-  icon: "SvgoBriefCase",
+  icon: "SvgoBriefCaseLight",
   data: [
     { id: "1", label: "0 to 10", checked: false },
     { id: "2", label: "11 to 50", checked: true },
@@ -86,7 +118,7 @@ const stuOptions = ref({
 });
 
 const schOptions = ref({
-  icon: "SvgoBuilding",
+  icon: "SvgoBuildingLight",
   data: [
     { id: "1", label: "0 to 10", checked: false },
     { id: "2", label: "11 to 25", checked: true },
@@ -96,16 +128,10 @@ const schOptions = ref({
 });
 
 const clearAll = () => {
-  jobOptions?.value?.data?.forEach((option: any) => {
-    option.checked = false;
-  });
-
-  stuOptions?.value?.data?.forEach((option: any) => {
-    option.checked = false;
-  });
-
-  schOptions?.value?.data?.forEach((option: any) => {
-    option.checked = false;
+  [jobOptions, stuOptions, schOptions].forEach((option) => {
+    option.value.data.forEach((opt: any) => {
+      opt.checked = false;
+    });
   });
 };
 
@@ -114,89 +140,32 @@ for (let i = 65; i <= 90; i++) {
   capitals.value.push(String.fromCharCode(i));
 }
 
-const isGridView = ref(true); // Reactive variable to store the current view mode
-const selectedAlphabet = ref<number>(0); // Reactive variable to store the selected alphabet index
-
-const schoolList = ref([
-  {
-    avatar: "/images/schoolDistrict/Avatar1.png",
-    schoolName: "Palo Alto Unified School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar2.png",
-    schoolName: "San Dieguito Union High School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar3.png",
-    schoolName: "Arcadia Unified School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar4.png",
-    schoolName: "Saratoga Joint Union High School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar5.png",
-    schoolName: "Palo Alto Unified School Districts",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar6.png",
-    schoolName: "San Dieguito Union High School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar7.png",
-    schoolName: "Arcadia Unified School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar8.png",
-    schoolName: "Saratoga Joint Union High School District",
-  },
-
-  {
-    avatar: "/images/schoolDistrict/avatar9.png",
-    schoolName: "Palo Alto Unified School Districts",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar10.png",
-    schoolName: "San Dieguito Union High School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar11.png",
-    schoolName: "Arcadia Unified School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar12.png",
-    schoolName: "Saratoga Joint Union High School District",
-  },
-]);
-
-// Function to switch to list view
-const switchToListView = () => {
-  isGridView.value = false;
-};
-
-// Function to switch to grid view
-const switchToGridView = () => {
-  isGridView.value = true;
-};
-
 const selectAlphabet = (index: number) => {
   selectedAlphabet.value = index;
+};
+
+const handleInput = _debounce(() => {
+  search();
+}, 500); // Adjust the debounce delay as needed (in milliseconds)
+
+const search = () => {
+  query.value.q = searchedValue.value || "*";
+  query.value.page = 1;
+  currentPage.value = 1;
+  router.push({
+    path: "/school-districts",
+    query: {
+      view: isGridView.value,
+      ...query.value,
+    },
+  });
+  fetchDistricts();
 };
 </script>
 
 <template>
   <div class="border-t border-b border-gray-200 mb-20">
-    <div v-if="showSpinner">
-      <div class="container">
-        <div
-          class="flex justify-center items-center h-[calc(100vh-80px)] w-full"
-        >
-          <BaseSpinner size="lg" :show-loader="showSpinner" />
-        </div>
-      </div>
-    </div>
-
-    <div v-else class="container flex w-full">
+    <div class="container flex w-full">
       <!-- For Mobile -->
       <div class="block xl:hidden">
         <DistrickSideBarWrapper
@@ -324,7 +293,12 @@ const selectAlphabet = (index: number) => {
 
         <div class="pt-8 flex sm:flex-row flex-col gap-4 justify-between">
           <div class="flex justify-between gap-4">
-            <form class="w-full" action="#" method="GET">
+            <form
+              @submit.prevent="search"
+              class="w-full"
+              action="#"
+              method="GET"
+            >
               <label for="search-field" class="sr-only">Search</label>
               <div class="relative">
                 <SvgoSearchIcon
@@ -332,11 +306,13 @@ const selectAlphabet = (index: number) => {
                   aria-hidden="true"
                 />
                 <input
+                  v-model="searchedValue"
                   id="search-field"
                   class="block h-full rounded-lg w-full md:w-[320px] shadow border border-gray-300 bg-transparent py-[13px] pl-8 pr-0 text-black sm:text-sm"
                   placeholder="Search..."
                   type="search"
                   name="search"
+                  @input="handleInput"
                 />
               </div>
             </form>
@@ -426,26 +402,55 @@ const selectAlphabet = (index: number) => {
 
         <div class="mt-1.5 mb-8">
           <!-- Grid View -->
-          <div
-            v-if="isGridView"
-            class="grid sm:grid-cols-2 pt-8 lg:grid-cols-3 gap-6"
-          >
-            <div v-for="(item, index) in distictsList" :key="index">
-              <DIstrictsGridCard :data="item" :isSchool="true" />
+
+          <div>
+            <div
+              v-if="isGridView === 'grid'"
+              class="grid sm:grid-cols-2 pt-8 lg:grid-cols-3 gap-6"
+            >
+              <div v-if="isLoading" v-for="i in 12">
+                <SDGridSkelton />
+              </div>
+              <div v-else v-for="(item, index) in distictsList" :key="index">
+                <DIstrictsGridCard :data="item" :isSchool="true" />
+              </div>
             </div>
           </div>
           <!-- Lsit View -->
-          <div v-if="!isGridView" class="grid gap-6 pt-8">
-            <div v-for="(item, index) in distictsList" :key="index">
+          <div v-if="isGridView === 'list'" class="grid gap-6 pt-8">
+            <div v-if="isLoading" v-for="i in 12">
+              <SDListSkelton />
+            </div>
+            <div v-else v-for="(item, index) in distictsList" :key="index">
               <DistrictsListCard :data="item" :isSchool="true" />
             </div>
           </div>
+          <div
+            v-if="isLoading === false && distictsList?.length === 0"
+            class="pt-20 flex items-center justify-center"
+          >
+            <div class="flex-col justify-start items-center gap-1 inline-flex">
+              <div
+                class="self-stretch text-center text-gray-900 text-base font-semibold leading-normal"
+              >
+                No Record found
+              </div>
+              <div
+                class="self-stretch text-center text-slate-600 text-sm font-normal leading-tight"
+              >
+                Your search "{{ searchedValue }}" did not match any record.
+                Please try again.
+              </div>
+            </div>
+          </div>
         </div>
-        <CustomPagination
-          :current-page="currentPage"
-          :total-pages="totalPages"
-          @paginate="paginate"
-        />
+        <div v-if="distictsList?.length > 0">
+          <CustomPagination
+            :current-page="currentPage"
+            :total-pages="totalPages"
+            @paginate="paginate"
+          />
+        </div>
       </div>
     </div>
   </div>

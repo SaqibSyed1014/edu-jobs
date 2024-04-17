@@ -1,6 +1,6 @@
 <script setup>
 const activeTab = ref(0); // Default to first tab
-
+const router = useRouter();
 // Array of tab names and icons
 const tabs = ref([
   { name: "About School District" },
@@ -295,8 +295,9 @@ const jobList = [
                 </div>
               </div>
             </div>
-            <NuxtLink
-              to="/school-districts"
+            <button
+              @click="router.back()"
+              type="button"
               class="justify-center items-center gap-1.5 flex group"
             >
               <SvgoArrowLeftBlue
@@ -305,7 +306,7 @@ const jobList = [
               <div class="text-blue-800 text-sm font-semibold leading-tight">
                 Back
               </div>
-            </NuxtLink>
+            </button>
           </div>
 
           <div class="pt-5">
