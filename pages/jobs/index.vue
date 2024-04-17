@@ -2,6 +2,7 @@
 import JobSkeleton from "~/components/pages/job-listings/JobSkeleton.vue";
 import {useJobStore} from "~/segments/jobs/store";
 import NoRecordFound from "~/components/core/NoRecordFound.vue";
+import type {PaginationInfo, QueryParams, TypesenseQueryParam} from "~/segments/common.types";
 
 const filters = [
   {
@@ -101,31 +102,58 @@ const itemsViewOptions = [
   }
 ]
 
-const pageInfo = ref({
+const pageInfo = ref<PaginationInfo>({
   currentPage: 1,
   itemsPerPage: 12,
   totalPages: 0
 })
 
-const query :{ q: string, per_page: number, page: number, query_by ?:string, filter_by?: string | null } = {
+const query = ref<TypesenseQueryParam>({
   q: "*",
   per_page: pageInfo.value.itemsPerPage,
   page: pageInfo.value.currentPage,
-};
+})
 
+
+const route = useRoute();
+const router = useRouter();
 const jobStore = useJobStore();
 const { jobListings, totalPages } = storeToRefs(jobStore);
 
+const layoutOptionSelected = ref(route.params.view === 'list' ? 0 : 1)
+
+watch(() => layoutOptionSelected.value, (val) => {
+  router.replace({
+    path: "/jobs",
+    query: {
+      view: val === 0 ? 'list' : 'grid',
+      ...query?.value,
+    },
+  });
+})
+
 
 onMounted(async () => {
-  await fetchJobs(); // Initial fetch
+  if (Object.keys(route.query).length) {
+    const {view, ...otherParams} = route.query
+    query.value = otherParams as unknown as TypesenseQueryParam
+  }
+  await doSearch(); // Initial fetch
 });
 
 const jobsLoading = ref(true);
-async function fetchJobs() {
+async function doSearch(resetToDefaultPage = false) {
   jobsLoading.value = true;
-  query.page = pageInfo.value.currentPage
-  await jobStore.fetchJobs(query);
+  query.value.page = resetToDefaultPage ? 1 : pageInfo.value.currentPage
+  const filteredQueries = Object.fromEntries(Object.entries(query.value).filter(([key, value]) => value !== null))
+  await router.replace({
+    path: '/jobs',
+    query: {
+      view: layoutOptionSelected.value === 0 ? 'list' : 'grid',
+      ...filteredQueries
+    }
+  })
+  await jobStore.fetchJobs(query.value);
   pageInfo.value.totalPages = totalPages.value
   jobsLoading.value = false;
 }
@@ -142,21 +170,18 @@ const paginate = (page: number | "prev" | "next") => {
     top: 0,
     behavior: "smooth",
   });
-  fetchJobs()
+  doSearch();
 };
-
-
-const isGridOptionSelected = ref(1)
 
 const isFilterSidebarVisible = ref(false);
 
 const fetchOnSearching = (searchValues :{ keyword: string, coordinates: { lng: string, lat: string } }) => {
-  query.q = searchValues.keyword.length ? searchValues.keyword : '*'
-  query.query_by = 'job_title'
-  if (searchValues.coordinates.lat && searchValues.coordinates.lng) {
-    query.filter_by = `geo_location:(${searchValues.coordinates.lat}, ${searchValues.coordinates.lng}, 5 mi)`;
-  } else query.filter_by = null
-  fetchJobs();
+  query.value.q = searchValues.keyword.length ? searchValues.keyword : '*'
+  query.value.query_by = 'job_title'
+  if (searchValues.coordinates.lat && searchValues.coordinates.lng) { // check if both lat and lng are propagated by SearchBar
+    query.value.filter_by = `geo_location:(${searchValues.coordinates.lat}, ${searchValues.coordinates.lng}, 5 mi)`;
+  } else query.value.filter_by = null
+  doSearch(true);
 }
 </script>
 
@@ -183,6 +208,7 @@ const fetchOnSearching = (searchValues :{ keyword: string, coordinates: { lng: s
 
         <template #search-filters>
           <SearchBar
+            :params="query"
             @updated-values="fetchOnSearching"
           />
         </template>
@@ -202,7 +228,7 @@ const fetchOnSearching = (searchValues :{ keyword: string, coordinates: { lng: s
 
             <div class="hidden md:inline-flex rounded-md shadow-sm" role="group">
               <BaseButtonsGroup
-                  v-model="isGridOptionSelected"
+                  v-model="layoutOptionSelected"
                   color="gray"
                   :outline="true"
                   :btns-group="itemsViewOptions"
@@ -216,13 +242,13 @@ const fetchOnSearching = (searchValues :{ keyword: string, coordinates: { lng: s
             </BaseButton>
           </div>
 
-          <div v-if="jobsLoading || jobListings.length" class="grid gap-6" :class="[isGridOptionSelected ? 'md:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1']">
+          <div v-if="jobsLoading || jobListings.length" class="grid gap-6" :class="[layoutOptionSelected ? 'md:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1']">
             <template v-if="jobsLoading" v-for="i in 12">
-              <JobSkeleton :card-form="isGridOptionSelected === 1"/>
+              <JobSkeleton :card-form="layoutOptionSelected === 1"/>
             </template>
 
             <template v-else v-for="job in jobListings">
-              <JobCard :job="job" :card-form="isGridOptionSelected === 1" :show-job-description="false"
+              <JobCard :job="job" :card-form="layoutOptionSelected === 1" :show-job-description="false"
                        :is-job-loading="jobsLoading"/>
             </template>
           </div>

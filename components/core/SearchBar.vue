@@ -1,11 +1,20 @@
 <script setup lang="ts">
+const props = defineProps<{
+  params: any
+}>()
 const emit = defineEmits(['updatedValues'])
 
 const searchedValue = ref<string>('')
+
+watch(() => props.params, (val) => {
+  searchedValue.value = val.q === '*' ? '' : val.q
+})
+
 const coordinates = ref({
   lng: null,
   lat: null
 })
+
 
 
 function performSearch() {
@@ -18,7 +27,7 @@ function setPlace(location :any) {
 }
 
 const enableSearching = computed(() => {
-  const isSearchValueNotEmpty = searchedValue.value.length > 0;
+  const isSearchValueNotEmpty = searchedValue.value?.length > 0;
   const isAnyCoordinateNotNull = coordinates.value.lat !== null || coordinates.value.lng !== null;
   return isSearchValueNotEmpty || isAnyCoordinateNotNull;
 });

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import {useDisrictsStore} from "~/segments/districts/store";
+
 let toggleSideBar = ref<boolean>(false);
 const route = useRoute();
 const router = useRouter();
