@@ -93,37 +93,148 @@ function togglingSidebarVisibility() {
 
 const jobOptions = ref({
   icon: "SvgoBriefCaseLight",
+  name: "jobOptions",
   data: [
-    { id: "1", label: "0 to 10", checked: false },
-    { id: "2", label: "11 to 50", checked: true },
-    { id: "3", label: "51 to 100", checked: false },
-    { id: "4", label: "100+", checked: false },
+    { id: "1", label: "0 to 10", value: "0 to 10", checked: true },
+    { id: "2", label: "11 to 50", value: "11 to 50", checked: true },
+    { id: "3", label: "51 to 100", value: "51 to 100", checked: false },
+    { id: "4", label: "100+", value: "100", checked: false },
   ],
 });
 
 const stuOptions = ref({
   icon: "SvgoGraduationHat",
+  name: "stuOptions",
   data: [
-    { id: "1", label: "0 to 100", checked: false },
-    { id: "2", label: "101 to 500", checked: false },
-    { id: "3", label: "501 to 1000", checked: true },
-    { id: "4", label: "1001 to 2000", checked: false },
-    { id: "4", label: "2001 to 3000", checked: false },
-    { id: "4", label: "3001 to 5000", checked: false },
-    { id: "4", label: "5001 to 10,000", checked: false },
-    { id: "4", label: "10,000+", checked: false },
+    { id: "1", label: "0 to 100", value: "0 to 100", checked: false },
+    { id: "2", label: "101 to 500", value: "101 to 500", checked: false },
+    { id: "3", label: "501 to 1000", value: "501 to 1000", checked: true },
+    { id: "4", label: "1001 to 2000", value: "1001 to 2000", checked: false },
+    { id: "4", label: "2001 to 3000", value: "2001 to 3000", checked: false },
+    { id: "4", label: "3001 to 5000", value: "3001 to 5000", checked: false },
+    {
+      id: "4",
+      label: "5001 to 10,000",
+      value: "5001 to 10000",
+      checked: false,
+    },
+    { id: "4", label: "10,000+", value: "10000", checked: false },
   ],
 });
 
 const schOptions = ref({
   icon: "SvgoBuildingLight",
+  name: "schOptions",
   data: [
-    { id: "1", label: "0 to 10", checked: false },
-    { id: "2", label: "11 to 25", checked: true },
-    { id: "3", label: "26 to 50", checked: false },
-    { id: "4", label: "51 to 100", checked: false },
+    { id: "1", label: "0 to 10", value: "0 to 10", checked: false },
+    { id: "2", label: "11 to 25", value: "11 to 25", checked: true },
+    { id: "3", label: "26 to 50", value: "26 to 50", checked: false },
+    { id: "4", label: "51 to 100", value: "51 to 100", checked: false },
+    { id: "4", label: "100+", value: "100", checked: false },
   ],
 });
+
+const toggleSchoolOption = (optionName: any, index: number) => {
+  const options = eval(optionName);
+  options.value.data[index].checked = !options.value.data[index].checked;
+
+  // Initialize an array to store selected ranges
+  const selectedRanges: Array<[number, number]> = [];
+
+  // Iterate through the options to gather selected ranges
+  options.value.data.forEach((option: any) => {
+    if (option.checked) {
+      const labelParts = option.value.split(" to ");
+      if (labelParts.length === 2) {
+        const startRange = parseInt(labelParts[0].replace(/[^0-9]/g, ""));
+        const endRange = parseInt(labelParts[1].replace(/[^0-9]/g, ""));
+        if (!isNaN(startRange) && !isNaN(endRange)) {
+          selectedRanges.push([startRange, endRange]);
+        }
+      }
+    }
+  });
+
+  // Construct the combined range string
+  let range: Array | null = null;
+  let lastValue: string | null = null;
+  if (selectedRanges.length > 0) {
+    // Sort the selected ranges based on start value
+    selectedRanges.sort((a, b) => a[0] - b[0]);
+
+    // Merge overlapping ranges
+    const mergedRanges: Array<[number, number]> = [selectedRanges[0]];
+    for (let i = 1; i < selectedRanges.length; i++) {
+      const lastRange = mergedRanges[mergedRanges.length - 1];
+      const currentRange = selectedRanges[i];
+      if (lastRange[1] >= currentRange[0] - 1) {
+        lastRange[1] = Math.max(lastRange[1], currentRange[1]);
+      } else {
+        mergedRanges.push(currentRange);
+      }
+    }
+
+    // Check if the last range is the "100+" range and it's checked
+    const lastOption = options.value.data[options.value.data.length - 1];
+    if (lastOption.checked && lastOption.label.endsWith("+")) {
+      lastValue = lastOption?.value;
+    }
+    // Construct the range string
+    range = mergedRanges.map((range) => `${range[0]}..${range[1]}`);
+
+    // Add `>${lastValue}` only if lastValue is not null
+    if (lastValue !== null) {
+      range += `,>${lastValue}`;
+    }
+    const filterByParams = [];
+    const filterByParams1 = [];
+
+    if (options.value.name === "schOptions") {
+      const schOpt = {
+        filter_by: `school_count:=[${range}]`,
+      };
+      filterByParams.push(schOpt);
+    }
+
+    if (options.value.name === "stuOptions") {
+      const stuOpt = {
+        filter_by: `student_count:=[${range}]`,
+      };
+      filterByParams1.push(stuOpt);
+    }
+
+    console.log("filterByParams", filterByParams);
+
+    query.value = {
+      ...query.value,
+      ...Object.assign({}, ...filterByParams),
+      ...Object.assign({}, ...filterByParams1),
+    };
+    console.log("query", query.value);
+
+    console.log("lastValue", lastValue);
+
+    console.log("range...", range);
+
+    console.log("options", options.value.name);
+  } else {
+    // If no option is selected, set range to null
+    range = null;
+    console.log("range", range);
+  }
+
+  // // Update the route
+  // router.push({
+  //   path: "/school-districts",
+  //   query: {
+  //     view: isGridView.value,
+  //     ...query.value,
+  //   },
+  // });
+
+  // // Fetch districts based on the updated query
+  // fetchDistricts();
+};
 
 const clearAll = () => {
   [jobOptions, stuOptions, schOptions].forEach((option) => {
@@ -211,12 +322,14 @@ const search = () => {
                   title="No. of students"
                   :options="stuOptions"
                   total-jobs="12,000"
+                  @toggleSchoolOption="toggleSchoolOption"
                 />
 
                 <FilterSection
                   title="No. of schools"
                   :options="schOptions"
                   total-jobs="13"
+                  @toggleSchoolOption="toggleSchoolOption"
                 />
               </div>
               <div class="pt-[18px] w-full">
@@ -267,12 +380,14 @@ const search = () => {
                 title="No. of students"
                 :options="stuOptions"
                 total-jobs="12,000"
+                @toggleSchoolOption="toggleSchoolOption"
               />
 
               <FilterSection
                 title="No. of schools"
                 :options="schOptions"
                 total-jobs="13"
+                @toggleSchoolOption="toggleSchoolOption"
               />
             </div>
           </div>
