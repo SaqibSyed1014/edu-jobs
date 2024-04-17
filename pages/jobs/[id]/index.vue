@@ -45,6 +45,7 @@ const mapOptions = computed(() => {
 
 onMounted(() => {
   initModals();
+  jobStore.fetchSingleJob(route.params?.id as string)
 })
 
 const showSignupModal = ref<boolean>(false)

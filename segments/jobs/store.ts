@@ -1,5 +1,6 @@
 import {
-    getJobsList
+    getJobsList,
+    getSingleJob
 } from "~/segments/jobs/services";
 
 interface JobsState {
@@ -22,7 +23,10 @@ export const useJobStore = defineStore('jobStore', {
             this.$state.jobsList = hits.map((hit :JobHit) => hit.document)
             this.$state.itemsFound = found
             this.$state.totalPages = Math.ceil(found / 12)
-            console.log('resp ', hits, found, this.$state.jobsList)
+        },
+        async fetchSingleJob(slug :string) {
+            const resp = await getSingleJob(slug)
+            console.log('resp ', resp)
         },
     },
     getters: {
