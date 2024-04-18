@@ -65,6 +65,9 @@ onUnmounted(() => selectedUserType.value = 'organization')
 
 <template>
   <div class="flex flex-col justify-center gap-8 w-full py-12 lg:py-28">
+    <NuxtLink to="/" class="max-lg:block hidden">
+      <img src="/images/logo.svg" alt="EduJob Logo" />
+    </NuxtLink>
     <div class="flex flex-col gap-3">
       <h1 class="font-semibold text-3xl">Sign up {{selectedUserType}}</h1>
       <p>Get started today and join EduJobs!</p>

@@ -54,7 +54,7 @@ const component = computed(() => {
 </script>
 
 <template>
-  <component :is="component" :to="navigateTo" :target="isExternalLink ?? '_blank'" :class="[defaultStyles, btnStyleClasses]" :disabled="disabled">
+  <component :is="component" :to="navigateTo" :target="isExternalLink ? '_blank':''" :class="[defaultStyles, btnStyleClasses]" :disabled="disabled">
     <slot name="prepend-icon" />
     {{ label }}
     <slot name="append-icon" />

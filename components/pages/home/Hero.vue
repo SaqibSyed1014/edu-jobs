@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import LocationPinIcon from "assets/icons/location-pin.svg";
-import SearchIcon from "assets/icons/search.svg";
-
 import { register } from 'swiper/element/bundle';
-import SearchBar from "~/components/core/SearchBar.vue";
+import type { JobSearchFilters } from "~/segments/common.types";
+import { useJobStore } from "~/segments/jobs/store";
 register();
 
 const jobPostsList = [
@@ -88,6 +86,24 @@ const jobPostsList = [
     wage: '80k - 100k'
   },
 ]
+
+const router = useRouter();
+const jobStore = useJobStore();
+
+function searchJobs(filters :JobSearchFilters) {
+  jobStore.setCoordinates(filters.coordinates);  // saving coordinates in store for persistence purpose
+  const locationName = filters.location;
+  const queryParams = {
+    q: filters.keyword.length ? filters.keyword : '*',
+    ...(locationName.length && { location: locationName }),  // skip location from url if no location is searched
+    page: 1,
+    mode: 'grid'
+  }
+  router.push({
+    path: '/jobs',
+    query: queryParams
+  });
+}
 </script>
 
 <template>
@@ -102,7 +118,10 @@ const jobPostsList = [
           Embark on a rewarding educational career, from classroom teaching to district office roles
         </p>
 
-        <SearchBar class="md:max-w-[800px] xl:max-w-[875px] mx-auto" />
+        <SearchBar
+            @updated-values="searchJobs"
+            class="md:max-w-[800px] xl:max-w-[875px] mx-auto"
+        />
       </div>
 
       <div class="dashed-ring forth-ring" />

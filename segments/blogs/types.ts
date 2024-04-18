@@ -27,3 +27,11 @@ interface Category {
     id: number
     category_name: string
 }
+
+
+interface BlogResponseType {
+    data: Blog[]
+    meta: {
+        pagination: Pagination
+    }
+}

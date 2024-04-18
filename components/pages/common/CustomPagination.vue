@@ -65,20 +65,29 @@ const displayedPages = computed(() => {
 
   return pages;
 });
+
+const screenWidth = ref<number>(0);
+
+onMounted(() => {
+  screenWidth.value = window.innerWidth;
+});
 </script>
 
 <template>
   <nav aria-label="Page navigation example">
     <ul class="inline-flex justify-between -space-x-px text-base w-full">
       <li>
-        <button
-          type="button"
-          class="flex items-center gap-x-1.5 py-2 justify-center text-sm px-3 ms-0 leading-tight text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-          @click="$emit('paginate', 'prev')"
+        <BaseButton
+            :class="{ 'hidden': displayedPages[0] === currentPage }"
+            color="gray"
+            :outline="true"
+            :label="screenWidth >= 768 ? 'Previous' : ''"
+            @click="$emit('paginate', 'prev')"
         >
-          <SvgoArrowLeft class="w-4 h-4 text-gray-600" />
-          <span class="hidden sm:block">Previous</span>
-        </button>
+          <template #prepend-icon>
+            <SvgoArrowLeft class="w-4 h-4 text-gray-600"/>
+          </template>
+        </BaseButton>
       </li>
       <div class="sm:inline-flex hidden">
         <li
@@ -104,14 +113,17 @@ const displayedPages = computed(() => {
         >Page {{ currentPage + " of " + totalPages }}</span
       >
       <li>
-        <button
-          type="button"
-          class="flex items-center gap-x-1.5 justify-center text-sm px-3 py-2 ms-0 leading-tight text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-          @click="$emit('paginate', 'next')"
+        <BaseButton
+            :class="{ 'hidden': displayedPages[displayedPages.length - 1] === currentPage }"
+            color="gray"
+            :outline="true"
+            :label="screenWidth >= 768 ? 'Next' : ''"
+            @click="$emit('paginate', 'next')"
         >
-          <span class="hidden sm:block"> Next </span>
-          <SvgoArrowRight class="w-4 h-4 text-gray-600" />
-        </button>
+          <template #append-icon>
+            <SvgoArrowRight class="w-4 h-4 text-gray-600"/>
+          </template>
+        </BaseButton>
       </li>
     </ul>
   </nav>
