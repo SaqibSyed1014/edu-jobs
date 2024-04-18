@@ -6,13 +6,14 @@ definePageMeta({
   layout: 'auth-form'
 })
 
+const model = defineModel()
+const emit = defineEmits(['proceed'])
+
 const passwordVisibility = ref(false)
 const passwordFieldIcon = computed(() => passwordVisibility.value ? 'SvgoEyeOff' : 'SvgoEye')
 
 
 const initialValues = ref({
-  orgName: "",
-  name: "",
   email: "",
   password: ""
 });
@@ -34,19 +35,28 @@ const [password, passAttrs] = defineField("password");
 const canProceed = computed(() => {
   return meta.value.dirty && meta.value.valid;
 });
+
+function redirection() {
+  emit('proceed')
+}
 </script>
 
 <template>
-  <div class="flex flex-col justify-center gap-8 w-full h-full">
-    <NuxtLink to="/" class="max-lg:block hidden">
-      <img src="/images/logo.svg" alt="EduJob Logo" />
-    </NuxtLink>
-    <div class="flex flex-col gap-3">
-      <h1 class="font-semibold text-3xl">Welcome back</h1>
-      <p>Welcome back! Please enter your details.</p>
-    </div>
-    <div class="w-full">
-      <form action="" class="flex flex-col gap-5">
+  <BaseModal
+      v-model="model"
+      ok-text="Create Account"
+      width="450px"
+      :ok-disabled="!canProceed"
+      @close="model = false"
+      :on-cancel="redirection"
+      :on-ok="redirection"
+  >
+    <template #body>
+      <p class="text-sm">
+        Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.
+      </p>
+
+      <form class="flex flex-col gap-5">
         <div class="form-control">
           <label for="email" class="text-custom-secondary-700">Email</label>
           <input v-model="email" v-bind="emailAttrs" type="email" id="email" placeholder="Enter your email" class="form-input" :class="{ 'has-error': errors.email }"/>
@@ -68,24 +78,6 @@ const canProceed = computed(() => {
           <span class="input-error" v-if="errors.password">{{ errors.password }}</span>
         </div>
       </form>
-      <div class="flex w-full my-6 justify-between font-semibold items-center">
-        <div class="flex gap-2 items-center text-sm">
-          <input type="checkbox" class="form-checkbox"/>
-          <span class="font-medium">Remember for 30 days</span>
-        </div>
-        <NuxtLink to="/forgot-password" class="font-semibold text-sm text-blue-500 hover:underline">
-          Forgot password
-        </NuxtLink>
-      </div>
-      <div class="flex flex-col gap-4">
-        <BaseButton :disabled="!canProceed" label="Sign in" :full-sized="true"/>
-      </div>
-    </div>
-    <p class="text-sm text-center">
-      <span>Don’t have an account? </span>
-      <NuxtLink to="/signup" class="text-brand-600 font-semibold hover:text-brand-400 transition">
-        Sign up
-      </NuxtLink>
-    </p>
-  </div>
+    </template>
+  </BaseModal>
 </template>

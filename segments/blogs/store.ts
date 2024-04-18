@@ -1,7 +1,7 @@
 import {
     getBlogsList,
     getBlogDetails
-} from "~/stores/services/blogs.services";
+} from "~/segments/blogs/services";
 
 interface BlogState {
     blogs: Blog[]

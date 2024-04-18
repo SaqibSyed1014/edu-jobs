@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { initModals } from 'flowbite'
+import {useJobStore} from "~/segments/jobs/store";
+import QuickSignUpModal from "~/components/pages/job-listings/QuickSignUpModal.vue";
 const center = ref({ lat: 0, lng: 0 })
 
 const faqList = [
@@ -20,6 +23,7 @@ const faqList = [
   }
 ]
 
+const router = useRouter();
 const jobStore = useJobStore();
 const { jobListings } = storeToRefs(jobStore);
 
@@ -39,6 +43,21 @@ const mapOptions = computed(() => {
       }
     ]
 })
+
+onMounted(() => {
+  initModals();
+  jobStore.fetchSingleJob(route.params?.id as string)
+})
+
+const showSignupModal = ref<boolean>(false)
+
+function applyBtnAction() {
+  showSignupModal.value = true
+}
+
+function redirectToURL() {
+  window.open(selectedJobDetail.value.apply_url, '_target')
+}
 </script>
 
 <template>
@@ -49,14 +68,14 @@ const mapOptions = computed(() => {
           <div class="md:col-span-9">
             <div class="flex md:justify-between mb-5">
               <div class="hidden md:flex items-center gap-3">
-                <NuxtLink to="/jobs">Jobs</NuxtLink>
+                <span @click="router.go(-1)">Jobs</span>
                 <SvgoChevronRight class="w-4 h-4 text-gray-300" />
                 <span class="text-brand-700 font-medium">Polymath</span>
               </div>
-              <NuxtLink to="/jobs" class="flex items-center gap-3 group text-brand-700 font-medium cursor-pointer">
+              <span @click="router.go(-1)" class="flex items-center gap-3 group text-brand-700 font-medium cursor-pointer">
                 <SvgoArrowLeft class="w-4 h-4 group-hover:-translate-x-[8px] transition" />
                 Back
-              </NuxtLink>
+              </span>
             </div>
 
             <div class="mb-8 h-[140px] md:h-[240px] max-md:-mx-5">
@@ -226,7 +245,7 @@ const mapOptions = computed(() => {
                 <h2 class="mb-2">Interested in this job?</h2>
                 <p class="text-gray-600 text-sm mb-3">Don’t miss the chance. Apply now here.</p>
                 <p class="text-gray-600 text-sm mb-5">Job code: EXMPL123</p>
-                <BaseButton :navigate-to="selectedJobDetail.apply_url" :is-external-link="true" label="Apply Now" :full-sized="true" />
+                <BaseButton @click="applyBtnAction" label="Apply Now" :full-sized="true" />
               </div>
 
               <div class="w-full bg-white border border-[#EAECF0] rounded-2xl p-4">
@@ -323,6 +342,8 @@ const mapOptions = computed(() => {
     </section>
 
     <JobCTA />
+
+    <QuickSignUpModal v-model="showSignupModal" @proceed="redirectToURL" />
   </div>
 </template>
 
