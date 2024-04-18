@@ -2,12 +2,14 @@ import {
     getJobsList,
     getSingleJob
 } from "~/segments/jobs/services";
+import type {Coordinates} from "~/segments/common.types";
 
 interface JobsState {
     jobsList: Job[]
     itemsFound: number
     totalPages: number
     singleJob: Job | null
+    coordinates: Coordinates | null
 }
 
 export const useJobStore = defineStore('jobStore', {
@@ -16,6 +18,7 @@ export const useJobStore = defineStore('jobStore', {
         itemsFound: 0,
         totalPages: 0,
         singleJob: null,
+        coordinates: null
     } as JobsState),
     actions: {
         async fetchJobs(query :any) {
@@ -28,6 +31,9 @@ export const useJobStore = defineStore('jobStore', {
             const { hits }  = await getSingleJob(slug)
             this.$state.singleJob = hits[0].document
         },
+        setCoordinates(coordinates :Coordinates) {
+            this.$state.coordinates = coordinates
+        }
     },
     getters: {
         jobListings: (state) :Job[] => state.jobsList.map(job => ({

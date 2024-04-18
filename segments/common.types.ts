@@ -23,3 +23,14 @@ export interface JobQueryParams extends LocationQueryRaw{
     page: number
     location?: string
 }
+
+export interface Coordinates {
+    lng: number,
+    lat: number
+}
+
+export interface JobSearchFilters{
+    keyword: string
+    coordinates: Coordinates
+    location: string
+}
