@@ -9,7 +9,7 @@ interface JobsState {
     itemsFound: number
     totalPages: number
     singleJob: Job | null
-    coordinates: Coordinates | null
+    coordinates: Coordinates
 }
 
 export const useJobStore = defineStore('jobStore', {
@@ -18,7 +18,10 @@ export const useJobStore = defineStore('jobStore', {
         itemsFound: 0,
         totalPages: 0,
         singleJob: null,
-        coordinates: null
+        coordinates: {
+            lat: 0,
+            lng: 0
+        }
     } as JobsState),
     actions: {
         async fetchJobs(query :any) {
