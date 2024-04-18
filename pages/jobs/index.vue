@@ -273,6 +273,7 @@ const fetchOnSearching = (searchValues :{ keyword: string, coordinates: { lng: s
           </template>
 
           <CustomPagination
+              v-if="jobListings.length"
               :current-page="pageInfo.currentPage"
               :total-pages="pageInfo.totalPages"
               @paginate="paginate"
