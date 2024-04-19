@@ -3,12 +3,29 @@ const props = defineProps<{ filtrationList: any[] }>()
 
 const emits = defineEmits(['closeFilterSidebar', 'onFiltersChange', 'applyFiltersOnClick'])
 
-const filterState = ref(props.filtrationList);
+const filterState = ref(JSON.parse(JSON.stringify(props.filtrationList)));
 
 const selectedValues = ref<{ field: string, values: string[] }[]>([]);
 
+watch(props.filtrationList, (val) => {
+  const parsedValue = JSON.parse(JSON.stringify(val))
+  if (parsedValue.length) {
+    parsedValue.forEach((filter :any, index :number) => {
+      if (filter.type === 'checkbox') {
+        const updatedValues = filter.list.filter((item :any) => item.checked).map((item :any) => item.value);
+        if (updatedValues.length > 0) {
+          selectedValues.value[index] = {
+            field: filter.fieldName,
+            values: updatedValues,
+          };
+        }
+      }
+    })
+  }
+});
+
 function resetFilters() {
-  filterState.value.forEach((filter) => {
+  filterState.value.forEach((filter :any) => {
     if (filter.type === 'checkbox') {
       filter.list?.forEach((item :any) => {
         item.checked = false; // Reset checked status of each checkbox to false
@@ -20,15 +37,6 @@ function resetFilters() {
 
 
 const updateChecked = (index: number, subIndex: number, checked: boolean, value: string, fieldName: string) => {
-  // filterState.value.forEach(filter => {
-  //   filter.list.forEach((item :any) => {
-  //     if (item.checked) {
-  //       selectedValues.value.push(filter);
-  //     }
-  //     item.checked = false;
-  //   })
-  // })
-
   filterState.value[index].list[subIndex].checked = checked;
 
   const selectedField = selectedValues.value.find(val => val.field === fieldName);
@@ -50,9 +58,10 @@ const updateChecked = (index: number, subIndex: number, checked: boolean, value:
   console.log('FINAL -> ', selectedValues.value)
 };
 
-watch(() => selectedValues.value, () => {
-  emits('onFiltersChange', selectedValues.value);
-}, { deep: true })
+function isItemChecked(value :string) {
+  const mappedValues = selectedValues.value.flatMap(item => item.values)
+  return mappedValues.includes(value);
+}
 </script>
 
 <template>
@@ -81,7 +90,7 @@ watch(() => selectedValues.value, () => {
             <template v-for="(item, i) in filter.list">
               <div class="flex items-center gap-3 first:pt-2 pb-4">
                 <div class="shrink-0 relative">
-                  <input :checked="item.checked" @change="updateChecked(index, i, $event.target.checked, item.value, filter.fieldName)"
+                  <input :checked="isItemChecked(item.value)" @change="updateChecked(index as number, i as number, $event.target.checked, item.value, filter.fieldName)"
                          :id="`filter-cb-${index}-${i}`" type="checkbox">
                 </div>
                 <label :for="`filter-cb-${index}-${i}`" class="font-medium cursor-pointer">

@@ -220,8 +220,8 @@ const fetchOnSearching = (searchValues :JobSearchFilters) => {
 }
 
 function updateSideBarFilters(selectedFilters :{ field: string, values: string[] }[], toggleFlag = false) {
-  // sidebarFilters.value = {};   // reset sidebarFilters everytime for avoiding caching data
   if (Object.keys(selectedFilters)?.length) {
+    sidebarFilters.value = {};   // reset sidebarFilters everytime for avoiding caching data
     selectedFilters.forEach(filter => {
       sidebarFilters.value[filter.field] = filter.values.join(',')
     });
