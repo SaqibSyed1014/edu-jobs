@@ -1,11 +1,9 @@
 <script setup lang="ts">
 const props = defineProps<{ filtrationList: any[] }>()
 
-const emits = defineEmits(['closeFilterSidebar', 'filtersUpdated'])
+const emits = defineEmits(['closeFilterSidebar', 'onFiltersChange', 'applyFiltersOnClick'])
 
-const initialFilterState = ref(structuredClone(toRaw(props.filtrationList)))
-
-const filterState = ref(initialFilterState.value);
+const filterState = ref(props.filtrationList);
 
 const selectedValues = ref<{ field: string, values: string[] }[]>([]);
 
@@ -22,6 +20,15 @@ function resetFilters() {
 
 
 const updateChecked = (index: number, subIndex: number, checked: boolean, value: string, fieldName: string) => {
+  // filterState.value.forEach(filter => {
+  //   filter.list.forEach((item :any) => {
+  //     if (item.checked) {
+  //       selectedValues.value.push(filter);
+  //     }
+  //     item.checked = false;
+  //   })
+  // })
+
   filterState.value[index].list[subIndex].checked = checked;
 
   const selectedField = selectedValues.value.find(val => val.field === fieldName);
@@ -39,11 +46,12 @@ const updateChecked = (index: number, subIndex: number, checked: boolean, value:
     if (selectedField.values.length === 0) selectedValues.value.splice(selectedValues.value.indexOf(selectedField), 1);
   }
 
+  emits('onFiltersChange', selectedValues.value);
   console.log('FINAL -> ', selectedValues.value)
 };
 
 watch(() => selectedValues.value, () => {
-  emits('filtersUpdated', selectedValues.value);
+  emits('onFiltersChange', selectedValues.value);
 }, { deep: true })
 </script>
 
@@ -73,7 +81,7 @@ watch(() => selectedValues.value, () => {
             <template v-for="(item, i) in filter.list">
               <div class="flex items-center gap-3 first:pt-2 pb-4">
                 <div class="shrink-0 relative">
-                  <input :key="item.checked" :checked="item.checked" @change="updateChecked(index, i, $event.target.checked, item.value, filter.fieldName)"
+                  <input :checked="item.checked" @change="updateChecked(index, i, $event.target.checked, item.value, filter.fieldName)"
                          :id="`filter-cb-${index}-${i}`" type="checkbox">
                 </div>
                 <label :for="`filter-cb-${index}-${i}`" class="font-medium cursor-pointer">
@@ -101,7 +109,7 @@ watch(() => selectedValues.value, () => {
 
 
     <div class="md:hidden">
-      <BaseButton label="Apply" :full-sized="true" />
+      <BaseButton label="Apply" :full-sized="true" @click="emits('applyFiltersOnClick', selectedValues)" />
     </div>
   </div>
 </template>
