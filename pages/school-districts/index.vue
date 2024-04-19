@@ -10,7 +10,11 @@ const districtStore = useDisrictsStore();
 const selectedAlphabet = ref<number>(0);
 const { distictsList, total_page } = storeToRefs(districtStore);
 const currentPage = ref<number>(Number(route?.query?.page) || 1);
-const searchedValue = ref(route?.query?.q === "*" ? "" : route?.query?.q || "");
+const queryValue = route?.query?.q === "*" ? "" : route?.query?.q;
+const searchedValue = ref<string>(
+  Array.isArray(queryValue) ? queryValue.join(", ") : queryValue || ""
+);
+
 const totalPages = ref(total_page);
 const itemsPerPage = ref<number>(12);
 const isGridView = ref(
@@ -88,12 +92,58 @@ const switchToGridView = () => {
   switchView("grid");
 };
 
+const matchOptions = (
+  localStorageKey: string,
+  options: Ref<{
+    data: {
+      label: any;
+      checked: boolean;
+      value: string;
+    }[];
+  }>,
+  filterType: string
+) => {
+  const storedValue = localStorage.getItem(localStorageKey);
+  const lastValue = localStorage.getItem(`${filterType}LastValue`);
+
+  if (lastValue) {
+    const foundItem = options.value.data.find(
+      (item) => item.value === lastValue
+    );
+    if (foundItem) {
+      foundItem.checked = true;
+    }
+  }
+  if (storedValue !== null) {
+    const getvalue: string[] = JSON.parse(storedValue);
+    // Loop through each range in getvalue
+    getvalue.forEach((range: any) => {
+      // Find the corresponding label in options.data and set its checked property to true
+      const foundLabel = options.value.data.find((item) => {
+        const [start, end] = range.map(Number);
+        const [min, max] = item.label.split(" to ").map(Number);
+        return start === min || end === max;
+      });
+      if (foundLabel) {
+        foundLabel.checked = true;
+      }
+    });
+  }
+};
+
 onMounted(async () => {
   await fetchDistricts(); // Initial fetch
   if (route?.query?.filter_by) {
-    console.log("true");
     query.value.filter_by = route?.query?.filter_by.toString();
+  } else {
+    localStorage.removeItem("schLastValue");
+    localStorage.removeItem("stuLastValue");
+    localStorage.removeItem("stuOptions");
+    localStorage.removeItem("schoption");
   }
+
+  matchOptions("schoption", schOptions, "sch");
+  matchOptions("stuOptions", stuOptions, "stu");
 });
 
 const query = ref<TypesenseQueryParam>({
@@ -102,38 +152,9 @@ const query = ref<TypesenseQueryParam>({
   page: currentPage.value,
 });
 
-// Check if route.query.filter_by exists
-// Define the updateCheckedStatus function before its usage
-const updateCheckedStatus = (value: string) => {
-  // Extract the start and end values from the filter string
-  const ranges = value.match(/\d+\s*to\s*\d+/g);
-  console.log("🚀 ~ updateCheckedStatus ~ ranges:", ranges);
-
-  if (!ranges) return; // If no ranges are found, exit the function
-
-  // Iterate over each range
-  ranges.forEach((range) => {
-    const [start, end] = range.split(" to ").map(Number);
-
-    // Update the checked property of options based on the range
-    stuOptions.value.data.forEach((option: any) => {
-      const [optionStart, optionEnd] = option.value.split(" to ").map(Number);
-
-      if (
-        (start >= optionStart && start <= optionEnd) ||
-        (end >= optionStart && end <= optionEnd)
-      ) {
-        option.checked = true;
-      }
-    });
-  });
-};
-
 if (route?.query?.filter_by) {
   // If it exists, assign its value to the filter_by property
   query.value.filter_by = route?.query?.filter_by.toString();
-  const filters = route?.query?.filter_by;
-  // updateCheckedStatus(filters);
 } else {
   // If it doesn't exist, delete the filter_by key
   delete query?.value?.filter_by;
@@ -195,6 +216,8 @@ const toggleSchoolOption = (optionName: any, index: number) => {
 
   // Initialize an array to store selected ranges
   const selectedRanges: Array<[number, number]> = [];
+  const lastOption = options.value.data[options.value.data.length - 1];
+  let lastValue: string | null = null;
 
   // Iterate through the options to gather selected ranges
   options.value.data.forEach((option: any) => {
@@ -210,22 +233,17 @@ const toggleSchoolOption = (optionName: any, index: number) => {
       }
 
       // Apply filters when value is greater than 100+ or 10000+
-      const lastOption = options.value.data[options.value.data.length - 1];
-      console.log("🚀 ~ options.value.data.forEach ~ lastOption:", lastOption);
       if (option.label.endsWith("+")) {
-        console.log("selectedRanges.length", selectedRanges);
-
         if (options.value.name === "schOptions") {
-          console.log("true", lastOption?.checked);
-
           selectschValue.value = { key1: `school_count:>${lastOption?.value}` };
-          console.log("selectschValue", selectschValue.value);
-        } else console.log(false);
+          localStorage.setItem("schLastValue", lastOption?.value);
+        }
 
         if (options.value.name === "stuOptions") {
           selectstuValue.value = {
             key2: `student_count:>${lastOption?.value}`,
           };
+          localStorage.setItem("stuLastValue", lastOption?.value);
         }
       }
     }
@@ -233,10 +251,8 @@ const toggleSchoolOption = (optionName: any, index: number) => {
 
   // Construct the combined range string
   let range: string | null = null;
-  let lastValue: string | null = null;
   if (selectedRanges.length > 0) {
     // Sort and merge overlapping ranges
-    console.log("ifffffselectschValue", selectschValue.value);
 
     const mergedRanges: Array<[number, number]> = [selectedRanges[0]];
     for (let i = 1; i < selectedRanges.length; i++) {
@@ -250,7 +266,6 @@ const toggleSchoolOption = (optionName: any, index: number) => {
     }
 
     // Check if the last range is the "100+" range and it's checked
-    const lastOption = options.value.data[options.value.data.length - 1];
     if (lastOption.checked && lastOption.label.endsWith("+")) {
       lastValue = lastOption?.value;
     }
@@ -265,14 +280,28 @@ const toggleSchoolOption = (optionName: any, index: number) => {
 
     if (options.value.name === "schOptions") {
       selectschValue.value = { key1: `school_count:=[${range}]` };
+      localStorage.setItem("schoption", JSON.stringify(selectedRanges));
+      if (lastValue !== null) {
+        localStorage.setItem("schLastValue", lastValue);
+      } else {
+        localStorage.removeItem("schLastValue");
+      }
     }
 
     if (options.value.name === "stuOptions") {
       selectstuValue.value = { key2: `student_count:=[${range}]` };
+      localStorage.setItem("stuOptions", JSON.stringify(selectedRanges));
+      if (lastValue !== null) {
+        localStorage.setItem("stuLastValue", lastValue);
+      } else {
+        localStorage.removeItem("stuLastValue");
+      }
     }
-  } else {
-    console.log("ekkkkkkselectedRanges.length", selectedRanges);
-
+  } else if (
+    selectedRanges.length > 0 &&
+    lastOption.checked &&
+    lastOption.label.endsWith("+")
+  ) {
     if (options.value.name === "schOptions") {
       selectschValue.value = null;
     }
@@ -290,8 +319,27 @@ const toggleSchoolOption = (optionName: any, index: number) => {
     if (selectstuValue.value && selectstuValue.value.key2) {
       mergedFilterBy += selectstuValue.value.key2;
     }
+  } else if (lastOption.checked === false && lastOption.label.endsWith("+")) {
+    if (options.value.name === "schOptions") {
+      selectschValue.value = null;
+      localStorage.removeItem("schoption");
+    }
+
+    if (options.value.name === "stuOptions") {
+      selectstuValue.value = null;
+      localStorage.removeItem("stuOptions");
+    }
+    let mergedFilterBy = "";
+    if (selectschValue.value && selectschValue.value.key1) {
+      mergedFilterBy += selectschValue.value.key1;
+    }
+    if (selectschValue.value && selectstuValue.value) {
+      mergedFilterBy += " && ";
+    }
+    if (selectstuValue.value && selectstuValue.value.key2) {
+      mergedFilterBy += selectstuValue.value.key2;
+    }
   }
-  console.log("selectschValu....e", selectschValue?.value);
 
   // Merge key1 and key2 with '&&' between them
   const mergedFilterBy =
