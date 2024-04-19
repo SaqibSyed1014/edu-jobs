@@ -1,19 +1,50 @@
 <script setup lang="ts">
 const props = defineProps<{ filtrationList: any[] }>()
 
-const emits = defineEmits(['closeFilterSidebar'])
+const emits = defineEmits(['closeFilterSidebar', 'filtersUpdated'])
 
 const initialFilterState = ref(structuredClone(toRaw(props.filtrationList)))
 
-const filterState = ref(props.filtrationList)
+const filterState = ref(initialFilterState.value);
+
+const selectedValues = ref<{ field: string, values: string[] }[]>([]);
 
 function resetFilters() {
-  filterState.value = structuredClone(toRaw(initialFilterState.value))
+  filterState.value.forEach((filter) => {
+    if (filter.type === 'checkbox') {
+      filter.list?.forEach((item :any) => {
+        item.checked = false; // Reset checked status of each checkbox to false
+      });
+    }
+  });
+  selectedValues.value = [];
 }
 
-const updateChecked = (index: number, subIndex: number, checked: boolean) => {
+
+const updateChecked = (index: number, subIndex: number, checked: boolean, value: string, fieldName: string) => {
   filterState.value[index].list[subIndex].checked = checked;
+
+  const selectedField = selectedValues.value.find(val => val.field === fieldName);
+
+  // If the checkbox is checked and the value is not already selected, add it to the selected field
+  if (checked && (!selectedField || !selectedField.values.includes(value))) {
+    if (selectedField) selectedField.values.push(value);    // Add the value to the existing field
+    else selectedValues.value.push({ field: fieldName, values: [value] });     // Create a new field with the value
+
+    // If the checkbox is unchecked and the value is selected, remove it from the selected field
+  } else if (!checked && selectedField) {
+    selectedField.values = selectedField.values.filter(x => x !== value);
+
+    // If the selected field becomes empty after removing a value, remove the field from selectedValues array
+    if (selectedField.values.length === 0) selectedValues.value.splice(selectedValues.value.indexOf(selectedField), 1);
+  }
+
+  console.log('FINAL -> ', selectedValues.value)
 };
+
+watch(() => selectedValues.value, () => {
+  emits('filtersUpdated', selectedValues.value);
+}, { deep: true })
 </script>
 
 <template>
@@ -42,7 +73,7 @@ const updateChecked = (index: number, subIndex: number, checked: boolean) => {
             <template v-for="(item, i) in filter.list">
               <div class="flex items-center gap-3 first:pt-2 pb-4">
                 <div class="shrink-0 relative">
-                  <input :checked="item.checked" @change="updateChecked(index, i, $event.target.checked)"
+                  <input :key="item.checked" :checked="item.checked" @change="updateChecked(index, i, $event.target.checked, item.value, filter.fieldName)"
                          :id="`filter-cb-${index}-${i}`" type="checkbox">
                 </div>
                 <label :for="`filter-cb-${index}-${i}`" class="font-medium cursor-pointer">

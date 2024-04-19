@@ -6,27 +6,32 @@ import type {JobQueryParams, JobSearchFilters, PaginationInfo, TypesenseQueryPar
 
 const filters = [
   {
+    fieldName: 'employment_type',
     type: 'checkbox',
     title: 'Type of employment',
     icon: 'SvgoClock',
     list: [
       {
         label: 'Full-time',
+        value: 'full_time',
         checked: false,
         counts: 15
       },
       {
         label: 'Part-time',
+        value: 'part_time',
         checked: false,
         counts: 6
       },
       {
         label: 'Internship',
+        value: 'internship',
         checked: false,
         counts: 23
       },
       {
         label: 'Volunteer',
+        value: 'volunteer',
         checked: false,
         counts: 5
       }
@@ -34,49 +39,58 @@ const filters = [
 
   },
   {
+    fieldName: 'job_role',
     type: 'checkbox',
     title: 'Job Category',
     icon: 'SvgoBarChart',
     list: [
       {
         label: 'Instructional',
+        value: 'instructional',
         checked: false,
         counts: 54
       },
       {
         label: 'Non-instructional',
+        value: 'non-instructional',
         checked: false,
         counts: 93
       }
     ]
   },
   {
+    fieldName: 'experience_level',
     type: 'checkbox',
     title: 'Experience Level',
     icon: 'SvgoLineChartUp',
     list: [
       {
         label: 'Entry-level',
+        value: 'entry_level',
         checked: false,
         counts: 15
       },
       {
         label: 'Mid-level',
+        value: 'mid_level',
         checked: false,
         counts: 6
       },
       {
         label: 'Senior',
+        value: 'senior',
         checked: false,
         counts: 3
       },
       {
         label: 'Manager',
+        value: 'manager',
         checked: false,
         counts: 5
       },
       {
         label: 'Director',
+        value: 'director',
         checked: false,
         counts: 5
       }
@@ -111,6 +125,8 @@ const layoutOptionSelected = ref(1);
 const searchedLocationText = ref('');
 const isFilterSidebarVisible = ref<boolean>(false);
 
+const sidebarFilters = ref<{ [key :string]: string }>({})
+
 const pageInfo = ref<PaginationInfo>({
   currentPage: 1,
   itemsPerPage: 12,
@@ -128,6 +144,7 @@ const queryParams = computed(() => {
   const urlParams :JobQueryParams = {
     q: query.value.q,
     ...(searchedLocationText.value?.length && { location: searchedLocationText.value }),  // skip location from url if no location is searched
+    ...sidebarFilters.value,
     page: query.value.page,
     mode: layoutOptionSelected.value === 0 ? 'list' : 'grid',
   }
@@ -207,18 +224,34 @@ const fetchOnSearching = (searchValues :JobSearchFilters) => {
 
   doSearch(true);
 }
+
+function updateSideBarFilters(selectedFilters :{ field: string, values: string[] }[]) {
+  sidebarFilters.value = {};   // reset sidebarFilters everytime for avoiding caching data
+  if (Object.keys(selectedFilters)?.length) {
+    selectedFilters.forEach(filter => {
+      sidebarFilters.value[filter.field] = filter.values.join(',')
+    });
+  }
+  else sidebarFilters.value = {};
+  doSearch();
+}
 </script>
 
 <template>
     <div class="job-listing-view">
       <ListingView>
         <template #filters>
-          <ListingFilters class="hidden md:flex" :filtration-list="filters" />
+          <ListingFilters
+              class="hidden md:flex"
+              :filtration-list="filters"
+              @filters-updated="updateSideBarFilters"
+          />
 
           <SideBarWrapper :is-sidebar-visible="isFilterSidebarVisible">
             <ListingFilters
-                @close-filter-sidebar="isFilterSidebarVisible = false"
                 :filtration-list="filters"
+                @filters-updated="updateSideBarFilters"
+                @close-filter-sidebar="isFilterSidebarVisible = false"
             />
           </SideBarWrapper>
         </template>

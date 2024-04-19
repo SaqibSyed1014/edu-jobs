@@ -22,6 +22,9 @@ export interface JobQueryParams extends LocationQueryRaw{
     q: string
     page: number
     location?: string
+    employment_type?: string
+    job_role?: string
+    experience_level?: string
 }
 
 export interface Coordinates {
