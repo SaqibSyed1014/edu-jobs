@@ -4,29 +4,34 @@ import {useJobStore} from "~/segments/jobs/store";
 import NoRecordFound from "~/components/core/NoRecordFound.vue";
 import type {JobQueryParams, JobSearchFilters, PaginationInfo, TypesenseQueryParam} from "~/segments/common.types";
 
-const filters = [
+const filters = ref([
   {
+    fieldName: 'employment_type',
     type: 'checkbox',
     title: 'Type of employment',
     icon: 'SvgoClock',
     list: [
       {
         label: 'Full-time',
+        value: 'full_time',
         checked: false,
         counts: 15
       },
       {
         label: 'Part-time',
+        value: 'part_time',
         checked: false,
         counts: 6
       },
       {
         label: 'Internship',
+        value: 'internship',
         checked: false,
         counts: 23
       },
       {
         label: 'Volunteer',
+        value: 'volunteer',
         checked: false,
         counts: 5
       }
@@ -34,49 +39,58 @@ const filters = [
 
   },
   {
+    fieldName: 'job_role',
     type: 'checkbox',
     title: 'Job Category',
     icon: 'SvgoBarChart',
     list: [
       {
         label: 'Instructional',
+        value: 'instructional',
         checked: false,
         counts: 54
       },
       {
         label: 'Non-instructional',
+        value: 'non-instructional',
         checked: false,
         counts: 93
       }
     ]
   },
   {
+    fieldName: 'experience_level',
     type: 'checkbox',
     title: 'Experience Level',
     icon: 'SvgoLineChartUp',
     list: [
       {
         label: 'Entry-level',
+        value: 'entry_level',
         checked: false,
         counts: 15
       },
       {
         label: 'Mid-level',
+        value: 'mid_level',
         checked: false,
         counts: 6
       },
       {
         label: 'Senior',
+        value: 'senior',
         checked: false,
         counts: 3
       },
       {
         label: 'Manager',
+        value: 'manager',
         checked: false,
         counts: 5
       },
       {
         label: 'Director',
+        value: 'director',
         checked: false,
         counts: 5
       }
@@ -89,7 +103,7 @@ const filters = [
     min: 0,
     max: 250000
   }
-]
+])
 
 const itemsViewOptions = [
   {
@@ -111,6 +125,8 @@ const layoutOptionSelected = ref(1);
 const searchedLocationText = ref('');
 const isFilterSidebarVisible = ref<boolean>(false);
 
+const sidebarFilters = ref<{ [key :string]: string | string[] }>({})
+
 const pageInfo = ref<PaginationInfo>({
   currentPage: 1,
   itemsPerPage: 12,
@@ -128,6 +144,7 @@ const queryParams = computed(() => {
   const urlParams :JobQueryParams = {
     q: query.value.q,
     ...(searchedLocationText.value?.length && { location: searchedLocationText.value }),  // skip location from url if no location is searched
+    ...sidebarFilters.value,
     page: query.value.page,
     mode: layoutOptionSelected.value === 0 ? 'list' : 'grid',
   }
@@ -144,13 +161,7 @@ watch(() => layoutOptionSelected.value, () => {
 
 onMounted(async () => {
   if (Object.keys(route.query).length) {  // check if route has params
-    const { mode, location, ...otherParams } = route.query
-    query.value = {
-      ...query.value,
-      ...otherParams as unknown as TypesenseQueryParam
-    }
-    layoutOptionSelected.value = mode === 'list' ? 0 : 1
-    if (location) searchedLocationText.value = location as string // assign location in url for google map field
+    assignQueryParamsOnInitialLoad(route.query as JobQueryParams)
   }
 
   // assign the saved coordinates in store (searched on Home view) for query
@@ -207,18 +218,59 @@ const fetchOnSearching = (searchValues :JobSearchFilters) => {
 
   doSearch(true);
 }
+
+function updateSideBarFilters(selectedFilters :{ field: string, values: string[] }[], toggleFlag = false) {
+  if (Object.keys(selectedFilters)?.length) {
+    sidebarFilters.value = {};   // reset sidebarFilters everytime for avoiding caching data
+    selectedFilters.forEach(filter => {
+      sidebarFilters.value[filter.field] = filter.values.join(',')
+    });
+  }
+  else sidebarFilters.value = {};
+
+  if (toggleFlag) isFilterSidebarVisible.value = false;
+
+  doSearch();
+}
+
+function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
+  const { mode, location, employment_type, job_role, experience_level, ...otherParams } = queryParams
+  query.value = {
+    ...query.value,
+    ...otherParams as unknown as TypesenseQueryParam
+  }
+  if (location) searchedLocationText.value = location as string; // assign location in url for google map field
+
+  if (employment_type) sidebarFilters.value.employment_type = employment_type
+  if (job_role) sidebarFilters.value.job_role = job_role
+  if (experience_level) sidebarFilters.value.experience_level = experience_level
+  filters.value.forEach(filter => {
+      if (filter.type === 'checkbox' && filter.list?.length) {
+        filter.list.forEach(item => {
+          const filterValues = sidebarFilters.value[filter.fieldName] || [];
+          item.checked = !!filterValues.includes(item.value);
+        });
+      }
+    });
+  layoutOptionSelected.value = mode === 'list' ? 0 : 1;
+}
 </script>
 
 <template>
     <div class="job-listing-view">
       <ListingView>
         <template #filters>
-          <ListingFilters class="hidden md:flex" :filtration-list="filters" />
+          <ListingFilters
+              class="hidden md:flex"
+              :filtration-list="filters"
+              @on-filters-change="updateSideBarFilters"
+          />
 
           <SideBarWrapper :is-sidebar-visible="isFilterSidebarVisible">
             <ListingFilters
-                @close-filter-sidebar="isFilterSidebarVisible = false"
                 :filtration-list="filters"
+                @apply-filters-on-click="(val) => updateSideBarFilters(val,true)"
+                @close-filter-sidebar="isFilterSidebarVisible = false"
             />
           </SideBarWrapper>
         </template>
