@@ -108,7 +108,7 @@ watch(() => selectedValues.value, () => {
     </template>
 
 
-    <div class="md:hidden">
+    <div class="md:hidden pb-20">
       <BaseButton label="Apply" :full-sized="true" @click="emits('applyFiltersOnClick', selectedValues)" />
     </div>
   </div>
