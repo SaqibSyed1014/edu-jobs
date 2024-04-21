@@ -30,7 +30,7 @@ function getDaysDifference(givenDateString :Date | string) {
           </div>
         </div>
         <div class="pt-3">
-          <p class="font-semibold">{{ job.job_title }}</p>
+          <p class="font-semibold line-clamp-2">{{ job.job_title }}</p>
 
           <p class="text-gray-600 text-sm">{{ job.organization_name }}</p>
         </div>
