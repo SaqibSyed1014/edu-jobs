@@ -4,91 +4,10 @@ import type { JobSearchFilters } from "~/segments/common.types";
 import { useJobStore } from "~/segments/jobs/store";
 register();
 
-const jobPostsList = [
-  {
-    logo: 'logo-one.jpg',
-    postedAt: '1h ago',
-    title: 'Marketing Associate',
-    country: 'Polymath, Melbourne, AU',
-    category: 'Design',
-    description: 'We’re looking for a mid-level product designer to join our team.',
-    duration: 'Full-time',
-    wage: '80k - 100k'
-  },
-  {
-    logo: 'logo-two.jpg',
-    postedAt: '6h ago',
-    title: 'Senior Graphic Designer',
-    country: 'Polymath, Melbourne, AU',
-    category: 'Design',
-    description: 'We’re looking for a mid-level product designer to join our team.',
-    duration: 'Full-time',
-    wage: '80k - 100k'
-  },
-  {
-    logo: 'logo-three.jpg',
-    postedAt: '2h ago',
-    title: 'Lead Product Designer',
-    country: 'Polymath, Melbourne, AU',
-    category: 'Design',
-    description: 'We’re looking for a mid-level product designer to join our team.',
-    duration: 'Full-time',
-    wage: '80k - 100k'
-  },
-  {
-    logo: 'logo-four.jpg',
-    postedAt: '6h ago',
-    title: 'Senior Graphic Designer',
-    country: 'Polymath, Melbourne, AU',
-    category: 'Design',
-    description: 'We’re looking for a mid-level product designer to join our team.',
-    duration: 'Full-time',
-    wage: '80k - 100k'
-  },
-  {
-    logo: 'logo-two.jpg',
-    postedAt: '6h ago',
-    title: 'Senior Graphic Designer',
-    country: 'Polymath, Melbourne, AU',
-    category: 'Design',
-    description: 'We’re looking for a mid-level product designer to join our team.',
-    duration: 'Full-time',
-    wage: '80k - 100k'
-  },
-  {
-    logo: 'logo-one.jpg',
-    postedAt: '6h ago',
-    title: 'Senior Graphic Designer',
-    country: 'Polymath, Melbourne, AU',
-    category: 'Design',
-    description: 'We’re looking for a mid-level product designer to join our team.',
-    duration: 'Full-time',
-    wage: '80k - 100k'
-  },
-  {
-    logo: 'logo-two.jpg',
-    postedAt: '2h ago',
-    title: 'Lead Product Designer',
-    country: 'Polymath, Melbourne, AU',
-    category: 'Design',
-    description: 'We’re looking for a mid-level product designer to join our team.',
-    duration: 'Full-time',
-    wage: '80k - 100k'
-  },
-  {
-    logo: 'logo-three.jpg',
-    postedAt: '2h ago',
-    title: 'Lead Product Designer',
-    country: 'Polymath, Melbourne, AU',
-    category: 'Design',
-    description: 'We’re looking for a mid-level product designer to join our team.',
-    duration: 'Full-time',
-    wage: '80k - 100k'
-  },
-]
-
 const router = useRouter();
 const jobStore = useJobStore();
+
+const { jobListings, itemsFound } = storeToRefs(jobStore)
 
 function searchJobs(filters :JobSearchFilters) {
   jobStore.setCoordinates(filters.coordinates);  // saving coordinates in store for persistence purpose
@@ -134,24 +53,21 @@ function searchJobs(filters :JobSearchFilters) {
       <div class="bg-brand-100 w-[650px] h-[350px] absolute -bottom-1/2 -left-1/4 blur-3xl z-[-1]"></div>
     </div>
 
-    <swiper-container
-        v-if="false"
-        :loop="true"
-        :space-between="20"
-        slides-per-view="auto"
-        :auto-resize="false"
-        :autoplay-delay="1"
-        :autoplay-disable-on-interaction="false"
-        :speed="4000"
-        class="jobs-slider z-20"
-    >
-        <swiper-slide v-for="(job, i) in jobPostsList" :key="i" class="!w-[340px]">
-          <JobCard :job="job" :card-form="true" :show-job-description="false" />
+    <template v-if="itemsFound !== 0">
+      <swiper-container
+          :loop="true"
+          :space-between="20"
+          slides-per-view="auto"
+          :auto-resize="false"
+          :autoplay-delay="1"
+          :autoplay-disable-on-interaction="false"
+          :speed="4000"
+          class="jobs-slider z-20"
+      >
+        <swiper-slide v-for="(job, i) in jobListings" :key="i" class="!w-[340px]">
+          <JobCard :job="job" :card-form="true" :show-job-description="false"/>
         </swiper-slide>
-    </swiper-container>
+      </swiper-container>
+    </template>
   </section>
 </template>
-
-<style scoped lang="postcss">
-
-</style>

@@ -2,6 +2,7 @@
 import ArrowUpRightIcon from "assets/icons/arrow-narrow-up-right.svg";
 import ArrowLeftIcon from "assets/icons/arrow-left.svg";
 import ArrowRightIcon from "assets/icons/arrow-right.svg";
+import {useJobStore} from "~/segments/jobs/store";
 
 const jobPostsList = [
   {
@@ -66,6 +67,9 @@ const jobPostsList = [
   },
 ]
 
+const jobStore = useJobStore();
+const { jobListings, itemsFound } = storeToRefs(jobStore)
+
 const jobSlider = ref(null)
 
 const sliderBreakpoints = {
@@ -80,7 +84,7 @@ const sliderBreakpoints = {
 </script>
 
 <template>
-  <section class="py-24 overflow-hidden">
+  <section v-if="itemsFound !== 0" class="py-24 overflow-hidden">
     <div class="content">
       <div class="container">
         <div class="grid grid-cols-1 lg:grid-cols-3 items-start">
@@ -109,7 +113,6 @@ const sliderBreakpoints = {
           </div>
           <div class="col-span-2">
             <swiper-container
-                v-if="false"
                 ref="jobSlider"
                 :loop="true"
                 :free-mode="true"
@@ -117,7 +120,7 @@ const sliderBreakpoints = {
                 :breakpoints="sliderBreakpoints"
                 class="jobs-slider z-20 mt-8"
             >
-              <swiper-slide v-for="job in jobPostsList" class="md:!w-[340px] my-1">
+              <swiper-slide v-for="job in jobListings" class="md:!w-[340px] my-1">
                 <JobCard :job="job" :card-form="true" :show-job-description="false" />
               </swiper-slide>
             </swiper-container>
