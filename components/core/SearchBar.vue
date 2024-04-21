@@ -29,7 +29,7 @@ onMounted(() => {
     const field = document.getElementById('mapInput') as HTMLInputElement
     if (props.location) {
       field.value = props.location
-      field.focus()
+      // field.focus()
     }
   }, 1000);
 })
@@ -59,6 +59,7 @@ function checkFieldInput() {
   coordinates.value.lng = 0
   locationName = ''
 }
+
 </script>
 
 <template>
@@ -71,6 +72,7 @@ function checkFieldInput() {
             type="text"
             placeholder="Keyword, Job title..."
             class="w-full"
+            @keyup.enter="performSearch"
         >
       </div>
       <hr class="hidden md:block h-3 w-px bg-gray-200 mx-2">
