@@ -121,6 +121,7 @@ const router = useRouter();
 const jobStore = useJobStore();
 const { jobListings, totalPages, coordinates } = storeToRefs(jobStore);
 
+const searchedKeyword = ref('')
 const layoutOptionSelected = ref(1);
 const searchedLocationText = ref('');
 const isFilterSidebarVisible = ref<boolean>(false);
@@ -142,10 +143,10 @@ const query = ref<TypesenseQueryParam>(initialQuery);
 
 const queryParams = computed(() => {
   const urlParams :JobQueryParams = {
-    q: query.value.q,
+    keyword: query.value.q,
     ...(searchedLocationText.value?.length && { location: searchedLocationText.value }),  // skip location from url if no location is searched
     ...sidebarFilters.value,
-    page: query.value.page,
+    page: pageInfo.value.currentPage,
     mode: layoutOptionSelected.value === 0 ? 'list' : 'grid',
   }
   return urlParams
@@ -234,10 +235,11 @@ function updateSideBarFilters(selectedFilters :{ field: string, values: string[]
 }
 
 function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
-  const { mode, location, employment_type, job_role, experience_level, ...otherParams } = queryParams
+  const { keyword, mode, location, employment_type, job_role, experience_level, ...otherParams } = queryParams
   query.value = {
     ...query.value,
-    ...otherParams as unknown as TypesenseQueryParam
+    ...otherParams as unknown as TypesenseQueryParam,
+    q: keyword as string,
   }
   if (location) searchedLocationText.value = location as string; // assign location in url for google map field
 
