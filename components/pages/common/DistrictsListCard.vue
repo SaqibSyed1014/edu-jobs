@@ -18,7 +18,7 @@ defineProps<{ data: any }>();
 
         <div class="inline-flex flex-wrap gap-5 pt-2 md:pt-0">
           <div class="inline-flex items-center text-center space-x-2">
-            <SvgoBriefCase class="size-5" />
+            <SvgoBriefCaseLight class="size-5" />
             <span
               class="text-gray-600 text-xs md:text-sm font-medium leading-tight"
             >
@@ -28,7 +28,7 @@ defineProps<{ data: any }>();
           <div
             class="inline-flex items-center text-center space-x-2 text-gray-600"
           >
-            <SvgoBuilding class="size-5" />
+            <SvgoBuildingLight class="size-5" />
             <span class="text-xs md:text-sm font-medium leading-tight">
               {{ data?.document?.school_count.toLocaleString() }} schools
             </span>

@@ -28,11 +28,11 @@ defineProps<{ data: any; isSchool: Boolean }>();
       </div>
 
       <div class="inline-flex items-center text-center space-x-2">
-        <SvgoBriefCase class="size-5" />
+        <SvgoBriefCaseLight class="size-5" />
         <span
           class="text-gray-600 text-xs md:text-sm font-medium leading-tight"
         >
-          14 jobs
+          0 jobs
         </span>
       </div>
 
@@ -40,15 +40,15 @@ defineProps<{ data: any; isSchool: Boolean }>();
         <div
           class="inline-flex items-center text-center space-x-2 text-gray-600"
         >
-          <SvgoBuilding class="size-5" />
+          <SvgoBuildingLight class="size-5" />
           <span class="text-xs md:text-sm font-medium leading-tight">
-            19 schools
+            0 schools
           </span>
         </div>
         <div class="inline-flex items-center text-center space-x-2">
           <SvgoGraduationHat class="size-5" />
           <span class="text-gray-600 text-sm font-medium leading-tight">
-            11,820 students
+            0 students
           </span>
         </div>
       </div>

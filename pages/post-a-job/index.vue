@@ -313,6 +313,7 @@ function handleStepClick() {
                       v-if="Object.keys(errors).length > 0"
                       type="submit"
                       class="flex flex-col cursor-pointer"
+                      @click="currentStep !== stepIdx && handleStepClick()"
                     >
                       <span class="ml-4 flex min-w-0 flex-col">
                         <span
@@ -1312,6 +1313,7 @@ function handleStepClick() {
                   :disabled="false"
                   v-if="currentStep !== 3"
                   class="order-1 md:order-2"
+                  @click="Object.keys(errors).length > 0 && handleStepClick()"
                 />
 
                 <BaseButton

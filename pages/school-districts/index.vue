@@ -92,59 +92,69 @@ const switchToGridView = () => {
   switchView("grid");
 };
 
-const matchOptions = (
-  localStorageKey: string,
-  options: Ref<{
-    data: {
-      label: any;
-      checked: boolean;
-      value: string;
-    }[];
-  }>,
-  filterType: string
-) => {
-  const storedValue = localStorage.getItem(localStorageKey);
-  const lastValue = localStorage.getItem(`${filterType}LastValue`);
-
-  if (lastValue) {
-    const foundItem = options.value.data.find(
-      (item) => item.value === lastValue
-    );
-    if (foundItem) {
-      foundItem.checked = true;
-    }
-  }
-  if (storedValue !== null) {
-    const getvalue: string[] = JSON.parse(storedValue);
-    // Loop through each range in getvalue
-    getvalue.forEach((range: any) => {
-      // Find the corresponding label in options.data and set its checked property to true
-      const foundLabel = options.value.data.find((item) => {
-        const [start, end] = range.map(Number);
-        const [min, max] = item.label.split(" to ").map(Number);
-        return start === min || end === max;
-      });
-      if (foundLabel) {
-        foundLabel.checked = true;
-      }
-    });
-  }
-};
-
 onMounted(async () => {
   await fetchDistricts(); // Initial fetch
   if (route?.query?.filter_by) {
     query.value.filter_by = route?.query?.filter_by.toString();
-  } else {
-    localStorage.removeItem("schLastValue");
-    localStorage.removeItem("stuLastValue");
-    localStorage.removeItem("stuOptions");
-    localStorage.removeItem("schoption");
   }
-
-  matchOptions("schoption", schOptions, "sch");
-  matchOptions("stuOptions", stuOptions, "stu");
+  setCheckedValues(route?.query?.filter_by);
 });
+
+const setCheckedValues = (filterBy: any) => {
+  // Check if filterBy exists
+  if (filterBy) {
+    // Split filterBy into parts for school_count and student_count
+    const [schoolFilter, studentFilter] = filterBy.split(" && ");
+
+    // Parse and set checked values for school_count
+    const schoolRanges = schoolFilter.match(/\d+\s*to\s*\d+|\d+|>\d+/g);
+    schoolRanges.forEach((range: any) => {
+      schOptions.value.data.forEach((item) => {
+        const [itemStart, itemEnd] = item.label.split(" to ").map(Number);
+        if (range.startsWith(">")) {
+          let lastValue = parseInt(range.slice(1));
+          const foundItem = schOptions.value.data.find(
+            (item) => item.value === lastValue.toString()
+          );
+          if (foundItem) {
+            foundItem.checked = true;
+          }
+        }
+
+        if (
+          String(range) === String(itemStart) ||
+          String(range) === String(itemEnd)
+        ) {
+          item.checked = true;
+        }
+      });
+    });
+
+    // Parse and set checked values for student_count
+    const studentRanges = studentFilter.match(/\d+\s*to\s*\d+|\d+|>\d+/g);
+    studentRanges.forEach((range: any) => {
+      stuOptions.value.data.forEach((item) => {
+        const [itemStart, itemEnd] = item.label.split(" to ").map(Number);
+        if (range.startsWith(">")) {
+          let lastValue = parseInt(range.slice(1));
+          const foundItem = stuOptions.value.data.find(
+            (item) => item.value === lastValue.toString()
+          );
+          if (foundItem) {
+            foundItem.checked = true;
+          }
+        }
+
+        if (
+          String(range) === String(itemStart) ||
+          String(range) === String(itemEnd)
+        ) {
+          item.checked = true;
+        }
+      });
+    });
+  }
+};
 
 const query = ref<TypesenseQueryParam>({
   q: route?.query?.q ? route?.query?.q.toString() : "*",
@@ -215,7 +225,7 @@ const toggleSchoolOption = (optionName: any, index: number) => {
   options.value.data[index].checked = !options.value.data[index].checked;
 
   // Initialize an array to store selected ranges
-  const selectedRanges: Array<[number, number]> = [];
+  const selectedRanges: any = [];
   const lastOption = options.value.data[options.value.data.length - 1];
   let lastValue: string | null = null;
 
@@ -228,7 +238,7 @@ const toggleSchoolOption = (optionName: any, index: number) => {
         const endRange = parseInt(labelParts[1].replace(/[^0-9]/g, ""));
         if (!isNaN(startRange) && !isNaN(endRange)) {
           // Add the range if it's checked
-          selectedRanges.push([startRange, endRange]);
+          selectedRanges.push(`${startRange}..${endRange}`);
         }
       }
 
@@ -236,14 +246,28 @@ const toggleSchoolOption = (optionName: any, index: number) => {
       if (option.label.endsWith("+")) {
         if (options.value.name === "schOptions") {
           selectschValue.value = { key1: `school_count:>${lastOption?.value}` };
-          localStorage.setItem("schLastValue", lastOption?.value);
+          if (route?.query?.filter_by) {
+            const splitData = route?.query?.filter_by.split(" && ");
+            splitData.forEach((item: any) => {
+              if (item.includes("student_count")) {
+                selectstuValue.value = { key2: item };
+              }
+            });
+          }
         }
 
         if (options.value.name === "stuOptions") {
           selectstuValue.value = {
             key2: `student_count:>${lastOption?.value}`,
           };
-          localStorage.setItem("stuLastValue", lastOption?.value);
+          if (route?.query?.filter_by) {
+            const splitData = route?.query?.filter_by.split(" && ");
+            splitData.forEach((item: any) => {
+              if (item.includes("school_count")) {
+                selectschValue.value = { key1: item };
+              }
+            });
+          }
         }
       }
     }
@@ -252,26 +276,13 @@ const toggleSchoolOption = (optionName: any, index: number) => {
   // Construct the combined range string
   let range: string | null = null;
   if (selectedRanges.length > 0) {
-    // Sort and merge overlapping ranges
-
-    const mergedRanges: Array<[number, number]> = [selectedRanges[0]];
-    for (let i = 1; i < selectedRanges.length; i++) {
-      const lastRange = mergedRanges[mergedRanges.length - 1];
-      const currentRange = selectedRanges[i];
-      if (lastRange[1] >= currentRange[0] - 1) {
-        lastRange[1] = Math.max(lastRange[1], currentRange[1]);
-      } else {
-        mergedRanges.push(currentRange);
-      }
-    }
-
     // Check if the last range is the "100+" range and it's checked
     if (lastOption.checked && lastOption.label.endsWith("+")) {
       lastValue = lastOption?.value;
     }
 
     // Construct the range string
-    range = mergedRanges.map((range) => `${range[0]}..${range[1]}`).join(",");
+    range = selectedRanges.map((range: any) => `${range}`).join(",");
 
     // Add `>${lastValue}` only if lastValue is not null
     if (lastValue !== null) {
@@ -279,23 +290,27 @@ const toggleSchoolOption = (optionName: any, index: number) => {
     }
 
     if (options.value.name === "schOptions") {
-      selectschValue.value = { key1: `school_count:=[${range}]` };
-      localStorage.setItem("schoption", JSON.stringify(selectedRanges));
-      if (lastValue !== null) {
-        localStorage.setItem("schLastValue", lastValue);
-      } else {
-        localStorage.removeItem("schLastValue");
+      if (route?.query?.filter_by) {
+        const splitData = route?.query?.filter_by.split(" && ");
+        splitData.forEach((item: any) => {
+          if (item.includes("student_count")) {
+            selectstuValue.value = { key2: item };
+          }
+        });
       }
+      selectschValue.value = { key1: `school_count:=[${range}]` };
     }
 
     if (options.value.name === "stuOptions") {
-      selectstuValue.value = { key2: `student_count:=[${range}]` };
-      localStorage.setItem("stuOptions", JSON.stringify(selectedRanges));
-      if (lastValue !== null) {
-        localStorage.setItem("stuLastValue", lastValue);
-      } else {
-        localStorage.removeItem("stuLastValue");
+      if (route?.query?.filter_by) {
+        const splitData = route?.query?.filter_by.split(" && ");
+        splitData.forEach((item: any) => {
+          if (item.includes("school_count")) {
+            selectschValue.value = { key1: item };
+          }
+        });
       }
+      selectstuValue.value = { key2: `student_count:=[${range}]` };
     }
   } else if (
     selectedRanges.length > 0 &&
@@ -322,12 +337,10 @@ const toggleSchoolOption = (optionName: any, index: number) => {
   } else if (lastOption.checked === false && lastOption.label.endsWith("+")) {
     if (options.value.name === "schOptions") {
       selectschValue.value = null;
-      localStorage.removeItem("schoption");
     }
 
     if (options.value.name === "stuOptions") {
       selectstuValue.value = null;
-      localStorage.removeItem("stuOptions");
     }
     let mergedFilterBy = "";
     if (selectschValue.value && selectschValue.value.key1) {
@@ -477,9 +490,9 @@ const search = () => {
                   @toggleSchoolOption="toggleSchoolOption"
                 />
               </div>
-              <div class="pt-[18px] w-full">
+              <!-- <div class="pt-[18px] w-full">
                 <BaseButton label="Apply" color="primary" :fullSized="true" />
-              </div>
+              </div> -->
             </div>
           </div>
         </DistrickSideBarWrapper>
@@ -595,9 +608,9 @@ const search = () => {
                 @click="switchToListView"
                 :class="{
                   'pl-3.5 pr-4 py-[11px] rounded-s-lg justify-center bg-white border border-gray-300 h-full items-center gap-2 flex':
-                    isGridView,
+                    isGridView === 'grid',
                   'pl-3.5 pr-4 py-[11px] rounded-s-lg justify-center bg-gray-50 border border-gray-300 h-full items-center gap-2 flex':
-                    !isGridView,
+                    isGridView === 'list',
                 }"
               >
                 <SvgoList class="size-5" />
@@ -610,9 +623,9 @@ const search = () => {
                 @click="switchToGridView"
                 :class="{
                   'pl-3.5 pr-4 py-[11px] rounded-e-lg justify-center bg-gray-50 border border-gray-300 h-full items-center gap-2 flex':
-                    isGridView,
+                    isGridView === 'grid',
                   'pl-3.5 pr-4 py-[11px] rounded-e-lg justify-center bg-white border border-gray-300 h-full items-center gap-2 flex':
-                    !isGridView,
+                    isGridView === 'list',
                 }"
               >
                 <SvgoGrid class="size-5" />

@@ -14,7 +14,10 @@ const collegesStore = useCollegesStore();
 const { collegesList, total_page } = storeToRefs(collegesStore);
 const totalPages = ref(total_page);
 const currentPage = ref<number>(Number(route?.query?.page) || 1);
-const searchedValue = ref(route?.query?.q === "*" ? "" : route?.query?.q || "");
+const queryValue = route?.query?.q === "*" ? "" : route?.query?.q;
+const searchedValue = ref<string>(
+  Array.isArray(queryValue) ? queryValue.join(", ") : queryValue || ""
+);
 const isGridView = ref(
   route?.query?.view
     ? route?.query?.view === "grid"
@@ -47,7 +50,7 @@ onMounted(async () => {
 });
 
 const pageInfo = ref<PaginationInfo>({
-  currentPage: 1,
+  currentPage: currentPage.value,
   itemsPerPage: 12,
   totalPages: 0,
 });
@@ -245,9 +248,9 @@ const search = () => {
                   total-jobs="13"
                 />
               </div>
-              <div class="pt-[18px] w-full">
+              <!-- <div class="pt-[18px] w-full">
                 <BaseButton label="Apply" color="primary" :fullSized="true" />
-              </div>
+              </div> -->
             </div>
           </div>
         </DistrickSideBarWrapper>
@@ -361,9 +364,9 @@ const search = () => {
                 @click="switchToListView"
                 :class="{
                   'pl-3.5 pr-4 py-[11px] rounded-s-lg justify-center bg-white border border-gray-300 h-full items-center gap-2 flex':
-                    isGridView,
+                    isGridView === 'grid',
                   'pl-3.5 pr-4 py-[11px] rounded-s-lg justify-center bg-gray-50 border border-gray-300 h-full items-center gap-2 flex':
-                    !isGridView,
+                    isGridView === 'list',
                 }"
               >
                 <SvgoList class="size-5" />
@@ -376,9 +379,9 @@ const search = () => {
                 @click="switchToGridView"
                 :class="{
                   'pl-3.5 pr-4 py-[11px] rounded-e-lg justify-center bg-gray-50 border border-gray-300 h-full items-center gap-2 flex':
-                    isGridView,
+                    isGridView === 'grid',
                   'pl-3.5 pr-4 py-[11px] rounded-e-lg justify-center bg-white border border-gray-300 h-full items-center gap-2 flex':
-                    !isGridView,
+                    isGridView === 'list',
                 }"
               >
                 <SvgoGrid class="size-5" />
@@ -447,9 +450,9 @@ const search = () => {
               </div>
             </div>
           </template>
-          <!-- <template v-else>
+          <template v-else>
             <NoRecordFound name="schools" :search-value="searchedValue" />
-          </template> -->
+          </template>
         </div>
         <div v-if="collegesList?.length > 0">
           <CustomPagination
