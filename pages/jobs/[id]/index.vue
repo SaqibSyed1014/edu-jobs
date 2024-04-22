@@ -44,6 +44,8 @@ const mapOptions = computed(() => {
 const isJobFetching = ref<boolean>(true);
 
 onMounted(async () => {
+  // initTooltips();
+
   initModals();
   isJobFetching.value = true;
   await jobStore.fetchSingleJob(route.params?.id as string);
@@ -99,10 +101,11 @@ function redirectToURL() {
                     </div>
 
                     <div>
-                      <h2 class="text-3xl text-ellipsis line-clamp-1">
-                        {{ jobDetails.job_title }}
-                        Lead Product Designer
-                      </h2>
+                      <BaseTooltip :tooltip-content="jobDetails.job_title" id="title">
+                        <h2 class="text-2xl text-ellipsis line-clamp-1">
+                          {{ jobDetails.job_title }}
+                        </h2>
+                      </BaseTooltip>
                       <p class="text-gray-600">
                         {{ jobDetails.organization_type }}
                       </p>
