@@ -25,8 +25,13 @@ onMounted(() => {
     const field = document.getElementById('mapInput') as HTMLInputElement
     if (props.location) {
       field.value = props.location
+      console.log('che ', field);
       // field.focus()
     }
+    field.addEventListener('keyup', function (event :KeyboardEvent) {
+      if (event.key === 'Enter' && (coordinates.value.lat !== 0 && coordinates.value.lng !== 0))
+        performSearch();
+    })
   }, 1000);
 })
 
