@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import {useDisrictsStore} from "~/segments/districts/store";
+import { useDisrictsStore } from "~/segments/districts/store";
+import type { TypesenseQueryParam } from "~/segments/common.types";
 
 let toggleSideBar = ref<boolean>(false);
 const route = useRoute();
@@ -9,7 +10,11 @@ const districtStore = useDisrictsStore();
 const selectedAlphabet = ref<number>(0);
 const { distictsList, total_page } = storeToRefs(districtStore);
 const currentPage = ref<number>(Number(route?.query?.page) || 1);
-const searchedValue = ref(route?.query?.q === "*" ? "" : route?.query?.q || "");
+const queryValue = route?.query?.q === "*" ? "" : route?.query?.q;
+const searchedValue = ref<string>(
+  Array.isArray(queryValue) ? queryValue.join(", ") : queryValue || ""
+);
+
 const totalPages = ref(total_page);
 const itemsPerPage = ref<number>(12);
 const isGridView = ref(
@@ -19,15 +24,62 @@ const isGridView = ref(
       : "list"
     : "grid"
 ); // Reactive variable to store the current view mode
+type SelectValue = { key1: string } | null;
+type SelectStuValue = { key2: string } | null;
+const selectschValue = ref<SelectValue>(null);
+const selectstuValue = ref<SelectStuValue>(null);
+
+const jobOptions = ref({
+  icon: "SvgoBriefCaseLight",
+  name: "jobOptions",
+  data: [
+    { id: "1", label: "0 to 10", value: "0 to 10", checked: false },
+    { id: "2", label: "11 to 50", value: "11 to 50", checked: false },
+    { id: "3", label: "51 to 100", value: "51 to 100", checked: false },
+    { id: "4", label: "100+", value: "100", checked: false },
+  ],
+});
+
+const stuOptions = ref({
+  icon: "SvgoGraduationHat",
+  name: "stuOptions",
+  data: [
+    { id: "1", label: "0 to 100", value: "0 to 100", checked: false },
+    { id: "2", label: "101 to 500", value: "101 to 500", checked: false },
+    { id: "3", label: "501 to 1000", value: "501 to 1000", checked: false },
+    { id: "4", label: "1001 to 2000", value: "1001 to 2000", checked: false },
+    { id: "4", label: "2001 to 3000", value: "2001 to 3000", checked: false },
+    { id: "4", label: "3001 to 5000", value: "3001 to 5000", checked: false },
+    {
+      id: "4",
+      label: "5001 to 10,000",
+      value: "5001 to 10000",
+      checked: false,
+    },
+    { id: "4", label: "10,000+", value: "10000", checked: false },
+  ],
+});
+
+const schOptions = ref({
+  icon: "SvgoBuildingLight",
+  name: "schOptions",
+  data: [
+    { id: "1", label: "0 to 10", value: "0 to 10", checked: false },
+    { id: "2", label: "11 to 25", value: "11 to 25", checked: false },
+    { id: "3", label: "26 to 50", value: "26 to 50", checked: false },
+    { id: "4", label: "51 to 100", value: "51 to 100", checked: false },
+    { id: "4", label: "100+", value: "100", checked: false },
+  ],
+});
 
 // Function to switch to list view
 const switchView = (view: any) => {
   isGridView.value = view;
-  router.push({
+  router.replace({
     path: "/school-districts",
     query: {
       view: view,
-      ...query?.value,
+      ...queryParams?.value,
     },
   });
 };
@@ -42,13 +94,88 @@ const switchToGridView = () => {
 
 onMounted(async () => {
   await fetchDistricts(); // Initial fetch
+  if (route?.query?.filter_by) {
+    query.value.filter_by = route?.query?.filter_by.toString();
+  }
+  setCheckedValues(route?.query?.filter_by);
 });
 
-const query = ref({
-  q: route?.query?.q || "*",
+const setCheckedValues = (filterBy: any) => {
+  // Check if filterBy exists
+  if (filterBy) {
+    // Split filterBy into parts for school_count and student_count
+    const [schoolFilter, studentFilter] = filterBy.split(" && ");
+
+    // Parse and set checked values for school_count
+    const schoolRanges = schoolFilter.match(/\d+\s*to\s*\d+|\d+|>\d+/g);
+    schoolRanges.forEach((range: any) => {
+      schOptions.value.data.forEach((item) => {
+        const [itemStart, itemEnd] = item.label.split(" to ").map(Number);
+        if (range.startsWith(">")) {
+          let lastValue = parseInt(range.slice(1));
+          const foundItem = schOptions.value.data.find(
+            (item) => item.value === lastValue.toString()
+          );
+          if (foundItem) {
+            foundItem.checked = true;
+          }
+        }
+
+        if (
+          String(range) === String(itemStart) ||
+          String(range) === String(itemEnd)
+        ) {
+          item.checked = true;
+        }
+      });
+    });
+
+    // Parse and set checked values for student_count
+    const studentRanges = studentFilter.match(/\d+\s*to\s*\d+|\d+|>\d+/g);
+    studentRanges.forEach((range: any) => {
+      stuOptions.value.data.forEach((item) => {
+        const [itemStart, itemEnd] = item.label.split(" to ").map(Number);
+        if (range.startsWith(">")) {
+          let lastValue = parseInt(range.slice(1));
+          const foundItem = stuOptions.value.data.find(
+            (item) => item.value === lastValue.toString()
+          );
+          if (foundItem) {
+            foundItem.checked = true;
+          }
+        }
+
+        if (
+          String(range) === String(itemStart) ||
+          String(range) === String(itemEnd)
+        ) {
+          item.checked = true;
+        }
+      });
+    });
+  }
+};
+
+const query = ref<TypesenseQueryParam>({
+  q: route?.query?.q ? route?.query?.q.toString() : "*",
   per_page: itemsPerPage.value,
   page: currentPage.value,
-  query_by: "district_name",
+});
+
+if (route?.query?.filter_by) {
+  // If it exists, assign its value to the filter_by property
+  query.value.filter_by = route?.query?.filter_by.toString();
+} else {
+  // If it doesn't exist, delete the filter_by key
+  delete query?.value?.filter_by;
+}
+
+const queryParams = computed(() => {
+  const urlParams = {
+    q: query.value.q,
+    page: query.value.page,
+  };
+  return urlParams;
 });
 
 async function fetchDistricts() {
@@ -68,11 +195,11 @@ const paginate = (page: number | "prev" | "next") => {
   }
   query.value.page = currentPage?.value;
 
-  router.push({
+  router.replace({
     path: "/school-districts",
     query: {
       view: isGridView.value,
-      ...query.value,
+      ...queryParams.value,
     },
   });
 
@@ -93,39 +220,169 @@ function togglingSidebarVisibility() {
   }
 }
 
-const jobOptions = ref({
-  icon: "SvgoBriefCaseLight",
-  data: [
-    { id: "1", label: "0 to 10", checked: false },
-    { id: "2", label: "11 to 50", checked: true },
-    { id: "3", label: "51 to 100", checked: false },
-    { id: "4", label: "100+", checked: false },
-  ],
-});
+const toggleSchoolOption = (optionName: any, index: number) => {
+  const options = eval(optionName);
+  options.value.data[index].checked = !options.value.data[index].checked;
 
-const stuOptions = ref({
-  icon: "SvgoGraduationHat",
-  data: [
-    { id: "1", label: "0 to 100", checked: false },
-    { id: "2", label: "101 to 500", checked: false },
-    { id: "3", label: "501 to 1000", checked: true },
-    { id: "4", label: "1001 to 2000", checked: false },
-    { id: "4", label: "2001 to 3000", checked: false },
-    { id: "4", label: "3001 to 5000", checked: false },
-    { id: "4", label: "5001 to 10,000", checked: false },
-    { id: "4", label: "10,000+", checked: false },
-  ],
-});
+  // Initialize an array to store selected ranges
+  const selectedRanges: any = [];
+  const lastOption = options.value.data[options.value.data.length - 1];
+  let lastValue: string | null = null;
 
-const schOptions = ref({
-  icon: "SvgoBuildingLight",
-  data: [
-    { id: "1", label: "0 to 10", checked: false },
-    { id: "2", label: "11 to 25", checked: true },
-    { id: "3", label: "26 to 50", checked: false },
-    { id: "4", label: "51 to 100", checked: false },
-  ],
-});
+  // Iterate through the options to gather selected ranges
+  options.value.data.forEach((option: any) => {
+    if (option.checked) {
+      const labelParts = option.value.split(" to ");
+      if (labelParts.length === 2) {
+        const startRange = parseInt(labelParts[0].replace(/[^0-9]/g, ""));
+        const endRange = parseInt(labelParts[1].replace(/[^0-9]/g, ""));
+        if (!isNaN(startRange) && !isNaN(endRange)) {
+          // Add the range if it's checked
+          selectedRanges.push(`${startRange}..${endRange}`);
+        }
+      }
+
+      // Apply filters when value is greater than 100+ or 10000+
+      if (option.label.endsWith("+")) {
+        if (options.value.name === "schOptions") {
+          selectschValue.value = { key1: `school_count:>${lastOption?.value}` };
+          if (route?.query?.filter_by) {
+            const splitData = route?.query?.filter_by.split(" && ");
+            splitData.forEach((item: any) => {
+              if (item.includes("student_count")) {
+                selectstuValue.value = { key2: item };
+              }
+            });
+          }
+        }
+
+        if (options.value.name === "stuOptions") {
+          selectstuValue.value = {
+            key2: `student_count:>${lastOption?.value}`,
+          };
+          if (route?.query?.filter_by) {
+            const splitData = route?.query?.filter_by.split(" && ");
+            splitData.forEach((item: any) => {
+              if (item.includes("school_count")) {
+                selectschValue.value = { key1: item };
+              }
+            });
+          }
+        }
+      }
+    }
+  });
+
+  // Construct the combined range string
+  let range: string | null = null;
+  if (selectedRanges.length > 0) {
+    // Check if the last range is the "100+" range and it's checked
+    if (lastOption.checked && lastOption.label.endsWith("+")) {
+      lastValue = lastOption?.value;
+    }
+
+    // Construct the range string
+    range = selectedRanges.map((range: any) => `${range}`).join(",");
+
+    // Add `>${lastValue}` only if lastValue is not null
+    if (lastValue !== null) {
+      range += `,>${lastValue}`;
+    }
+
+    if (options.value.name === "schOptions") {
+      if (route?.query?.filter_by) {
+        const splitData = route?.query?.filter_by.split(" && ");
+        splitData.forEach((item: any) => {
+          if (item.includes("student_count")) {
+            selectstuValue.value = { key2: item };
+          }
+        });
+      }
+      selectschValue.value = { key1: `school_count:=[${range}]` };
+    }
+
+    if (options.value.name === "stuOptions") {
+      if (route?.query?.filter_by) {
+        const splitData = route?.query?.filter_by.split(" && ");
+        splitData.forEach((item: any) => {
+          if (item.includes("school_count")) {
+            selectschValue.value = { key1: item };
+          }
+        });
+      }
+      selectstuValue.value = { key2: `student_count:=[${range}]` };
+    }
+  } else if (
+    selectedRanges.length > 0 &&
+    lastOption.checked &&
+    lastOption.label.endsWith("+")
+  ) {
+    if (options.value.name === "schOptions") {
+      selectschValue.value = null;
+    }
+
+    if (options.value.name === "stuOptions") {
+      selectstuValue.value = null;
+    }
+    let mergedFilterBy = "";
+    if (selectschValue.value && selectschValue.value.key1) {
+      mergedFilterBy += selectschValue.value.key1;
+    }
+    if (selectschValue.value && selectstuValue.value) {
+      mergedFilterBy += " && ";
+    }
+    if (selectstuValue.value && selectstuValue.value.key2) {
+      mergedFilterBy += selectstuValue.value.key2;
+    }
+  } else if (lastOption.checked === false && lastOption.label.endsWith("+")) {
+    if (options.value.name === "schOptions") {
+      selectschValue.value = null;
+    }
+
+    if (options.value.name === "stuOptions") {
+      selectstuValue.value = null;
+    }
+    let mergedFilterBy = "";
+    if (selectschValue.value && selectschValue.value.key1) {
+      mergedFilterBy += selectschValue.value.key1;
+    }
+    if (selectschValue.value && selectstuValue.value) {
+      mergedFilterBy += " && ";
+    }
+    if (selectstuValue.value && selectstuValue.value.key2) {
+      mergedFilterBy += selectstuValue.value.key2;
+    }
+  }
+
+  // Merge key1 and key2 with '&&' between them
+  const mergedFilterBy =
+    (selectschValue.value && selectschValue.value.key1
+      ? selectschValue.value.key1
+      : "") +
+    (selectschValue.value && selectstuValue.value ? " && " : "") +
+    (selectstuValue.value && selectstuValue?.value?.key2
+      ? selectstuValue?.value?.key2
+      : "");
+
+  // Assign mergedFilterBy to query.value.filter_by if it's not empty
+  if (mergedFilterBy !== "") {
+    query.value.filter_by = mergedFilterBy;
+  } else {
+    // Remove filter_by key if mergedFilterBy is empty
+    delete query.value.filter_by;
+  }
+
+  router.replace({
+    path: "/school-districts",
+    query: {
+      view: isGridView.value,
+      ...(mergedFilterBy !== "" && { filter_by: mergedFilterBy }),
+      ...queryParams.value,
+    },
+  });
+
+  fetchDistricts();
+};
 
 const clearAll = () => {
   [jobOptions, stuOptions, schOptions].forEach((option) => {
@@ -133,6 +390,15 @@ const clearAll = () => {
       opt.checked = false;
     });
   });
+  delete query.value.filter_by; // Remove the filter_by property
+  router.replace({
+    path: "/school-districts",
+    query: {
+      view: isGridView.value,
+      ...queryParams.value,
+    },
+  });
+  fetchDistricts();
 };
 
 const capitals = ref<string[]>([]); // Declare capitals as a ref of type string array
@@ -149,14 +415,15 @@ const handleInput = _debounce(() => {
 }, 500); // Adjust the debounce delay as needed (in milliseconds)
 
 const search = () => {
-  query.value.q = searchedValue.value || "*";
+  query.value.q = searchedValue.value.toString() ?? "*";
+  query.value.query_by = "district_name";
   query.value.page = 1;
   currentPage.value = 1;
-  router.push({
+  router.replace({
     path: "/school-districts",
     query: {
       view: isGridView.value,
-      ...query.value,
+      ...queryParams.value,
     },
   });
   fetchDistricts();
@@ -213,17 +480,19 @@ const search = () => {
                   title="No. of students"
                   :options="stuOptions"
                   total-jobs="12,000"
+                  @toggleSchoolOption="toggleSchoolOption"
                 />
 
                 <FilterSection
                   title="No. of schools"
                   :options="schOptions"
                   total-jobs="13"
+                  @toggleSchoolOption="toggleSchoolOption"
                 />
               </div>
-              <div class="pt-[18px] w-full">
+              <!-- <div class="pt-[18px] w-full">
                 <BaseButton label="Apply" color="primary" :fullSized="true" />
-              </div>
+              </div> -->
             </div>
           </div>
         </DistrickSideBarWrapper>
@@ -269,12 +538,14 @@ const search = () => {
                 title="No. of students"
                 :options="stuOptions"
                 total-jobs="12,000"
+                @toggleSchoolOption="toggleSchoolOption"
               />
 
               <FilterSection
                 title="No. of schools"
                 :options="schOptions"
                 total-jobs="13"
+                @toggleSchoolOption="toggleSchoolOption"
               />
             </div>
           </div>
@@ -337,9 +608,9 @@ const search = () => {
                 @click="switchToListView"
                 :class="{
                   'pl-3.5 pr-4 py-[11px] rounded-s-lg justify-center bg-white border border-gray-300 h-full items-center gap-2 flex':
-                    isGridView,
+                    isGridView === 'grid',
                   'pl-3.5 pr-4 py-[11px] rounded-s-lg justify-center bg-gray-50 border border-gray-300 h-full items-center gap-2 flex':
-                    !isGridView,
+                    isGridView === 'list',
                 }"
               >
                 <SvgoList class="size-5" />
@@ -352,9 +623,9 @@ const search = () => {
                 @click="switchToGridView"
                 :class="{
                   'pl-3.5 pr-4 py-[11px] rounded-e-lg justify-center bg-gray-50 border border-gray-300 h-full items-center gap-2 flex':
-                    isGridView,
+                    isGridView === 'grid',
                   'pl-3.5 pr-4 py-[11px] rounded-e-lg justify-center bg-white border border-gray-300 h-full items-center gap-2 flex':
-                    !isGridView,
+                    isGridView === 'list',
                 }"
               >
                 <SvgoGrid class="size-5" />
@@ -403,7 +674,7 @@ const search = () => {
         <div class="mt-1.5 mb-8">
           <!-- Grid View -->
 
-          <div>
+          <template v-if="isLoading || distictsList.length">
             <div
               v-if="isGridView === 'grid'"
               class="grid sm:grid-cols-2 pt-8 lg:grid-cols-3 gap-6"
@@ -412,37 +683,22 @@ const search = () => {
                 <SDGridSkelton />
               </div>
               <div v-else v-for="(item, index) in distictsList" :key="index">
-                <DIstrictsGridCard :data="item" :isSchool="true" />
+                <DIstrictsGridCard :data="item" />
               </div>
             </div>
-          </div>
-          <!-- Lsit View -->
-          <div v-if="isGridView === 'list'" class="grid gap-6 pt-8">
-            <div v-if="isLoading" v-for="i in 12">
-              <SDListSkelton />
-            </div>
-            <div v-else v-for="(item, index) in distictsList" :key="index">
-              <DistrictsListCard :data="item" :isSchool="true" />
-            </div>
-          </div>
-          <div
-            v-if="isLoading === false && distictsList?.length === 0"
-            class="pt-20 flex items-center justify-center"
-          >
-            <div class="flex-col justify-start items-center gap-1 inline-flex">
-              <div
-                class="self-stretch text-center text-gray-900 text-base font-semibold leading-normal"
-              >
-                No Record found
+            <!-- Lsit View -->
+            <div v-if="isGridView === 'list'" class="grid gap-6 pt-8">
+              <div v-if="isLoading" v-for="i in 12">
+                <SDListSkelton />
               </div>
-              <div
-                class="self-stretch text-center text-slate-600 text-sm font-normal leading-tight"
-              >
-                Your search "{{ searchedValue }}" did not match any record.
-                Please try again.
+              <div v-else v-for="(item, index) in distictsList" :key="index">
+                <DistrictsListCard :data="item" />
               </div>
             </div>
-          </div>
+          </template>
+          <template v-else>
+            <NoRecordFound name="schools" :search-value="searchedValue" />
+          </template>
         </div>
         <div v-if="distictsList?.length > 0">
           <CustomPagination

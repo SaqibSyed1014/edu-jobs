@@ -215,6 +215,10 @@ function changeStep(stepIdx: number) {
     behavior: "smooth",
   });
 }
+
+function handleStepClick() {
+  useNuxtApp().$toast.error("Please Fill the Form");
+}
 </script>
 
 <template>
@@ -236,6 +240,8 @@ function changeStep(stepIdx: number) {
         keep-values
         class="flex flex-col md:flex-row justify-between gap-8"
       >
+        <!-- {{ errors }} -->
+
         <div class="hidden xl:block w-1/5 border-r border-gray-200">
           <div class="sticky right-0 top-0 w-full pt-8">
             <div class="flex flex-row justify-between gap-8">
@@ -248,11 +254,6 @@ function changeStep(stepIdx: number) {
                       stepIdx !== steps.length - 1 ? 'pb-8' : '',
                       'relative flex items-center',
                     ]"
-                    @click="
-                      step.status === 'complete' || step.status === 'current'
-                        ? changeStep(stepIdx)
-                        : ''
-                    "
                   >
                     <template v-if="step.status === 'complete'">
                       <div
@@ -261,7 +262,7 @@ function changeStep(stepIdx: number) {
                         aria-hidden="true"
                       />
                       <div
-                        class="group relative flex items-center cursor-pointer"
+                        class="group relative flex items-center"
                         :aria-disabled="step.status !== 'complete'"
                       >
                         <SvgoStepComp class="h-9 w-9" />
@@ -308,8 +309,12 @@ function changeStep(stepIdx: number) {
                         </span>
                       </button>
                     </template>
-
-                    <div class="flex flex-col cursor-pointer">
+                    <button
+                      v-if="Object.keys(errors).length > 0"
+                      type="submit"
+                      class="flex flex-col cursor-pointer"
+                      @click="currentStep !== stepIdx && handleStepClick()"
+                    >
                       <span class="ml-4 flex min-w-0 flex-col">
                         <span
                           :class="
@@ -320,7 +325,28 @@ function changeStep(stepIdx: number) {
                           >{{ step.name }}</span
                         >
                       </span>
-                    </div>
+                    </button>
+                    <button
+                      v-else
+                      type="button"
+                      @click="
+                        step.status === 'complete' || step.status === 'current'
+                          ? changeStep(stepIdx)
+                          : handleStepClick()
+                      "
+                      class="flex flex-col cursor-pointer"
+                    >
+                      <span class="ml-4 flex min-w-0 flex-col">
+                        <span
+                          :class="
+                            currentStep === stepIdx
+                              ? 'text-base font-semibold text-brand-700'
+                              : 'text-base font-semibold text-gray-700'
+                          "
+                          >{{ step.name }}</span
+                        >
+                      </span>
+                    </button>
                   </li>
                 </ol>
               </nav>
@@ -1287,6 +1313,7 @@ function changeStep(stepIdx: number) {
                   :disabled="false"
                   v-if="currentStep !== 3"
                   class="order-1 md:order-2"
+                  @click="Object.keys(errors).length > 0 && handleStepClick()"
                 />
 
                 <BaseButton

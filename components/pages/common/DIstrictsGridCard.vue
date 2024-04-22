@@ -1,10 +1,10 @@
 <script setup lang="ts">
-defineProps<{ data: any; isSchool: Boolean }>();
+defineProps<{ data: any }>();
 </script>
 
 <template>
   <NuxtLink
-    :to="isSchool ? `/school-districts/${data?.document?.id}` : '/colleges/123'"
+    :to="`/school-districts/${data?.document?.id}`"
     class="p-5 flex flex-col justify-between rounded-xl border border-gray-200 min-h-[208px]"
   >
     <div class="">
@@ -23,8 +23,8 @@ defineProps<{ data: any; isSchool: Boolean }>();
         <SvgoUsFlag class="size-4" />
         <span
           class="text-center text-gray-700 text-xs md:text-sm font-medium leading-tight"
-          >{{ data?.document?.state_name }},
-          {{ data?.document?.country_code }}
+        >
+          {{ data?.document?.city + ", " + data?.document?.state_name }}
         </span>
       </div>
 

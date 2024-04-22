@@ -4,39 +4,39 @@ defineProps<{ data: any; isSchool: Boolean }>();
 
 <template>
   <NuxtLink
-    :to="isSchool ? '/school-districts/123' : '/colleges/123'"
+    :to="`/colleges/${data?.document?.id}`"
     class="p-4 flex flex-col gap-5 sm:gap-0 sm:flex-row justify-between items-start rounded-xl border border-gray-200"
   >
     <div class="flex flex-col md:flex-row gap-3">
-      <img :src="data.avatar" class="size-12" alt="Avatar" />
+      <SvgoBuilding class="size-6" />
       <div>
         <h4
           class="text-gray-900 text-sm md:text-base font-semibold leading-normal"
         >
-          {{ data?.schoolName }}
+          {{ data?.document?.institution_name }}
         </h4>
 
         <div class="inline-flex flex-wrap gap-5 pt-2 md:pt-0">
           <div class="inline-flex items-center text-center space-x-2">
-            <SvgoBriefCase class="size-5" />
+            <SvgoBriefCaseLight class="size-5" />
             <span
               class="text-gray-600 text-xs md:text-sm font-medium leading-tight"
             >
-              14 jobs
+              0 jobs
             </span>
           </div>
           <div class="inline-flex items-center text-center space-x-2">
-            <SvgoBuilding class="size-5" />
+            <SvgoBuildingLight class="size-5" />
             <span
               class="text-gray-600 text-xs md:text-sm font-medium leading-tight"
             >
-              19 schools
+              0 schools
             </span>
           </div>
           <div class="inline-flex items-center text-center space-x-2">
             <SvgoGraduationHat class="size-5" />
             <span class="text-gray-600 text-sm font-medium leading-tight">
-              11,820 students
+              0 students
             </span>
           </div>
         </div>
@@ -50,7 +50,7 @@ defineProps<{ data: any; isSchool: Boolean }>();
         <SvgoUsFlag class="size-4" />
         <span
           class="text-center text-gray-700 text-xs md:text-sm font-medium leading-tight"
-          >Palo Alto, CA
+          >{{ data?.document?.city + "," + data?.document?.state_abbr }}
         </span>
       </div>
     </div>
