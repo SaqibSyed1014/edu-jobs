@@ -33,8 +33,8 @@ const jobOptions = ref({
   icon: "SvgoBriefCaseLight",
   name: "jobOptions",
   data: [
-    { id: "1", label: "0 to 10", value: "0 to 10", checked: true },
-    { id: "2", label: "11 to 50", value: "11 to 50", checked: true },
+    { id: "1", label: "0 to 10", value: "0 to 10", checked: false },
+    { id: "2", label: "11 to 50", value: "11 to 50", checked: false },
     { id: "3", label: "51 to 100", value: "51 to 100", checked: false },
     { id: "4", label: "100+", value: "100", checked: false },
   ],
