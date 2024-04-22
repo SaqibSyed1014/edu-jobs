@@ -8,7 +8,7 @@ defineProps<{
   showJobDescription: Boolean
 }>()
 
-function getDaysDifference(givenDateString :Date) {
+function getDaysDifference(givenDateString :Date | string) {
   const givenDate :any = new Date(givenDateString);
   const currentDate :any = new Date();
   return Math.floor((currentDate - givenDate) / (1000 * 60 * 60 * 24));
@@ -30,7 +30,7 @@ function getDaysDifference(givenDateString :Date) {
           </div>
         </div>
         <div class="pt-3">
-          <p class="font-semibold">{{ job.job_title }}</p>
+          <p class="font-semibold line-clamp-2">{{ job.job_title }}</p>
 
           <p class="text-gray-600 text-sm">{{ job.organization_name }}</p>
         </div>

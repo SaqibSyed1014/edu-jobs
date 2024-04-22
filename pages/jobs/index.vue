@@ -2,31 +2,36 @@
 import JobSkeleton from "~/components/pages/job-listings/JobSkeleton.vue";
 import {useJobStore} from "~/segments/jobs/store";
 import NoRecordFound from "~/components/core/NoRecordFound.vue";
-import type {JobQueryParams, PaginationInfo, TypesenseQueryParam} from "~/segments/common.types";
+import type {JobQueryParams, JobSearchFilters, PaginationInfo, TypesenseQueryParam} from "~/segments/common.types";
 
-const filters = [
+const filters = ref([
   {
+    fieldName: 'employment_type',
     type: 'checkbox',
     title: 'Type of employment',
     icon: 'SvgoClock',
     list: [
       {
         label: 'Full-time',
+        value: 'full_time',
         checked: false,
         counts: 15
       },
       {
         label: 'Part-time',
+        value: 'part_time',
         checked: false,
         counts: 6
       },
       {
         label: 'Internship',
+        value: 'internship',
         checked: false,
         counts: 23
       },
       {
         label: 'Volunteer',
+        value: 'volunteer',
         checked: false,
         counts: 5
       }
@@ -34,49 +39,58 @@ const filters = [
 
   },
   {
+    fieldName: 'job_role',
     type: 'checkbox',
     title: 'Job Category',
     icon: 'SvgoBarChart',
     list: [
       {
         label: 'Instructional',
+        value: 'instructional',
         checked: false,
         counts: 54
       },
       {
         label: 'Non-instructional',
+        value: 'non-instructional',
         checked: false,
         counts: 93
       }
     ]
   },
   {
+    fieldName: 'experience_level',
     type: 'checkbox',
     title: 'Experience Level',
     icon: 'SvgoLineChartUp',
     list: [
       {
         label: 'Entry-level',
+        value: 'entry_level',
         checked: false,
         counts: 15
       },
       {
         label: 'Mid-level',
+        value: 'mid_level',
         checked: false,
         counts: 6
       },
       {
         label: 'Senior',
+        value: 'senior',
         checked: false,
         counts: 3
       },
       {
         label: 'Manager',
+        value: 'manager',
         checked: false,
         counts: 5
       },
       {
         label: 'Director',
+        value: 'director',
         checked: false,
         counts: 5
       }
@@ -89,7 +103,7 @@ const filters = [
     min: 0,
     max: 250000
   }
-]
+])
 
 const itemsViewOptions = [
   {
@@ -102,40 +116,43 @@ const itemsViewOptions = [
   }
 ]
 
+const route = useRoute();
+const router = useRouter();
+const jobStore = useJobStore();
+const { jobListings, totalPages, coordinates } = storeToRefs(jobStore);
+
+const layoutOptionSelected = ref(1);
+const searchedLocationText = ref('');
+const isFilterSidebarVisible = ref<boolean>(false);
+
+const sidebarFilters = ref<{ [key :string]: string | string[] }>({})
+
 const pageInfo = ref<PaginationInfo>({
   currentPage: 1,
   itemsPerPage: 12,
   totalPages: 0
-})
+});
 
-const query = ref<TypesenseQueryParam>({
+const initialQuery = {
   q: "*",
   page: pageInfo.value.currentPage,
   per_page: pageInfo.value.itemsPerPage,
-})
-
-
-const route = useRoute();
-const router = useRouter();
-const jobStore = useJobStore();
-const { jobListings, totalPages } = storeToRefs(jobStore);
-
-const layoutOptionSelected = ref(1);
-const searchedLocationText = ref('');
+};
+const query = ref<TypesenseQueryParam>(initialQuery);
 
 const queryParams = computed(() => {
   const urlParams :JobQueryParams = {
     q: query.value.q,
-    location: searchedLocationText.value,
+    ...(searchedLocationText.value?.length && { location: searchedLocationText.value }),  // skip location from url if no location is searched
+    ...sidebarFilters.value,
     page: query.value.page,
     mode: layoutOptionSelected.value === 0 ? 'list' : 'grid',
   }
-  if (!searchedLocationText.value?.length) delete urlParams.location
   return urlParams
 })
 
-watch(() => layoutOptionSelected.value, (val) => {
-  router.replace({
+watch(() => layoutOptionSelected.value, () => {
+  router.replace({  // update route with updated query when layout mode is changed
     path: "/jobs",
     query: queryParams.value,
   });
@@ -143,59 +160,99 @@ watch(() => layoutOptionSelected.value, (val) => {
 
 
 onMounted(async () => {
-  if (Object.keys(route.query).length) {
-    const { mode, location, ...otherParams } = route.query
-    query.value = {
-      ...query.value,
-      ...otherParams as unknown as TypesenseQueryParam
-    }
-    layoutOptionSelected.value = mode === 'list' ? 0 : 1
-    searchedLocationText.value = location as string // assign location in url for google map field
+  if (Object.keys(route.query).length) {  // check if route has params
+    assignQueryParamsOnInitialLoad(route.query as JobQueryParams)
   }
+
+  // assign the saved coordinates in store (searched on Home view) for query
+  if (coordinates.value.lat && coordinates.value.lng) query.value.filter_by = `geo_location:(${coordinates.value.lat}, ${coordinates.value.lng}, 5 mi)`;
+
   await doSearch(); // Initial fetch
 });
+
+onUnmounted(() => {
+  coordinates.value = { lat: 0, lng: 0 };
+  query.value = initialQuery;
+})
 
 const jobsLoading = ref(true);
 async function doSearch(resetToDefaultPage = false) {
   jobsLoading.value = true;
-  query.value.page = resetToDefaultPage ? 1 : pageInfo.value.currentPage;
+  if (resetToDefaultPage) pageInfo.value.currentPage = 1;  // set the current page to default (1)
+  query.value.page = pageInfo.value.currentPage;
   await router.replace({
     path: '/jobs',
     query: queryParams.value
   })
-  if (query.value.q && query.value.q !== '*')query.value.query_by = 'job_title'
+  if (query.value.q && query.value.q !== '*') query.value.query_by = 'job_title'  // search from job_title
   await jobStore.fetchJobs(query.value);
   pageInfo.value.totalPages = totalPages.value
   jobsLoading.value = false;
 }
 
 const paginate = (page: number | "prev" | "next") => {
-  if (page === "prev") {
-    pageInfo.value.currentPage--;
-  } else if (page === "next") {
-    pageInfo.value.currentPage++;
-  } else {
-    pageInfo.value.currentPage = page;
-  }
+  if (page === "prev") pageInfo.value.currentPage--;
+  else if (page === "next") pageInfo.value.currentPage++;
+  else pageInfo.value.currentPage = page;
+
   window.scrollTo({
     top: 0,
     behavior: "smooth",
   });
+
   doSearch();
 };
 
-const isFilterSidebarVisible = ref(false);
-
-const fetchOnSearching = (searchValues :{ keyword: string, coordinates: { lng: string, lat: string }, location: string }) => {
+const fetchOnSearching = (searchValues :JobSearchFilters) => {
   query.value.q = searchValues.keyword.length ? searchValues.keyword : '*'
-  if (searchValues.coordinates.lat && searchValues.coordinates.lng) { // check if both lat and lng are propagated by SearchBar
-    query.value.filter_by = `geo_location:(${searchValues.coordinates.lat}, ${searchValues.coordinates.lng}, 5 mi)`;
+
+  if (searchValues.coordinates.lat && searchValues.coordinates.lng)    // when user searches location on 'Search' click (searchValues are null when redirected from Home view)
+    coordinates.value = searchValues.coordinates
+  if (coordinates.value.lat && coordinates.value.lng) {    // check if both lat and lng are propagated by SearchBar
+    query.value.filter_by = `geo_location:(${coordinates.value.lat}, ${coordinates.value.lng}, 5 mi)`;
     searchedLocationText.value = searchValues.location // saving location string for route query
   } else {
-    query.value.filter_by = null
+    query.value.filter_by = null    // safety check if no coordinates are there
     searchedLocationText.value = ''
   }
+
   doSearch(true);
+}
+
+function updateSideBarFilters(selectedFilters :{ field: string, values: string[] }[], toggleFlag = false) {
+  if (Object.keys(selectedFilters)?.length) {
+    sidebarFilters.value = {};   // reset sidebarFilters everytime for avoiding caching data
+    selectedFilters.forEach(filter => {
+      sidebarFilters.value[filter.field] = filter.values.join(',')
+    });
+  }
+  else sidebarFilters.value = {};
+
+  if (toggleFlag) isFilterSidebarVisible.value = false;
+
+  doSearch();
+}
+
+function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
+  const { mode, location, employment_type, job_role, experience_level, ...otherParams } = queryParams
+  query.value = {
+    ...query.value,
+    ...otherParams as unknown as TypesenseQueryParam
+  }
+  if (location) searchedLocationText.value = location as string; // assign location in url for google map field
+
+  if (employment_type) sidebarFilters.value.employment_type = employment_type
+  if (job_role) sidebarFilters.value.job_role = job_role
+  if (experience_level) sidebarFilters.value.experience_level = experience_level
+  filters.value.forEach(filter => {
+      if (filter.type === 'checkbox' && filter.list?.length) {
+        filter.list.forEach(item => {
+          const filterValues = sidebarFilters.value[filter.fieldName] || [];
+          item.checked = !!filterValues.includes(item.value);
+        });
+      }
+    });
+  layoutOptionSelected.value = mode === 'list' ? 0 : 1;
 }
 </script>
 
@@ -203,12 +260,17 @@ const fetchOnSearching = (searchValues :{ keyword: string, coordinates: { lng: s
     <div class="job-listing-view">
       <ListingView>
         <template #filters>
-          <ListingFilters class="hidden md:flex" :filtration-list="filters" />
+          <ListingFilters
+              class="hidden md:flex"
+              :filtration-list="filters"
+              @on-filters-change="updateSideBarFilters"
+          />
 
           <SideBarWrapper :is-sidebar-visible="isFilterSidebarVisible">
             <ListingFilters
-                @close-filter-sidebar="isFilterSidebarVisible = false"
                 :filtration-list="filters"
+                @apply-filters-on-click="(val) => updateSideBarFilters(val,true)"
+                @close-filter-sidebar="isFilterSidebarVisible = false"
             />
           </SideBarWrapper>
         </template>
@@ -273,6 +335,7 @@ const fetchOnSearching = (searchValues :{ keyword: string, coordinates: { lng: s
           </template>
 
           <CustomPagination
+              v-if="jobListings.length"
               :current-page="pageInfo.currentPage"
               :total-pages="pageInfo.totalPages"
               @paginate="paginate"

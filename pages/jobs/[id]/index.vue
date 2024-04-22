@@ -2,6 +2,7 @@
 import { initModals } from 'flowbite'
 import {useJobStore} from "~/segments/jobs/store";
 import QuickSignUpModal from "~/components/pages/job-listings/QuickSignUpModal.vue";
+import BaseSpinner from "~/components/core/BaseSpinner.vue";
 const center = ref({ lat: 0, lng: 0 })
 
 const faqList = [
@@ -25,17 +26,13 @@ const faqList = [
 
 const router = useRouter();
 const jobStore = useJobStore();
-const { jobListings } = storeToRefs(jobStore);
+const { jobDetails } = storeToRefs(jobStore);
 
 const route = useRoute();
 
-const selectedJobDetail = computed(() => {
-  return jobListings.value.filter((job :Job) => job.job_slug === route.params.id)[0] as Job
-})
-
 const mapOptions = computed(() => {
-  const lat = selectedJobDetail?.value?.geo_location?.[0] ?? 0;
-  const lng = selectedJobDetail?.value?.geo_location?.[1] ?? 0;
+  const lat = jobDetails?.value?.geo_location?.[0] ?? 0;
+  const lng = jobDetails?.value?.geo_location?.[1] ?? 0;
   center.value = { lat, lng }
   return [
       {
@@ -44,9 +41,13 @@ const mapOptions = computed(() => {
     ]
 })
 
-onMounted(() => {
+const isJobFetching = ref<boolean>(true);
+
+onMounted(async () => {
   initModals();
-  jobStore.fetchSingleJob(route.params?.id as string)
+  isJobFetching.value = true;
+  await jobStore.fetchSingleJob(route.params?.id as string);
+  isJobFetching.value = false;
 })
 
 const showSignupModal = ref<boolean>(false)
@@ -56,12 +57,18 @@ function applyBtnAction() {
 }
 
 function redirectToURL() {
-  window.open(selectedJobDetail.value.apply_url, '_target')
+  if (jobDetails.value?.apply_url) window.open(jobDetails.value.apply_url, '_target')
 }
 </script>
 
 <template>
-  <div>
+  <div v-if="isJobFetching" class="container">
+    <div class="flex justify-center items-center h-[calc(100vh-80px)] w-full">
+      <BaseSpinner size="lg" :show-loader="isJobFetching" />
+    </div>
+  </div>
+
+  <div v-else-if="jobDetails">
     <section class="pt-8 pb-16">
       <div class="container">
         <div class="grid md:grid-cols-12 gap-8">
@@ -70,7 +77,7 @@ function redirectToURL() {
               <div class="hidden md:flex items-center gap-3">
                 <span @click="router.go(-1)">Jobs</span>
                 <SvgoChevronRight class="w-4 h-4 text-gray-300" />
-                <span class="text-brand-700 font-medium">Polymath</span>
+                <span class="text-brand-700 font-medium">{{ jobDetails.organization_type }}</span>
               </div>
               <span @click="router.go(-1)" class="flex items-center gap-3 group text-brand-700 font-medium cursor-pointer">
                 <SvgoArrowLeft class="w-4 h-4 group-hover:-translate-x-[8px] transition" />
@@ -93,11 +100,11 @@ function redirectToURL() {
 
                     <div>
                       <h2 class="text-3xl text-ellipsis line-clamp-1">
-                        {{ selectedJobDetail.job_title }}
+                        {{ jobDetails.job_title }}
                         Lead Product Designer
                       </h2>
                       <p class="text-gray-600">
-                        {{ selectedJobDetail.organization_type }}
+                        {{ jobDetails.organization_type }}
                       </p>
                     </div>
                   </div>
@@ -133,7 +140,7 @@ function redirectToURL() {
                 <div>
                   <p class="font-medium text-sm">Location</p>
                   <div class="text-gray-600">
-                    {{ selectedJobDetail.job_location }}
+                    {{ jobDetails.job_location }}
                   </div>
                 </div>
 
@@ -149,7 +156,7 @@ function redirectToURL() {
                   <p class="font-medium text-sm">Employment type</p>
                   <div class="text-gray-600 flex items-center gap-2">
                     <SvgoClock class="w-4 h-4"/>
-                    {{ selectedJobDetail.employment_type }}
+                    {{ jobDetails.employment_type }}
                   </div>
                 </div>
 
@@ -157,7 +164,7 @@ function redirectToURL() {
                   <p class="font-medium text-sm">Deadline</p>
                   <div class="text-gray-600 flex items-center gap-2">
                     <SvgoClock class="w-4 h-4"/>
-                    {{ selectedJobDetail.date_posting_expires }}
+                    {{ jobDetails.date_posting_expires }}
                   </div>
                 </div>
 
@@ -165,7 +172,7 @@ function redirectToURL() {
                   <p class="font-medium text-sm">Job role</p>
                   <div class="text-gray-600 flex items-center gap-2">
                     <SvgoClock class="w-4 h-4"/>
-                    {{ selectedJobDetail.job_role }}
+                    {{ jobDetails.job_role }}
                   </div>
                 </div>
 
@@ -180,7 +187,7 @@ function redirectToURL() {
 
               <hr/>
               <div class="job-content">
-                <div v-html="selectedJobDetail.job_description"></div>
+                <div v-html="jobDetails.job_description"></div>
 
 
 <!--                <h3 class="section-heading">Job Description</h3>-->
@@ -319,7 +326,7 @@ function redirectToURL() {
 
               <div class="w-full bg-white border border-[#EAECF0] rounded-2xl p-4">
                 <h2 class="mb-2">Published on</h2>
-                <p class="text-gray-600 text-sm mb-5">{{ selectedJobDetail.date_posted }}</p>
+                <p class="text-gray-600 text-sm mb-5">{{ jobDetails.date_posted }}</p>
 
                 <h2 class="mb-5">Share this job</h2>
                 <div class="flex gap-6">

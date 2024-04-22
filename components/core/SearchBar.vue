@@ -1,32 +1,38 @@
 <script setup lang="ts">
+import type {Coordinates} from "~/segments/common.types";
+
 const props = defineProps<{
   queryValue?: any
   location?: string
+  coordinates?: Coordinates
 }>()
 const emit = defineEmits(['updatedValues'])
 
 const searchedValue = ref<string>('')
+const coordinates = ref({
+  lng: 0,
+  lat: 0
+})
+let locationName = ''
 
 watch(() => props.queryValue, (val) => {
   searchedValue.value = val.q === '*' ? '' : val.q
 })
 
-const coordinates = ref({
-  lng: null,
-  lat: null
+watch(() => props.coordinates, (val) => {
+  if (val) coordinates.value = val
 })
-let locationName = ''
+
 
 onMounted(() => {
   setTimeout(() => {
     const field = document.getElementById('mapInput') as HTMLInputElement
     if (props.location) {
       field.value = props.location
-      field.focus()
+      // field.focus()
     }
   }, 1000);
 })
-
 
 function performSearch() {
   const locationField = document.getElementById('mapInput') as HTMLInputElement
@@ -41,7 +47,7 @@ function setPlace(location :any) {
 
 const enableSearching = computed(() => {
   const isSearchValueNotEmpty = searchedValue.value?.length > 0;
-  const isAnyCoordinateNotNull = coordinates.value.lat !== null || coordinates.value.lng !== null;
+  const isAnyCoordinateNotNull = coordinates.value.lat !== 0 || coordinates.value.lng !== 0;
   return isSearchValueNotEmpty || isAnyCoordinateNotNull;
 });
 
@@ -49,10 +55,11 @@ const enableSearching = computed(() => {
 // Resets coordinates if user inputs anything in the field. The logic is to prompt user to
 // select one of the suggested options offered by Google Maps api
 function checkFieldInput() {
-  coordinates.value.lat = null
-  coordinates.value.lng = null
+  coordinates.value.lat = 0
+  coordinates.value.lng = 0
   locationName = ''
 }
+
 </script>
 
 <template>
@@ -65,6 +72,7 @@ function checkFieldInput() {
             type="text"
             placeholder="Keyword, Job title..."
             class="w-full"
+            @keyup.enter="performSearch"
         >
       </div>
       <hr class="hidden md:block h-3 w-px bg-gray-200 mx-2">

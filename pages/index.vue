@@ -21,7 +21,8 @@ onMounted(async () => {
   const query = {
     q: '*',
     per_page: 12,
-    page: 1
+    page: 1,
+    filter_by: 'featured:1'
   }
   await jobStore.fetchJobs(query)
 })
