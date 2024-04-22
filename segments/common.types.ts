@@ -19,7 +19,7 @@ export interface TypesenseQueryParam {
 
 export interface JobQueryParams extends LocationQueryRaw{
     mode: string
-    q: string
+    keyword: string
     page: number
     location?: string
     employment_type?: string

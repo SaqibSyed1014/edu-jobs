@@ -8,12 +8,9 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(['updatedValues'])
 
-const searchedValue = ref<string>('')
-const coordinates = ref({
-  lng: 0,
-  lat: 0
-})
-let locationName = ''
+const searchedValue = ref<string>('');
+const coordinates = ref<Coordinates>(props.coordinates ? props.coordinates : { lng: 0, lat: 0 });
+let locationName :string = ''
 
 watch(() => props.queryValue, (val) => {
   searchedValue.value = val.q === '*' ? '' : val.q
@@ -23,14 +20,18 @@ watch(() => props.coordinates, (val) => {
   if (val) coordinates.value = val
 })
 
-
 onMounted(() => {
   setTimeout(() => {
     const field = document.getElementById('mapInput') as HTMLInputElement
     if (props.location) {
       field.value = props.location
+      console.log('che ', field);
       // field.focus()
     }
+    field.addEventListener('keyup', function (event :KeyboardEvent) {
+      if (event.key === 'Enter' && (coordinates.value.lat !== 0 && coordinates.value.lng !== 0))
+        performSearch();
+    })
   }, 1000);
 })
 
