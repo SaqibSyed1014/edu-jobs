@@ -286,6 +286,7 @@ function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
           <SearchBar
             :query-value="query"
             :location="searchedLocationText as string"
+            :coordinates="coordinates"
             @updated-values="fetchOnSearching"
           />
         </template>

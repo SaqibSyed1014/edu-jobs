@@ -8,12 +8,9 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(['updatedValues'])
 
-const searchedValue = ref<string>('')
-const coordinates = ref({
-  lng: 0,
-  lat: 0
-})
-let locationName = ''
+const searchedValue = ref<string>('');
+const coordinates = ref<Coordinates>(props.coordinates ? props.coordinates : { lng: 0, lat: 0 });
+let locationName :string = ''
 
 watch(() => props.queryValue, (val) => {
   searchedValue.value = val.q === '*' ? '' : val.q
@@ -22,7 +19,6 @@ watch(() => props.queryValue, (val) => {
 watch(() => props.coordinates, (val) => {
   if (val) coordinates.value = val
 })
-
 
 onMounted(() => {
   setTimeout(() => {
