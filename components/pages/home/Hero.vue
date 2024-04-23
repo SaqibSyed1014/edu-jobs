@@ -13,7 +13,7 @@ function searchJobs(filters :JobSearchFilters) {
   jobStore.setCoordinates(filters.coordinates);  // saving coordinates in store for persistence purpose
   const locationName = filters.location;
   const queryParams = {
-    q: filters.keyword.length ? filters.keyword : '*',
+    keyword: filters.keyword.length ? filters.keyword : '*',
     ...(locationName.length && { location: locationName }),  // skip location from url if no location is searched
     page: 1,
     mode: 'grid'
