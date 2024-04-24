@@ -117,7 +117,7 @@ function isItemChecked(value :string) {
     </template>
 
 
-    <div class="md:hidden pb-20">
+    <div class="md:hidden pb-36">
       <BaseButton label="Apply" :full-sized="true" @click="emits('applyFiltersOnClick', selectedValues)" />
     </div>
   </div>
