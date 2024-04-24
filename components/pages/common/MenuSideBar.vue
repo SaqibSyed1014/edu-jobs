@@ -35,7 +35,7 @@ function returnToMainMenu() {
         <div v-if="!showSubLinksMenu">
           <ul class="font-semibold pb-6 translate-x-0">
             <template v-for="link in menuLinks">
-              <li class="hover:text-brand-500 transition py-3">
+              <li class="group hover:text-brand-500 transition py-3">
                 <NuxtLink
                     v-if="link.type === 'link'"
                     :to="link.path" @click.stop="emits('toggleSidebar')"
@@ -44,7 +44,7 @@ function returnToMainMenu() {
                 <template v-else>
                   <div @click="navigateSubMenuView(link?.subLinks!)" class="flex justify-between items-center">
                     {{ link.label }}
-                    <SvgoChevronRight class="w-5 h-5 text-brand-900"/>
+                    <SvgoChevronRight class="w-5 h-5 text-brand-900 group-hover:text-brand-500 transition"/>
                   </div>
                 </template>
               </li>
@@ -67,12 +67,12 @@ function returnToMainMenu() {
       <transition name="sub-menu-slide">
         <div v-if="showSubLinksMenu" class="absolute top-0 left-0 right-0 bottom-0 pb-6 translate-x-0">
           <div @click="returnToMainMenu" class="flex items-center gap-2 -ml-1 font-medium mb-3">
-            <SvgoChevronLeft class="w-5 h-5 text-brand-900"/>
+            <SvgoChevronLeft class="w-5 h-5 text-brand-900 group-hover:text-brand-500 transition"/>
             <span>Back</span>
           </div>
           <ul class="font-semibold">
             <template v-for="link in currentSubMenuList">
-              <li class="hover:text-brand-500 transition py-3">
+              <li class="group hover:text-brand-500 transition py-3">
                 <NuxtLink
                     :to="link.path" @click.stop="emits('toggleSidebar')"
                 >{{ link.label }}
@@ -100,9 +100,11 @@ function returnToMainMenu() {
 .menu-slide-enter-from,
 .menu-slide-leave-to {
   transform: translateX(-100%);
+  opacity: 0;
 }
 .sub-menu-slide-enter-from,
 .sub-menu-slide-leave-to {
   transform: translateX(100%);
+  opacity: 0;
 }
 </style>
