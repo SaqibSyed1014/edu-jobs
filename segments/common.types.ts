@@ -1,5 +1,12 @@
 import type {LocationQueryRaw} from "vue-router";
 
+export interface MenuLinksType {
+    label: string,
+    path?: string,
+    type?: 'link' | 'megaMenu',
+    subLinks?: { label: string, path: string }[]
+}
+
 export interface QueryParams {
     [key: string]: string | string[] | number | null
 }
