@@ -1,22 +1,7 @@
 <script setup lang="ts">
-const orgLinks = [
-  {
-    label: "School Districts",
-    path: "/school-districts",
-  },
-  {
-    label: "Charter Schools",
-    path: "/charter-schools",
-  },
-  {
-    label: "Private Schools",
-    path: "/private-schools",
-  },
-  {
-    label: "Colleges",
-    path: "/colleges",
-  },
-]
+defineProps<{
+  subLinks: { label: string, path: string }[]
+}>()
 
 const organizations = [
   {
@@ -58,7 +43,7 @@ const organizations = [
       <div class="col-span-4">
         <h4 class="text-blue-600 text-lg font-semibold mb-4">Organizations Types</h4>
         <ul class="flex flex-col gap-4">
-          <template v-for="orgLink in orgLinks">
+          <template v-for="orgLink in subLinks">
             <li>
               <NuxtLink :to="orgLink.path" class="hover:text-brand-500 transition">{{ orgLink.label }}</NuxtLink>
             </li>
