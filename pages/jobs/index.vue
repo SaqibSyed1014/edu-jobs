@@ -3,6 +3,7 @@ import JobSkeleton from "~/components/pages/job-listings/JobSkeleton.vue";
 import {useJobStore} from "~/segments/jobs/store";
 import NoRecordFound from "~/components/core/NoRecordFound.vue";
 import type {JobQueryParams, JobSearchFilters, PaginationInfo, TypesenseQueryParam} from "~/segments/common.types";
+import { encode, decode } from "js-base64";
 
 const filters = ref([
   {
@@ -121,7 +122,7 @@ const router = useRouter();
 const jobStore = useJobStore();
 const { jobListings, totalPages, coordinates } = storeToRefs(jobStore);
 
-const searchedKeyword = ref('')
+
 const layoutOptionSelected = ref(1);
 const searchedLocationText = ref('');
 const isFilterSidebarVisible = ref<boolean>(false);
@@ -148,6 +149,7 @@ const queryParams = computed(() => {
     ...sidebarFilters.value,
     page: pageInfo.value.currentPage,
     mode: layoutOptionSelected.value === 0 ? 'list' : 'grid',
+    coordinates: [coordinates.value.lat, coordinates.value.lng]
   }
   return urlParams
 })
@@ -155,14 +157,18 @@ const queryParams = computed(() => {
 watch(() => layoutOptionSelected.value, () => {
   router.replace({  // update route with updated query when layout mode is changed
     path: "/jobs",
-    query: queryParams.value,
+    query: {
+      params: encode(JSON.stringify(queryParams.value))
+    },
   });
 })
 
 
 onMounted(async () => {
-  if (Object.keys(route.query).length) {  // check if route has params
-    assignQueryParamsOnInitialLoad(route.query as JobQueryParams)
+  const paramsString = route.query.params as string;
+  if (paramsString) {
+    const parsedParams = JSON.parse(decode(paramsString));
+    assignQueryParamsOnInitialLoad(parsedParams as JobQueryParams);
   }
 
   // assign the saved coordinates in store (searched on Home view) for query
@@ -181,9 +187,12 @@ async function doSearch(resetToDefaultPage = false) {
   jobsLoading.value = true;
   if (resetToDefaultPage) pageInfo.value.currentPage = 1;  // set the current page to default (1)
   query.value.page = pageInfo.value.currentPage;
+
   await router.replace({
     path: '/jobs',
-    query: queryParams.value
+    query: {
+      params: encode(JSON.stringify(queryParams.value))
+    }
   })
   if (query.value.q && query.value.q !== '*') query.value.query_by = 'job_title'  // search from job_title
   await jobStore.fetchJobs(query.value);
@@ -217,6 +226,7 @@ const fetchOnSearching = (searchValues :JobSearchFilters) => {
     searchedLocationText.value = ''
   }
 
+
   doSearch(true);
 }
 
@@ -235,12 +245,14 @@ function updateSideBarFilters(selectedFilters :{ field: string, values: string[]
 }
 
 function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
-  const { keyword, mode, location, employment_type, job_role, experience_level, ...otherParams } = queryParams
+  const { keyword, mode, location, employment_type, job_role, experience_level, coordinates, ...otherParams }
+      = queryParams
   query.value = {
     ...query.value,
     ...otherParams as unknown as TypesenseQueryParam,
     q: keyword as string,
   }
+  layoutOptionSelected.value = mode === 'list' ? 0 : 1;
   if (location) searchedLocationText.value = location as string; // assign location in url for google map field
 
   if (employment_type) sidebarFilters.value.employment_type = employment_type
@@ -254,7 +266,10 @@ function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
         });
       }
     });
-  layoutOptionSelected.value = mode === 'list' ? 0 : 1;
+  if (coordinates && !coordinates?.includes(0)) {
+    jobStore.coordinates.lat = coordinates[0];
+    jobStore.coordinates.lng = coordinates[1];
+  }
 }
 </script>
 

@@ -33,6 +33,8 @@ function resetFilters() {
     }
   });
   selectedValues.value = [];
+
+  emits('onFiltersChange', selectedValues.value);
 }
 
 
@@ -55,7 +57,6 @@ const updateChecked = (index: number, subIndex: number, checked: boolean, value:
   }
 
   emits('onFiltersChange', selectedValues.value);
-  console.log('FINAL -> ', selectedValues.value)
 };
 
 function isItemChecked(value :string) {
