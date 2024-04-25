@@ -2,6 +2,7 @@
 import { register } from 'swiper/element/bundle';
 import type { JobSearchFilters } from "~/segments/common.types";
 import { useJobStore } from "~/segments/jobs/store";
+import {encode} from "js-base64";
 register();
 
 const router = useRouter();
@@ -20,7 +21,9 @@ function searchJobs(filters :JobSearchFilters) {
   }
   router.push({
     path: '/jobs',
-    query: queryParams
+    query: {
+      params: encode(JSON.stringify(queryParams))
+    }
   });
 }
 </script>

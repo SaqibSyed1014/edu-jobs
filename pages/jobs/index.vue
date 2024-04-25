@@ -149,6 +149,7 @@ const queryParams = computed(() => {
     ...sidebarFilters.value,
     page: pageInfo.value.currentPage,
     mode: layoutOptionSelected.value === 0 ? 'list' : 'grid',
+    coordinates: [coordinates.value.lat, coordinates.value.lng]
   }
   return urlParams
 })
@@ -156,13 +157,14 @@ const queryParams = computed(() => {
 watch(() => layoutOptionSelected.value, () => {
   router.replace({  // update route with updated query when layout mode is changed
     path: "/jobs",
-    query: queryParams.value,
+    query: {
+      params: encode(JSON.stringify(queryParams.value))
+    },
   });
 })
 
 
 onMounted(async () => {
-  console.log('test ', route.query, !!Object.keys(route.query).length)
   const paramsString = route.query.params as string;
   if (paramsString) {
     const parsedParams = JSON.parse(decode(paramsString));
@@ -243,12 +245,14 @@ function updateSideBarFilters(selectedFilters :{ field: string, values: string[]
 }
 
 function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
-  const { keyword, mode, location, employment_type, job_role, experience_level, ...otherParams } = queryParams
+  const { keyword, mode, location, employment_type, job_role, experience_level, coordinates, ...otherParams }
+      = queryParams
   query.value = {
     ...query.value,
     ...otherParams as unknown as TypesenseQueryParam,
     q: keyword as string,
   }
+  layoutOptionSelected.value = mode === 'list' ? 0 : 1;
   if (location) searchedLocationText.value = location as string; // assign location in url for google map field
 
   if (employment_type) sidebarFilters.value.employment_type = employment_type
@@ -262,7 +266,10 @@ function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
         });
       }
     });
-  layoutOptionSelected.value = mode === 'list' ? 0 : 1;
+  if (coordinates && !coordinates?.includes(0)) {
+    jobStore.coordinates.lat = coordinates[0];
+    jobStore.coordinates.lng = coordinates[1];
+  }
 }
 </script>
 

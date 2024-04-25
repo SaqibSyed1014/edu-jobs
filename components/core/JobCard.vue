@@ -117,6 +117,6 @@ function getDaysDifference(givenDateString :Date | string) {
   @apply flex gap-2 items-center border border-gray-300 shadow-xs rounded-md px-2 py-0.5 h-fit text-xs
 }
 .job-badge{
-  @apply flex justify-center items-center bg-brand-500 text-white rounded-2xl text-sm h-fit px-2.5 py-0.5
+  @apply flex justify-center items-center bg-brand-500 text-white rounded-2xl text-sm h-fit px-2.5 py-0.5 shrink-0
 }
 </style>
