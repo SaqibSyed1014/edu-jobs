@@ -3,6 +3,7 @@ import JobSkeleton from "~/components/pages/job-listings/JobSkeleton.vue";
 import {useJobStore} from "~/segments/jobs/store";
 import NoRecordFound from "~/components/core/NoRecordFound.vue";
 import type {JobQueryParams, JobSearchFilters, PaginationInfo, TypesenseQueryParam} from "~/segments/common.types";
+import { encode, decode } from "js-base64";
 
 const filters = ref([
   {
@@ -121,7 +122,7 @@ const router = useRouter();
 const jobStore = useJobStore();
 const { jobListings, totalPages, coordinates } = storeToRefs(jobStore);
 
-const searchedKeyword = ref('')
+
 const layoutOptionSelected = ref(1);
 const searchedLocationText = ref('');
 const isFilterSidebarVisible = ref<boolean>(false);
@@ -161,8 +162,11 @@ watch(() => layoutOptionSelected.value, () => {
 
 
 onMounted(async () => {
-  if (Object.keys(route.query).length) {  // check if route has params
-    assignQueryParamsOnInitialLoad(route.query as JobQueryParams)
+  console.log('test ', route.query, !!Object.keys(route.query).length)
+  const paramsString = route.query.params as string;
+  if (paramsString) {
+    const parsedParams = JSON.parse(decode(paramsString));
+    assignQueryParamsOnInitialLoad(parsedParams as JobQueryParams);
   }
 
   // assign the saved coordinates in store (searched on Home view) for query
@@ -181,9 +185,12 @@ async function doSearch(resetToDefaultPage = false) {
   jobsLoading.value = true;
   if (resetToDefaultPage) pageInfo.value.currentPage = 1;  // set the current page to default (1)
   query.value.page = pageInfo.value.currentPage;
+
   await router.replace({
     path: '/jobs',
-    query: queryParams.value
+    query: {
+      params: encode(JSON.stringify(queryParams.value))
+    }
   })
   if (query.value.q && query.value.q !== '*') query.value.query_by = 'job_title'  // search from job_title
   await jobStore.fetchJobs(query.value);
@@ -216,6 +223,7 @@ const fetchOnSearching = (searchValues :JobSearchFilters) => {
     query.value.filter_by = null    // safety check if no coordinates are there
     searchedLocationText.value = ''
   }
+
 
   doSearch(true);
 }
