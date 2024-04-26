@@ -101,12 +101,12 @@ function checkFieldInput() {
   </div>
 </template>
 
-<style scoped lang="postcss">
+<style lang="postcss">
 .search-bar{
   @apply flex max-md:flex-col justify-center items-center gap-4
 }
 .search-bar .filter-wrapper{
-  @apply flex max-md:flex-col items-center bg-white field-shadow overflow-hidden border border-gray-200 rounded-lg max-md:w-full px-3
+  @apply flex max-md:flex-col items-center bg-white shadow-field overflow-hidden border border-gray-200 rounded-lg max-md:w-full px-3
 }
 .search-bar .filter-wrapper div{
   @apply max-md:w-full
