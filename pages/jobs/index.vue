@@ -286,8 +286,12 @@ function sortJobs(sortBy :string) {
     if (sortDropdown) sortDropdown.click();
     doSearch();
   }
-
 }
+
+const SortDropdownLabel = computed(() => {
+  if (query.value.sort_by?.includes('desc')) return 'Date Posted';
+  return 'Most Relevant';
+})
 </script>
 
 <template>
@@ -328,7 +332,7 @@ function sortJobs(sortBy :string) {
         <template #cards-list>
           <div class="flex gap-4 justify-between md:items-center">
             <div class="relative max-md:flex-1">
-              <BaseButton id="dropdownToggler" data-dropdown-toggle="sort-jobs-by-dropdown" color="gray" :outline="true" :full-sized-on-small="true" label="Most Relevant" class="justify-between">
+              <BaseButton id="dropdownToggler" data-dropdown-toggle="sort-jobs-by-dropdown" color="gray" :outline="true" :full-sized-on-small="true" :label="SortDropdownLabel" class="justify-between">
                 <template #prepend-icon>
                   <SvgoFilterFunnel class="w-5 h-5 text-gray-600"/>
                 </template>
