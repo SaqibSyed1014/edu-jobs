@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import {initDropdowns} from "flowbite";
 import JobSkeleton from "~/components/pages/job-listings/JobSkeleton.vue";
 import {useJobStore} from "~/segments/jobs/store";
 import NoRecordFound from "~/components/core/NoRecordFound.vue";
@@ -149,7 +150,8 @@ const queryParams = computed(() => {
     ...sidebarFilters.value,
     page: pageInfo.value.currentPage,
     mode: layoutOptionSelected.value === 0 ? 'list' : 'grid',
-    coordinates: [coordinates.value.lat, coordinates.value.lng]
+    coordinates: [coordinates.value.lat, coordinates.value.lng],
+    sort_by: query.value.sort_by
   }
   return urlParams
 })
@@ -165,6 +167,7 @@ watch(() => layoutOptionSelected.value, () => {
 
 
 onMounted(async () => {
+  initDropdowns();
   const paramsString = route.query.params as string;
   if (paramsString) {
     const parsedParams = JSON.parse(decode(paramsString));
@@ -226,7 +229,6 @@ const fetchOnSearching = (searchValues :JobSearchFilters) => {
     searchedLocationText.value = ''
   }
 
-
   doSearch(true);
 }
 
@@ -252,6 +254,7 @@ function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
     ...otherParams as unknown as TypesenseQueryParam,
     q: keyword as string,
   }
+  pageInfo.value.currentPage = otherParams.page
   layoutOptionSelected.value = mode === 'list' ? 0 : 1;
   if (location) searchedLocationText.value = location as string; // assign location in url for google map field
 
@@ -270,6 +273,20 @@ function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
     jobStore.coordinates.lat = coordinates[0];
     jobStore.coordinates.lng = coordinates[1];
   }
+}
+
+function sortJobs(sortBy :string) {
+  const sortDropdown = document.getElementById('dropdownToggler')
+  if (sortBy === 'date_posted') {
+    const { sort_by } = query.value
+    if (sort_by?.includes('desc')) {
+      query.value.sort_by = 'date_posted:asc'
+    } else query.value.sort_by = 'date_posted:desc'
+
+    if (sortDropdown) sortDropdown.click();
+    doSearch();
+  }
+
 }
 </script>
 
@@ -310,8 +327,8 @@ function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
 
         <template #cards-list>
           <div class="flex gap-4 justify-between md:items-center">
-            <div class="max-md:flex-1">
-              <BaseButton color="gray" :outline="true" :full-sized-on-small="true" label="Most Relevant" class="justify-between">
+            <div class="relative max-md:flex-1">
+              <BaseButton id="dropdownToggler" data-dropdown-toggle="sort-jobs-by-dropdown" color="gray" :outline="true" :full-sized-on-small="true" label="Most Relevant" class="justify-between">
                 <template #prepend-icon>
                   <SvgoFilterFunnel class="w-5 h-5 text-gray-600"/>
                 </template>
@@ -319,6 +336,19 @@ function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
                   <SvgoChevronDown class="w-4 h-4 text-gray-600"/>
                 </template>
               </BaseButton>
+
+              <!-- Dropdown menu -->
+              <div id="sort-jobs-by-dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-full dark:bg-gray-700">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownToggler">
+                  <li
+                      @click="sortJobs('date_posted')"
+                      class="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                      :class="{'bg-gray-100 hover:bg-gray-200': query.sort_by?.includes('desc')}"
+                  >
+                    By Date Posted
+                  </li>
+                </ul>
+              </div>
             </div>
 
             <div class="hidden md:inline-flex rounded-md shadow-sm" role="group">
