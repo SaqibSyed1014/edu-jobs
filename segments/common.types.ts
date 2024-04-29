@@ -22,6 +22,7 @@ export interface TypesenseQueryParam {
     per_page: number,
     page: number, query_by ?:string,
     filter_by?: string | null
+    sort_by?: string
 }
 
 export interface JobQueryParams extends LocationQueryRaw{
@@ -30,6 +31,7 @@ export interface JobQueryParams extends LocationQueryRaw{
     page: number
     location?: string
     coordinates?: number[]
+    sort_by?: string
     employment_type?: string
     job_role?: string
     experience_level?: string
