@@ -254,6 +254,7 @@ function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
     ...otherParams as unknown as TypesenseQueryParam,
     q: keyword as string,
   }
+  pageInfo.value.currentPage = otherParams.page
   layoutOptionSelected.value = mode === 'list' ? 0 : 1;
   if (location) searchedLocationText.value = location as string; // assign location in url for google map field
 
