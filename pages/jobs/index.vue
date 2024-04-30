@@ -140,6 +140,7 @@ const initialQuery = {
   q: "*",
   page: pageInfo.value.currentPage,
   per_page: pageInfo.value.itemsPerPage,
+  sort_by: 'date_posted:asc'
 };
 const query = ref<TypesenseQueryParam>(initialQuery);
 
@@ -276,16 +277,11 @@ function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
 }
 
 function sortJobs(sortBy :string) {
-  const sortDropdown = document.getElementById('dropdownToggler')
-  if (sortBy === 'date_posted') {
-    const { sort_by } = query.value
-    if (sort_by?.includes('desc')) {
-      query.value.sort_by = 'date_posted:asc'
-    } else query.value.sort_by = 'date_posted:desc'
-
-    if (sortDropdown) sortDropdown.click();
-    doSearch();
-  }
+  if (sortBy === 'most_relevant') query.value.sort_by = 'date_posted:asc';
+  if (sortBy === 'date_posted') query.value.sort_by = 'date_posted:desc';
+  const sortDropdown = document.getElementById('dropdownToggler');
+  if (sortDropdown) sortDropdown.click();
+  doSearch();
 }
 
 const SortDropdownLabel = computed(() => {
@@ -332,7 +328,7 @@ const SortDropdownLabel = computed(() => {
         <template #cards-list>
           <div class="flex gap-4 justify-between md:items-center">
             <div class="relative max-md:flex-1">
-              <BaseButton id="dropdownToggler" data-dropdown-toggle="sort-jobs-by-dropdown" color="gray" :outline="true" :full-sized-on-small="true" :label="SortDropdownLabel" class="justify-between">
+              <BaseButton id="dropdownToggler" data-dropdown-toggle="sort-jobs-by-dropdown" color="gray" :outline="true" :full-sized-on-small="true" :label="SortDropdownLabel" class="justify-between text-sm">
                 <template #prepend-icon>
                   <SvgoFilterFunnel class="w-5 h-5 text-gray-600"/>
                 </template>
@@ -345,11 +341,18 @@ const SortDropdownLabel = computed(() => {
               <div id="sort-jobs-by-dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-full dark:bg-gray-700">
                 <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownToggler">
                   <li
+                      @click="sortJobs('most_relevant')"
+                      class="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                      :class="{'bg-gray-100 hover:bg-gray-200': query.sort_by?.includes('asc')}"
+                  >
+                    Most Relevant
+                  </li>
+                  <li
                       @click="sortJobs('date_posted')"
                       class="cursor-pointer px-4 py-2 hover:bg-gray-100"
                       :class="{'bg-gray-100 hover:bg-gray-200': query.sort_by?.includes('desc')}"
                   >
-                    By Date Posted
+                    Date Posted
                   </li>
                 </ul>
               </div>
