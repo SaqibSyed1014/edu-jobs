@@ -15,8 +15,15 @@ export default defineNuxtConfig({
     },
     runtimeConfig: {
         API_URL: process.env.API_URL,
+        API_KEY: process.env.TYPESENSE_API_KEY,
+        STRAPI_API_URL: process.env.STRAPI_API_URL, 
+        STRAPI_API_TOKEN: process.env.STRAPI_API_TOEKN, 
         public: {
           API_URL: process.env.API_URL,
+          API_KEY: process.env.TYPESENSE_API_KEY,
+          STRAPI_API_URL: process.env.STRAPI_API_URL, 
+          STRAPI_API_TOKEN: process.env.STRAPI_API_TOEKN, 
+
         },
       },
     build: {

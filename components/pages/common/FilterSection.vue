@@ -25,8 +25,8 @@ const props = defineProps<{
     <!-- Checkbox inputs -->
     <div
       class="pl-9 relative flex gap-x-6"
-      v-for="item in options?.data"
-      :key="item.id"
+      v-for="(item, index) in options?.data"
+      :key="item.id + index"
     >
       <div class="flex h-6 items-center">
         <input
@@ -35,6 +35,7 @@ const props = defineProps<{
           type="checkbox"
           class="h-4 w-4 rounded-md border border-gray-300 text-brand-600 focus:ring-brand-600"
           :checked="item.checked"
+          @change="$emit('toggleSchoolOption', options?.name, index)"
         />
       </div>
       <label :for="item.id" class="text-gray-700 text-base font-medium">{{

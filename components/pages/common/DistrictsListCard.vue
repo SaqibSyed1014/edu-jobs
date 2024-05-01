@@ -1,10 +1,10 @@
 <script setup lang="ts">
-defineProps<{ data: any; isSchool: Boolean }>();
+defineProps<{ data: any }>();
 </script>
 
 <template>
   <NuxtLink
-    :to="isSchool ? `/school-districts/${data?.document?.id}` : '/colleges/123'"
+    :to="`/school-districts/${data?.document?.id}`"
     class="p-4 flex flex-col gap-5 sm:gap-0 sm:flex-row justify-between items-start rounded-xl border border-gray-200"
   >
     <div class="flex flex-col md:flex-row gap-3">
@@ -18,7 +18,7 @@ defineProps<{ data: any; isSchool: Boolean }>();
 
         <div class="inline-flex flex-wrap gap-5 pt-2 md:pt-0">
           <div class="inline-flex items-center text-center space-x-2">
-            <SvgoBriefCase class="size-5" />
+            <SvgoBriefCaseLight class="size-5" />
             <span
               class="text-gray-600 text-xs md:text-sm font-medium leading-tight"
             >
@@ -28,7 +28,7 @@ defineProps<{ data: any; isSchool: Boolean }>();
           <div
             class="inline-flex items-center text-center space-x-2 text-gray-600"
           >
-            <SvgoBuilding class="size-5" />
+            <SvgoBuildingLight class="size-5" />
             <span class="text-xs md:text-sm font-medium leading-tight">
               {{ data?.document?.school_count.toLocaleString() }} schools
             </span>
@@ -50,8 +50,8 @@ defineProps<{ data: any; isSchool: Boolean }>();
         <SvgoUsFlag class="size-4" />
         <span
           class="text-center text-gray-700 text-xs md:text-sm font-medium leading-tight"
-          >{{ data?.document?.state_name }},
-          {{ data?.document?.country_code }}
+        >
+          {{ data?.document?.city + ", " + data?.document?.state_name }}
         </span>
       </div>
     </div>
