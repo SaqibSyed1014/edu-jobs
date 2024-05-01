@@ -1,19 +1,13 @@
 export const usePayloadUrl = () => {
     const config = useRuntimeConfig()
-    let  baseURL, typesenseApiKey, strapiBaseUrl, strapiApiToken
-    if (process.server) {
-        baseURL = config.API_URL
-        typesenseApiKey= config.API_KEY
-        strapiBaseUrl= config.STRAPI_API_URL
-        strapiApiToken= config.STRAPI_API_TOKEN
-    }
-    else {
-        baseURL = config.public.API_URL
-        typesenseApiKey= config.public.API_KEY
-        strapiBaseUrl= config.public.STRAPI_API_URL
-        strapiApiToken= config.public.STRAPI_API_TOKEN
-    }
-    return {  baseURL, typesenseApiKey, strapiBaseUrl ,strapiApiToken}
+    let baseUrl, apiKey,  typesenseBaseURL, typesenseApiKey, strapiBaseUrl, strapiApiToken
+    baseUrl = config.public.API_URL
+    apiKey = config.public.API_KEY
+    typesenseBaseURL = config.public.TYPESENSE_API_URL
+    typesenseApiKey = config.public.TYPESENSE_API_KEY
+    strapiBaseUrl = config.public.STRAPI_API_URL
+    strapiApiToken = config.public.STRAPI_API_TOKEN
+    return { baseUrl, apiKey, typesenseBaseURL, typesenseApiKey, strapiBaseUrl ,strapiApiToken }
 }
 
 
