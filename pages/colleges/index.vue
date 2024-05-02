@@ -1,7 +1,106 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { useCollegesStore } from "~/segments/colleges/store";
+import type {
+  PaginationInfo,
+  TypesenseQueryParam,
+} from "~/segments/common.types";
 
+const route = useRoute();
+const router = useRouter();
+const isLoading = ref<boolean>(true);
 let toggleSideBar = ref(false);
+const collegesStore = useCollegesStore();
+const { collegesList, total_page } = storeToRefs(collegesStore);
+const totalPages = ref(total_page);
+const currentPage = ref<number>(Number(route?.query?.page) || 1);
+const queryValue = route?.query?.q === "*" ? "" : route?.query?.q;
+const searchedValue = ref<string>(
+  Array.isArray(queryValue) ? queryValue.join(", ") : queryValue || ""
+);
+const isGridView = ref(
+  route?.query?.view
+    ? route?.query?.view === "grid"
+      ? "grid"
+      : "list"
+    : "grid"
+); // Reactive variable to store the current view mode
+
+const switchView = (view: any) => {
+  isGridView.value = view;
+  router.replace({
+    path: "/colleges",
+    query: {
+      view: view,
+      ...queryParams?.value,
+    },
+  });
+};
+
+const switchToListView = () => {
+  switchView("list");
+};
+
+const switchToGridView = () => {
+  switchView("grid");
+};
+
+onMounted(async () => {
+  await fetchColleges(); // Initial fetch
+});
+
+const pageInfo = ref<PaginationInfo>({
+  currentPage: currentPage.value,
+  itemsPerPage: 12,
+  totalPages: 0,
+});
+
+const query = ref<TypesenseQueryParam>({
+  q: "*",
+  page: pageInfo.value.currentPage,
+  per_page: pageInfo.value.itemsPerPage,
+});
+
+const queryParams = computed(() => {
+  const urlParams = {
+    q: query.value.q,
+    page: query.value.page,
+  };
+  return urlParams;
+});
+
+async function fetchColleges() {
+  isLoading.value = true;
+  await collegesStore.fetchColleges(query?.value);
+  isLoading.value = false;
+  totalPages.value = total_page?.value;
+}
+
+const paginate = (page: number | "prev" | "next") => {
+  if (page === "prev") {
+    currentPage.value--;
+  } else if (page === "next") {
+    currentPage.value++;
+  } else {
+    currentPage.value = page;
+  }
+  query.value.page = currentPage?.value;
+
+  router.replace({
+    path: "/colleges",
+    query: {
+      view: isGridView.value,
+      ...queryParams.value,
+    },
+  });
+
+  // Scroll to the top
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+  fetchColleges();
+};
 
 function togglingSidebarVisibility() {
   toggleSideBar.value = !toggleSideBar.value;
@@ -65,73 +164,29 @@ for (let i = 65; i <= 90; i++) {
   capitals.value.push(String.fromCharCode(i));
 }
 
-const isGridView = ref(true); // Reactive variable to store the current view mode
 const selectedAlphabet = ref<number>(0); // Reactive variable to store the selected alphabet index
-
-const schoolList = ref([
-  {
-    avatar: "/images/schoolDistrict/Avatar1.png",
-    schoolName: "Palo Alto Unified College District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar2.png",
-    schoolName: "San Dieguito Union High College District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar3.png",
-    schoolName: "Arcadia Unified College District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar4.png",
-    schoolName: "Saratoga Joint Union High College District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar5.png",
-    schoolName: "Palo Alto Unified College Districts",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar6.png",
-    schoolName: "San Dieguito Union High College District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar7.png",
-    schoolName: "Arcadia Unified College District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar8.png",
-    schoolName: "Saratoga Joint Union High College District",
-  },
-
-  {
-    avatar: "/images/schoolDistrict/avatar9.png",
-    schoolName: "Palo Alto Unified College Districts",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar10.png",
-    schoolName: "San Dieguito Union High College District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar11.png",
-    schoolName: "Arcadia Unified College District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar12.png",
-    schoolName: "Saratoga Joint Union High College District",
-  },
-]);
-
-// Function to switch to list view
-const switchToListView = () => {
-  isGridView.value = false;
-};
-
-// Function to switch to grid view
-const switchToGridView = () => {
-  isGridView.value = true;
-};
 
 const selectAlphabet = (index: number) => {
   selectedAlphabet.value = index;
+};
+
+const handleInput = _debounce(() => {
+  search();
+}, 500); // Adjust the debounce delay as needed (in milliseconds)
+
+const search = () => {
+  query.value.q = searchedValue.value.toString() ?? "*";
+  query.value.query_by = "institution_name";
+  query.value.page = 1;
+  currentPage.value = 1;
+  router.replace({
+    path: "/colleges",
+    query: {
+      view: isGridView.value,
+      ...queryParams.value,
+    },
+  });
+  fetchColleges();
 };
 </script>
 
@@ -193,9 +248,9 @@ const selectAlphabet = (index: number) => {
                   total-jobs="13"
                 />
               </div>
-              <div class="pt-[18px] w-full">
+              <!-- <div class="pt-[18px] w-full">
                 <BaseButton label="Apply" color="primary" :fullSized="true" />
-              </div>
+              </div> -->
             </div>
           </div>
         </DistrickSideBarWrapper>
@@ -265,7 +320,12 @@ const selectAlphabet = (index: number) => {
 
         <div class="pt-8 flex sm:flex-row flex-col gap-4 justify-between">
           <div class="flex justify-between gap-4">
-            <form class="w-full" action="#" method="GET">
+            <form
+              @submit.prevent="search"
+              class="w-full"
+              action="#"
+              method="GET"
+            >
               <label for="search-field" class="sr-only">Search</label>
               <div class="relative">
                 <SvgoSearchIcon
@@ -273,11 +333,13 @@ const selectAlphabet = (index: number) => {
                   aria-hidden="true"
                 />
                 <input
+                  v-model="searchedValue"
                   id="search-field"
                   class="block h-full rounded-lg w-full md:w-[320px] shadow border border-gray-300 bg-transparent py-[13px] pl-8 pr-0 text-black sm:text-sm"
                   placeholder="Search..."
                   type="search"
                   name="search"
+                  @input="handleInput"
                 />
               </div>
             </form>
@@ -302,9 +364,9 @@ const selectAlphabet = (index: number) => {
                 @click="switchToListView"
                 :class="{
                   'pl-3.5 pr-4 py-[11px] rounded-s-lg justify-center bg-white border border-gray-300 h-full items-center gap-2 flex':
-                    isGridView,
+                    isGridView === 'grid',
                   'pl-3.5 pr-4 py-[11px] rounded-s-lg justify-center bg-gray-50 border border-gray-300 h-full items-center gap-2 flex':
-                    !isGridView,
+                    isGridView === 'list',
                 }"
               >
                 <SvgoList class="size-5" />
@@ -317,9 +379,9 @@ const selectAlphabet = (index: number) => {
                 @click="switchToGridView"
                 :class="{
                   'pl-3.5 pr-4 py-[11px] rounded-e-lg justify-center bg-gray-50 border border-gray-300 h-full items-center gap-2 flex':
-                    isGridView,
+                    isGridView === 'grid',
                   'pl-3.5 pr-4 py-[11px] rounded-e-lg justify-center bg-white border border-gray-300 h-full items-center gap-2 flex':
-                    !isGridView,
+                    isGridView === 'list',
                 }"
               >
                 <SvgoGrid class="size-5" />
@@ -364,26 +426,43 @@ const selectAlphabet = (index: number) => {
             </div>
           </div>
         </div>
-
         <div class="mt-1.5 mb-8">
           <!-- Grid View -->
-          <div
-            v-if="isGridView"
-            class="grid sm:grid-cols-2 pt-8 lg:grid-cols-3 gap-6"
-          >
-            <div v-for="(item, index) in schoolList" :key="index">
-              <DIstrictGridCard :data="item" :isSchool="false" />
+          <template v-if="isLoading || collegesList.length">
+            <div
+              v-if="isGridView === 'grid'"
+              class="grid sm:grid-cols-2 pt-8 lg:grid-cols-3 gap-6"
+            >
+              <div v-if="isLoading" v-for="i in 12">
+                <SDGridSkelton />
+              </div>
+              <div v-else v-for="(item, index) in collegesList" :key="index">
+                <CollegeGridCard :data="item" :isSchool="false" />
+              </div>
             </div>
-          </div>
-          <!-- Lsit View -->
-          <div v-if="!isGridView" class="grid gap-6 pt-8">
-            <div v-for="(item, index) in schoolList" :key="index">
-              <DistrictListCard :data="item" :isSchool="false" />
+            <!-- Lsit View -->
+            <div v-if="isGridView === 'list'" class="grid gap-6 pt-8">
+              <div v-if="isLoading" v-for="i in 12">
+                <SDListSkelton />
+              </div>
+              <div v-else v-for="(item, index) in collegesList" :key="index">
+                <CollegeListCard :data="item" :isSchool="false" />
+              </div>
             </div>
-          </div>
+          </template>
+          <template v-else>
+            <NoRecordFound name="schools" :search-value="searchedValue" />
+          </template>
+        </div>
+        <div v-if="collegesList?.length > 0">
+          <CustomPagination
+            :current-page="currentPage"
+            :total-pages="totalPages"
+            @paginate="paginate"
+          />
         </div>
 
-        <Pagination />
+        <!-- <Pagination /> -->
       </div>
     </div>
   </div>
