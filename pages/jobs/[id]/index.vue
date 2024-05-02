@@ -31,8 +31,8 @@ const { jobDetails } = storeToRefs(jobStore);
 const route = useRoute();
 
 const mapOptions = computed(() => {
-  const lat = jobDetails?.value?.geo_location?.[0] ?? 0;
-  const lng = jobDetails?.value?.geo_location?.[1] ?? 0;
+  const lat = jobDetails?.value?.job_details.geo_lat ?? 0;
+  const lng = jobDetails?.value?.job_details.geo_lng ?? 0;
   center.value = { lat, lng }
   return [
       {
@@ -48,7 +48,7 @@ onMounted(async () => {
 
   initModals();
   isJobFetching.value = true;
-  await jobStore.fetchSingleJob(route.params?.id as string);
+  await jobStore.fetchJobDetails(route.params?.id as string);
   isJobFetching.value = false;
 })
 

@@ -47,3 +47,13 @@ interface JobResponseType {
     search_cutoff: boolean;
     search_time_ms: number;
 }
+
+interface JobDetails extends Job{
+    job_benefits: []
+    job_faqs: []
+    job_details: Job & {
+        internal_job_code: string
+        geo_lat: number,
+        geo_lng: number
+    }
+}

@@ -1,6 +1,6 @@
 import {
     getJobsList,
-    getSingleJob
+    getJobDetails
 } from "~/segments/jobs/services";
 import type {Coordinates} from "~/segments/common.types";
 
@@ -8,7 +8,7 @@ interface JobsState {
     jobsList: Job[]
     itemsFound: number
     totalPages: number
-    singleJob: Job | null
+    singleJob: JobDetails | null
     coordinates: Coordinates
 }
 
@@ -30,9 +30,9 @@ export const useJobStore = defineStore('jobStore', {
             this.$state.itemsFound = found
             this.$state.totalPages = Math.ceil(found / 12)
         },
-        async fetchSingleJob(slug :string) {
-            const { hits }  = await getSingleJob(slug)
-            this.$state.singleJob = hits[0].document
+        async fetchJobDetails(slug :string) {
+            const resp  = await getJobDetails(slug)
+            console.log('check response ', resp)
         },
         setCoordinates(coordinates :Coordinates) {
             this.$state.coordinates = coordinates
@@ -44,7 +44,7 @@ export const useJobStore = defineStore('jobStore', {
             date_posting_expires: job.date_posting_expires ? job?.date_posting_expires.slice(0, job?.date_posting_expires.indexOf('00:00:00')) : 'N/A',
             date_posted: job.date_posted.slice(0, job.date_posted.indexOf('00:00:00'))
         })),
-        jobDetails: (state) :Job | null => {
+        jobDetails: (state) :JobDetails | null => {
             if (state.singleJob)
                 return {
                     ...state.singleJob,

@@ -14,12 +14,12 @@ const getJobsList = (query: any) :Promise<JobResponseType> => {
     })
 }
 
-const getSingleJob = (slug: string) :Promise<JobResponseType> => {
-    const { typesenseBaseURL, typesenseApiKey } = usePayloadUrl()
+const getJobDetails = (slug: string) :Promise<JobDetails> => {
+    const { baseUrl, apiKey } = usePayloadUrl()
     const apiHeaders = {
-        'X-TYPESENSE-API-KEY': typesenseApiKey,
+        'API-Key': apiKey,
     }
-    return $fetch(`${typesenseBaseURL}/collections/jobs/documents/search?q=*&filter_by=job_slug:${slug}`, {
+    return $fetch(`${baseUrl}/job/${slug}`, {
         method: 'get',
         headers: apiHeaders,
     })
@@ -27,5 +27,5 @@ const getSingleJob = (slug: string) :Promise<JobResponseType> => {
 
 export {
     getJobsList,
-    getSingleJob
+    getJobDetails
 }
