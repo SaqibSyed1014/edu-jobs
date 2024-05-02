@@ -15,7 +15,7 @@ export const useHomeStore = defineStore('homeStore', {
     },
     getters: {
         jobsInEachCity: (state) :JobsInCities[] => {
-            return state.jobsByCities
+            return state.jobsByCities?.sort((a, b) => a.priority_rank - b.priority_rank) || []
         }
     }
 })

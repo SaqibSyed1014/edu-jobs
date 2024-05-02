@@ -14,7 +14,7 @@ const getJobsList = (query: any) :Promise<JobResponseType> => {
     })
 }
 
-const getJobDetails = (slug: string) :Promise<JobDetails> => {
+const getJobDetails = (slug: string) :Promise<ExtendedJobDetails> => {
     const { baseUrl, apiKey } = usePayloadUrl()
     const apiHeaders = {
         'API-Key': apiKey,

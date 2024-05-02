@@ -45,7 +45,7 @@ function navigateToJob(cityDetails :JobsInCities) {
         <template v-if="jobsInEachCity.length">
           <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
               <template v-for="city in jobsInEachCity">
-                <div class="city-card border border-gray-200 rounded-xl overflow-hidden cursor-pointer" @click="navigateToJob(city)">
+                <div class="city-card border border-gray-200 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-100 transition" @click="navigateToJob(city)">
                   <div class="city-image h-[175px]">
                     <img :src="city.photo_url" :alt="`${city.job_city} City`" class="w-full h-full object-cover">
                   </div>

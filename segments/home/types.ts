@@ -48,12 +48,28 @@ interface JobResponseType {
     search_time_ms: number;
 }
 
-interface JobDetails extends Job{
-    job_benefits: []
-    job_faqs: []
-    job_details: Job & {
-        internal_job_code: string
-        geo_lat: number,
-        geo_lng: number
-    }
+
+interface JobDetails extends Job {
+    internal_job_code: string
+    geo_lat: number
+    geo_lng: number
+}
+
+interface JobFaq {
+    question: string
+    answer: string
+}
+
+interface JobBenefits {
+    benefit_id: number
+    benefit_name: string
+    benefit_description: string
+    icon_path: string
+    display_order: number
+}
+
+interface ExtendedJobDetails {
+    job_benefits: JobBenefits[]
+    job_faqs: JobFaq[]
+    job_details: JobDetails | null
 }
