@@ -1,6 +1,4 @@
-import {
-    getJobsSummaryByCities
-} from "~/segments/home/services";
+import {getJobsSummaryByCities} from "~/segments/home/services";
 
 interface HomeSectionsData {
     jobsByCities: JobsInCities[]
@@ -12,14 +10,12 @@ export const useHomeStore = defineStore('homeStore', {
     } as HomeSectionsData),
     actions: {
         async fetchJobsSummaryByCities() {
-            const resp = await getJobsSummaryByCities()
-            console.log('resp ', resp)
-            this.$state.jobsByCities = resp;
+            this.$state.jobsByCities = await getJobsSummaryByCities();
         }
     },
     getters: {
         jobsInEachCity: (state) :JobsInCities[] => {
-            return state.jobsByCities
+            return state.jobsByCities?.sort((a, b) => a.priority_rank - b.priority_rank) || []
         }
     }
 })
