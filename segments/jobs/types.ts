@@ -1,3 +1,10 @@
+interface PartnerLogo {
+    display_order: number
+    is_active: number
+    logo_id: number
+    logo_path: string
+}
+
 interface JobsInCities {
     job_city: string;
     job_state: string;
