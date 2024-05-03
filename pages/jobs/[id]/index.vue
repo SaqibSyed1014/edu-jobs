@@ -104,7 +104,7 @@ function redirectToURL() {
                     <div>
                       <!-- Job Title -->
                       <BaseTooltip :tooltip-content="jobDetails.job_title" id="title">
-                        <h2 class="text-2xl text-ellipsis line-clamp-1">
+                        <h2 class="text-2xl lg:text-3xl md:text-ellipsis md:line-clamp-1">
                           {{ jobDetails.job_title }}
                         </h2>
                       </BaseTooltip>
@@ -140,7 +140,7 @@ function redirectToURL() {
               </div>
 
               <!-- Job Insights -->
-              <div>
+              <div class="job-insights">
                 <h3 class="section-heading">Insights</h3>
                 <hr>
                 <div class="details grid grid-cols-2 md:grid-cols-3 gap-6">
@@ -369,6 +369,9 @@ hr{
 }
 .job-content :deep(p) {
   @apply mb-2
+}
+.job-content :deep(a){
+  word-break: break-word;
 }
 .side-rounded-cards{
   @apply w-full bg-white border border-[#EAECF0] rounded-2xl p-4
