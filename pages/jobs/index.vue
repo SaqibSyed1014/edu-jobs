@@ -182,6 +182,7 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
+  jobStore.jobsList = [];
   coordinates.value = { lat: 0, lng: 0 };
   query.value = initialQuery;
 })
