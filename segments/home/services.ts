@@ -3,7 +3,6 @@ import { usePayloadUrl } from "~/segments/utils"
 const getJobsSummaryByCities = () :Promise<JobsInCities[]> => {
     const { baseUrl, apiKey } = usePayloadUrl()
     const apiHeaders = {
-        'Accept': '*/*',
         'API-Key': apiKey,
     }
     return $fetch(`${baseUrl}/locations/summary`, {
@@ -12,7 +11,19 @@ const getJobsSummaryByCities = () :Promise<JobsInCities[]> => {
     })
 }
 
+const getPartnersLogo = () :Promise<PartnerLogo[]> => {
+    const { baseUrl, apiKey } = usePayloadUrl()
+    const apiHeaders = {
+        'API-Key': apiKey,
+    }
+    return $fetch(`${baseUrl}/org/homelogos`, {
+        method: 'get',
+        headers: apiHeaders,
+    })
+}
+
 
 export {
     getJobsSummaryByCities,
+    getPartnersLogo
 }

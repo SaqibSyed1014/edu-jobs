@@ -13,11 +13,13 @@
 </template>
 
 <script setup>
-import {useJobStore} from "~/segments/jobs/store";
 import {useHomeStore} from "~/segments/home/store";
+import {useJobStore} from "~/segments/jobs/store";
+import {useBlogStore} from "~/segments/blogs/store";
 
-const jobStore = useJobStore();
 const homeStore = useHomeStore();
+const jobStore = useJobStore();
+const blogStore = useBlogStore();
 
 onMounted(async () => {
   const query = {
@@ -26,7 +28,11 @@ onMounted(async () => {
     page: 1,
     filter_by: 'featured:1'
   }
-  await jobStore.fetchJobs(query);
-  await homeStore.fetchJobsSummaryByCities();
+  await Promise.all([
+    jobStore.fetchJobs(query),
+    homeStore.fetchPartnersLogos(),
+    homeStore.fetchJobsSummaryByCities(),
+    blogStore.fetchBlogs()
+  ])
 })
 </script>

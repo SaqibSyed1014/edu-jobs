@@ -104,7 +104,7 @@ function redirectToURL() {
                     <div>
                       <!-- Job Title -->
                       <BaseTooltip :tooltip-content="jobDetails.job_title" id="title">
-                        <h2 class="text-2xl text-ellipsis line-clamp-1">
+                        <h2 class="text-2xl lg:text-3xl md:text-ellipsis md:line-clamp-1">
                           {{ jobDetails.job_title }}
                         </h2>
                       </BaseTooltip>
@@ -140,53 +140,55 @@ function redirectToURL() {
               </div>
 
               <!-- Job Insights -->
-              <h3 class="section-heading">Insights</h3>
-              <hr>
-              <div class="details grid grid-cols-2 md:grid-cols-3 gap-6">
-                <div>
-                  <p class="font-medium text-sm">Location</p>
-                  <div class="text-gray-600">
-                    {{ jobDetails.job_location }}
+              <div class="job-insights">
+                <h3 class="section-heading">Insights</h3>
+                <hr>
+                <div class="details grid grid-cols-2 md:grid-cols-3 gap-6">
+                  <div>
+                    <p class="font-medium text-sm">Location</p>
+                    <div class="text-gray-600">
+                      {{ jobDetails.job_location }}
+                    </div>
                   </div>
-                </div>
 
-                <div>
-                  <p class="font-medium text-sm">Pay Range</p>
-                  <div class="text-gray-600 flex items-center gap-2">
-                    <SvgoCurrencyDollar class="w-4 h-4"/>
-                    N/A
+                  <div>
+                    <p class="font-medium text-sm">Pay Range</p>
+                    <div class="text-gray-600 flex items-center gap-2">
+                      <SvgoCurrencyDollar class="w-4 h-4"/>
+                      N/A
+                    </div>
                   </div>
-                </div>
 
-                <div>
-                  <p class="font-medium text-sm">Employment type</p>
-                  <div class="text-gray-600 flex items-center gap-2">
-                    <SvgoClock class="w-4 h-4"/>
-                    {{ jobDetails.employment_type }}
+                  <div>
+                    <p class="font-medium text-sm">Employment type</p>
+                    <div class="text-gray-600 flex items-center gap-2">
+                      <SvgoClock class="w-4 h-4"/>
+                      {{ jobDetails?.employment_type || 'N/A' }}
+                    </div>
                   </div>
-                </div>
 
-                <div>
-                  <p class="font-medium text-sm">Deadline</p>
-                  <div class="text-gray-600 flex items-center gap-2">
-                    <SvgoClock class="w-4 h-4"/>
-                    {{ jobDetails.date_posting_expires }}
+                  <div>
+                    <p class="font-medium text-sm">Deadline</p>
+                    <div class="text-gray-600 flex items-center gap-2">
+                      <SvgoClock class="w-4 h-4"/>
+                      {{ jobDetails.date_posting_expires }}
+                    </div>
                   </div>
-                </div>
 
-                <div>
-                  <p class="font-medium text-sm">Job role</p>
-                  <div class="text-gray-600 flex items-center gap-2">
-                    <SvgoClock class="w-4 h-4"/>
-                    {{ jobDetails.job_role }}
+                  <div>
+                    <p class="font-medium text-sm">Job role</p>
+                    <div class="text-gray-600 flex items-center gap-2">
+                      <SvgoClock class="w-4 h-4"/>
+                      {{ jobDetails?.job_role || 'N/A' }}
+                    </div>
                   </div>
-                </div>
 
-                <div>
-                  <p class="font-medium text-sm">Length of Work Year</p>
-                  <div class="text-gray-600 flex items-center gap-2">
-                    <SvgoClock class="w-4 h-4"/>
-                    N/A
+                  <div>
+                    <p class="font-medium text-sm">Length of Work Year</p>
+                    <div class="text-gray-600 flex items-center gap-2">
+                      <SvgoClock class="w-4 h-4"/>
+                      N/A
+                    </div>
                   </div>
                 </div>
               </div>
@@ -194,14 +196,15 @@ function redirectToURL() {
               <hr/>
 
               <!-- Job Description -->
-              <div class="job-content">
+              <div class="job-content mb-5">
                 <div v-html="jobDetails.job_description"></div>
               </div>
 
-              <hr>
 
               <!-- Job FAQs -->
               <template v-if="jobFaqs.length">
+                <hr>
+
                 <h3 class="section-heading">FAQs</h3>
                 <hr>
                 <div class="flex flex-col gap-4">
@@ -211,7 +214,7 @@ function redirectToURL() {
                 </div>
               </template>
 
-              <hr>
+              <hr class="hidden">
 
               <!-- Current Job's Prev/Next Job -->
               <div class="hidden justify-between">
@@ -222,20 +225,22 @@ function redirectToURL() {
           </div>
           <div class="md:col-span-3">
             <div class="flex flex-col gap-4">
-              <div class="w-full bg-white border border-[#EAECF0] rounded-2xl p-4">
+              <div class="side-rounded-cards">
                 <div
                     class="flex items-center justify-center border border-[#EAECF0] bg-gray-100 rounded-full w-12 h-12 mb-5">
                   <SvgoAnnouncement class="w-6 h-6 text-gray-600"/>
                 </div>
                 <h2 class="mb-2">Interested in this job?</h2>
                 <p class="text-gray-600 text-sm mb-3">Don’t miss the chance. Apply now here.</p>
-                <p class="text-gray-600 text-sm mb-5">Job code: EXMPL123</p>
+                <p class="text-gray-600 text-sm mb-5">
+                  Job code: {{  jobDetails?.internal_job_code || 'N/A' }}
+                </p>
                 <BaseButton @click="applyBtnAction" label="Apply Now" :full-sized="true" />
               </div>
 
               <!-- Job Benefits -->
               <template v-if="jobBenefits.length">
-                <div class="w-full bg-white border border-[#EAECF0] rounded-2xl p-4">
+                <div class="side-rounded-cards">
                   <h2 class="mb-2">Benefits</h2>
                   <p class="text-gray-600 text-sm mb-3">
                     Following benefits are offered along wih basic salary package
@@ -293,33 +298,35 @@ function redirectToURL() {
               </template>
 
               <!-- Job Location -->
-              <div class="w-full bg-white border border-[#EAECF0] rounded-2xl p-4">
-                <h2 class="mb-2">Pin location</h2>
-                <p class="text-gray-600 text-sm mb-5">Find on map where this job is located</p>
+              <template v-if="jobDetails?.geo_lat && jobDetails?.geo_lng">
+                <div class="side-rounded-cards">
+                  <h2 class="mb-2">Pin location</h2>
+                  <p class="text-gray-600 text-sm mb-5">Find on map where this job is located</p>
 
-                <div>
-                  <client-only>
-                    <GMapMap
-                        :center="center"
-                        :zoom="12"
-                        style="height: 500px;"
-                    >
-                      <GMapMarker
-                          v-for="(m, index) in mapOptions"
-                          :position="m.position"
-                          :key="index"
-                          :clickable="true"
-                          :draggable="true"
-                      />
-                    </GMapMap>
-                  </client-only>
+                  <div class="job-location">
+                    <client-only>
+                      <GMapMap
+                          :center="center"
+                          :zoom="12"
+                          style="height: 500px;"
+                      >
+                        <GMapMarker
+                            v-for="(m, index) in mapOptions"
+                            :position="m.position"
+                            :key="index"
+                            :clickable="true"
+                            :draggable="true"
+                        />
+                      </GMapMap>
+                    </client-only>
+                  </div>
                 </div>
-              </div>
+              </template>
 
               <!-- Job Meta Info -->
-              <div class="w-full bg-white border border-[#EAECF0] rounded-2xl p-4">
+              <div class="side-rounded-cards">
                 <h2 class="mb-2">Published on</h2>
-                <p class="text-gray-600 text-sm mb-5">{{ jobDetails.date_posted }}</p>
+                <p class="text-gray-600 text-sm mb-5">{{ jobDetails?.date_posted }}</p>
 
                 <h2 class="mb-5">Share this job</h2>
                 <div class="flex gap-6">
@@ -337,9 +344,11 @@ function redirectToURL() {
           <BaseButton color="gray" :outline="true" label="Previous Job" />
           <BaseButton label="Next Job" />
         </div>
+
         <hr>
       </div>
     </section>
+
 
     <JobCTA />
 
@@ -360,5 +369,11 @@ hr{
 }
 .job-content :deep(p) {
   @apply mb-2
+}
+.job-content :deep(a){
+  word-break: break-word;
+}
+.side-rounded-cards{
+  @apply w-full bg-white border border-[#EAECF0] rounded-2xl p-4
 }
 </style>
