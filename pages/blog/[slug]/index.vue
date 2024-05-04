@@ -189,7 +189,7 @@ function copyURL() {
                       </div>
                       <div class="">
                         <h4>{{ blog.author.name }}</h4>
-                        <p class="text-black-light font-normal">{{ blog.post_date }}</p>
+                        <p class="text-black-light font-normal">{{ convertDateFormat(blog.post_date) }}</p>
                       </div>
                     </div>
                   </div>

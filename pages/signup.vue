@@ -64,12 +64,12 @@ onUnmounted(() => selectedUserType.value = 'organization')
 </script>
 
 <template>
-  <div class="flex flex-col justify-center gap-8 w-full py-12 lg:py-28">
+  <div class="flex flex-col justify-center gap-8 w-full pt-20 pb-28 lg:py-28">
     <NuxtLink to="/" class="max-lg:block hidden">
       <img src="/images/logo.svg" alt="EduJob Logo" />
     </NuxtLink>
     <div class="flex flex-col gap-3">
-      <h1 class="font-semibold text-3xl">Sign up {{selectedUserType}}</h1>
+      <h1 class="font-semibold text-3xl">Sign up</h1>
       <p>Get started today and join EduJobs!</p>
     </div>
     <div class="w-full">
@@ -80,11 +80,11 @@ onUnmounted(() => selectedUserType.value = 'organization')
         <div class="flex gap-12">
           <div class="flex items-center">
             <input v-model="userType" id="org-cb" type="radio" value="organization" name="user-type" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2">
-            <label for="org-cb" class="ms-2">Organization</label>
+            <label for="org-cb" class="ms-2 cursor-pointer">Organization</label>
           </div>
           <div class="flex items-center">
             <input v-model="userType" id="job-seeker-cb" type="radio" name="user-type" value="jobSeeker" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-            <label for="job-seeker-cb" class="ms-2">Job Seeker</label>
+            <label for="job-seeker-cb" class="ms-2 cursor-pointer">Job Seeker</label>
           </div>
         </div>
         <div v-if="isOrganizationSelected" class="form-control">
