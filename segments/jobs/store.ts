@@ -46,7 +46,6 @@ export const useJobStore = defineStore('jobStore', {
         })),
         jobDetails: (state) :JobDetails | null => {
             const jobDetail = state.singleJob?.job_details
-            console.log('test ', jobDetail)
             if (jobDetail)
                 return {
                     ...jobDetail,
