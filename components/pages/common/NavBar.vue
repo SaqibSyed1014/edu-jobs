@@ -23,10 +23,6 @@ const menuLinks : MenuLinksType[] = [
         path: "/charter-schools",
       },
       {
-        label: "Private Schools",
-        path: "/private-schools",
-      },
-      {
         label: "Colleges",
         path: "/colleges",
       },

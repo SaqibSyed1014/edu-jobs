@@ -50,14 +50,14 @@ const cardsList = [
               <div class="flex justify-center items-center bg-brand-500 text-white rounded-xl mx-auto w-14 h-14">
                 <component :is="card.icon" class="w-8 h-8" />
               </div>
-              <div class="flex flex-col gap-3 text-center">
+              <div class="flex flex-col gap-3 text-start sm:text-center">
                 <h4 class="text-lg sm:text-xl md:text-2xl lg:text-3xl md:mb-4">
                   {{ card.title }}
                 </h4>
                 <p class="text-gray-600 md:text-lg">
                   {{ card.text }}
                 </p>
-                <NuxtLink :to="card.path" class="flex items-center justify-center gap-3 text-brand-500 font-semibold cursor-pointer group">
+                <NuxtLink :to="card.path" class="flex items-center sm:justify-center gap-3 text-brand-500 font-semibold cursor-pointer group">
                   {{ card.linkText }}
                   <ArrowIcon class="w-3 h-3 group-hover:translate-x-[8px] transition" />
                 </NuxtLink>
