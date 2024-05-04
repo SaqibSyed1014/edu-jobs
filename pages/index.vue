@@ -2,11 +2,11 @@
   <div>
     <Hero />
     <Partnerships />
-    <Testimonials />
-    <SearchedByCities />
+<!--    <Testimonials />-->
+    <BrowseJobsByCities />
     <FeaturedJobs />
     <ForCandidates />
-    <ForEmployers />
+    <ForOrganizations />
     <Blogs />
 <!--    <ContactForm />-->
   </div>

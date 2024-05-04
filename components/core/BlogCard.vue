@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import {convertDateFormat} from "~/segments/utils";
+
 defineProps<{ blog: Blog }>()
 </script>
 
@@ -33,7 +35,7 @@ defineProps<{ blog: Blog }>()
             {{ blog.author.name }}
           </p>
           <p class="text-gray-600">
-            {{ blog.post_date }}
+            {{ convertDateFormat(blog.post_date) }}
           </p>
         </div>
       </div>

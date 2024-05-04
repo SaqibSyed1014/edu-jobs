@@ -73,7 +73,7 @@ const organizations = [
     <hr class="my-4">
 
     <div class="text-end">
-      <BaseButton navigate-to="" label="Create an Organization Account" />
+      <BaseButton navigate-to="/signup" label="Create an Organization Account" />
     </div>
   </div>
 </template>
