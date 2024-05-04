@@ -16,3 +16,10 @@ export function convertQueryToString(query: { [key: string]: any }): string {
     .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
     .join('&');
 }
+
+export function convertDateFormat(date: Date | string) {
+    if (typeof date === 'string') {   // converting yyyy-dd-mm to mm/dd/yyyy format
+        const parts = date.split('-');
+        return `${parts[1]}/${parts[2]}/${parts[0]}`;
+    }
+}

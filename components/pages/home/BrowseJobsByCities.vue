@@ -26,7 +26,7 @@ function navigateToJob(cityDetails :JobsInCities) {
 </script>
 
 <template>
-  <section>
+  <section class="py-24">
     <div class="container">
       <div class="content">
         <div class="heading-and-supporting-content flex max-md:flex-col justify-between md:items-center gap-5 md:gap-20 pb-16">
@@ -55,9 +55,9 @@ function navigateToJob(cityDetails :JobsInCities) {
                       <span class="font-semibold text-lg">{{ city.job_city }}</span>
                     </div>
                     <div class="flex items-center gap-3 text-gray-600">
-                      <span>{{ city.job_count }} {{ city.job_count === 1 ? 'opening' : 'openings' }}</span>
+                      <span>{{ city.job_count }} {{ city.job_count === 1 ? 'job' : 'jobs' }}</span>
                       <div class="w-2 h-2 rounded-full bg-brand-500"></div>
-                      <span>{{ city.company_count }} {{ city.company_count === 1 ? 'company' : 'companies' }}</span>
+                      <span>{{ city.company_count }} {{ city.company_count === 1 ? 'organization' : 'organizations' }}</span>
                     </div>
                   </div>
                 </div>
@@ -72,7 +72,3 @@ function navigateToJob(cityDetails :JobsInCities) {
     </div>
   </section>
 </template>
-
-<style scoped lang="postcss">
-
-</style>

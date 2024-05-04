@@ -143,7 +143,7 @@ function redirectToURL() {
               <div class="job-insights">
                 <h3 class="section-heading">Insights</h3>
                 <hr>
-                <div class="details grid grid-cols-2 md:grid-cols-3 gap-6">
+                <div class="details grid grid-cols-2 md:grid-cols-3 gap-6 max-md:pb-6">
                   <div>
                     <p class="font-medium text-sm">Location</p>
                     <div class="text-gray-600">
@@ -190,6 +190,10 @@ function redirectToURL() {
                       N/A
                     </div>
                   </div>
+                </div>
+
+                <div class="md:hidden">
+                  <BaseButton @click="applyBtnAction" label="Apply Now" :full-sized="true"/>
                 </div>
               </div>
 
