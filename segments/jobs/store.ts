@@ -29,7 +29,7 @@ export const useJobStore = defineStore('jobStore', {
             const { hits, found } = await getJobsList(query)
             this.$state.jobsList = hits.map((hit :JobHit) => hit.document)
             this.$state.itemsFound = found
-            this.$state.totalPages = Math.ceil(found / 12)
+            this.$state.totalPages = Math.ceil(found / 24)
         },
         async fetchJobDetails(slug :string) {
             this.$state.singleJob = await getJobDetails(slug);

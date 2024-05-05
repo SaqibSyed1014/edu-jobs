@@ -34,7 +34,7 @@ const cardsList = [
   <section>
     <div class="container">
       <div class="content">
-        <div class="heading-and-subheading flex flex-col justify-center items-center gap-3 text-center">
+        <div class="heading-and-subheading flex flex-col justify-center sm:items-center gap-3 sm:text-center">
           <p class="section-subheading">For Organizations</p>
           <h2 class="section-heading">
             Find out what we have for your company
@@ -46,8 +46,8 @@ const cardsList = [
 
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-20">
           <template v-for="card in cardsList">
-            <div class="flex flex-col gap-10 bg-gray-50 p-6">
-              <div class="flex justify-center items-center bg-brand-500 text-white rounded-xl mx-auto w-14 h-14">
+            <div class="flex flex-col gap-10 bg-gray-50 rounded-lg px-4 py-6 sm:p-6">
+              <div class="flex justify-center items-center bg-brand-500 text-white rounded-xl sm:mx-auto w-14 h-14">
                 <component :is="card.icon" class="w-8 h-8" />
               </div>
               <div class="flex flex-col gap-3 text-start sm:text-center">

@@ -132,7 +132,7 @@ const sidebarFilters = ref<{ [key :string]: string | string[] }>({})
 
 const pageInfo = ref<PaginationInfo>({
   currentPage: 1,
-  itemsPerPage: 12,
+  itemsPerPage: 24,
   totalPages: 0
 });
 
