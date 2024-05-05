@@ -40,7 +40,7 @@ const menuLinks : MenuLinksType[] = [
   },
   {
     label: "Request a Demo",
-    path: "/contact-us",
+    path: "/demo-request",
     type: 'link'
   },
 ];
