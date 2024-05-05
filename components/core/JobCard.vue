@@ -1,18 +1,11 @@
 <script setup lang="ts">
-import ClockIcon from '~/assets/icons/clock.svg'
-import DollarIcon from '~/assets/icons/currency-dollar.svg'
+import {getDaysDifference} from "~/segments/utils";
 
 defineProps<{
   job :Job,
   cardForm: Boolean
   showJobDescription: Boolean
 }>()
-
-function getDaysDifference(givenDateString :Date | string) {
-  const givenDate :any = new Date(givenDateString);
-  const currentDate :any = new Date();
-  return Math.floor((currentDate - givenDate) / (1000 * 60 * 60 * 24));
-}
 </script>
 
 <template>
@@ -26,7 +19,7 @@ function getDaysDifference(givenDateString :Date | string) {
           </div>
 
           <div class="job-badge">
-            {{ `${getDaysDifference(job.date_posted)}d ago` }}
+            {{ getDaysDifference(job.date_posted) }}
           </div>
         </div>
         <div class="pt-3">
@@ -53,7 +46,7 @@ function getDaysDifference(givenDateString :Date | string) {
       </div>
       <div class="job-post-footer flex items-center gap-5 font-medium text-gray-600">
         <div class="flex items-center gap-2">
-          <ClockIcon class="w-5 h-5 text-gray-400" />
+          <SvgoClock class="w-5 h-5 text-gray-400" />
           <span>{{ job.employment_type }}</span>
         </div>
 
@@ -79,7 +72,7 @@ function getDaysDifference(givenDateString :Date | string) {
           </div>
         </div>
         <div class="job-badge">
-          {{ `${getDaysDifference(job.date_posted)}d ago` }}
+          {{ getDaysDifference(job.date_posted) }}
         </div>
       </div>
     </div>
@@ -87,12 +80,12 @@ function getDaysDifference(givenDateString :Date | string) {
     <div class="job-card-bottom flex justify-between items-center">
       <div class="flex items-center gap-5 text-gray-600 font-medium pt-5">
         <div class="flex items-center gap-2">
-          <ClockIcon class="w-5 h-5 text-gray-400" />
+          <SvgoClock class="w-5 h-5 text-gray-400" />
           <span>{{ job.employment_type }}</span>
         </div>
 
         <div class="flex items-center capitalize gap-2">
-          <DollarIcon class="w-5 h-5 text-gray-400" />
+          <SvgoCurrencyDollar class="w-5 h-5 text-gray-400" />
           <span>{{ job.organization_type }}</span>
         </div>
       </div>

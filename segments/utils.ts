@@ -23,3 +23,12 @@ export function convertDateFormat(date: Date | string) {
         return `${parts[1]}/${parts[2]}/${parts[0]}`;
     }
 }
+
+export function getDaysDifference(givenDateString :Date | string) :string {
+    const givenDate :any = new Date(givenDateString);
+    const currentDate :any = new Date();
+    const daysDifference :number = Math.floor((currentDate - givenDate) / (1000 * 60 * 60 * 24));
+    if (daysDifference === 1) return 'Yesterday';
+    else if (daysDifference === 0) return 'Today'
+    else return `${daysDifference}d ago`;
+}
