@@ -1,5 +1,8 @@
 <script setup lang="ts">
-
+const userType = useState('userType');
+function selectUserType() {
+  userType.value = 'jobSeeker'  // opens signup form for job seeker
+}
 </script>
 
 <template>
@@ -8,7 +11,7 @@
       <p class="font-semibold">
         Create your account to <br> apply to jobs faster
       </p>
-      <BaseButton navigate-to="/signup" label="Sign up"/>
+      <BaseButton navigate-to="/signup" label="Sign up" @click.stop="selectUserType" />
     </div>
   </div>
 </template>
