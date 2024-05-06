@@ -3,6 +3,7 @@ import HamburgerIcon from "~/assets/icons/hamburger.svg";
 import XCloseIcon from "~/assets/icons/x-close.svg";
 import OrganizationsMegaMenu from "~/components/pages/common/OrganizationsMegaMenu.vue";
 
+const config  = useRuntimeConfig()
 const menuLinks : { label:string, path?: string, type?: 'link' | 'megaMenu' }[] = [
  /* {
     label: "Home",
@@ -55,7 +56,7 @@ function togglingSidebarVisibility() {
         <div class="logo shrink-0">
           <NuxtLink to="/">
             <img src="/images/logo.svg" alt="EduJobs Logo" />
-          </NuxtLink>
+          </NuxtLink> {{ config.public.SITE_ENVIROMENT }} 
         </div>
         <!-- Menu Links -->
         <nav class="shrink-0 hidden lg:block">

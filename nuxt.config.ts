@@ -1,4 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+// import { GlobalSettings } from './enviromentsettings'
+import { globalSettings } from './enviromentsettings'
+
+const appEnv: string  = process.env.ENV || 'development'
+
+
 export default defineNuxtConfig({
     app: {
         head: {
@@ -8,15 +14,18 @@ export default defineNuxtConfig({
         }
     },
     runtimeConfig: {
-        API_URL: process.env.API_URL,
-        API_KEY: process.env.TYPESENSE_API_KEY,
-        STRAPI_API_URL: process.env.STRAPI_API_URL, 
-        STRAPI_API_TOKEN: process.env.STRAPI_API_TOEKN, 
+        API_URL: globalSettings[appEnv as keyof typeof globalSettings].API_URL,
+        API_KEY: globalSettings[appEnv as keyof typeof globalSettings].TYPESENSE_API_KEY,
+        STRAPI_API_URL: globalSettings[appEnv as keyof typeof globalSettings].STRAPI_API_URL, 
+        STRAPI_API_TOKEN: globalSettings[appEnv as keyof typeof globalSettings].STRAPI_API_TOEKN, 
+        SITE_ENVIROMENT: globalSettings[appEnv as keyof typeof globalSettings].SITE_ENVIROMENT, //globalSettings[appEnv].telephone,
+ 
         public: {
-          API_URL: process.env.API_URL,
-          API_KEY: process.env.TYPESENSE_API_KEY,
-          STRAPI_API_URL: process.env.STRAPI_API_URL, 
-          STRAPI_API_TOKEN: process.env.STRAPI_API_TOEKN, 
+          API_URL: globalSettings[appEnv as keyof typeof globalSettings].API_URL,
+          API_KEY: globalSettings[appEnv as keyof typeof globalSettings].TYPESENSE_API_KEY,
+          STRAPI_API_URL: globalSettings[appEnv as keyof typeof globalSettings].STRAPI_API_URL, 
+          STRAPI_API_TOKEN: globalSettings[appEnv as keyof typeof globalSettings].STRAPI_API_TOEKN, 
+          SITE_ENVIROMENT: globalSettings[appEnv as keyof typeof globalSettings].SITE_ENVIROMENT, //globalSettings[appEnv].telephone,
 
         },
       },
