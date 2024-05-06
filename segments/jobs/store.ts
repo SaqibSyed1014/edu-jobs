@@ -1,5 +1,5 @@
 import {getJobDetails, getJobsList} from "~/segments/jobs/services";
-import type {Coordinates} from "~/segments/common.types";
+import type {Coordinates, TypesenseQueryParam} from "~/segments/common.types";
 
 interface JobsState {
     jobsList: Job[]
@@ -25,11 +25,11 @@ export const useJobStore = defineStore('jobStore', {
         }
     } as JobsState),
     actions: {
-        async fetchJobs(query :any) {
-            const { hits, found } = await getJobsList(query)
-            this.$state.jobsList = hits.map((hit :JobHit) => hit.document)
-            this.$state.itemsFound = found
-            this.$state.totalPages = Math.ceil(found / 24)
+        async fetchJobs(query :TypesenseQueryParam) {
+            const { hits, found } = await getJobsList(query);
+            this.$state.jobsList = hits.map((hit :JobHit) => hit.document);
+            this.$state.itemsFound = found;
+            this.$state.totalPages = Math.ceil(found / 24);
         },
         async fetchJobDetails(slug :string) {
             this.$state.singleJob = await getJobDetails(slug);

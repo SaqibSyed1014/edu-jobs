@@ -10,7 +10,8 @@ defineProps<{
 
 <template>
   <NuxtLink :to="`/jobs/${job.job_slug}`">
-    <div v-if="cardForm" class="job-card flex flex-col gap-5 bg-white border border-gray-200 shadow-xs rounded-xl p-5">
+    <!-- Grid Form Card  -->
+    <div v-if="cardForm" class="job-card flex flex-col gap-5 bg-white border border-gray-200 shadow-xs rounded-xl p-5 h-full">
       <div class="job-card-header">
         <div class="flex justify-between">
           <div class="flex place-items-center rounded-full overflow-hidden w-12 h-12">
@@ -57,27 +58,28 @@ defineProps<{
       </div>
     </div>
 
+    <!-- List Form Card  -->
     <div v-else class="job-card flex flex-col justify-between gap-5 bg-white border border-gray-200 shadow-xs rounded-xl p-5">
-    <div class="job-card-top">
-      <div class="flex justify-between gap-3">
-        <div class="flex gap-3">
-          <div class="flex place-items-center rounded-full overflow-hidden w-12 h-12">
-            <img v-if="job.job_logo" :src="job.job_logo" :alt="job.job_title" class="w-full h-full object-cover">
-            <SvgoBuilding v-else class="size-6"/>
-          </div>
-          <div>
-            <p class="font-semibold">{{ job.job_title }}</p>
+      <div class="job-card-top">
+        <div class="flex justify-between gap-3">
+          <div class="flex gap-3">
+            <div class="flex place-items-center rounded-full overflow-hidden w-12 h-12">
+              <img v-if="job.job_logo" :src="job.job_logo" :alt="job.job_title" class="w-full h-full object-cover">
+              <SvgoBuilding v-else class="size-6"/>
+            </div>
+            <div>
+              <p class="font-semibold">{{ job.job_title }}</p>
 
-            <p class="text-gray-600 text-sm">{{ job.organization_name }}</p>
+              <p class="text-gray-600 text-sm">{{ job.organization_name }}</p>
+            </div>
           </div>
-        </div>
-        <div class="job-badge">
-          {{ getDaysDifference(job.date_posted) }}
+          <div class="job-badge">
+            {{ getDaysDifference(job.date_posted) }}
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="job-card-bottom flex justify-between items-center">
+      <div class="job-card-bottom flex justify-between items-center">
       <div class="flex items-center gap-5 text-gray-600 font-medium pt-5">
         <div class="flex items-center gap-2">
           <SvgoClock class="w-5 h-5 text-gray-400" />
@@ -101,7 +103,7 @@ defineProps<{
         </div>
       </div>
     </div>
-  </div>
+    </div>
   </NuxtLink>
 </template>
 

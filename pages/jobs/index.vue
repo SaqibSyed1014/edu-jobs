@@ -5,6 +5,7 @@ import {useJobStore} from "~/segments/jobs/store";
 import NoRecordFound from "~/components/core/NoRecordFound.vue";
 import type {JobQueryParams, JobSearchFilters, PaginationInfo, TypesenseQueryParam} from "~/segments/common.types";
 import { encode, decode } from "js-base64";
+import SignUpCard from "~/components/pages/job-listings/SignUpCard.vue";
 
 const filters = ref([
   {
@@ -191,6 +192,8 @@ const jobsLoading = ref(true);
 async function doSearch(resetToDefaultPage = false) {
   jobsLoading.value = true;
   if (resetToDefaultPage) pageInfo.value.currentPage = 1;  // set the current page to default (1)
+  if (pageInfo.value.currentPage === 1) query.value.per_page = 23;  // 23 jobs will be fetched for first page due to signup card
+  else query.value.per_page = 24;
   query.value.page = pageInfo.value.currentPage;
 
   await router.replace({
@@ -289,6 +292,8 @@ const SortDropdownLabel = computed(() => {
   if (query.value.sort_by?.includes('desc')) return 'Date Posted';
   return 'Most Relevant';
 })
+
+const signUpCardIndex = Math.floor(Math.random() * 25);  // randomly generate index number for signup card
 </script>
 
 <template>
@@ -380,7 +385,9 @@ const SortDropdownLabel = computed(() => {
               <JobSkeleton :card-form="layoutOptionSelected === 1"/>
             </template>
 
-            <template v-else v-for="job in jobListings">
+            <template v-else v-for="(job, index) in jobListings">
+              <SignUpCard v-if="signUpCardIndex === index && pageInfo.currentPage === 1" />
+
               <JobCard :job="job" :card-form="layoutOptionSelected === 1" :show-job-description="false"
                        :is-job-loading="jobsLoading"/>
             </template>
