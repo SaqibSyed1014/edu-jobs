@@ -343,8 +343,7 @@ function redirectToURL() {
           </div>
         </div>
 
-        <hr class="md:hidden">
-        <div class="flex md:hidden justify-between">
+        <div class="hidden justify-between">
           <BaseButton color="gray" :outline="true" label="Previous Job" />
           <BaseButton label="Next Job" />
         </div>
