@@ -1,75 +1,17 @@
-interface Job {
-    job_id: string
-    date_created: string
-    organization_name: string
-    organization_id: string
-    organization_slug: string
-    organization_type?: string
-    date_posted: string
-    date_posting_expires?: string
-    start_date?: string
-    job_title: string
-    job_role: string
-    job_slug: string
-    grade_levels?: string[]
-    subjects?: string[]
-    job_description: string
-    apply_url?: string
-    apply_email?: string
-    apply_method: string
-    job_country: string
-    job_city: string
-    job_state: string
-    job_location: string
-    job_postal_code?: string
-    job_logo?: string
-    featured: string
-    active: boolean
-    employment_type_id?: string
-    employment_type?: string
-    geo_location?: number[]
-    application_deadline?: string
-}
-
-interface JobHit {
-    document: Job;
-    highlight: Record<string, any>;
-    highlights: any[];
-}
-
-interface JobResponseType {
-    facet_counts: any[];
-    found: number;
-    hits: JobHit[];
-    out_of: number;
-    page: number;
-    request_params: RequestParams;
-    search_cutoff: boolean;
-    search_time_ms: number;
-}
-
-
-interface JobDetails extends Job {
-    internal_job_code: string
-    geo_lat: number
-    geo_lng: number
-}
-
-interface JobFaq {
-    question: string
-    answer: string
-}
-
-interface JobBenefits {
-    benefit_id: number
-    benefit_name: string
-    benefit_description: string
-    icon_path: string
+interface PartnerLogo {
     display_order: number
+    is_active: number
+    logo_id: number
+    logo_path: string
 }
 
-interface ExtendedJobDetails {
-    job_benefits: JobBenefits[]
-    job_faqs: JobFaq[]
-    job_details: JobDetails | null
+interface JobsInCities {
+    job_city: string;
+    job_state: string;
+    job_count: number;
+    company_count: number;
+    lat: number;
+    lng: number;
+    photo_url: string;
+    priority_rank: number;
 }
