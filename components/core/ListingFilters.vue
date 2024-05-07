@@ -33,6 +33,8 @@ function resetFilters() {
     }
   });
   selectedValues.value = [];
+
+  emits('onFiltersChange', selectedValues.value);
 }
 
 
@@ -55,7 +57,6 @@ const updateChecked = (index: number, subIndex: number, checked: boolean, value:
   }
 
   emits('onFiltersChange', selectedValues.value);
-  console.log('FINAL -> ', selectedValues.value)
 };
 
 function isItemChecked(value :string) {
@@ -117,7 +118,7 @@ function isItemChecked(value :string) {
     </template>
 
 
-    <div class="md:hidden pb-20">
+    <div class="md:hidden pb-36">
       <BaseButton label="Apply" :full-sized="true" @click="emits('applyFiltersOnClick', selectedValues)" />
     </div>
   </div>

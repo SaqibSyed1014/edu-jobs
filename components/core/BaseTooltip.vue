@@ -33,7 +33,7 @@ onMounted(() => {
   <div :id="`tooltip-${id}-trigger`">
     <slot></slot>
   </div>
-  <div :id="`tooltip-${id}-content`" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+  <div :id="`tooltip-${id}-content`" role="tooltip" class="absolute z-10 invisible hidden md:inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
     {{ tooltipContent }}
     <div class="tooltip-arrow" data-popper-arrow></div>
   </div>

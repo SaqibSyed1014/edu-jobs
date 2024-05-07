@@ -26,8 +26,10 @@ const isGridView = ref(
 ); // Reactive variable to store the current view mode
 type SelectValue = { key1: string } | null;
 type SelectStuValue = { key2: string } | null;
+// type SelectJoValue = { key3: string } | null;
 const selectschValue = ref<SelectValue>(null);
 const selectstuValue = ref<SelectStuValue>(null);
+// const selectjobValue = ref<SelectJoValue>(null);
 
 const jobOptions = ref({
   icon: "SvgoBriefCaseLight",
@@ -312,6 +314,18 @@ const toggleSchoolOption = (optionName: any, index: number) => {
       }
       selectstuValue.value = { key2: `student_count:=[${range}]` };
     }
+    // if (options.value.name === "jobOptions") {
+    //  if (route?.query?.filter_by) {
+    //   const splitData = route?.query?.filter_by.split(" && ");
+    //   splitData.forEach((item: any) => {
+    //     if (item.includes("school_count")) {
+    //       selectschValue.value = { key1: item };
+    //     }
+    //   });
+    // }
+    //   selectjobValue.value = { key3: `job_count:=[${range}]` };
+    //   console.log("selectjobValue", selectjobValue.value);
+    // }
   } else if (
     selectedRanges.length > 0 &&
     lastOption.checked &&
@@ -334,6 +348,12 @@ const toggleSchoolOption = (optionName: any, index: number) => {
     if (selectstuValue.value && selectstuValue.value.key2) {
       mergedFilterBy += selectstuValue.value.key2;
     }
+    // if (selectjobValue.value?.key3) {
+    //   if (mergedFilterBy) {
+    //     mergedFilterBy += " && ";
+    //   }
+    //   mergedFilterBy += selectjobValue.value.key3;
+    // }
   } else if (lastOption.checked === false && lastOption.label.endsWith("+")) {
     if (options.value.name === "schOptions") {
       selectschValue.value = null;
@@ -352,6 +372,12 @@ const toggleSchoolOption = (optionName: any, index: number) => {
     if (selectstuValue.value && selectstuValue.value.key2) {
       mergedFilterBy += selectstuValue.value.key2;
     }
+    // if (selectjobValue.value?.key3) {
+    //   if (mergedFilterBy) {
+    //     mergedFilterBy += " && ";
+    //   }
+    //   mergedFilterBy += selectjobValue.value.key3;
+    // }
   }
 
   // Merge key1 and key2 with '&&' between them
@@ -363,6 +389,11 @@ const toggleSchoolOption = (optionName: any, index: number) => {
     (selectstuValue.value && selectstuValue?.value?.key2
       ? selectstuValue?.value?.key2
       : "");
+  // +
+  // (selectstuValue.value && selectjobValue.value ? " && " : "") +
+  // (selectjobValue.value && selectjobValue?.value?.key3
+  //   ? selectjobValue?.value?.key3
+  //   : "");
 
   // Assign mergedFilterBy to query.value.filter_by if it's not empty
   if (mergedFilterBy !== "") {

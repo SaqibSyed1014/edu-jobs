@@ -9,7 +9,6 @@ defineProps({
 const router = useRouter()
 
 const goBack = () => {
-  console.log('router ', router)
   router.go(-1)
 };
 const backToHome = () => clearError({ redirect: '/' });

@@ -30,7 +30,7 @@ function selectingOption(index :number) {
            'rounded-s-none': i === btnsGroup.length - 1,
            'bg-gray-50 text-gray-800': i === selectedOption,
            'bg-white': i !== selectedOption,
-           '!py-[.575rem] text-sm': true
+           'text-sm': true
         }"
         @click="selectingOption(i)"
     >

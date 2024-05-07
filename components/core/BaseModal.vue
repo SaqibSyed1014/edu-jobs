@@ -45,7 +45,7 @@ const cancel = () => {
         :id="id"
         tabindex="-1"
         aria-hidden="true"
-        class="overflow-y-auto overflow-x-hidden fixed bg-black/60 top-0 right-0 left-0 bottom-0 z-50 justify-center items-center w-full md:inset-0 h-screen max-h-full"
+        class="overflow-y-auto overflow-x-hidden fixed bg-black/60 top-0 right-0 left-0 bottom-0 z-[1111] w-full md:inset-0 h-screen max-h-full"
         @click.self="dismiss"
     >
         <div class="relative p-4 w-full max-w-2xl max-h-full top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2" :style="{ maxWidth: props.width }">

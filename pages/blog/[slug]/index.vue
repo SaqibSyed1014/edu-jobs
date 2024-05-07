@@ -1,27 +1,28 @@
 <script setup lang="ts">
+import BaseSpinner from "~/components/core/BaseSpinner.vue";
+import {convertDateFormat} from "~/segments/utils";
+
 import {useBlogStore} from "~/segments/blogs/store";
 
-import BaseSpinner from "~/components/core/BaseSpinner.vue";
-
-const showSpinner = ref<boolean>(true)
+const showSpinner = ref<boolean>(true);
 
 const { params } = useRoute();
 const blogsStore = useBlogStore();
 
-const { blogDetails, blogs } = storeToRefs(blogsStore)
+const { blogDetails, blogs } = storeToRefs(blogsStore);
 
 onMounted(async () => {
-  if (!blogs.value.length) await blogsStore.fetchBlogs()
+  if (!blogs.value.length) await blogsStore.fetchBlogs();
   await blogsStore.fetchBlogDetails(params.slug as string)
-      .then(() => showSpinner.value = false)
+      .then(() => showSpinner.value = false);
 })
 
 function copyURL() {
   const currentURL = window.location.href;
-  navigator.clipboard.writeText(currentURL)
+  navigator.clipboard.writeText(currentURL);
   useNuxtApp().$toast.success('Link Copied!', {
     icon: false
-  })
+  });
 }
 </script>
 
@@ -64,7 +65,7 @@ function copyURL() {
                   </div>
                   <div class="text-lg font-medium">
                     <span class="text-brand-600 text-sm mb-3 block">Published on</span>
-                    {{ blogDetails.post_date }}
+                    {{ convertDateFormat(blogDetails.post_date) }}
                   </div>
                 </div>
                 <div class="hidden md:flex gap-3">
@@ -188,7 +189,7 @@ function copyURL() {
                       </div>
                       <div class="">
                         <h4>{{ blog.author.name }}</h4>
-                        <p class="text-black-light font-normal">{{ blog.post_date }}</p>
+                        <p class="text-black-light font-normal">{{ convertDateFormat(blog.post_date) }}</p>
                       </div>
                     </div>
                   </div>

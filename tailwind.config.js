@@ -96,7 +96,8 @@ module.exports = {
         }
       },
       boxShadow: {
-        'xs': '0 1px 2px 0 #1018280D'
+        'xs': '0 1px 2px 0 #1018280D',
+        'field': '0 2px 4px -2px #3B73FA0F, 0 4px 8px -2px #3B73FA1A'
       },
       backgroundImage: (theme) => ({
         "overlay-gradient-45": [

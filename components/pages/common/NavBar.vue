@@ -2,12 +2,9 @@
 import HamburgerIcon from "~/assets/icons/hamburger.svg";
 import XCloseIcon from "~/assets/icons/x-close.svg";
 import OrganizationsMegaMenu from "~/components/pages/common/OrganizationsMegaMenu.vue";
+import type {MenuLinksType} from "~/segments/common.types";
 
-const menuLinks : { label:string, path?: string, type?: 'link' | 'megaMenu' }[] = [
- /* {
-    label: "Home",
-    path: "/",
-  },*/
+const menuLinks : MenuLinksType[] = [
   {
     label: "Jobs",
     path: "/jobs",
@@ -15,7 +12,21 @@ const menuLinks : { label:string, path?: string, type?: 'link' | 'megaMenu' }[] 
   },
   {
     label: "Organizations",
-    type: 'megaMenu'
+    type: 'megaMenu',
+    subLinks: [
+      {
+        label: "School Districts",
+        path: "/school-districts",
+      },
+      {
+        label: "Charter Schools",
+        path: "/charter-schools",
+      },
+      {
+        label: "Colleges",
+        path: "/colleges",
+      },
+    ]
   },
   {
     label: "Pricing",
@@ -29,7 +40,7 @@ const menuLinks : { label:string, path?: string, type?: 'link' | 'megaMenu' }[] 
   },
   {
     label: "Request a Demo",
-    path: "/contact-us",
+    path: "/demo-request",
     type: 'link'
   },
 ];
@@ -66,7 +77,7 @@ function togglingSidebarVisibility() {
               <li>
                 <NuxtLink v-if="link.type === 'link'" :to="link.path" class="hover:text-brand-500 transition">{{ link.label }}</NuxtLink>
                 <MegaMenu v-else-if="link.type === 'megaMenu'" :label="link.label">
-                  <OrganizationsMegaMenu />
+                  <OrganizationsMegaMenu v-if="link.subLinks?.length" :sub-links="link.subLinks" />
                 </MegaMenu>
               </li>
             </template>

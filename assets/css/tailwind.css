@@ -4,16 +4,10 @@
 
 @tailwind base;
 input[type=text], input[type=email], input[type=password], .form-input, .form-textarea{
-    @apply bg-transparent rounded-lg border border-gray-200 py-2.5 px-3.5 field-shadow placeholder-gray-400
+    @apply bg-transparent rounded-lg border border-gray-200 py-2.5 px-3.5 shadow-field placeholder-gray-400
 }
 @tailwind components;
 @tailwind utilities;
-
-@layer components {
-    .field-shadow{
-        box-shadow: 0 2px 4px -2px #3B73FA0F, 0 4px 8px -2px #3B73FA1A;
-    }
-}
 
 body{
     @apply font-inter
@@ -33,7 +27,7 @@ input[type="search"]::-webkit-search-cancel-button {
     /* Remove default */
     -webkit-appearance: none;
   }
-  
+
 .form-control{
     @apply flex flex-col gap-1.5
 }

@@ -1,16 +1,40 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+// import { GlobalSettings } from './enviromentsettings'
+import { globalSettings } from './enviromentsettings'
+
+const appEnv: string  = process.env.ENV || 'development'
+
+
 export default defineNuxtConfig({
     app: {
         head: {
             title: 'EduJobs',
             charset: 'utf-8',
             viewport: 'width=device-width, initial-scale=1',
+            link:  [
+                { rel: 'icon', type: 'image/x-icon', sizes: '32x32', href: '/favicon.ico' },
+                { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
+                { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
+                { rel: 'apple-touch-icon', type: 'image/png', sizes: '76x76', href: '/apple-touch-icon.png' }
+            ]
         }
     },
     runtimeConfig: {
-        API_URL: process.env.API_URL,
+        API_URL: globalSettings[appEnv as keyof typeof globalSettings].API_URL,
+        API_KEY: globalSettings[appEnv as keyof typeof globalSettings].API_KEY,
+        TYPESENSE_API_URL: globalSettings[appEnv as keyof typeof globalSettings].TYPESENSE_API_URL,
+        TYPESENSE_API_KEY: globalSettings[appEnv as keyof typeof globalSettings].TYPESENSE_API_KEY,
+        STRAPI_API_URL: globalSettings[appEnv as keyof typeof globalSettings].STRAPI_API_URL,
+        STRAPI_API_TOKEN: globalSettings[appEnv as keyof typeof globalSettings].STRAPI_API_TOKEN,
+        SITE_ENVIRONMENT: globalSettings[appEnv as keyof typeof globalSettings].SITE_ENVIRONMENT, //globalSettings[appEnv].telephone,
         public: {
-          API_URL: process.env.API_URL,
+          API_URL: globalSettings[appEnv as keyof typeof globalSettings].API_URL,
+          API_KEY: globalSettings[appEnv as keyof typeof globalSettings].API_KEY,
+          TYPESENSE_API_URL: globalSettings[appEnv as keyof typeof globalSettings].TYPESENSE_API_URL,
+          TYPESENSE_API_KEY: globalSettings[appEnv as keyof typeof globalSettings].TYPESENSE_API_KEY,
+          STRAPI_API_URL: globalSettings[appEnv as keyof typeof globalSettings].STRAPI_API_URL,
+          STRAPI_API_TOKEN: globalSettings[appEnv as keyof typeof globalSettings].STRAPI_API_TOKEN,
+          SITE_ENVIRONMENT: globalSettings[appEnv as keyof typeof globalSettings].SITE_ENVIRONMENT, //globalSettings[appEnv].telephone,
         },
       },
     build: {

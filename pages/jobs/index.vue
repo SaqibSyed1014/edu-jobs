@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import {initDropdowns} from "flowbite";
 import JobSkeleton from "~/components/pages/job-listings/JobSkeleton.vue";
 import {useJobStore} from "~/segments/jobs/store";
 import NoRecordFound from "~/components/core/NoRecordFound.vue";
 import type {JobQueryParams, JobSearchFilters, PaginationInfo, TypesenseQueryParam} from "~/segments/common.types";
+import { encode, decode } from "js-base64";
+import SignUpCard from "~/components/pages/job-listings/SignUpCard.vue";
 
 const filters = ref([
   {
@@ -121,7 +124,6 @@ const router = useRouter();
 const jobStore = useJobStore();
 const { jobListings, totalPages, coordinates } = storeToRefs(jobStore);
 
-const searchedKeyword = ref('')
 const layoutOptionSelected = ref(1);
 const searchedLocationText = ref('');
 const isFilterSidebarVisible = ref<boolean>(false);
@@ -130,7 +132,7 @@ const sidebarFilters = ref<{ [key :string]: string | string[] }>({})
 
 const pageInfo = ref<PaginationInfo>({
   currentPage: 1,
-  itemsPerPage: 12,
+  itemsPerPage: 24,
   totalPages: 0
 });
 
@@ -138,6 +140,7 @@ const initialQuery = {
   q: "*",
   page: pageInfo.value.currentPage,
   per_page: pageInfo.value.itemsPerPage,
+  sort_by: 'date_posted:asc'
 };
 const query = ref<TypesenseQueryParam>(initialQuery);
 
@@ -148,6 +151,8 @@ const queryParams = computed(() => {
     ...sidebarFilters.value,
     page: pageInfo.value.currentPage,
     mode: layoutOptionSelected.value === 0 ? 'list' : 'grid',
+    coordinates: [coordinates.value.lat, coordinates.value.lng],
+    sort_by: query.value.sort_by
   }
   return urlParams
 })
@@ -155,14 +160,19 @@ const queryParams = computed(() => {
 watch(() => layoutOptionSelected.value, () => {
   router.replace({  // update route with updated query when layout mode is changed
     path: "/jobs",
-    query: queryParams.value,
+    query: {
+      params: encode(JSON.stringify(queryParams.value))
+    },
   });
 })
 
 
 onMounted(async () => {
-  if (Object.keys(route.query).length) {  // check if route has params
-    assignQueryParamsOnInitialLoad(route.query as JobQueryParams)
+  initDropdowns();
+  const paramsString = route.query.params as string;
+  if (paramsString) {
+    const parsedParams = JSON.parse(decode(paramsString));
+    assignQueryParamsOnInitialLoad(parsedParams as JobQueryParams);
   }
 
   // assign the saved coordinates in store (searched on Home view) for query
@@ -172,6 +182,7 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
+  jobStore.jobsList = [];
   coordinates.value = { lat: 0, lng: 0 };
   query.value = initialQuery;
 })
@@ -180,10 +191,15 @@ const jobsLoading = ref(true);
 async function doSearch(resetToDefaultPage = false) {
   jobsLoading.value = true;
   if (resetToDefaultPage) pageInfo.value.currentPage = 1;  // set the current page to default (1)
+  if (pageInfo.value.currentPage === 1) query.value.per_page = 23;  // 23 jobs will be fetched for first page due to signup card
+  else query.value.per_page = 24;
   query.value.page = pageInfo.value.currentPage;
+
   await router.replace({
     path: '/jobs',
-    query: queryParams.value
+    query: {
+      params: encode(JSON.stringify(queryParams.value))
+    }
   })
   if (query.value.q && query.value.q !== '*') query.value.query_by = 'job_title'  // search from job_title
   await jobStore.fetchJobs(query.value);
@@ -235,12 +251,15 @@ function updateSideBarFilters(selectedFilters :{ field: string, values: string[]
 }
 
 function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
-  const { keyword, mode, location, employment_type, job_role, experience_level, ...otherParams } = queryParams
+  const { keyword, mode, location, employment_type, job_role, experience_level, coordinates, ...otherParams }
+      = queryParams
   query.value = {
     ...query.value,
     ...otherParams as unknown as TypesenseQueryParam,
     q: keyword as string,
   }
+  pageInfo.value.currentPage = otherParams.page
+  layoutOptionSelected.value = mode === 'list' ? 0 : 1;
   if (location) searchedLocationText.value = location as string; // assign location in url for google map field
 
   if (employment_type) sidebarFilters.value.employment_type = employment_type
@@ -254,8 +273,26 @@ function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
         });
       }
     });
-  layoutOptionSelected.value = mode === 'list' ? 0 : 1;
+  if (coordinates && !coordinates?.includes(0)) {
+    jobStore.coordinates.lat = coordinates[0];
+    jobStore.coordinates.lng = coordinates[1];
+  }
 }
+
+function sortJobs(sortBy :string) {
+  if (sortBy === 'most_relevant') query.value.sort_by = 'date_posted:asc';
+  if (sortBy === 'date_posted') query.value.sort_by = 'date_posted:desc';
+  const sortDropdown = document.getElementById('dropdownToggler');
+  if (sortDropdown) sortDropdown.click();
+  doSearch();
+}
+
+const SortDropdownLabel = computed(() => {
+  if (query.value.sort_by?.includes('desc')) return 'Date Posted';
+  return 'Most Relevant';
+})
+
+const signUpCardIndex = Math.floor(Math.random() * 25);  // randomly generate index number for signup card
 </script>
 
 <template>
@@ -295,8 +332,8 @@ function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
 
         <template #cards-list>
           <div class="flex gap-4 justify-between md:items-center">
-            <div class="max-md:flex-1">
-              <BaseButton color="gray" :outline="true" :full-sized-on-small="true" label="Most Relevant" class="justify-between">
+            <div class="relative max-md:flex-1">
+              <BaseButton id="dropdownToggler" data-dropdown-toggle="sort-jobs-by-dropdown" color="gray" :outline="true" :full-sized-on-small="true" :label="SortDropdownLabel" class="justify-between text-sm">
                 <template #prepend-icon>
                   <SvgoFilterFunnel class="w-5 h-5 text-gray-600"/>
                 </template>
@@ -304,6 +341,26 @@ function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
                   <SvgoChevronDown class="w-4 h-4 text-gray-600"/>
                 </template>
               </BaseButton>
+
+              <!-- Dropdown menu -->
+              <div id="sort-jobs-by-dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-full dark:bg-gray-700">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownToggler">
+                  <li
+                      @click="sortJobs('most_relevant')"
+                      class="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                      :class="{'bg-gray-100 hover:bg-gray-200': query.sort_by?.includes('asc')}"
+                  >
+                    Most Relevant
+                  </li>
+                  <li
+                      @click="sortJobs('date_posted')"
+                      class="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                      :class="{'bg-gray-100 hover:bg-gray-200': query.sort_by?.includes('desc')}"
+                  >
+                    Date Posted
+                  </li>
+                </ul>
+              </div>
             </div>
 
             <div class="hidden md:inline-flex rounded-md shadow-sm" role="group">
@@ -323,11 +380,13 @@ function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
           </div>
 
           <div v-if="jobsLoading || jobListings.length" class="grid gap-6" :class="[layoutOptionSelected ? 'md:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1']">
-            <template v-if="jobsLoading" v-for="i in 12">
+            <template v-if="jobsLoading" v-for="i in pageInfo.itemsPerPage">
               <JobSkeleton :card-form="layoutOptionSelected === 1"/>
             </template>
 
-            <template v-else v-for="job in jobListings">
+            <template v-else v-for="(job, index) in jobListings">
+              <SignUpCard v-if="signUpCardIndex === index && pageInfo.currentPage === 1" />
+
               <JobCard :job="job" :card-form="layoutOptionSelected === 1" :show-job-description="false"
                        :is-job-loading="jobsLoading"/>
             </template>
