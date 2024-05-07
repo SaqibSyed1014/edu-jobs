@@ -115,7 +115,7 @@ const faqs = [
       <div class="container md:px-8">
         <h3 class="text-brand-600 text-sm md:text-base mb-3">Pricing</h3>
         <h2 class="text-4xl md:text-5xl mb-6">Simple, transparent pricing</h2>
-        <p class="text-black-light md:text-xl font-normal">Cost-effective plans designed to meet the needs of school districts, colleges, and other educational organizations.</p>
+        <p class="md:text-xl font-normal">Cost-effective plans designed to meet the needs of school districts, colleges, and other educational organizations.</p>
       </div>
     </section>
     <section class="pb-16 md:pb-24">
@@ -157,7 +157,7 @@ const faqs = [
                   <div class="text-center">
                     <h3 class="text-4xl md:text-5xl mb-4">${{ billingType === 0 ? offer.monthlyBilling : offer.yearlyBilling }}/mth</h3>
                     <h4 class="capitalize text-xl mb-1">{{ offer.type }} plan</h4>
-                    <p class="font-normal text-black-light">Billed {{ billingType === 0 ? 'monthly' : 'annually' }}.</p>
+                    <p class="font-normal">Billed {{ billingType === 0 ? 'monthly' : 'annually' }}.</p>
                   </div>
                   <ul class="font-normal flex flex-col gap-4 mt-8 mb-10">
                     <template v-for="benefit in offer.benefits">
@@ -200,7 +200,7 @@ const faqs = [
                 <div class="text-center">
                   <h3 class="text-4xl md:text-5xl mb-4">$110/year</h3>
                   <h4 class="text-xl mb-1">Basic plan</h4>
-                  <p class="font-normal text-black-light">Billed annually.</p>
+                  <p class="font-normal">Billed annually.</p>
                 </div>
                 <ul class="font-normal flex flex-col gap-4 mt-8 mb-10">
                   <li class="flex gap-3">
@@ -283,7 +283,7 @@ const faqs = [
                 <div class="text-center">
                   <h3 class="text-4xl md:text-5xl mb-4">$220/year</h3>
                   <h4 class="text-xl mb-1">Business plan</h4>
-                  <p class="font-normal text-black-light">Billed annually.</p>
+                  <p class="font-normal">Billed annually.</p>
                 </div>
                 <ul class="font-normal flex flex-col gap-4 mt-8 mb-10">
                   <li class="flex gap-3">
@@ -366,7 +366,7 @@ const faqs = [
                 <div class="text-center">
                   <h3 class="text-4xl md:text-5xl mb-4">$450/year</h3>
                   <h4 class="text-xl mb-1">Enterprise plan</h4>
-                  <p class="font-normal text-black-light">Billed annually.</p>
+                  <p class="font-normal">Billed annually.</p>
                 </div>
                 <ul class="font-normal flex flex-col gap-4 mt-8 mb-10">
                   <li class="flex gap-3">
@@ -455,7 +455,7 @@ const faqs = [
         <div class="w-full max-w-3xl mb-16">
           <h3 class="text-brand-600 text-sm md:text-base mb-3">Features</h3>
           <h2 class="text-3xl md:text-4xl mb-6">Beautiful analytics to grow smarter</h2>
-          <p class="text-black-light md:text-xl font-normal">Powerful, self-serve product and growth analytics to help you convert, engage, and retain more users. Trusted by over 4,000 startups.</p>
+          <p class="md:text-xl font-normal">Powerful, self-serve product and growth analytics to help you convert, engage, and retain more users. Trusted by over 4,000 startups.</p>
         </div>
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-10 sm:gap-y-16">
           <template v-for="feature in features">
@@ -465,7 +465,7 @@ const faqs = [
               </div>
               <div class="">
                 <h3 class="text-xl mb-2">{{ feature.title }}</h3>
-                <p class="font-normal text-black-light">{{ feature.description }}</p>
+                <p class="font-normal">{{ feature.description }}</p>
               </div>
               <div class="text-brand-600 inline-flex items-center gap-2.5 group font-semibold cursor-pointer">
                 Learn more
@@ -480,20 +480,20 @@ const faqs = [
       <div class="container md:px-8">
         <div class="w-full max-w-3xl mb-16">
           <h2 class="text-3xl md:text-4xl mb-5">FAQs</h2>
-          <p class="font-normal text-black-light">Everything you need to know about the product and billing. Can't find the answer you're looking for? Please chat to our friendly team.</p>
+          <p class="font-normal">Everything you need to know about the product and billing. Can't find the answer you're looking for? Please chat to our friendly team.</p>
         </div>
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10 sm:gap-y-16 mb-16">
           <template v-for="faq in faqs">
             <div class="faq-block">
               <h3 class="text-lg mb-2">{{ faq.question }}</h3>
-              <p class="font-normal text-black-light">{{ faq.answer }}</p>
+              <p class="font-normal">{{ faq.answer }}</p>
             </div>
           </template>
         </div>
         <div class="bg-gray-50 rounded-2xl px-6 md:px-8 py-8 flex flex-col md:flex-row items-start justify-between gap-6">
           <div class="">
             <h4 class="text-xl mb-2">Still have questions?</h4>
-            <p class="text-black-light font-normal">Can't find the answer you're looking for? Please chat to our friendly team.</p>
+            <p class="font-normal">Can't find the answer you're looking for? Please chat to our friendly team.</p>
           </div>
           <div class="shrink-0">
             <BaseButton label="Contact us"/>
