@@ -124,7 +124,6 @@ const router = useRouter();
 const jobStore = useJobStore();
 const { jobListings, totalPages, coordinates } = storeToRefs(jobStore);
 
-
 const layoutOptionSelected = ref(1);
 const searchedLocationText = ref('');
 const isFilterSidebarVisible = ref<boolean>(false);
