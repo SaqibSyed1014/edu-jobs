@@ -23,9 +23,9 @@ const tutorialsPoints = [
       <div class="grid lg:grid-cols-2 gap-12">
         <div class="flex flex-col gap-8">
           <div>
-            <h3 class="uppercase text-brand-600 text-sm md:text-base mb-3">Request a demo</h3>
-            <p class="text-4xl md:text-5xl font-bold mb-6">We'd love to show you around</p>
-            <p class="md:text-xl font-medium">
+            <h3 class="text-brand-600 text-sm md:text-base mb-3">Request a demo</h3>
+            <h2 class="text-4xl md:text-5xl mb-6">We'd love to show you around</h2>
+            <p class="md:text-xl font-normal">
               Get in touch to witness an amazing journey of promoting jobs and match with the right candidate.
             </p>
           </div>

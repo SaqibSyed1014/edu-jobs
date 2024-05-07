@@ -10,7 +10,10 @@ const props = defineProps<{
 
 const emits = defineEmits(['optionSelected', 'update:modelValue'])
 
-let selectedOption = ref<number>(props.modelValue)
+let selectedOption = ref<number>(props.modelValue);
+
+// In case, modelValue prop is updated from parent component
+watch(() => props.modelValue, (newValue) => selectedOption.value = newValue);
 
 function selectingOption(index :number) {
   selectedOption.value = index
