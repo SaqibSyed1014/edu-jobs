@@ -124,7 +124,7 @@ const router = useRouter();
 const jobStore = useJobStore();
 const { jobListings, totalPages, coordinates } = storeToRefs(jobStore);
 
-const layoutOptionSelected = ref(1);
+const layoutOptionSelected = ref(0);
 const searchedLocationText = ref('');
 const isFilterSidebarVisible = ref<boolean>(false);
 
@@ -170,10 +170,9 @@ watch(() => layoutOptionSelected.value, (val) => {
 
 onMounted(async () => {
   initDropdowns();
-  console.log('b4')
-  let savedLayout = 'grid';
+  let savedLayout = '';
   if (process.client) {  // using process.client due to SSR
-    savedLayout = localStorage.getItem('jobsLayout') ?? 'grid';  // use layout if it's saved earlier else default layout
+    savedLayout = localStorage.getItem('jobsLayout') ?? 'list';  // use layout if it's saved earlier else default layout
     layoutOptionSelected.value = savedLayout === 'grid' ? 1 : 0;
   }
   const paramsString = route.query.params as string;
