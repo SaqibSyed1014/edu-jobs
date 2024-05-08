@@ -22,7 +22,7 @@ const isGridView = ref(
     ? route?.query?.view === "grid"
       ? "grid"
       : "list"
-    : "grid"
+    : "list"
 ); // Reactive variable to store the current view mode
 type SelectValue = { key1: string } | null;
 type SelectStuValue = { key2: string } | null;
@@ -77,6 +77,7 @@ const schOptions = ref({
 // Function to switch to list view
 const switchView = (view: any) => {
   isGridView.value = view;
+  localStorage.setItem('districtsLayout', view);
   router.replace({
     path: "/school-districts",
     query: {
@@ -95,6 +96,13 @@ const switchToGridView = () => {
 };
 
 onMounted(async () => {
+  let savedLayout :string | null = '';
+  if (process.client) {   // using process.client due to SSR
+    if (localStorage.getItem('districtsLayout')) savedLayout = localStorage.getItem('districtsLayout');
+    else if (route?.query?.view) savedLayout = route?.query?.view as string
+    else savedLayout = 'list'
+    isGridView.value = savedLayout as string;
+  }
   await fetchDistricts(); // Initial fetch
   if (route?.query?.filter_by) {
     query.value.filter_by = route?.query?.filter_by.toString();
@@ -181,6 +189,7 @@ const queryParams = computed(() => {
 });
 
 async function fetchDistricts() {
+  localStorage.setItem('districtsLayout', isGridView.value)
   isLoading.value = true;
   await districtStore.fetchDistricts(query?.value);
   isLoading.value = false;
@@ -711,7 +720,9 @@ const search = () => {
               class="grid sm:grid-cols-2 pt-8 lg:grid-cols-3 gap-6"
             >
               <div v-if="isLoading" v-for="i in 12">
-                <SDGridSkelton />
+                <client-only>
+                  <SDGridSkelton />
+                </client-only>
               </div>
               <div v-else v-for="(item, index) in distictsList" :key="index">
                 <DIstrictsGridCard :data="item" />
@@ -720,7 +731,9 @@ const search = () => {
             <!-- Lsit View -->
             <div v-if="isGridView === 'list'" class="grid gap-6 pt-8">
               <div v-if="isLoading" v-for="i in 12">
-                <SDListSkelton />
+                <client-only>
+                  <SDListSkelton/>
+                </client-only>
               </div>
               <div v-else v-for="(item, index) in distictsList" :key="index">
                 <DistrictsListCard :data="item" />
