@@ -124,7 +124,7 @@ const router = useRouter();
 const jobStore = useJobStore();
 const { jobListings, totalPages, coordinates } = storeToRefs(jobStore);
 
-const layoutOptionSelected = ref(1);
+const layoutOptionSelected = ref(0);
 const searchedLocationText = ref('');
 const isFilterSidebarVisible = ref<boolean>(false);
 
@@ -157,7 +157,8 @@ const queryParams = computed(() => {
   return urlParams
 })
 
-watch(() => layoutOptionSelected.value, () => {
+watch(() => layoutOptionSelected.value, (val) => {
+  localStorage.setItem('jobsLayout', val === 0 ? 'list' : 'grid');  // update saved layout on Grid/List btns clicking
   router.replace({  // update route with updated query when layout mode is changed
     path: "/jobs",
     query: {
@@ -169,6 +170,11 @@ watch(() => layoutOptionSelected.value, () => {
 
 onMounted(async () => {
   initDropdowns();
+  let savedLayout = '';
+  if (process.client) {  // using process.client due to SSR
+    savedLayout = localStorage.getItem('jobsLayout') ?? 'list';  // use layout if it's saved earlier else default layout
+    layoutOptionSelected.value = savedLayout === 'grid' ? 1 : 0;
+  }
   const paramsString = route.query.params as string;
   if (paramsString) {
     const parsedParams = JSON.parse(decode(paramsString));
@@ -202,6 +208,7 @@ async function doSearch(resetToDefaultPage = false) {
     }
   })
   if (query.value.q && query.value.q !== '*') query.value.query_by = 'job_title'  // search from job_title
+  localStorage.setItem('jobsLayout', queryParams.value.mode);  // save layout before calling api
   await jobStore.fetchJobs(query.value);
   pageInfo.value.totalPages = totalPages.value
   jobsLoading.value = false;
@@ -381,7 +388,9 @@ const signUpCardIndex = Math.floor(Math.random() * 25);  // randomly generate in
 
           <div v-if="jobsLoading || jobListings.length" class="grid gap-6" :class="[layoutOptionSelected ? 'md:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1']">
             <template v-if="jobsLoading" v-for="i in pageInfo.itemsPerPage">
-              <JobSkeleton :card-form="layoutOptionSelected === 1"/>
+              <client-only>
+                <JobSkeleton :card-form="layoutOptionSelected === 1" />
+              </client-only>
             </template>
 
             <template v-else v-for="(job, index) in jobListings">
