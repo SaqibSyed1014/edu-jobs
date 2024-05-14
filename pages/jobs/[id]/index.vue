@@ -5,25 +5,6 @@ import QuickSignUpModal from "~/components/pages/job-listings/QuickSignUpModal.v
 import BaseSpinner from "~/components/core/BaseSpinner.vue";
 const center = ref({ lat: 0, lng: 0 })
 
-const faqList = [
-  {
-    question: 'Is there a free trial available?',
-    answer: 'Yes, you can try us for free for 30 days. If you want, we’ll provide you with a free, personalized 30-minute onboarding call to get you up and running as soon as possible.'
-  },
-  {
-    question: 'Can I change my plan later?',
-    answer: 'Yes, you can try us for free for 30 days. If you want, we’ll provide you with a free, personalized 30-minute onboarding call to get you up and running as soon as possible.'
-  },
-  {
-    question: 'What is your cancellation policy?',
-    answer: 'Yes, you can try us for free for 30 days. If you want, we’ll provide you with a free, personalized 30-minute onboarding call to get you up and running as soon as possible.'
-  },
-  {
-    question: 'How does billing work?',
-    answer: 'Yes, you can try us for free for 30 days. If you want, we’ll provide you with a free, personalized 30-minute onboarding call to get you up and running as soon as possible.'
-  }
-]
-
 const router = useRouter();
 const jobStore = useJobStore();
 const { jobDetails, jobBenefits, jobFaqs } = storeToRefs(jobStore);
@@ -44,8 +25,6 @@ const mapOptions = computed(() => {
 const isJobFetching = ref<boolean>(true);
 
 onMounted(async () => {
-  // initTooltips();
-
   initModals();
   isJobFetching.value = true;
   await jobStore.fetchJobDetails(route.params?.id as string);
@@ -95,10 +74,12 @@ function redirectToURL() {
               <div class="job-logo-and-title -mt-20 md:-mt-14 mb-8">
                 <div class="flex max-md:flex-col items-start md:justify-between md:items-end gap-4">
                   <div class="flex max-md:flex-col md:items-end gap-6">
-                    <div class="w-24 h-24 shrink-0 bg-white rounded-[10px] shadow-lg p-1">
-                      <div class="border border-gray-200 rounded-[10px] overflow-hidden">
-                        <img src="/images/logos/logo-one.jpg" alt="">
+                    <div class="w-24 h-24 shrink-0 bg-white rounded-[10px] shadow-lg p-1 flex justify-center items-center">
+                      <div v-if="jobDetails.job_logo" class="border border-gray-200 rounded-[10px] overflow-hidden">
+                        <img :src="jobDetails.job_logo" :alt="jobDetails.job_title" class="w-full h-full object-cover">
                       </div>
+
+                      <SvgoBuilding v-else class="size-14" />
                     </div>
 
                     <div>
@@ -116,21 +97,21 @@ function redirectToURL() {
 
                   <div class="flex gap-3 text-gray-700">
                     <div
-                        class="flex items-center cursor-pointer gap-1 py-2.5 px-3 text-sm border border-[#D0D5DD] rounded-lg hover:bg-brand-600 hover:text-white hover:border-primary">
+                        class="option-box">
                       <span>
                         <SvgoDotsHorizontal class="w-6 h-6" />
                       </span>
                     </div>
 
                     <div
-                        class="flex items-center cursor-pointer gap-1 py-2.5 px-3 text-sm border border-[#D0D5DD] rounded-lg hover:bg-brand-600 hover:text-white hover:border-primary">
+                        class="option-box">
                       <span>
                         <SvgoDownload class="w-6 h-6" />
                       </span>
                     </div>
 
                     <div
-                        class="flex items-center cursor-pointer gap-1 py-2.5 px-3 text-sm border border-[#D0D5DD] rounded-lg hover:bg-brand-600 hover:text-white hover:border-primary">
+                        class="option-box">
                       <span>
                         <SvgoBookmark class="w-6 h-6" />
                       </span>
@@ -187,7 +168,7 @@ function redirectToURL() {
                     <p class="font-medium text-sm">Length of Work Year</p>
                     <div class="text-gray-600 flex items-center gap-2">
                       <SvgoClock class="w-4 h-4"/>
-                      N/A
+                      {{ jobDetails?.length_work_year || 'N/A' }}
                     </div>
                   </div>
                 </div>
@@ -360,11 +341,16 @@ function redirectToURL() {
 </template>
 
 <style scoped lang="postcss">
-hr{
+hr {
   @apply border-t border-gray-200 my-5
 }
 
-.section-heading{
+
+.option-box {
+  @apply flex items-center cursor-pointer gap-1 py-2.5 px-3 text-sm border border-gray-300 rounded-lg hover:bg-brand-600 hover:text-white hover:border-brand-600 transition
+}
+
+.section-heading {
   @apply text-lg
 }
 .job-content :deep(ul) {
@@ -373,10 +359,10 @@ hr{
 .job-content :deep(p) {
   @apply mb-2
 }
-.job-content :deep(a){
+.job-content :deep(a) {
   word-break: break-word;
 }
-.side-rounded-cards{
+.side-rounded-cards {
   @apply w-full bg-white border border-[#EAECF0] rounded-2xl p-4
 }
 </style>
