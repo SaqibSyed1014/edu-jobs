@@ -66,7 +66,9 @@ defineProps<{
       </svg>
       <div class="text-center">
         <h3 class="text-lg font-semibold pb-2">No {{ name }} found</h3>
-        <p>Your search {{ searchValue !== '*' ? `"${searchValue}"`: '' }} did not match any {{ name }}. Please try again.</p>
+        <p v-if="searchValue?.length">
+          Your search {{ searchValue !== '*' ? `"${searchValue}"`: '' }} did not match any {{ name }}. Please try again.
+        </p>
       </div>
     </div>
   </div>

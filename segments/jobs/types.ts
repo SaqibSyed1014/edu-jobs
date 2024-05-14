@@ -30,6 +30,7 @@ interface Job {
     employment_type?: string
     geo_location?: number[]
     application_deadline?: string
+    length_work_year?: string
 }
 
 interface JobHit {

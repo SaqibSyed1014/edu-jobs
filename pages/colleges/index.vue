@@ -364,7 +364,7 @@ const search = () => {
             </div>
           </div>
 
-          <div class="inline-flex justify-end">
+          <div class="hidden md:inline-flex justify-end">
             <div
               class="rounded-lg shadow justify-start items-start inline-flex"
             >
