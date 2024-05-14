@@ -713,7 +713,7 @@ const search = () => {
               </client-only>
             </template>
 
-            <template v-else v-for="(item, index) in schoolsList">
+            <template v-else v-for="(item) in schoolsList">
               <SchoolCard :school="item" :card-form="isGridView === 'grid'" />
             </template>
           </div>

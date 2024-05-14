@@ -1,9 +1,11 @@
 <script setup>
+import fa from "flowbite-datepicker/locales/fa";
+
 const activeTab = ref(0); // Default to first tab
 const router = useRouter();
 // Array of tab names and icons
 const tabs = ref([
-  { name: "About School District" },
+  { name: "About Charter School" },
   { name: "Open Jobs" },
   { name: "List of Schools" },
   { name: "Photos" },
@@ -13,7 +15,7 @@ const tabs = ref([
 const listData = ref([
   {
     title: "Academic Excellence:",
-    desc: "The district is recognized for its commitment to academic excellence, and many of its schools have received high rankings. Students often excel in various academic and extracurricular activities.",
+    desc: "The School is recognized for its commitment to academic excellence, and many of its schools have received high rankings. Students often excel in various academic and extracurricular activities.",
   },
   {
     title: "Innovation and Technology:",
@@ -21,7 +23,7 @@ const listData = ref([
   },
   {
     title: "Diversity:",
-    desc: "The district is known for its diverse student body, reflecting the cultural and socioeconomic diversity of the community. Efforts are made to promote inclusivity and provide a well-rounded education for all students.",
+    desc: "The School is known for its diverse student body, reflecting the cultural and socioeconomic diversity of the community. Efforts are made to promote inclusivity and provide a well-rounded education for all students.",
   },
   {
     title: "Community Engagement:",
@@ -29,59 +31,59 @@ const listData = ref([
   },
   {
     title: "Challenges:",
-    desc: "Like many high-performing school districts, PAUSD faces challenges related to academic pressure, student well-being, and maintaining a balance between achievement and the overall well-rounded development of students.",
+    desc: "Like many high-performing schools, PAUSD faces challenges related to academic pressure, student well-being, and maintaining a balance between achievement and the overall well-rounded development of students.",
   },
 ]);
 
 const schoolList = ref([
   {
     avatar: "/images/schoolDistrict/Avatar1.png",
-    schoolName: "Palo Alto Unified School District",
+    schoolName: "Palo Alto Unified School",
   },
   {
     avatar: "/images/schoolDistrict/avatar2.png",
-    schoolName: "San Dieguito Union High School District",
+    schoolName: "San Dieguito Union High School",
   },
   {
     avatar: "/images/schoolDistrict/avatar3.png",
-    schoolName: "Arcadia Unified School District",
+    schoolName: "Arcadia Unified School",
   },
   {
     avatar: "/images/schoolDistrict/avatar4.png",
-    schoolName: "Saratoga Joint Union High School District",
+    schoolName: "Saratoga Joint Union High School",
   },
   {
     avatar: "/images/schoolDistrict/avatar5.png",
-    schoolName: "Palo Alto Unified School Districts",
+    schoolName: "Palo Alto Unified School",
   },
   {
     avatar: "/images/schoolDistrict/avatar6.png",
-    schoolName: "San Dieguito Union High School District",
+    schoolName: "San Dieguito Union High School",
   },
   {
     avatar: "/images/schoolDistrict/avatar7.png",
-    schoolName: "Arcadia Unified School District",
+    schoolName: "Arcadia Unified School",
   },
   {
     avatar: "/images/schoolDistrict/avatar8.png",
-    schoolName: "Saratoga Joint Union High School District",
+    schoolName: "Saratoga Joint Union High School",
   },
 
   {
     avatar: "/images/schoolDistrict/avatar9.png",
-    schoolName: "Palo Alto Unified School Districts",
+    schoolName: "Palo Alto Unified School",
   },
   {
     avatar: "/images/schoolDistrict/avatar10.png",
-    schoolName: "San Dieguito Union High School District",
+    schoolName: "San Dieguito Union High School",
   },
   {
     avatar: "/images/schoolDistrict/avatar11.png",
-    schoolName: "Arcadia Unified School District",
+    schoolName: "Arcadia Unified School",
   },
   {
     avatar: "/images/schoolDistrict/avatar12.png",
-    schoolName: "Saratoga Joint Union High School District",
+    schoolName: "Saratoga Joint Union High School",
   },
 ]);
 
@@ -282,16 +284,16 @@ const jobList = [
             <div class="pl-3 justify-start items-center gap-3 hidden lg:flex">
               <div class="justify-center items-center flex">
                 <NuxtLink
-                  to="/school-districts"
+                  to="/charter-schools"
                   class="text-slate-600 text-sm font-medium leading-tight"
                 >
-                  School districts
+                  Charter Schools
                 </NuxtLink>
               </div>
               <SvgoChevronRight class="size-4" />
               <div class="justify-center items-center flex">
                 <div class="text-blue-800 text-sm font-semibold leading-tight">
-                  Palo alto unified school districts
+                  Palo alto unified charter school
                 </div>
               </div>
             </div>
@@ -329,7 +331,7 @@ const jobList = [
                 <p
                   class="text-gray-900 text-2xl lg:text-3xl font-semibold leading-[38px]"
                 >
-                  Palo Alto Unified School District
+                  Palo Alto Unified Charter School
                 </p>
               </div>
             </div>
@@ -338,60 +340,48 @@ const jobList = [
               class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 lg:gap-9 pb-6 pt-6 lg:pt-0 border-b border-gray-200"
             >
               <div class="flex flex-col gap-2">
-                <span class="text-gray-900 text-sm font-medium leading-tight"
-                  >Location
+                <span class="text-gray-900 text-sm font-medium leading-tight">
+                  Location
                 </span>
                 <div class="inline-flex gap-2">
                   <SvgoUsFlag class="size-5" />
-                  <span
-                    class="text-slate-600 text-base font-medium leading-normal"
-                    >Palo Alto, CA</span
-                  >
+                  <span class="text-slate-600 text-base font-medium leading-normal">Palo Alto, CA</span>
                 </div>
               </div>
 
               <div class="flex flex-col gap-2">
-                <span class="text-gray-900 text-sm font-medium leading-tight"
-                  >Number of Schools
+                <span class="text-gray-900 text-sm font-medium leading-tight">
+                  Number of Schools
                 </span>
                 <div class="inline-flex gap-2">
-                  <SvgoBuilding class="size-5" />
-                  <span
-                    class="text-slate-600 text-base font-medium leading-normal"
-                    >19</span
-                  >
+                  <SvgoBuilding class="size-5 text-gray-500" />
+                  <span class="text-slate-600 text-base font-medium leading-normal">0</span>
                 </div>
               </div>
 
               <div class="flex flex-col gap-2">
-                <span class="text-gray-900 text-sm font-medium leading-tight"
-                  >Number of Students
+                <span class="text-gray-900 text-sm font-medium leading-tight">
+                  Number of Students
                 </span>
                 <div class="inline-flex gap-2">
                   <SvgoGraduationHat class="size-5" />
-                  <span
-                    class="text-slate-600 text-base font-medium leading-normal"
-                    >12,380</span
-                  >
+                  <span class="text-slate-600 text-base font-medium leading-normal">0</span>
                 </div>
               </div>
 
               <div class="flex flex-col gap-2">
-                <span class="text-gray-900 text-sm font-medium leading-tight"
-                  >Number of Jobs
+                <span class="text-gray-900 text-sm font-medium leading-tight">
+                  Number of Jobs
                 </span>
                 <div class="inline-flex gap-2">
                   <SvgoBriefCase class="size-5" />
-                  <span
-                    class="text-slate-600 text-base font-medium leading-normal"
-                    >19</span
-                  >
+                  <span class="text-slate-600 text-base font-medium leading-normal">0</span>
                 </div>
               </div>
 
               <div class="flex flex-col gap-2 col-span-2 sm:col-span-1">
-                <span class="text-gray-900 text-sm font-medium leading-tight"
-                  >Website
+                <span class="text-gray-900 text-sm font-medium leading-tight">
+                  Website
                 </span>
                 <div class="inline-flex gap-2">
                   <SvgoGlobe class="size-5" />
@@ -439,7 +429,7 @@ const jobList = [
                   >
                     {{
                       activeTab === 0
-                        ? "About School District"
+                        ? "About Charter School"
                         : activeTab === 1
                         ? "List of Jobs"
                         : activeTab === 2
@@ -462,7 +452,7 @@ const jobList = [
                         : activeTab === 2
                         ? "Have a look to the list of schools."
                         : activeTab === 3
-                        ? "Have a glimpse of some cherished moments from Palo Alto Unified District"
+                        ? "Have a glimpse of some cherished moments from Palo Alto Unified School"
                         : activeTab === 4
                         ? "Here are some videos to help you learn more"
                         : ""
@@ -497,7 +487,7 @@ const jobList = [
             <AboutSD :data="listData" v-if="activeTab === 0" />
 
             <div v-if="activeTab === 1">
-              <div class="grid gap-6 grid-cols-1">
+              <div v-if="false" class="grid gap-6 grid-cols-1">
                 <template v-for="job in jobList">
                   <JobCard
                     :job="job"
@@ -506,7 +496,9 @@ const jobList = [
                   />
                 </template>
               </div>
-              <Pagination />
+
+              <NoRecordFound v-else name="jobs" />
+              <Pagination v-if="false" />
             </div>
             <ListSchools :data="schoolList" v-if="activeTab === 2" />
 
