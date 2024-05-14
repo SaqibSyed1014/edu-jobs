@@ -631,7 +631,7 @@ const search = () => {
             </div>
           </div>
 
-          <div class="inline-flex justify-end">
+          <div class="hidden md:inline-flex justify-end">
             <div
               class="rounded-lg shadow justify-start items-start inline-flex"
             >
@@ -706,7 +706,7 @@ const search = () => {
         <div class="mt-1.5 mb-8">
           <!-- Grid View -->
 
-          <div v-if="isLoading || schoolsList.length" class="grid gap-6" :class="[isGridView === 'grid' ? 'md:grid-cols-3' : 'grid-cols-1']">
+          <div v-if="isLoading || schoolsList.length" class="grid gap-6" :class="[isGridView === 'grid' ? 'md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1']">
             <template v-if="isLoading" v-for="i in 12">
               <client-only>
                 <SchoolSkeleton :card-form="isGridView === 'grid'" />
@@ -717,33 +717,6 @@ const search = () => {
               <SchoolCard :school="item" :card-form="isGridView === 'grid'" />
             </template>
           </div>
-
-<!--          <template v-if="isLoading || schoolsList.length">-->
-<!--            <div-->
-<!--              v-if="isGridView === 'grid'"-->
-<!--              class="grid sm:grid-cols-2 pt-8 lg:grid-cols-3 gap-6"-->
-<!--            >-->
-<!--              <div v-if="isLoading" v-for="i in 12">-->
-<!--                <client-only>-->
-<!--                  <SDGridSkelton />-->
-<!--                </client-only>-->
-<!--              </div>-->
-<!--              <div v-else v-for="(item, index) in schoolsList" :key="index">-->
-<!--                <SchoolCard :school="item" />-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            &lt;!&ndash; Lsit View &ndash;&gt;-->
-<!--            <div v-if="isGridView === 'list'" class="grid gap-6 pt-8">-->
-<!--              <div v-if="isLoading" v-for="i in 12">-->
-<!--                <client-only>-->
-<!--                  <SDListSkelton/>-->
-<!--                </client-only>-->
-<!--              </div>-->
-<!--              <div v-else v-for="(item, index) in schoolsList" :key="index">-->
-<!--                <SchoolCard :school="item" />-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </template>-->
           <template v-else>
             <NoRecordFound name="schools" :search-value="searchedValue" />
           </template>
