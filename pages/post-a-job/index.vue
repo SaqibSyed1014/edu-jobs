@@ -75,7 +75,7 @@ const unwatch = watch(currentStep, (newValue, oldValue) => {
 
 const schemas = [
   Yup.object().shape({
-    schoolName: Yup.string()
+    organizationName: Yup.string()
       .min(10, "Please enter a name that is at least 10 characters long")
       .required("Organization Name is required"),
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -402,7 +402,7 @@ function handleStepClick() {
               class="mt-5 space-y-8 border-b border-gray-900/10 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0"
             >
               <TextInput
-                name="schoolName"
+                name="organizationName"
                 type="text"
                 label="Organization Name*"
                 placeholder="e.g. Unified School District"
@@ -724,7 +724,7 @@ function handleStepClick() {
                         <p
                           class="text-gray-600 text-base font-normal leading-normal"
                         >
-                          {{ values?.schoolName ? values?.schoolName : "N/a" }}
+                          {{ values?.organizationName ? values?.organizationName : "N/a" }}
                         </p>
                       </div>
                     </div>
@@ -1368,7 +1368,7 @@ function handleStepClick() {
                   </p>
                   <p class="text-gray-600 text-sm font-normal leading-tight">
                     {{
-                      values?.schoolName ? values?.schoolName : "Company name"
+                      values?.organizationName ? values?.organizationName : "Company name"
                     }}
                   </p>
                 </div>
