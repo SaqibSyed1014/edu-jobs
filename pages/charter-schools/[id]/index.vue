@@ -1,9 +1,14 @@
-<script setup>
-import fa from "flowbite-datepicker/locales/fa";
+<script setup lang="ts">
+import {useSchoolsStore} from "~/segments/schools/store";
+import BaseSpinner from "~/components/core/BaseSpinner.vue";
 
-const activeTab = ref(0); // Default to first tab
+const schoolStore = useSchoolsStore();
 const router = useRouter();
-// Array of tab names and icons
+const route = useRoute();
+
+const { charterSchoolDetails } = storeToRefs(schoolStore);
+
+const activeTab = ref(0);
 const tabs = ref([
   { name: "About Charter School" },
   { name: "Open Jobs" },
@@ -243,10 +248,24 @@ const jobList = [
     wage: "80k - 100k",
   },
 ];
+
+const isSchoolFetching = ref<boolean>(true);
+
+onMounted(async () => {
+  isSchoolFetching.value = true;
+  await schoolStore.fetchCharterSchoolDetails(route.params?.id as string);
+  isSchoolFetching.value = false;
+})
 </script>
 
 <template>
-  <div class="border-t md:border-b border-gray-200 mb-24">
+  <div v-if="isSchoolFetching" class="container">
+    <div class="flex justify-center items-center h-[calc(100vh-80px)] w-full">
+      <BaseSpinner size="lg" :show-loader="isSchoolFetching" />
+    </div>
+  </div>
+
+  <div v-else class="border-t md:border-b border-gray-200 mb-24">
     <div class="md:container flex">
       <!-- Sidebar -->
       <div class="flex flex-col border-r border-gray-200">
@@ -293,7 +312,7 @@ const jobList = [
               <SvgoChevronRight class="size-4" />
               <div class="justify-center items-center flex">
                 <div class="text-blue-800 text-sm font-semibold leading-tight">
-                  Palo alto unified charter school
+                  {{ charterSchoolDetails.name }}
                 </div>
               </div>
             </div>
@@ -321,18 +340,19 @@ const jobList = [
             <div
               class="justify-start lg:items-center lg:gap-6 flex flex-col lg:flex-row"
             >
-              <div class="w-24 rounded-[10px] justify-center items-center flex">
-                <img
-                  src="/images/schoolDistrict/logo-avatar.png"
-                  class="object-cover scale-110"
-                />
+              <div class="w-24 h-24 shrink-0 bg-white rounded-[10px] shadow-lg flex justify-center items-center mb-2">
+                <template v-if="charterSchoolDetails?.logo_path">
+                  <img :src="charterSchoolDetails.logo_path" :alt="charterSchoolDetails.name" class="w-full h-full object-cover">
+                </template>
+
+                <SvgoBuilding v-else class="size-14" />
               </div>
               <div class="flex-col justify-start items-start gap-5 inline-flex">
-                <p
-                  class="text-gray-900 text-2xl lg:text-3xl font-semibold leading-[38px]"
-                >
-                  Palo Alto Unified Charter School
-                </p>
+                <BaseTooltip :tooltip-content="charterSchoolDetails.name" id="title">
+                  <h2 class="text-2xl lg:text-3xl md:text-ellipsis md:line-clamp-1">
+                    {{ charterSchoolDetails.name }}
+                  </h2>
+                </BaseTooltip>
               </div>
             </div>
 
@@ -345,7 +365,9 @@ const jobList = [
                 </span>
                 <div class="inline-flex gap-2">
                   <SvgoUsFlag class="size-5" />
-                  <span class="text-slate-600 text-base font-medium leading-normal">Palo Alto, CA</span>
+                  <span class="text-slate-600 text-base font-medium leading-normal">
+                    {{ `${charterSchoolDetails.city}, ${charterSchoolDetails.county_name}` }}
+                  </span>
                 </div>
               </div>
 
@@ -384,13 +406,16 @@ const jobList = [
                   Website
                 </span>
                 <div class="inline-flex gap-2">
-                  <SvgoGlobe class="size-5" />
+                  <SvgoGlobe class="size-5 shrink-0" />
                   <a
-                    href="#"
-                    class="text-brand-800 text-base font-medium underline leading-normal"
+                    v-if="charterSchoolDetails.website_url && charterSchoolDetails.website_url !== 'No Data'"
+                    :href="charterSchoolDetails.website_url"
+                    target="_blank"
+                    class="text-brand-800 text-base font-medium underline leading-normal break-all block"
                   >
-                    www.paloalto.com
+                    {{ charterSchoolDetails.website_url }}
                   </a>
+                  <span v-else>N/A</span>
                 </div>
               </div>
             </div>

@@ -4,7 +4,7 @@ interface School {
   county_name: string;
   date_created: string;
   date_last_modified: string;
-  geo_location: [number, number];
+  geo_location?: [number, number];
   id: string;
   name: string;
   slug: string;
@@ -13,6 +13,9 @@ interface School {
   type: string;
   website_url: string;
   zip_code: string;
+  logo_path?: string
+  geo_lat?: number
+  geo_lng?: number
 }
 
 interface SchoolHit {

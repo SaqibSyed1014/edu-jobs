@@ -25,7 +25,6 @@ onMounted(() => {
     const field = document.getElementById('mapInput') as HTMLInputElement
     if (props.location) {
       field.value = props.location
-      console.log('che ', field);
       // field.focus()
     }
     field.addEventListener('keyup', function (event :KeyboardEvent) {

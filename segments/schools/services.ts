@@ -15,6 +15,18 @@ const getSchoolsList = (query: any) :Promise<SchoolResponseType> => {
     })
 }
 
+const getSchoolDetails = (slug: string) :Promise<School> => {
+    const { baseUrl, apiKey } = usePayloadUrl()
+    const apiHeaders = {
+        'API-Key': apiKey,
+    }
+    return $fetch(`${baseUrl}/org/${slug}`, {
+        method: 'get',
+        headers: apiHeaders,
+    })
+}
+
 export {
-    getSchoolsList
+    getSchoolsList,
+    getSchoolDetails
 }

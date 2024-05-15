@@ -333,7 +333,6 @@ const toggleSchoolOption = (optionName: any, index: number) => {
     //   });
     // }
     //   selectjobValue.value = { key3: `job_count:=[${range}]` };
-    //   console.log("selectjobValue", selectjobValue.value);
     // }
   } else if (
     selectedRanges.length > 0 &&
