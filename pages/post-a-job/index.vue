@@ -2,6 +2,9 @@
 import * as Yup from "yup";
 import { Form, useForm, ErrorMessage, Field } from "vee-validate";
 import { Tooltip } from "flowbite";
+import { usePostjobStore } from "~/segments/postjobs/store";
+
+
 
 const currentStep = ref(0);
 const jobRoles = ref(["Role 1", "Role 2"]);
@@ -10,6 +13,9 @@ const subjects = ref(["English", "Math"]);
 const paymentType = ref(["Cash", "Card"]);
 const appMethods = ref(["Email", "Text"]);
 const jobDesc = ref("");
+const postjobStore = usePostjobStore();
+const { content,status } = storeToRefs(postjobStore);
+const isLoading = ref<boolean>(false);
 const router = useRouter();
 const startDate = ref(new Date());
 const errorMessage = ref(false);
@@ -124,6 +130,36 @@ const handleImageUpload = (event: any) => {
   }
 };
 
+// Function to handle checkout payment
+async function checkout () {
+  console.log('checkout payment');
+
+  isLoading.value = true;
+  const requestBody = {
+        email : 'hadello@hotmail.com',
+        price_id : 'price_1P0v2M00kiM97A5ms79o8u4q',
+        fullname : 'adil kodx',
+        organizationName: 'Lead',
+        price : 123,
+    };
+  
+  // console.log('check ', requestBody)
+  // return true;
+  await postjobStore.fetchPayment(null,requestBody);
+
+  console.log('check chekout func content', content?.value?.url )
+  console.log('check chekout func status', status?.value)
+
+  if(status?.value === '200'){
+
+    window.open (content?.value?.url);
+  } else {
+    console.log("not found")
+  }
+  isLoading.value = false;
+  //totalPages.value = total_page?.value;
+
+}
 const currentSchema = computed(() => {
   return schemas[currentStep.value];
 });
@@ -1430,6 +1466,7 @@ function handleStepClick() {
             :outline="true"
             color="primary"
             full-sized
+            @click="checkout"
             type="button"
             :disabled="false"
           />
