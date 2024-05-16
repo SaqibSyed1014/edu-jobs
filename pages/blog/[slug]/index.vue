@@ -42,7 +42,7 @@ function copyURL() {
             <span
                 class="bg-[#F9F5FF] rounded-full p-1 pr-2.5 border border-[#E9D7FE] text-xs text-brand-600 inline-flex items-center gap-2 mb-4">
                 <span class="bg-white rounded-full py-0.5 px-2 border border-[#E9D7FE]">
-                  {{ blogDetails.category.category_name }}
+                  {{ blogDetails?.category?.category_name || 'General' }}
                 </span>
               {{ blogDetails.reading_time }}
             </span>
@@ -167,7 +167,7 @@ function copyURL() {
                     <span
                         class="bg-[#F9F5FF] rounded-full p-1 pr-2.5 border border-[#E9D7FE] text-xs text-brand-600 inline-flex items-center gap-2 mb-4">
                     <span class="bg-white rounded-full py-0.5 px-2 border border-[#E9D7FE]">
-                      {{ blog.category.category_name }}
+                                          {{ blog?.category?.category_name || 'General' }}
                     </span>
                     {{ blog.reading_time }}
                 </span>

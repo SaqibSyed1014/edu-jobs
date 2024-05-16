@@ -73,7 +73,7 @@ onMounted(async () => {
                 </div>
                 <div class="flex flex-wrap gap-2 font-medium text-sm">
                   <div class="text-[#6941C6] bg-[#F9F5FF] border border-[#E9D7FE] rounded-full px-2.5 py-0.5">
-                    {{ blog.category.category_name }}
+                    {{ blog?.category?.category_name || 'General' }}
                   </div>
                 </div>
               </div>
@@ -100,7 +100,7 @@ onMounted(async () => {
                     </div>
                     <div class="flex flex-wrap gap-2 font-medium text-sm">
                       <div class="text-[#6941C6] bg-[#F9F5FF] border border-[#E9D7FE] rounded-full px-2.5 py-0.5">
-                        {{ blog.category.category_name }}
+                        {{ blog?.category?.category_name || 'General' }}
                       </div>
                     </div>
                   </div>
@@ -137,7 +137,7 @@ onMounted(async () => {
                 </div>
                 <div class="flex flex-wrap gap-2 font-medium text-sm">
                   <div class="text-[#6941C6] bg-[#F9F5FF] border border-[#E9D7FE] rounded-full px-2.5 py-0.5">
-                    {{ blog.category.category_name }}
+                    {{ blog?.category?.category_name || 'General' }}
                   </div>
                 </div>
               </div>
