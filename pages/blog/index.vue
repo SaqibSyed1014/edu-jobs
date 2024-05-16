@@ -4,7 +4,7 @@ import {convertDateFormat} from "~/segments/utils";
 import BaseSpinner from "~/components/core/BaseSpinner.vue";
 
 const blogsStore = useBlogStore();
-const { blogs } = storeToRefs(blogsStore);
+const { blogs, pagination } = storeToRefs(blogsStore);
 
 const showSpinner = ref<boolean>(false);
 
@@ -143,26 +143,14 @@ onMounted(async () => {
               </div>
             </template>
           </div>
-          <div class="border-t border-[#EAECF0] flex justify-between text-sm pt-5">
-            <button type="button" class="flex items-center font-semibold gap-3 hover:text-brand-600">
-              <SvgoArrowLeft class="w-4 h-4 text-gray-600"/>
-              Previous
-            </button>
-            <p class="text-sm text-[#344054] block md:hidden font-medium">Page 1 of 10</p>
-            <ul class="hidden md:flex gap-8 pagination font-medium">
-              <li><a href="#" class="active">1</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li>...</li>
-              <li><a href="#">8</a></li>
-              <li><a href="#">9</a></li>
-              <li><a href="#">10</a></li>
-            </ul>
-            <button type="button" class="flex items-center font-semibold gap-3 hover:text-brand-600">
-              Next
-              <SvgoArrowRight class="w-4 h-4 text-gray-600"/>
-            </button>
-          </div>
+
+          <hr class="mb-5">
+
+          <CustomPagination
+              v-if="pagination.pageCount !== 0"
+              :current-page="pagination.page"
+              :total-pages="pagination.pageCount"
+          />
         </div>
       </section>
       <section class="pb-16 md:pb-24">
