@@ -7,8 +7,8 @@ defineProps<{ data: any; isSchool: Boolean }>();
     :to="`/colleges/${data?.document?.id}`"
     class="p-5 flex flex-col rounded-xl border border-gray-200"
   >
-    <div class="">
-      <SvgoBuilding class="size-6 float-left" />
+    <div class="flex items-center gap-3">
+      <SvgoBuilding class="size-12 shrink-0" />
       <h4
         class="text-gray-900 pl-3 text-sm md:text-base font-semibold leading-normal text-pretty line-clamp-2"
       >

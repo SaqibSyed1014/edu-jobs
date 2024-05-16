@@ -13,7 +13,7 @@ defineProps<{
           class="p-4 flex flex-col gap-5 sm:gap-0  justify-between items-start rounded-xl border border-gray-200"
       >
         <div class="flex flex-col md:flex-row gap-3">
-          <SvgoBuilding class="size-6"/>
+          <SvgoBuilding class="size-12 shrink-0" />
           <div>
             <h4
                 class="text-gray-900 text-sm md:text-base font-semibold leading-normal"
@@ -65,12 +65,12 @@ defineProps<{
     </template>
 
     <template v-else>
-      <!--  Form Card  -->
+      <!--  List Card  -->
       <div
           class="p-4 flex flex-col gap-5 sm:gap-0 sm:flex-row justify-between items-start rounded-xl border border-gray-200"
       >
-        <div class="flex flex-col md:flex-row gap-3">
-          <SvgoBuilding class="size-6"/>
+        <div class="flex flex-col md:flex-row md:items-center gap-3">
+          <SvgoBuilding class="size-12 shrink-0" />
           <div>
             <h4
                 class="text-gray-900 text-sm md:text-base font-semibold leading-normal"
@@ -78,7 +78,7 @@ defineProps<{
               {{ school.name }}
             </h4>
 
-            <div class="inline-flex flex-wrap gap-5 pt-2 md:pt-0">
+            <div class="inline-flex flex-wrap gap-5 pt-2">
               <div class="inline-flex items-center text-center space-x-2">
                 <SvgoBriefCaseLight class="size-5"/>
                 <span

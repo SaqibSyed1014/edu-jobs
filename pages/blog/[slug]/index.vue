@@ -42,7 +42,7 @@ function copyURL() {
             <span
                 class="bg-[#F9F5FF] rounded-full p-1 pr-2.5 border border-[#E9D7FE] text-xs text-brand-600 inline-flex items-center gap-2 mb-4">
                 <span class="bg-white rounded-full py-0.5 px-2 border border-[#E9D7FE]">
-                  {{ blogDetails.category.category_name }}
+                  {{ blogDetails?.category?.category_name || 'General' }}
                 </span>
               {{ blogDetails.reading_time }}
             </span>
@@ -54,7 +54,7 @@ function copyURL() {
               </p>
             </div>
             <div>
-              <div class="mb-8 w-full md:w-[65%] h-[140px] md:h-[240px]">
+              <div class="mb-8 w-full lg:w-[65%] h-[250px] md:h-[450px]">
                 <img :src="blogDetails.post_photo?.url ?? '/images/others/blog-mockup.jpg'" alt="" class="h-full w-full object-cover"/>
               </div>
               <div class="flex items-center gap-24">
@@ -167,7 +167,7 @@ function copyURL() {
                     <span
                         class="bg-[#F9F5FF] rounded-full p-1 pr-2.5 border border-[#E9D7FE] text-xs text-brand-600 inline-flex items-center gap-2 mb-4">
                     <span class="bg-white rounded-full py-0.5 px-2 border border-[#E9D7FE]">
-                      {{ blog.category.category_name }}
+                                          {{ blog?.category?.category_name || 'General' }}
                     </span>
                     {{ blog.reading_time }}
                 </span>
@@ -210,7 +210,7 @@ function copyURL() {
   @apply text-xl md:text-xl mb-1 mt-5
 }
 .blog-content :deep(p) {
-  @apply md:text-lg font-normal mb-1 mt-1
+  @apply md:text-lg font-normal my-5 first:mt-0 last:mb-0
 }
 .blog-content :deep(ul) {
   @apply ml-6 list-disc mb-4 md:text-lg

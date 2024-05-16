@@ -15,7 +15,7 @@ defineProps<{ blog: Blog }>()
     <div class="flex flex-col gap-6">
       <div class="blog-details">
         <p class="text-sm text-brand-700 font-semibold">
-          {{ blog.category.category_name }}
+          {{ blog?.category?.category_name || 'General' }}
         </p>
         <NuxtLink :to="`/blog/${blog.slug}`" class="hover:text-brand-600">
           <h5 class="text-lg">
