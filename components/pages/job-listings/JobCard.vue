@@ -14,10 +14,10 @@ defineProps<{
     <div v-if="cardForm" class="job-card flex flex-col gap-5 bg-white border border-gray-200 shadow-xs rounded-xl p-5 h-full">
       <div class="job-card-header">
         <div class="flex justify-between">
-          <div class="flex place-items-center rounded-full overflow-hidden w-12 h-12">
-            <img v-if="job.job_logo" :src="job.job_logo" :alt="job.job_title" class="w-full h-full object-cover">
-            <SvgoBuilding v-else class="size-6" />
+          <div v-if="job.job_logo"  class="flex place-items-center rounded-full overflow-hidden w-12 h-12 shrink-0">
+            <img :src="job.job_logo" :alt="job.job_title" class="w-full h-full object-cover">
           </div>
+          <SvgoBuilding v-else class="size-12" />
 
           <div class="job-badge">
             {{ getDaysDifference(job.date_posted) }}
@@ -59,50 +59,51 @@ defineProps<{
     </div>
 
     <!-- List Form Card  -->
-    <div v-else class="job-card flex flex-col justify-between gap-5 bg-white border border-gray-200 shadow-xs rounded-xl p-5">
+    <div v-else class="job-card flex flex-col justify-between gap-5 bg-white border border-gray-200 shadow-xs relative rounded-xl p-5">
       <div class="job-card-top">
         <div class="flex justify-between gap-3">
-          <div class="flex gap-3">
-            <div class="flex place-items-center rounded-full overflow-hidden w-12 h-12">
-              <img v-if="job.job_logo" :src="job.job_logo" :alt="job.job_title" class="w-full h-full object-cover">
-              <SvgoBuilding v-else class="size-6"/>
+          <div class="flex max-sm:flex-col sm:items-center gap-3">
+            <div v-if="job.job_logo" class="flex place-items-center rounded-full overflow-hidden w-12 h-12 shrink-0">
+              <img :src="job.job_logo" :alt="job.job_title" class="w-full h-full object-cover">
             </div>
+            <SvgoBuilding v-else class="size-12 shrink-0"/>
+
             <div>
-              <p class="font-semibold">{{ job.job_title }}</p>
+              <p class="font-semibold max-sm:line-clamp-2 sm:w-[80%] xl:w-auto">{{ job.job_title }}</p>
 
               <p class="text-gray-600 text-sm">{{ job.organization_name }}</p>
             </div>
           </div>
-          <div class="job-badge">
+          <div class="job-badge absolute top-5 right-5">
             {{ getDaysDifference(job.date_posted) }}
           </div>
         </div>
       </div>
 
-      <div class="job-card-bottom flex justify-between items-center">
-      <div class="flex items-center gap-5 text-gray-600 font-medium pt-5">
-        <div class="flex items-center gap-2">
-          <SvgoClock class="w-5 h-5 text-gray-400" />
-          <span>{{ job.employment_type }}</span>
+      <div class="job-card-bottom flex max-md:flex-col-reverse justify-between md:items-center">
+        <div class="flex items-center gap-5 text-gray-600 font-medium pt-5">
+          <div class="flex items-center gap-2">
+            <SvgoClock class="w-5 h-5 text-gray-400" />
+            <span>{{ job.employment_type }}</span>
+          </div>
+
+          <div class="flex items-center capitalize gap-2">
+            <SvgoCurrencyDollar class="w-5 h-5 text-gray-400" />
+            <span>{{ job.organization_type }}</span>
+          </div>
         </div>
 
-        <div class="flex items-center capitalize gap-2">
-          <SvgoCurrencyDollar class="w-5 h-5 text-gray-400" />
-          <span>{{ job.organization_type }}</span>
+        <div class="flex gap-3 mt-auto">
+          <div class="badges-outline">
+            {{ job.job_location }}
+          </div>
+
+          <div class="badges-outline">
+            <div class="w-2 h-2 rounded-full bg-blue-500"/>
+            {{ job.job_role }}
+          </div>
         </div>
       </div>
-
-      <div class="flex gap-3 mt-auto">
-        <div class="badges-outline">
-          {{ job.job_location }}
-        </div>
-
-        <div class="badges-outline">
-          <div class="w-2 h-2 rounded-full bg-blue-500"/>
-          {{ job.job_role }}
-        </div>
-      </div>
-    </div>
     </div>
   </NuxtLink>
 </template>
