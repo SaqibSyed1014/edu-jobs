@@ -210,7 +210,7 @@ function copyURL() {
   @apply text-xl md:text-xl mb-1 mt-5
 }
 .blog-content :deep(p) {
-  @apply md:text-lg font-normal mb-1 mt-1
+  @apply md:text-lg font-normal my-5 first:mt-0 last:mb-0
 }
 .blog-content :deep(ul) {
   @apply ml-6 list-disc mb-4 md:text-lg
