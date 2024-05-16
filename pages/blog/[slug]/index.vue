@@ -54,7 +54,7 @@ function copyURL() {
               </p>
             </div>
             <div>
-              <div class="mb-8 w-full md:w-[65%] h-[140px] md:h-[240px]">
+              <div class="mb-8 w-full lg:w-[65%] h-[250px] md:h-[450px]">
                 <img :src="blogDetails.post_photo?.url ?? '/images/others/blog-mockup.jpg'" alt="" class="h-full w-full object-cover"/>
               </div>
               <div class="flex items-center gap-24">
