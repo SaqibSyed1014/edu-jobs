@@ -307,7 +307,7 @@ const signUpCardIndex = Math.floor(Math.random() * 25);  // randomly generate in
       <ListingView>
         <template #filters>
           <ListingFilters
-              class="hidden md:flex"
+              class="hidden lg:flex"
               :filtration-list="filters"
               @on-filters-change="updateSideBarFilters"
           />
@@ -338,7 +338,7 @@ const signUpCardIndex = Math.floor(Math.random() * 25);  // randomly generate in
         </template>
 
         <template #cards-list>
-          <div class="flex gap-4 justify-between md:items-center">
+          <div class="flex gap-4 justify-between lg:items-center">
             <div class="relative max-md:flex-1">
               <BaseButton id="dropdownToggler" data-dropdown-toggle="sort-jobs-by-dropdown" color="gray" :outline="true" :full-sized-on-small="true" :label="SortDropdownLabel" class="justify-between text-sm">
                 <template #prepend-icon>

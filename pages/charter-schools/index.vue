@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { useDisrictsStore } from "~/segments/districts/store";
-import type { TypesenseQueryParam } from "~/segments/common.types";
+import type {TypesenseQueryParam} from "~/segments/common.types";
+import {useSchoolsStore} from "~/segments/schools/store";
 
 let toggleSideBar = ref<boolean>(false);
 const route = useRoute();
 const router = useRouter();
 const isLoading = ref<boolean>(true);
-const districtStore = useDisrictsStore();
+const schoolsStore = useSchoolsStore();
 const selectedAlphabet = ref<number>(0);
-const { distictsList, total_page } = storeToRefs(districtStore);
+const { schoolsList, total_page } = storeToRefs(schoolsStore);
 const currentPage = ref<number>(Number(route?.query?.page) || 1);
 const queryValue = route?.query?.q === "*" ? "" : route?.query?.q;
 const searchedValue = ref<string>(
@@ -77,9 +77,9 @@ const schOptions = ref({
 // Function to switch to list view
 const switchView = (view: any) => {
   isGridView.value = view;
-  localStorage.setItem('districtsLayout', view);
+  localStorage.setItem('schoolsLayout', view);
   router.replace({
-    path: "/school-districts",
+    path: "/charter-schools",
     query: {
       view: view,
       ...queryParams?.value,
@@ -98,12 +98,12 @@ const switchToGridView = () => {
 onMounted(async () => {
   let savedLayout :string | null = '';
   if (process.client) {   // using process.client due to SSR
-    if (localStorage.getItem('districtsLayout')) savedLayout = localStorage.getItem('districtsLayout');
+    if (localStorage.getItem('schoolsLayout')) savedLayout = localStorage.getItem('schoolsLayout');
     else if (route?.query?.view) savedLayout = route?.query?.view as string
     else savedLayout = 'list'
     isGridView.value = savedLayout as string;
   }
-  await fetchDistricts(); // Initial fetch
+  await fetchSchools(); // Initial fetch
   if (route?.query?.filter_by) {
     query.value.filter_by = route?.query?.filter_by.toString();
   }
@@ -181,33 +181,28 @@ if (route?.query?.filter_by) {
 }
 
 const queryParams = computed(() => {
-  const urlParams = {
+  return {
     q: query.value.q,
     page: query.value.page,
   };
-  return urlParams;
 });
 
-async function fetchDistricts() {
-  localStorage.setItem('districtsLayout', isGridView.value)
+async function fetchSchools() {
+  localStorage.setItem('schoolsLayout', isGridView.value)
   isLoading.value = true;
-  await districtStore.fetchDistricts(query?.value);
+  await schoolsStore.fetchCharterSchools(query?.value);
   isLoading.value = false;
   totalPages.value = total_page?.value;
 }
 // Function to handle pagination
 const paginate = (page: number | "prev" | "next") => {
-  if (page === "prev") {
-    currentPage.value--;
-  } else if (page === "next") {
-    currentPage.value++;
-  } else {
-    currentPage.value = page;
-  }
+  if (page === "prev") currentPage.value--;
+  else if (page === "next") currentPage.value++;
+  else currentPage.value = page;
   query.value.page = currentPage?.value;
 
   router.replace({
-    path: "/school-districts",
+    path: "/charter-schools",
     query: {
       view: isGridView.value,
       ...queryParams.value,
@@ -219,16 +214,13 @@ const paginate = (page: number | "prev" | "next") => {
     top: 0,
     behavior: "smooth",
   });
-  fetchDistricts();
+  fetchSchools();
 };
 
 function togglingSidebarVisibility() {
   toggleSideBar.value = !toggleSideBar.value;
-  if (toggleSideBar.value) {
-    document.body.classList.add("overflow-hidden");
-  } else {
-    document.body.classList.remove("overflow-hidden");
-  }
+  if (toggleSideBar.value) document.body.classList.add("overflow-hidden");
+  else document.body.classList.remove("overflow-hidden");
 }
 
 const toggleSchoolOption = (optionName: any, index: number) => {
@@ -412,7 +404,7 @@ const toggleSchoolOption = (optionName: any, index: number) => {
   }
 
   router.replace({
-    path: "/school-districts",
+    path: "/charter-schools",
     query: {
       view: isGridView.value,
       ...(mergedFilterBy !== "" && { filter_by: mergedFilterBy }),
@@ -420,7 +412,7 @@ const toggleSchoolOption = (optionName: any, index: number) => {
     },
   });
 
-  fetchDistricts();
+  fetchSchools();
 };
 
 const clearAll = () => {
@@ -431,13 +423,13 @@ const clearAll = () => {
   });
   delete query.value.filter_by; // Remove the filter_by property
   router.replace({
-    path: "/school-districts",
+    path: "/charter-schools",
     query: {
       view: isGridView.value,
       ...queryParams.value,
     },
   });
-  fetchDistricts();
+  fetchSchools();
 };
 
 const capitals = ref<string[]>([]); // Declare capitals as a ref of type string array
@@ -455,17 +447,17 @@ const handleInput = _debounce(() => {
 
 const search = () => {
   query.value.q = searchedValue.value.toString() ?? "*";
-  query.value.query_by = "district_name";
+  query.value.query_by = "name";
   query.value.page = 1;
   currentPage.value = 1;
   router.replace({
-    path: "/school-districts",
+    path: "/charter-schools",
     query: {
       view: isGridView.value,
       ...queryParams.value,
     },
   });
-  fetchDistricts();
+  fetchSchools();
 };
 </script>
 
@@ -594,10 +586,10 @@ const search = () => {
       <div class="w-full xl:w-4/5 xl:px-8 pt-8 pb-8">
         <div class="flex-col justify-start items-start gap-1 inline-flex">
           <div class="text-gray-900 text-3xl font-semibold leading-[38px]">
-            School Districts
+            Charter Schools
           </div>
           <div class="text-gray-600 text-base font-normal leading-normal">
-            Find job openings at any school in any district.
+            Find job openings at any charter school.
           </div>
         </div>
 
@@ -713,37 +705,22 @@ const search = () => {
         <div class="mt-1.5 mb-8">
           <!-- Grid View -->
 
-          <template v-if="isLoading || distictsList.length">
-            <div
-              v-if="isGridView === 'grid'"
-              class="grid sm:grid-cols-2 pt-8 lg:grid-cols-3 gap-6"
-            >
-              <div v-if="isLoading" v-for="i in 12">
-                <client-only>
-                  <SDGridSkelton />
-                </client-only>
-              </div>
-              <div v-else v-for="(item, index) in distictsList" :key="index">
-                <DIstrictsGridCard :data="item" />
-              </div>
-            </div>
-            <!-- Lsit View -->
-            <div v-if="isGridView === 'list'" class="grid gap-6 pt-8">
-              <div v-if="isLoading" v-for="i in 12">
-                <client-only>
-                  <SDListSkelton/>
-                </client-only>
-              </div>
-              <div v-else v-for="(item, index) in distictsList" :key="index">
-                <DistrictsListCard :data="item" />
-              </div>
-            </div>
-          </template>
+          <div v-if="isLoading || schoolsList.length" class="grid gap-6 pt-8" :class="[isGridView === 'grid' ? 'md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1']">
+            <template v-if="isLoading" v-for="i in 12">
+              <client-only>
+                <SchoolSkeleton :card-form="isGridView === 'grid'" />
+              </client-only>
+            </template>
+
+            <template v-else v-for="(item) in schoolsList">
+              <SchoolCard :school="item" :card-form="isGridView === 'grid'" />
+            </template>
+          </div>
           <template v-else>
             <NoRecordFound name="schools" :search-value="searchedValue" />
           </template>
         </div>
-        <div v-if="distictsList?.length > 0">
+        <div v-if="schoolsList?.length > 0">
           <CustomPagination
             :current-page="currentPage"
             :total-pages="totalPages"

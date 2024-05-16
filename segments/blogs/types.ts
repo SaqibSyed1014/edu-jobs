@@ -2,7 +2,7 @@ interface Blog {
     id: number
     title: string
     author: AuthorDetail
-    category: Category
+    category?: Category
     post_content: string
     post_excerpt: string
     post_date: string
