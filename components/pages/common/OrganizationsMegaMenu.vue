@@ -51,7 +51,7 @@ function orgModuleType(type :string) {
                 </BaseTooltip>
               </div>
               <div class="border border-gray-300 shadow-xs rounded-md shrink-0 text-sm px-1">
-                {{ org.type }}
+                {{ org.number_jobs }}
               </div>
             </NuxtLink>
           </template>
