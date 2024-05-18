@@ -407,11 +407,11 @@ onMounted(async () => {
                         : activeTab === 1
                         ? "List of Jobs"
                         : activeTab === 2
-                        ? "List of Schools"
-                        : activeTab === 3
                         ? "Photos"
-                        : activeTab === 4
+                        : activeTab === 3
                         ? "Videos"
+                        : activeTab === 4
+                        ? "Location"
                         : ""
                     }}
                   </p>
@@ -424,10 +424,8 @@ onMounted(async () => {
                         : activeTab === 1
                         ? "Have a look to the list of Jobs."
                         : activeTab === 2
-                        ? "Have a look to the list of schools."
-                        : activeTab === 3
                         ? "Have a glimpse of some cherished moments from Palo Alto Unified School"
-                        : activeTab === 4
+                        : activeTab === 3
                         ? "Here are some videos to help you learn more"
                         : ""
                     }}

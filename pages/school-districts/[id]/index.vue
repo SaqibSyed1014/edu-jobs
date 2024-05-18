@@ -465,6 +465,8 @@ onMounted(async () => {
                         ? "Photos"
                         : activeTab === 4
                         ? "Videos"
+                        : activeTab === 5
+                        ? "Location"
                         : ""
                     }}
                   </p>
