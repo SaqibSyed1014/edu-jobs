@@ -22,8 +22,20 @@ const getPartnersLogo = () :Promise<PartnerLogo[]> => {
     })
 }
 
+const getFeaturedOrganizations = () :Promise<FeaturedOrganizations[]> => {
+    const { baseUrl, apiKey } = usePayloadUrl()
+    const apiHeaders = {
+        'API-Key': apiKey,
+    }
+    return $fetch(`${baseUrl}/org/getHomePageNavOrganizations`, {
+        method: 'get',
+        headers: apiHeaders,
+    })
+}
+
 
 export {
     getJobsSummaryByCities,
-    getPartnersLogo
+    getPartnersLogo,
+    getFeaturedOrganizations
 }

@@ -15,3 +15,11 @@ interface JobsInCities {
     photo_url: string;
     priority_rank: number;
 }
+
+interface FeaturedOrganizations {
+    id: number
+    name: number
+    slug: string
+    logo_path: string
+    number_jobs: string
+}

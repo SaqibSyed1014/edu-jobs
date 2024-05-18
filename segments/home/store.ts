@@ -1,17 +1,20 @@
 import {
     getJobsSummaryByCities,
-    getPartnersLogo
+    getPartnersLogo,
+    getFeaturedOrganizations
 } from "~/segments/home/services";
 
 interface HomeSectionsData {
     jobsByCities: JobsInCities[]
     partnersLogos: PartnerLogo[]
+    featuredOrganizations: FeaturedOrganizations[]
 }
 
 export const useHomeStore = defineStore('homeStore', {
     state: () => ({
         jobsByCities: [],
-        partnersLogos: []
+        partnersLogos: [],
+        featuredOrganizations: []
     } as HomeSectionsData),
     actions: {
         async fetchJobsSummaryByCities() {
@@ -19,6 +22,9 @@ export const useHomeStore = defineStore('homeStore', {
         },
         async fetchPartnersLogos() {
             this.$state.partnersLogos = await getPartnersLogo();
+        },
+        async fetchFeaturedOrganizations() {
+            this.$state.featuredOrganizations = await getFeaturedOrganizations();
         }
     },
     getters: {

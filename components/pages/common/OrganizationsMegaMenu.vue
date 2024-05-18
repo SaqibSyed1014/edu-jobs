@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import {useHomeStore} from "~/segments/home/store";
+
 defineProps<{
   subLinks: { label: string, path: string }[]
 }>()
@@ -35,6 +37,10 @@ const organizations = [
     counts: 5
   }
 ]
+
+const homeStore = useHomeStore();
+
+const { featuredOrganizations } = storeToRefs(homeStore);
 </script>
 
 <template>
@@ -53,16 +59,20 @@ const organizations = [
       <div class="col-span-8">
         <h4 class="text-blue-600 text-lg font-semibold mb-4">Organizations</h4>
         <div class="grid grid-cols-2 gap-x-4">
-          <template v-for="org in organizations">
-            <div class="flex items-center justify-between gap-12 rounded-lg py-3 px-2 hover:bg-gray-200 transition cursor-pointer">
+          <template v-for="(org, i) in featuredOrganizations">
+            <div class="flex items-center justify-between rounded-lg py-3 px-2 hover:bg-gray-200 transition cursor-pointer">
               <div class="flex items-center gap-3">
-                <div class="rounded-full overflow-hidden w-8 h-8 shrink-0">
-                  <img :src="org.logo" alt="" class="w-full h-full object-cover">
+                <div v-if="org.logo_path.length" class="rounded-full overflow-hidden w-8 h-8 shrink-0">
+                  <img :src="org.logo_path" alt="" class="w-full h-full object-cover">
                 </div>
-                <p class="text-sm shrink-0 text-ellipsis">{{ org.name }}</p>
+                <SvgoBuilding v-else class="size-6 shrink-0 "/>
+
+                <BaseTooltip :tooltip-content="org.name" :id="`orgName-${i}`">
+                  <p class="text-sm shrink-0 line-clamp-1 w-[140px]">{{ org.name }}</p>
+                </BaseTooltip>
               </div>
               <div class="border border-gray-300 shadow-xs rounded-md shrink-0 text-sm px-1">
-                {{ org.counts }} jobs
+                {{ org.number_jobs }}
               </div>
             </div>
           </template>

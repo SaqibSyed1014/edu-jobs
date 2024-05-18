@@ -29,6 +29,7 @@ onMounted(async () => {
     filter_by: 'featured:1'
   }
   await Promise.all([
+    homeStore.fetchFeaturedOrganizations(),
     jobStore.fetchJobs(query),
     homeStore.fetchPartnersLogos(),
     homeStore.fetchJobsSummaryByCities(),
