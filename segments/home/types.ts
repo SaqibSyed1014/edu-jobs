@@ -15,3 +15,39 @@ interface JobsInCities {
     photo_url: string;
     priority_rank: number;
 }
+
+interface FeaturedOrganizations {
+    id: number
+    name: number
+    slug: string
+    type: string
+    logo_path: string
+    number_jobs: string
+}
+
+interface Org {
+    banner_path: string;
+    charter: string;
+    city: string;
+    country: string;
+    county_name: string;
+    domain: string;
+    geo_lat: number;
+    geo_lng: number;
+    id: number;
+    job_count: number;
+    logo_path: string;
+    name: string;
+    organization_description: string;
+    reference_id: number;
+    school_count: number;
+    slug: string;
+    state_code: string;
+    state_name: string;
+    street_address: string;
+    student_count: number;
+    teacher_count: number;
+    type: string;
+    website_url: string;
+    zip_code: string;
+}

@@ -3,13 +3,13 @@ import { usePayloadUrl , convertQueryToString} from "~/segments/utils"
 
 
 const getDistrictList = (query: any) :Promise<DisrictResponseType> => {
-    const { typesenseBaseURL, typesenseApiKey } = usePayloadUrl()
+    const { baseUrl, apiKey } = usePayloadUrl()
         const queryString = convertQueryToString(query);
         const apiHeaders = {
-            'X-TYPESENSE-API-KEY': typesenseApiKey,
+            'API-Key': apiKey,
         }
 
-    return $fetch(`${typesenseBaseURL}/collections/districts/documents/search?${queryString}`, {
+    return $fetch(`${baseUrl}/districts/list?${queryString}`, {
         method: 'get',
         headers: apiHeaders,
     })

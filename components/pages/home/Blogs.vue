@@ -7,9 +7,10 @@ const blogsStore = useBlogStore();
 const { blogs } = storeToRefs(blogsStore);
 
 const splicedBlogs = computed(() => {
+  console.log('jhf ', blogs.value)
   const blogsList = blogs.value;
   if (blogsList.length <= 4) return blogsList;
-  else return blogsList.splice(0, 4);
+  else return blogsList.slice(0, 4);
 })
 </script>
 

@@ -22,8 +22,32 @@ const getPartnersLogo = () :Promise<PartnerLogo[]> => {
     })
 }
 
+const getFeaturedOrganizations = () :Promise<FeaturedOrganizations[]> => {
+    const { baseUrl, apiKey } = usePayloadUrl()
+    const apiHeaders = {
+        'API-Key': apiKey,
+    }
+    return $fetch(`${baseUrl}/org/getHomePageNavOrganizations`, {
+        method: 'get',
+        headers: apiHeaders,
+    })
+}
+
+const getOrgDetails = (slug :string) :Promise<Org> => {
+    const { baseUrl, apiKey } = usePayloadUrl()
+    const apiHeaders = {
+        'API-Key': apiKey,
+    }
+    return $fetch(`${baseUrl}/org/${slug}`, {
+        method: 'get',
+        headers: apiHeaders,
+    })
+}
+
 
 export {
     getJobsSummaryByCities,
-    getPartnersLogo
+    getPartnersLogo,
+    getFeaturedOrganizations,
+    getOrgDetails
 }
