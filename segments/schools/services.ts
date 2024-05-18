@@ -3,13 +3,13 @@ import { usePayloadUrl , convertQueryToString} from "~/segments/utils"
 
 
 const getSchoolsList = (query: any) :Promise<SchoolResponseType> => {
-    const { typesenseBaseURL, typesenseApiKey } = usePayloadUrl()
-        const queryString = convertQueryToString(query);
-        const apiHeaders = {
-            'X-TYPESENSE-API-KEY': typesenseApiKey,
-        }
+    const { baseUrl, apiKey } = usePayloadUrl()
+    const queryString = convertQueryToString(query);
+    const apiHeaders = {
+        'API-Key': apiKey,
+    }
 
-    return $fetch(`${typesenseBaseURL}/collections/charters/documents/search?${queryString}`, {
+    return $fetch(`${baseUrl}/charters/list?${queryString}`, {
         method: 'get',
         headers: apiHeaders,
     })

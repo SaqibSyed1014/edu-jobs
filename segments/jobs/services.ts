@@ -2,13 +2,13 @@ import { usePayloadUrl , convertQueryToString} from "~/segments/utils"
 
 
 const getJobsList = (query: any) :Promise<JobResponseType> => {
-    const { typesenseBaseURL, typesenseApiKey } = usePayloadUrl()
+    const { baseUrl, apiKey } = usePayloadUrl()
     const apiHeaders = {
-        'X-TYPESENSE-API-KEY': typesenseApiKey,
+        'API-Key': apiKey,
     }
 
     const queryString = convertQueryToString(query);
-    return $fetch(`${typesenseBaseURL}/collections/jobs/documents/search?${queryString}`, {
+    return $fetch(`${baseUrl}/jobs/list?${queryString}`, {
         method: 'get',
         headers: apiHeaders,
     })
