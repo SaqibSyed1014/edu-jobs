@@ -33,9 +33,21 @@ const getFeaturedOrganizations = () :Promise<FeaturedOrganizations[]> => {
     })
 }
 
+const getOrgDetails = (slug :string) :Promise<Org> => {
+    const { baseUrl, apiKey } = usePayloadUrl()
+    const apiHeaders = {
+        'API-Key': apiKey,
+    }
+    return $fetch(`${baseUrl}/org/${slug}`, {
+        method: 'get',
+        headers: apiHeaders,
+    })
+}
+
 
 export {
     getJobsSummaryByCities,
     getPartnersLogo,
-    getFeaturedOrganizations
+    getFeaturedOrganizations,
+    getOrgDetails
 }

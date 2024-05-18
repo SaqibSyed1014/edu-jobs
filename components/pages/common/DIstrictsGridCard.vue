@@ -4,7 +4,7 @@ defineProps<{ data: any }>();
 
 <template>
   <NuxtLink
-    :to="`/school-districts/${data?.document?.id}`"
+    :to="`/school-districts/${data?.document?.slug}`"
     class="p-5 flex flex-col justify-between rounded-xl border border-gray-200 min-h-[208px]"
   >
     <div class="flex items-center gap-3">

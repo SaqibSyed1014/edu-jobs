@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {useSchoolsStore} from "~/segments/schools/store";
 import BaseSpinner from "~/components/core/BaseSpinner.vue";
+import OrgMapLocation from "~/components/pages/schoolDistrict/OrgMapLocation.vue";
 
 const schoolStore = useSchoolsStore();
 const router = useRouter();
@@ -15,6 +16,7 @@ const tabs = ref([
   { name: "List of Schools" },
   { name: "Photos" },
   { name: "Videos" },
+  { name: "Location" },
 ]);
 
 const listData = ref([
@@ -345,7 +347,7 @@ onMounted(async () => {
                   <img :src="charterSchoolDetails.logo_path" :alt="charterSchoolDetails.name" class="w-full h-full object-cover">
                 </template>
 
-                <SvgoBuilding v-else class="size-14" />
+                <SvgoBuilding v-else class="size-14 shrink-0" />
               </div>
               <div class="flex-col justify-start items-start gap-5 inline-flex">
                 <BaseTooltip :tooltip-content="charterSchoolDetails.name" id="title">
@@ -530,6 +532,8 @@ onMounted(async () => {
             <PhotoCard :data="photoList" v-if="activeTab === 3" />
 
             <VideoCard v-if="activeTab === 4" :data="videoList" />
+
+            <OrgMapLocation v-if="activeTab === 5" :coordinates="[charterSchoolDetails.geo_lat, charterSchoolDetails.geo_lng]" />
           </div>
         </div>
       </main>

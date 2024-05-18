@@ -3,6 +3,9 @@ import HamburgerIcon from "~/assets/icons/hamburger.svg";
 import XCloseIcon from "~/assets/icons/x-close.svg";
 import OrganizationsMegaMenu from "~/components/pages/common/OrganizationsMegaMenu.vue";
 import type {MenuLinksType} from "~/segments/common.types";
+import {useHomeStore} from "~/segments/home/store";
+
+const homeStore = useHomeStore();
 
 const menuLinks : MenuLinksType[] = [
   {
@@ -55,6 +58,13 @@ function togglingSidebarVisibility() {
     document.body.classList.remove("overflow-hidden");
   }
 }
+
+const orgsFetching = ref(false);
+onMounted(async () => {
+  orgsFetching.value = true;
+  await homeStore.fetchFeaturedOrganizations();
+  orgsFetching.value = false;
+})
 </script>
 
 <template>
@@ -77,7 +87,7 @@ function togglingSidebarVisibility() {
               <li>
                 <NuxtLink v-if="link.type === 'link'" :to="link.path" class="hover:text-brand-500 transition">{{ link.label }}</NuxtLink>
                 <MegaMenu v-else-if="link.type === 'megaMenu'" :label="link.label">
-                  <OrganizationsMegaMenu v-if="link.subLinks?.length" :sub-links="link.subLinks" />
+                  <OrganizationsMegaMenu v-if="link.subLinks?.length" :sub-links="link.subLinks" :loading="orgsFetching" />
                 </MegaMenu>
               </li>
             </template>
