@@ -13,7 +13,6 @@ const activeTab = ref(0);
 const tabs = ref([
   { name: "About Charter School" },
   { name: "Open Jobs" },
-  { name: "List of Schools" },
   { name: "Photos" },
   { name: "Videos" },
   { name: "Location" },
@@ -39,58 +38,6 @@ const listData = ref([
   {
     title: "Challenges:",
     desc: "Like many high-performing schools, PAUSD faces challenges related to academic pressure, student well-being, and maintaining a balance between achievement and the overall well-rounded development of students.",
-  },
-]);
-
-const schoolList = ref([
-  {
-    avatar: "/images/schoolDistrict/Avatar1.png",
-    schoolName: "Palo Alto Unified School",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar2.png",
-    schoolName: "San Dieguito Union High School",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar3.png",
-    schoolName: "Arcadia Unified School",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar4.png",
-    schoolName: "Saratoga Joint Union High School",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar5.png",
-    schoolName: "Palo Alto Unified School",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar6.png",
-    schoolName: "San Dieguito Union High School",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar7.png",
-    schoolName: "Arcadia Unified School",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar8.png",
-    schoolName: "Saratoga Joint Union High School",
-  },
-
-  {
-    avatar: "/images/schoolDistrict/avatar9.png",
-    schoolName: "Palo Alto Unified School",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar10.png",
-    schoolName: "San Dieguito Union High School",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar11.png",
-    schoolName: "Arcadia Unified School",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar12.png",
-    schoolName: "Saratoga Joint Union High School",
   },
 ]);
 
@@ -527,13 +474,12 @@ onMounted(async () => {
               <NoRecordFound v-else name="jobs" />
               <Pagination v-if="false" />
             </div>
-            <ListSchools :data="schoolList" v-if="activeTab === 2" />
 
-            <PhotoCard :data="photoList" v-if="activeTab === 3" />
+            <PhotoCard :data="photoList" v-if="activeTab === 2" />
 
-            <VideoCard v-if="activeTab === 4" :data="videoList" />
+            <VideoCard v-if="activeTab === 3" :data="videoList" />
 
-            <OrgMapLocation v-if="activeTab === 5" :coordinates="[charterSchoolDetails.geo_lat, charterSchoolDetails.geo_lng]" />
+            <OrgMapLocation v-if="activeTab === 4" :coordinates="[charterSchoolDetails.geo_lat, charterSchoolDetails.geo_lng]" />
           </div>
         </div>
       </main>
