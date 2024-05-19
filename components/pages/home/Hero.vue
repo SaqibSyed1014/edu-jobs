@@ -17,7 +17,7 @@ function searchJobs(filters :JobSearchFilters) {
     keyword: filters.keyword.length ? filters.keyword : '*',
     ...(locationName.length && { location: locationName }),  // skip location from url if no location is searched
     page: 1,
-    mode: 'grid'
+    mode: 'list'
   }
   router.push({
     path: '/jobs',

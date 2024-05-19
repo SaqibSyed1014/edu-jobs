@@ -26,9 +26,10 @@ interface DistrictDocument {
   website_url: string;
   zip_code: string;
   zip_code_ext: string;
+  status: string;
 }
 
-interface Hit {
+interface DistrictHit {
   document: DistrictDocument;
   highlight: Record<string, any>;
   highlights: any[];
@@ -56,7 +57,7 @@ interface SearchResult {
 interface DisrictResponseType {
   facet_counts: any[];
   found: number;
-  hits: Hit[];
+  hits: DistrictHit[];
   out_of: number;
   page: number;
   request_params: RequestParams;

@@ -3,7 +3,11 @@ import { Tooltip } from "flowbite";
 
 const props = defineProps({
   id: String,
-  tooltipContent: String
+  tooltipContent: String,
+  position: {
+    type: String,
+    default: 'top'
+  }
 })
 
 onMounted(() => {
@@ -13,7 +17,7 @@ onMounted(() => {
   const $triggerEl = document.getElementById(`tooltip-${props.id}-trigger`);
   // options with default values
   const options: any = {
-    placement: "top",
+    placement: props.position,
     triggerType: "hover",
   };
   if ($targetEl) {
