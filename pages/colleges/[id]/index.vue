@@ -9,9 +9,7 @@ const activeTab = ref(0); // Default to first tab
 const tabs = ref([
   { name: "About College District" },
   { name: "Open Jobs" },
-  { name: "List of Colleges" },
-  { name: "Photos" },
-  { name: "Videos" },
+  { name: "List of Colleges" }
 ]);
 
 const listData = ref([
@@ -460,11 +458,7 @@ onMounted(async () => {
                               ? "List of Jobs"
                               : activeTab === 2
                                   ? "List of Schools"
-                                  : activeTab === 3
-                                      ? "Photos"
-                                      : activeTab === 4
-                                          ? "Videos"
-                                          : activeTab === 5
+                                          : activeTab === 3
                                               ? "Location"
                                               : ""
                     }}
@@ -479,10 +473,6 @@ onMounted(async () => {
                               ? "Have a look to the list of Jobs."
                               : activeTab === 2
                                   ? "Have a look to the list of schools."
-                                  : activeTab === 3
-                                      ? "Have a glimpse of some cherished moments from Palo Alto Unified District"
-                                      : activeTab === 4
-                                          ? "Here are some videos to help you learn more"
                                           : ""
                     }}
                   </p>
@@ -530,11 +520,10 @@ onMounted(async () => {
             </div>
             <ListSchools :data="schoolList" v-if="activeTab === 2" />
 
-            <PhotoCard :data="photoList" v-if="activeTab === 3" />
+<!--            <PhotoCard :data="photoList" v-if="activeTab === 3" />-->
+<!--            <VideoCard v-if="activeTab === 4" :data="videoList" />-->
 
-            <VideoCard v-if="activeTab === 4" :data="videoList" />
-
-            <OrgMapLocation v-if="activeTab === 5" :coordinates="[collegeDetails.geo_lat, collegeDetails.geo_lng]" />
+            <OrgMapLocation v-if="activeTab === 3" :coordinates="[collegeDetails.geo_lat, collegeDetails.geo_lng]" />
           </div>
         </div>
       </main>

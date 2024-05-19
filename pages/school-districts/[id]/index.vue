@@ -10,8 +10,6 @@ const tabs = ref([
   { name: "About School District" },
   { name: "Open Jobs" },
   { name: "List of Schools" },
-  { name: "Photos" },
-  { name: "Videos" },
   { name: "Location" }
 ]);
 
@@ -462,10 +460,6 @@ onMounted(async () => {
                         : activeTab === 2
                         ? "List of Schools"
                         : activeTab === 3
-                        ? "Photos"
-                        : activeTab === 4
-                        ? "Videos"
-                        : activeTab === 5
                         ? "Location"
                         : ""
                     }}
@@ -480,10 +474,6 @@ onMounted(async () => {
                         ? "Have a look to the list of Jobs."
                         : activeTab === 2
                         ? "Have a look to the list of schools."
-                        : activeTab === 3
-                        ? "Have a glimpse of some cherished moments from Palo Alto Unified District"
-                        : activeTab === 4
-                        ? "Here are some videos to help you learn more"
                         : ""
                     }}
                   </p>
@@ -531,11 +521,10 @@ onMounted(async () => {
             </div>
             <ListSchools :data="schoolList" v-if="activeTab === 2" />
 
-            <PhotoCard :data="photoList" v-if="activeTab === 3" />
+<!--            <PhotoCard :data="photoList" v-if="activeTab === 3" />-->
+<!--            <VideoCard v-if="activeTab === 4" :data="videoList" />-->
 
-            <VideoCard v-if="activeTab === 4" :data="videoList" />
-
-            <OrgMapLocation v-if="activeTab === 5" :coordinates="[schoolDistrictDetails.geo_lat, schoolDistrictDetails.geo_lng]" />
+            <OrgMapLocation v-if="activeTab === 3" :coordinates="[schoolDistrictDetails.geo_lat, schoolDistrictDetails.geo_lng]" />
           </div>
         </div>
       </main>

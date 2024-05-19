@@ -13,8 +13,6 @@ const activeTab = ref(0);
 const tabs = ref([
   { name: "About Charter School" },
   { name: "Open Jobs" },
-  { name: "Photos" },
-  { name: "Videos" },
   { name: "Location" },
 ]);
 
@@ -406,10 +404,6 @@ onMounted(async () => {
                         ? "About Charter School"
                         : activeTab === 1
                         ? "List of Jobs"
-                        : activeTab === 2
-                        ? "Photos"
-                        : activeTab === 3
-                        ? "Videos"
                         : activeTab === 4
                         ? "Location"
                         : ""
@@ -423,10 +417,6 @@ onMounted(async () => {
                         ? "Read out the information about patlo alto unified school."
                         : activeTab === 1
                         ? "Have a look to the list of Jobs."
-                        : activeTab === 2
-                        ? "Have a glimpse of some cherished moments from Palo Alto Unified School"
-                        : activeTab === 3
-                        ? "Here are some videos to help you learn more"
                         : ""
                     }}
                   </p>
@@ -473,11 +463,10 @@ onMounted(async () => {
               <Pagination v-if="false" />
             </div>
 
-            <PhotoCard :data="photoList" v-if="activeTab === 2" />
+<!--            <PhotoCard :data="photoList" v-if="activeTab === 2" />-->
+<!--            <VideoCard v-if="activeTab === 3" :data="videoList" />-->
 
-            <VideoCard v-if="activeTab === 3" :data="videoList" />
-
-            <OrgMapLocation v-if="activeTab === 4" :coordinates="[charterSchoolDetails.geo_lat, charterSchoolDetails.geo_lng]" />
+            <OrgMapLocation v-if="activeTab === 2" :coordinates="[charterSchoolDetails.geo_lat, charterSchoolDetails.geo_lng]" />
           </div>
         </div>
       </main>
