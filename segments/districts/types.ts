@@ -1,4 +1,4 @@
-interface Document {
+interface DistrictDocument {
   active: number;
   city: string;
   country: string;
@@ -29,7 +29,7 @@ interface Document {
 }
 
 interface Hit {
-  document: Document;
+  document: DistrictDocument;
   highlight: Record<string, any>;
   highlights: any[];
 }
