@@ -103,7 +103,8 @@ onMounted(async () => {
     else savedLayout = 'list'
     isGridView.value = savedLayout as string;
   }
-  await fetchDistricts(); // Initial fetch
+  if (route?.query?.q?.length) await search();  // if search param is there, call search() function
+  else await fetchDistricts(); // Initial fetch
   if (route?.query?.filter_by) {
     query.value.filter_by = route?.query?.filter_by.toString();
   }
@@ -450,13 +451,15 @@ const selectAlphabet = (index: number) => {
 };
 
 const handleInput = _debounce(() => {
-  search();
+  search(true);
 }, 500); // Adjust the debounce delay as needed (in milliseconds)
 
-const search = () => {
+const search = (resetToDefaultPage = false) => {
+  localStorage.setItem('districtsLayout', isGridView.value)
   query.value.q = searchedValue.value.toString() ?? "*";
   query.value.query_by = "district_name";
-  query.value.page = 1;
+  if (resetToDefaultPage) query.value.page = 1;
+  else query.value.page = route?.query?.page ? route.query.page : 1;   // search with page number if there's page number in the query params
   currentPage.value = 1;
   router.replace({
     path: "/school-districts",
@@ -713,7 +716,7 @@ const search = () => {
         <div class="mt-1.5 mb-8">
           <!-- Grid View -->
 
-          <template v-if="isLoading || distictsList.length">
+          <template v-if="isLoading || distictsList?.length">
             <div
               v-if="isGridView === 'grid'"
               class="grid sm:grid-cols-2 pt-8 lg:grid-cols-3 gap-6"

@@ -13,6 +13,18 @@ const getCollegesList = (query: any) :Promise<CollegesResponseType> => {
     })
 }
 
+const getCollegeDetails = (slug: string) :Promise<CollegeDocument> => {
+    const { baseUrl, apiKey } = usePayloadUrl()
+    const apiHeaders = {
+        'API-Key': apiKey,
+    }
+    return $fetch(`${baseUrl}/org/${slug}`, {
+        method: 'get',
+        headers: apiHeaders,
+    })
+}
+
 export {
-    getCollegesList
+    getCollegesList,
+    getCollegeDetails
 }
