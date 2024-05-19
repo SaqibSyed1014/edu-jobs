@@ -248,7 +248,7 @@ const jobList = [
 const route = useRoute();
 const districtStore = useDisrictsStore();
 
-const { schoolDistrictDetails } = storeToRefs(districtStore);
+const { schoolDistrictDetails, schoolDistrictJobs } = storeToRefs(districtStore);
 
 const isOrgFetching = ref<boolean>(true);
 
@@ -506,8 +506,8 @@ onMounted(async () => {
             <AboutSD :data="listData" v-if="activeTab === 0" />
 
             <div v-if="activeTab === 1">
-              <div v-if="false" class="grid gap-6 grid-cols-1">
-                <template v-for="job in jobList">
+              <div v-if="schoolDistrictJobs.length" class="grid gap-6 grid-cols-1">
+                <template v-for="job in schoolDistrictJobs">
                   <JobCard
                     :job="job"
                     :show-job-description="false"

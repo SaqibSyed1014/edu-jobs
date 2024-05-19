@@ -7,7 +7,7 @@ const schoolStore = useSchoolsStore();
 const router = useRouter();
 const route = useRoute();
 
-const { charterSchoolDetails } = storeToRefs(schoolStore);
+const { charterSchoolDetails, schoolJobs } = storeToRefs(schoolStore);
 
 const activeTab = ref(0);
 const tabs = ref([
@@ -38,163 +38,6 @@ const listData = ref([
     desc: "Like many high-performing schools, PAUSD faces challenges related to academic pressure, student well-being, and maintaining a balance between achievement and the overall well-rounded development of students.",
   },
 ]);
-
-const photoList = ref([
-  {
-    image: "/images/schoolDistrict/photo1.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-  {
-    image: "/images/schoolDistrict/photo2.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-  {
-    image: "/images/schoolDistrict/photo3.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-  {
-    image: "/images/schoolDistrict/photo4.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-  {
-    image: "/images/schoolDistrict/photo5.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-  {
-    image: "/images/schoolDistrict/photo6.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-]);
-
-const videoList = ref([
-  {
-    image: "/images/schoolDistrict/video1.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-  {
-    image: "/images/schoolDistrict/video2.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-  {
-    image: "/images/schoolDistrict/video3.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-  {
-    image: "/images/schoolDistrict/video4.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-  {
-    image: "/images/schoolDistrict/video5.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-  {
-    image: "/images/schoolDistrict/video6.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-]);
-
-const jobList = [
-  {
-    logo: "logo-one.jpg",
-    postedAt: "1h ago",
-    title: "Marketing Associate",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-  {
-    logo: "logo-two.jpg",
-    postedAt: "6h ago",
-    title: "Senior Graphic Designer",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-  {
-    logo: "logo-three.jpg",
-    postedAt: "2h ago",
-    title: "Lead Product Designer",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-  {
-    logo: "logo-four.jpg",
-    postedAt: "6h ago",
-    title: "Senior Graphic Designer",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-  {
-    logo: "logo-two.jpg",
-    postedAt: "6h ago",
-    title: "Senior Graphic Designer",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-  {
-    logo: "logo-one.jpg",
-    postedAt: "6h ago",
-    title: "Senior Graphic Designer",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-  {
-    logo: "logo-two.jpg",
-    postedAt: "2h ago",
-    title: "Lead Product Designer",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-  {
-    logo: "logo-three.jpg",
-    postedAt: "2h ago",
-    title: "Lead Product Designer",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-];
 
 const isSchoolFetching = ref<boolean>(true);
 
@@ -449,8 +292,8 @@ onMounted(async () => {
             <AboutSD :data="listData" v-if="activeTab === 0" />
 
             <div v-if="activeTab === 1">
-              <div v-if="false" class="grid gap-6 grid-cols-1">
-                <template v-for="job in jobList">
+              <div v-if="schoolJobs.length" class="grid gap-6 grid-cols-1">
+                <template v-for="job in schoolJobs">
                   <JobCard
                     :job="job"
                     :show-job-description="false"

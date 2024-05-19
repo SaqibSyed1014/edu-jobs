@@ -1,17 +1,22 @@
-import { getDistrictList, getDistrictSchoolDetail } from "~/segments/districts/services"
-import {getSchoolDetails} from "~/segments/schools/services";
+import {
+    getDistrictList,
+    getDistrictSchoolDetail,
+    getDistrictSchoolJobs
+} from "~/segments/districts/services"
 
 interface DistrictState {
     distictsList: Hit[],
     total_page: number
     schoolDistrictDetails: DistrictDocument | null
+    schoolDistrictJobs: Job[]
 }
 
 export const useDisrictsStore = defineStore('districtStore', {
     state: () => ({
         distictsList: [],
         total_page: 0,
-        schoolDistrictDetails: null
+        schoolDistrictDetails: null,
+        schoolDistrictJobs: []
     } as DistrictState),
     actions: {
         async fetchDistricts(query:any) {
@@ -22,6 +27,8 @@ export const useDisrictsStore = defineStore('districtStore', {
         },
         async fetchDistrictSchoolDetails(slug :string) {
             this.$state.schoolDistrictDetails = await getDistrictSchoolDetail(slug);
+            const { hits } = await getDistrictSchoolJobs(slug);
+            this.$state.schoolDistrictJobs = hits.map((hit :JobHit) => hit.document);
         },
     }
 })
