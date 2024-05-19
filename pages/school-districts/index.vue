@@ -115,7 +115,7 @@ const setCheckedValues = (filterBy: any) => {
   // Check if filterBy exists
   if (filterBy) {
     // Split filterBy into parts for school_count and student_count
-    const [schoolFilter, studentFilter] = filterBy.split(" && ");
+    const [schoolFilter, studentFilter] = filterBy.split("&&");
 
     // Parse and set checked values for school_count
     const schoolRanges = schoolFilter.match(/\d+\s*to\s*\d+|\d+|>\d+/g);
@@ -259,7 +259,7 @@ const toggleSchoolOption = (optionName: any, index: number) => {
         if (options.value.name === "schOptions") {
           selectschValue.value = { key1: `school_count:>${lastOption?.value}` };
           if (route?.query?.filter_by) {
-            const splitData = route?.query?.filter_by.split(" && ");
+            const splitData = route?.query?.filter_by.split("&&");
             splitData.forEach((item: any) => {
               if (item.includes("student_count")) {
                 selectstuValue.value = { key2: item };
@@ -273,7 +273,7 @@ const toggleSchoolOption = (optionName: any, index: number) => {
             key2: `student_count:>${lastOption?.value}`,
           };
           if (route?.query?.filter_by) {
-            const splitData = route?.query?.filter_by.split(" && ");
+            const splitData = route?.query?.filter_by.split("&&");
             splitData.forEach((item: any) => {
               if (item.includes("school_count")) {
                 selectschValue.value = { key1: item };
@@ -303,7 +303,7 @@ const toggleSchoolOption = (optionName: any, index: number) => {
 
     if (options.value.name === "schOptions") {
       if (route?.query?.filter_by) {
-        const splitData = route?.query?.filter_by.split(" && ");
+        const splitData = route?.query?.filter_by.split("&&");
         splitData.forEach((item: any) => {
           if (item.includes("student_count")) {
             selectstuValue.value = { key2: item };
@@ -315,7 +315,7 @@ const toggleSchoolOption = (optionName: any, index: number) => {
 
     if (options.value.name === "stuOptions") {
       if (route?.query?.filter_by) {
-        const splitData = route?.query?.filter_by.split(" && ");
+        const splitData = route?.query?.filter_by.split("&&");
         splitData.forEach((item: any) => {
           if (item.includes("school_count")) {
             selectschValue.value = { key1: item };
@@ -352,7 +352,7 @@ const toggleSchoolOption = (optionName: any, index: number) => {
       mergedFilterBy += selectschValue.value.key1;
     }
     if (selectschValue.value && selectstuValue.value) {
-      mergedFilterBy += " && ";
+      mergedFilterBy += "&&";
     }
     if (selectstuValue.value && selectstuValue.value.key2) {
       mergedFilterBy += selectstuValue.value.key2;
@@ -376,7 +376,7 @@ const toggleSchoolOption = (optionName: any, index: number) => {
       mergedFilterBy += selectschValue.value.key1;
     }
     if (selectschValue.value && selectstuValue.value) {
-      mergedFilterBy += " && ";
+      mergedFilterBy += "&&";
     }
     if (selectstuValue.value && selectstuValue.value.key2) {
       mergedFilterBy += selectstuValue.value.key2;
@@ -394,7 +394,7 @@ const toggleSchoolOption = (optionName: any, index: number) => {
     (selectschValue.value && selectschValue.value.key1
       ? selectschValue.value.key1
       : "") +
-    (selectschValue.value && selectstuValue.value ? " && " : "") +
+    (selectschValue.value && selectstuValue.value ? "&&" : "") +
     (selectstuValue.value && selectstuValue?.value?.key2
       ? selectstuValue?.value?.key2
       : "");
