@@ -1,16 +1,18 @@
-import { getSchoolsList, getSchoolDetails } from "~/segments/schools/services"
+import { getSchoolsList, getSchoolDetails, getSchoolJobs } from "~/segments/schools/services"
 
 interface SchoolState {
     schoolsList: School[]
     total_page: number
     singleSchoolDetails: School | null
+    schoolJobs: Job[]
 }
 
 export const useSchoolsStore = defineStore('schoolsStore', {
     state: () => ({
         schoolsList: [],
         total_page: 0,
-        singleSchoolDetails: null
+        singleSchoolDetails: null,
+        schoolJobs: []
     } as SchoolState),
     actions: {
         async fetchCharterSchools(query:any) {
@@ -20,6 +22,8 @@ export const useSchoolsStore = defineStore('schoolsStore', {
         },
         async fetchCharterSchoolDetails(slug :string) {
             this.$state.singleSchoolDetails = await getSchoolDetails(slug);
+            const { hits } = await getSchoolJobs(slug);
+            this.$state.schoolJobs = hits.map((hit :JobHit) => hit.document);
         },
     },
     getters: {

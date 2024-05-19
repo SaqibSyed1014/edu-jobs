@@ -103,7 +103,8 @@ onMounted(async () => {
     else savedLayout = 'list'
     isGridView.value = savedLayout as string;
   }
-  await fetchSchools(); // Initial fetch
+  if (route?.query?.q?.length) await search();  // if search param is there, call search() function
+  else await fetchSchools(); // Initial fetch
   if (route?.query?.filter_by) {
     query.value.filter_by = route?.query?.filter_by.toString();
   }
@@ -442,13 +443,14 @@ const selectAlphabet = (index: number) => {
 };
 
 const handleInput = _debounce(() => {
-  search();
-}, 500); // Adjust the debounce delay as needed (in milliseconds)
+  search(true);
+}, 500);
 
-const search = () => {
+const search = (resetToDefaultPage = false) => {
   query.value.q = searchedValue.value.toString() ?? "*";
   query.value.query_by = "name";
-  query.value.page = 1;
+  if (resetToDefaultPage) query.value.page = 1;
+  else query.value.page = route?.query?.page ? route.query.page : 1;  // search with page number if there's page number in the query params
   currentPage.value = 1;
   router.replace({
     path: "/charter-schools",
@@ -705,7 +707,7 @@ const search = () => {
         <div class="mt-1.5 mb-8">
           <!-- Grid View -->
 
-          <div v-if="isLoading || schoolsList.length" class="grid gap-6 pt-8" :class="[isGridView === 'grid' ? 'md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1']">
+          <div v-if="isLoading || schoolsList?.length" class="grid gap-6 pt-8" :class="[isGridView === 'grid' ? 'md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1']">
             <template v-if="isLoading" v-for="i in 12">
               <client-only>
                 <SchoolSkeleton :card-form="isGridView === 'grid'" />

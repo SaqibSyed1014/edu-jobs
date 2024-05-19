@@ -15,6 +15,32 @@ const getDistrictList = (query: any) :Promise<DisrictResponseType> => {
     })
 }
 
+const getDistrictSchoolDetail = (slug: string) :Promise<DistrictDocument> => {
+    const { baseUrl, apiKey } = usePayloadUrl()
+    const apiHeaders = {
+        'API-Key': apiKey,
+    }
+
+    return $fetch(`${baseUrl}/org/${slug}`, {
+        method: 'get',
+        headers: apiHeaders,
+    })
+}
+
+const getDistrictSchoolJobs = (slug: string) :Promise<JobResponseType> => {
+    const { baseUrl, apiKey } = usePayloadUrl()
+    const apiHeaders = {
+        'API-Key': apiKey,
+    }
+
+    return $fetch(`${baseUrl}/org/jobs/${slug}`, {
+        method: 'get',
+        headers: apiHeaders,
+    })
+}
+
 export {
-    getDistrictList
+    getDistrictList,
+    getDistrictSchoolDetail,
+    getDistrictSchoolJobs
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useHomeStore} from "~/segments/home/store";
+import { useDisrictsStore } from "~/segments/districts/store";
 import BaseSpinner from "~/components/core/BaseSpinner.vue";
 import OrgMapLocation from "~/components/pages/schoolDistrict/OrgMapLocation.vue";
 
@@ -10,8 +10,6 @@ const tabs = ref([
   { name: "About School District" },
   { name: "Open Jobs" },
   { name: "List of Schools" },
-  { name: "Photos" },
-  { name: "Videos" },
   { name: "Location" }
 ]);
 
@@ -248,15 +246,15 @@ const jobList = [
 ];
 
 const route = useRoute();
-const homeStore = useHomeStore();
+const districtStore = useDisrictsStore();
 
-const { orgDetail } = storeToRefs(homeStore);
+const { schoolDistrictDetails, schoolDistrictJobs } = storeToRefs(districtStore);
 
 const isOrgFetching = ref<boolean>(true);
 
 onMounted(async () => {
   isOrgFetching.value = true;
-  await homeStore.fetchOrgDetails(route.params?.id as string);
+  await districtStore.fetchDistrictSchoolDetails(route.params?.id as string);
   isOrgFetching.value = false;
 })
 </script>
@@ -268,7 +266,7 @@ onMounted(async () => {
     </div>
   </div>
 
-  <div v-else-if="orgDetail" class="border-t md:border-b border-gray-200 mb-24">
+  <div v-else-if="schoolDistrictDetails" class="border-t md:border-b border-gray-200 mb-24">
     <div class="md:container flex">
       <!-- Sidebar -->
       <div class="flex flex-col border-r border-gray-200">
@@ -315,7 +313,7 @@ onMounted(async () => {
               <SvgoChevronRight class="size-4" />
               <div class="justify-center items-center flex">
                 <div class="text-blue-800 text-sm font-semibold leading-tight">
-                  {{ orgDetail.name }}
+                  {{ schoolDistrictDetails.name }}
                 </div>
               </div>
             </div>
@@ -344,16 +342,16 @@ onMounted(async () => {
               class="justify-start lg:items-center lg:gap-6 flex flex-col lg:flex-row"
             >
               <div class="w-24 h-24 shrink-0 bg-white rounded-[10px] shadow-lg flex justify-center items-center mb-2">
-                <template v-if="orgDetail?.logo_path?.length">
-                  <img :src="orgDetail.logo_path" :alt="orgDetail.name" class="w-full h-full object-cover">
+                <template v-if="schoolDistrictDetails?.logo_path?.length">
+                  <img :src="schoolDistrictDetails.logo_path" :alt="schoolDistrictDetails.name" class="w-full h-full object-cover">
                 </template>
 
                 <SvgoBuilding v-else class="size-14 shrink-0" />
               </div>
               <div class="flex-col justify-start items-start gap-5 inline-flex">
-                <BaseTooltip :tooltip-content="orgDetail.name" id="orgTitle">
+                <BaseTooltip :tooltip-content="schoolDistrictDetails.name" id="orgTitle">
                   <h2 class="text-2xl lg:text-3xl md:text-ellipsis md:line-clamp-1">
-                    {{ orgDetail.name }}
+                    {{ schoolDistrictDetails.name }}
                   </h2>
                 </BaseTooltip>
               </div>
@@ -367,7 +365,7 @@ onMounted(async () => {
                 <div class="inline-flex gap-2">
                   <SvgoUsFlag class="size-5 shrink-0" />
                   <span class="text-slate-600 text-base font-medium leading-normal">
-                    {{ orgDetail.state_name }}, {{ orgDetail.state_code }}
+                    {{ schoolDistrictDetails.state_name }}, {{ schoolDistrictDetails.state_code }}
                   </span>
                 </div>
               </div>
@@ -379,7 +377,7 @@ onMounted(async () => {
                 <div class="inline-flex gap-2">
                   <SvgoBuilding class="size-5" />
                   <span class="text-slate-600 text-base font-medium leading-normal">
-                    {{ orgDetail.school_count }}
+                    {{ schoolDistrictDetails.school_count }}
                   </span>
                 </div>
               </div>
@@ -390,7 +388,7 @@ onMounted(async () => {
                   <SvgoGraduationHat class="size-5" />
                   <span
                     class="text-slate-600 text-base font-medium leading-normal">
-                    {{ orgDetail.student_count }}
+                    {{ schoolDistrictDetails.student_count }}
                   </span>
                 </div>
               </div>
@@ -400,7 +398,7 @@ onMounted(async () => {
                 <div class="inline-flex gap-2">
                   <SvgoBriefCase class="size-5" />
                   <span class="text-slate-600 text-base font-medium leading-normal">
-                    {{ orgDetail.job_count }}
+                    {{ schoolDistrictDetails.job_count }}
                   </span>
                 </div>
               </div>
@@ -412,11 +410,11 @@ onMounted(async () => {
                 <div class="inline-flex gap-2">
                   <SvgoGlobe class="size-5 shrink-0" />
                   <a
-                    :href="orgDetail.website_url"
+                    :href="schoolDistrictDetails.website_url"
                     target="_blank"
                     class="text-brand-800 text-base font-medium underline leading-normal break-all block"
                   >
-                    {{ orgDetail.website_url }}
+                    {{ schoolDistrictDetails.website_url }}
                   </a>
                 </div>
               </div>
@@ -462,10 +460,6 @@ onMounted(async () => {
                         : activeTab === 2
                         ? "List of Schools"
                         : activeTab === 3
-                        ? "Photos"
-                        : activeTab === 4
-                        ? "Videos"
-                        : activeTab === 5
                         ? "Location"
                         : ""
                     }}
@@ -480,10 +474,6 @@ onMounted(async () => {
                         ? "Have a look to the list of Jobs."
                         : activeTab === 2
                         ? "Have a look to the list of schools."
-                        : activeTab === 3
-                        ? "Have a glimpse of some cherished moments from Palo Alto Unified District"
-                        : activeTab === 4
-                        ? "Here are some videos to help you learn more"
                         : ""
                     }}
                   </p>
@@ -516,8 +506,8 @@ onMounted(async () => {
             <AboutSD :data="listData" v-if="activeTab === 0" />
 
             <div v-if="activeTab === 1">
-              <div v-if="false" class="grid gap-6 grid-cols-1">
-                <template v-for="job in jobList">
+              <div v-if="schoolDistrictJobs.length" class="grid gap-6 grid-cols-1">
+                <template v-for="job in schoolDistrictJobs">
                   <JobCard
                     :job="job"
                     :show-job-description="false"
@@ -531,11 +521,10 @@ onMounted(async () => {
             </div>
             <ListSchools :data="schoolList" v-if="activeTab === 2" />
 
-            <PhotoCard :data="photoList" v-if="activeTab === 3" />
+<!--            <PhotoCard :data="photoList" v-if="activeTab === 3" />-->
+<!--            <VideoCard v-if="activeTab === 4" :data="videoList" />-->
 
-            <VideoCard v-if="activeTab === 4" :data="videoList" />
-
-            <OrgMapLocation v-if="activeTab === 5" :coordinates="[orgDetail.geo_lat, orgDetail.geo_lng]" />
+            <OrgMapLocation v-if="activeTab === 3" :coordinates="[schoolDistrictDetails.geo_lat, schoolDistrictDetails.geo_lng]" />
           </div>
         </div>
       </main>

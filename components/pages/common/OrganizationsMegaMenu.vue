@@ -20,7 +20,7 @@ function orgModuleType(type :string) {
   <div class="org-menu-wrapper w-[800px]">
     <div class="grid grid-cols-12">
       <div class="col-span-4">
-        <h4 class="text-blue-600 text-lg font-semibold mb-4">Organizations Types {{loading}}</h4>
+        <h4 class="text-blue-600 text-lg font-semibold mb-4">Organizations Types</h4>
         <ul class="flex flex-col gap-4">
           <template v-for="orgLink in subLinks">
             <li>
