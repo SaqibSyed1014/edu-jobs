@@ -26,7 +26,7 @@ const props = defineProps<{
 
 const route = useRoute();
 
-watch(() => route.name, () => {
+watch(() => [route.name || route.params.id], () => {
   if (showMenu.value) showMenu.value = false
 })
 </script>

@@ -263,7 +263,7 @@ onMounted(async () => {
 <template>
   <div v-if="isCollegeFetching" class="container">
     <div class="flex justify-center items-center h-[calc(100vh-80px)] w-full">
-      <BaseSpinner size="lg" :show-loader="isOrgFetching" />
+      <BaseSpinner size="lg" :show-loader="isCollegeFetching" />
     </div>
   </div>
 
