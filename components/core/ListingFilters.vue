@@ -114,7 +114,7 @@ function isItemChecked(value :string) {
                 <input :checked="true" type="checkbox">
               </div>
               <label class="font-medium cursor-pointer">
-                Include jobs without salary
+                Includes jobs without hourly rate
               </label>
             </div>
 
