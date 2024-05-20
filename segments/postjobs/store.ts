@@ -31,5 +31,10 @@ export const usePostjobStore = defineStore('postjobStore', {
             //this.$state.stripeData = data
             //this.$state.total_page = Math.ceil(found / 12) 
         },
+
+        reset() {
+            this.$state.content  = null;
+            this.$state.status  = null;
+          },
     }
 })

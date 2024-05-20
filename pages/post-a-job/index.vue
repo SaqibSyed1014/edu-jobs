@@ -62,7 +62,7 @@ const steps = ref([
   },
 ]);
 
-const unwatch = watch(currentStep, (newValue, oldValue) => {
+const unwatch = watch(currentStep, (newValue: number, oldValue: number) => {
   if (oldValue === 0 && newValue === 1) {
     // Update the status of Organization Information to 'complete'
     steps.value[0].status = "complete";
@@ -79,12 +79,34 @@ const unwatch = watch(currentStep, (newValue, oldValue) => {
   }
 });
 
+
+Yup.addMethod(Yup.string, 'emailDomain', function (message) {
+  return this.test('email-domain', message, function (value) {
+    const { path, createError } = this;
+
+    if (!value) {
+      return true; // Skip validation if the value is empty, let required handle it
+    }
+
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value); // Standard email regex
+    const hasCorrectDomain = value.includes('@') && value.endsWith('.com');
+
+    if (isValidEmail && hasCorrectDomain) {
+      return true;
+    }
+
+    return createError({ path, message: message || 'Email must be valid and end with ".com"' });
+  });
+});
+
 const schemas = [
   Yup.object().shape({
     organizationName: Yup.string()
       .min(10, "Please enter a name that is at least 10 characters long")
       .required("Organization Name is required"),
-    email: Yup.string().email("Invalid email").required("Email is required"),
+      email: Yup.string().email('Invalid email')
+    .required('Email is required')
+    .emailDomain('Email must contain "@" and end with ".com" not a valid'),
     fullName: Yup.string().required("Full Name is required"),
   }),
   Yup.object().shape({
@@ -129,22 +151,23 @@ const handleImageUpload = (event: any) => {
     reader.readAsDataURL(file);
   }
 };
-
+  const email = ref<string>('');
+  const organiName = ref<string>('');
+  const name = ref<string>('');
 // Function to handle checkout payment
 async function checkout () {
-  console.log('checkout payment');
 
   isLoading.value = true;
   const requestBody = {
-        email : 'hadello@hotmail.com',
+        email : email.value,
         price_id : 'price_1P0v2M00kiM97A5ms79o8u4q',
-        fullname : 'adil kodx',
-        organizationName: 'Lead',
+        fullname : name.value,
+        organizationName: organiName.value,
         price : 123,
     };
+
+  console.log('check ', requestBody)
   
-  // console.log('check ', requestBody)
-  // return true;
   await postjobStore.fetchPayment(null,requestBody);
 
   console.log('check chekout func content', content?.value?.url )
@@ -153,8 +176,11 @@ async function checkout () {
   if(status?.value === '200'){
 
     window.open (content?.value?.url);
+    postjobStore.reset()
+    //postjobStore.$reset();
+
   } else {
-    console.log("not found")
+    useNuxtApp().$toast.error("Failed To make Payment");
   }
   isLoading.value = false;
   //totalPages.value = total_page?.value;
@@ -440,6 +466,7 @@ function handleStepClick() {
               <TextInput
                 name="organizationName"
                 type="text"
+                v-model="organiName"
                 label="Organization Name*"
                 placeholder="e.g. Unified School District"
                 subLabel=""
@@ -459,6 +486,7 @@ function handleStepClick() {
                 <TextInput
                   name="email"
                   type="email"
+                  v-model="email"
                   label="Your work email address*"
                   placeholder="example@edujobs.com"
                   subLabel="Used to send you an email confirmation"
@@ -472,6 +500,7 @@ function handleStepClick() {
                 <TextInput
                   name="fullName"
                   type="text"
+                  v-model="name"
                   label="Your full name*"
                   placeholder="John Doe"
                   subLabel=""

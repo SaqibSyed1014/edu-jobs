@@ -1,29 +1,32 @@
 <script setup lang="ts">
-const props = defineProps<{
-  minValue: number,
-  maxValue: number
+import { ref, computed } from 'vue';
 
-}>()
-const minAngle = ref<number>(props.minValue);
-const maxAngle = ref<number>(props.maxValue);
+const props = defineProps<{
+  minValue: number;
+  maxValue: number;
+  stepValue: number; // New prop for step difference
+}>();
+
+const minAngle = ref(props.minValue);
+const maxAngle = ref(props.maxValue);
 
 const sliderMin = computed({
-  get: (): number => parseInt(minAngle.value.toString()),
+  get: () => minAngle.value,
   set: (val: number) => {
-    val = parseInt(val.toString());
-    if (val > maxAngle.value) {
-      maxAngle.value = val;
+    val = Math.round(val / props.stepValue) * props.stepValue; // Round to nearest step
+    if (val > sliderMax.value) {
+      sliderMax.value = val;
     }
     minAngle.value = val;
   },
 });
 
 const sliderMax = computed({
-  get: (): number => parseInt(maxAngle.value.toString()),
+  get: () => maxAngle.value,
   set: (val: number) => {
-    val = parseInt(val.toString());
-    if (val < minAngle.value) {
-      minAngle.value = val;
+    val = Math.round(val / props.stepValue) * props.stepValue; // Round to nearest step
+    if (val < sliderMin.value) {
+      sliderMin.value = val;
     }
     maxAngle.value = val;
   },
@@ -31,14 +34,12 @@ const sliderMax = computed({
 </script>
 
 <template>
-  <div class='range-slider'>
-    <input type="range" :min="minValue" :max="maxValue" step="1" v-model="sliderMin">
-
-    <input type="range" :min="minValue" :max="maxValue" step="1" v-model="sliderMax">
-
+  <div class="range-slider">
+    <input type="range" :min="minValue" :max="maxValue" :step="stepValue" v-model="sliderMin">
+    <input type="range" :min="minValue" :max="maxValue" :step="stepValue" v-model="sliderMax">
     <div class="absolute -bottom-8 flex justify-between w-full text-sm font-medium">
-      <span>{{ `$${sliderMin}` }}</span>
-      <span>{{ `$${sliderMax}+` }}</span>
+      <span>{{ `$${sliderMin.toLocaleString()}` }}</span>
+      <span>{{ `$${sliderMax.toLocaleString()}+` }}</span>
     </div>
   </div>
 </template>
