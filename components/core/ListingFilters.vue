@@ -94,7 +94,13 @@ function isItemChecked(value :string) {
                   <input :checked="isItemChecked(item.value)" @change="updateChecked(index as number, i as number, $event.target.checked, item.value, filter.fieldName)"
                          :id="`filter-cb-${index}-${i}`" type="checkbox">
                 </div>
-                <label :for="`filter-cb-${index}-${i}`" class="font-medium cursor-pointer">
+                <BaseTooltip v-if="item.tooltipText" :tooltip-content="item.tooltipText" position="right" :id="`label-cb-${index}-${i}`">
+                  <label :for="`filter-cb-${index}-${i}`" class="font-medium cursor-pointer">
+                    {{ item.label }}
+                    <span class="text-gray-400 font-normal">({{ item.counts }})</span>
+                  </label>
+                </BaseTooltip>
+                <label v-else :for="`filter-cb-${index}-${i}`" class="font-medium cursor-pointer">
                   {{ item.label }}
                   <span class="text-gray-400 font-normal">({{ item.counts }})</span>
                 </label>

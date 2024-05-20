@@ -4,7 +4,7 @@ defineProps<{ data: any; isSchool: Boolean }>();
 
 <template>
   <NuxtLink
-    :to="`/colleges/${data?.document?.id}`"
+    :to="`/colleges/${data?.document?.slug}`"
     class="p-5 flex flex-col rounded-xl border border-gray-200"
   >
     <div class="flex items-center gap-3">

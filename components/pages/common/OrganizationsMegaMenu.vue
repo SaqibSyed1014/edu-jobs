@@ -1,40 +1,19 @@
 <script setup lang="ts">
+import {useHomeStore} from "~/segments/home/store";
+
 defineProps<{
-  subLinks: { label: string, path: string }[]
+  subLinks: { label: string, path: string }[],
+  loading: boolean
 }>()
 
-const organizations = [
-  {
-    logo: '/images/logos/logo-one.jpg',
-    name: 'Arcadia Unified',
-    counts: 20
-  },
-  {
-    logo: '/images/logos/logo-two.jpg',
-    name: 'Saratoga High',
-    counts: 42
-  },
-  {
-    logo: '/images/logos/logo-three.jpg',
-    name: 'San Dieguito High',
-    counts: 90
-  },
-  {
-    logo: '/images/logos/logo-four.jpg',
-    name: 'Saratoga Union',
-    counts: 57
-  },
-  {
-    logo: '/images/logos/logo-two.jpg',
-    name: 'Palo Alto College',
-    counts: 65
-  },
-  {
-    logo: '/images/logos/logo-one.jpg',
-    name: 'Saratoga Union',
-    counts: 5
+const homeStore = useHomeStore();
+const { featuredOrganizations } = storeToRefs(homeStore);
+
+function orgModuleType(type :string) {
+  if(type === 'district') {
+    return 'school-districts'
   }
-]
+}
 </script>
 
 <template>
@@ -52,19 +31,29 @@ const organizations = [
       </div>
       <div class="col-span-8">
         <h4 class="text-blue-600 text-lg font-semibold mb-4">Organizations</h4>
-        <div class="grid grid-cols-2 gap-x-4">
-          <template v-for="org in organizations">
-            <div class="flex items-center justify-between gap-12 rounded-lg py-3 px-2 hover:bg-gray-200 transition cursor-pointer">
+        <div v-if="loading" class="flex justify-center pt-6">
+          <BaseSpinner :show-loader="loading" size="sm"/>
+        </div>
+        <div v-else class="grid grid-cols-2 gap-x-4">
+          <template v-for="(org, i) in featuredOrganizations">
+            <NuxtLink
+                :to="`/${orgModuleType(org.type)}/${org.slug}`"
+                class="flex items-center justify-between rounded-lg py-3 px-2 hover:bg-gray-200 transition cursor-pointer"
+            >
               <div class="flex items-center gap-3">
-                <div class="rounded-full overflow-hidden w-8 h-8 shrink-0">
-                  <img :src="org.logo" alt="" class="w-full h-full object-cover">
+                <div v-if="org.logo_path.length" class="rounded-full overflow-hidden w-8 h-8 shrink-0">
+                  <img :src="org.logo_path" alt="" class="w-full h-full object-cover">
                 </div>
-                <p class="text-sm shrink-0 text-ellipsis">{{ org.name }}</p>
+                <SvgoBuilding v-else class="size-6 shrink-0 "/>
+
+                <BaseTooltip :tooltip-content="org.name" :id="`orgName-${i}`">
+                  <p class="text-sm shrink-0 line-clamp-1 w-[140px]">{{ org.name }}</p>
+                </BaseTooltip>
               </div>
               <div class="border border-gray-300 shadow-xs rounded-md shrink-0 text-sm px-1">
-                {{ org.counts }} jobs
+                {{ org.number_jobs }}
               </div>
-            </div>
+            </NuxtLink>
           </template>
         </div>
       </div>

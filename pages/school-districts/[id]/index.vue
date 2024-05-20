@@ -1,4 +1,8 @@
-<script setup>
+<script setup lang="ts">
+import { useDisrictsStore } from "~/segments/districts/store";
+import BaseSpinner from "~/components/core/BaseSpinner.vue";
+import OrgMapLocation from "~/components/pages/schoolDistrict/OrgMapLocation.vue";
+
 const activeTab = ref(0); // Default to first tab
 const router = useRouter();
 // Array of tab names and icons
@@ -6,8 +10,7 @@ const tabs = ref([
   { name: "About School District" },
   { name: "Open Jobs" },
   { name: "List of Schools" },
-  { name: "Photos" },
-  { name: "Videos" },
+  { name: "Location" }
 ]);
 
 const listData = ref([
@@ -241,10 +244,29 @@ const jobList = [
     wage: "80k - 100k",
   },
 ];
+
+const route = useRoute();
+const districtStore = useDisrictsStore();
+
+const { schoolDistrictDetails, schoolDistrictJobs } = storeToRefs(districtStore);
+
+const isOrgFetching = ref<boolean>(true);
+
+onMounted(async () => {
+  isOrgFetching.value = true;
+  await districtStore.fetchDistrictSchoolDetails(route.params?.id as string);
+  isOrgFetching.value = false;
+})
 </script>
 
 <template>
-  <div class="border-t md:border-b border-gray-200 mb-24">
+  <div v-if="isOrgFetching" class="container">
+    <div class="flex justify-center items-center h-[calc(100vh-80px)] w-full">
+      <BaseSpinner size="lg" :show-loader="isOrgFetching" />
+    </div>
+  </div>
+
+  <div v-else-if="schoolDistrictDetails" class="border-t md:border-b border-gray-200 mb-24">
     <div class="md:container flex">
       <!-- Sidebar -->
       <div class="flex flex-col border-r border-gray-200">
@@ -291,7 +313,7 @@ const jobList = [
               <SvgoChevronRight class="size-4" />
               <div class="justify-center items-center flex">
                 <div class="text-blue-800 text-sm font-semibold leading-tight">
-                  Palo alto unified school districts
+                  {{ schoolDistrictDetails.name }}
                 </div>
               </div>
             </div>
@@ -319,18 +341,19 @@ const jobList = [
             <div
               class="justify-start lg:items-center lg:gap-6 flex flex-col lg:flex-row"
             >
-              <div class="w-24 rounded-[10px] justify-center items-center flex">
-                <img
-                  src="/images/schoolDistrict/logo-avatar.png"
-                  class="object-cover scale-110"
-                />
+              <div class="w-24 h-24 shrink-0 bg-white rounded-[10px] shadow-lg flex justify-center items-center mb-2">
+                <template v-if="schoolDistrictDetails?.logo_path?.length">
+                  <img :src="schoolDistrictDetails.logo_path" :alt="schoolDistrictDetails.name" class="w-full h-full object-cover">
+                </template>
+
+                <SvgoBuilding v-else class="size-14 shrink-0" />
               </div>
               <div class="flex-col justify-start items-start gap-5 inline-flex">
-                <p
-                  class="text-gray-900 text-2xl lg:text-3xl font-semibold leading-[38px]"
-                >
-                  Palo Alto Unified School District
-                </p>
+                <BaseTooltip :tooltip-content="schoolDistrictDetails.name" id="orgTitle">
+                  <h2 class="text-2xl lg:text-3xl md:text-ellipsis md:line-clamp-1">
+                    {{ schoolDistrictDetails.name }}
+                  </h2>
+                </BaseTooltip>
               </div>
             </div>
 
@@ -338,15 +361,12 @@ const jobList = [
               class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 lg:gap-9 pb-6 pt-6 lg:pt-0 border-b border-gray-200"
             >
               <div class="flex flex-col gap-2">
-                <span class="text-gray-900 text-sm font-medium leading-tight"
-                  >Location
-                </span>
+                <span class="text-gray-900 text-sm font-medium leading-tight">Location</span>
                 <div class="inline-flex gap-2">
-                  <SvgoUsFlag class="size-5" />
-                  <span
-                    class="text-slate-600 text-base font-medium leading-normal"
-                    >Palo Alto, CA</span
-                  >
+                  <SvgoUsFlag class="size-5 shrink-0" />
+                  <span class="text-slate-600 text-base font-medium leading-normal">
+                    {{ schoolDistrictDetails.state_name }}, {{ schoolDistrictDetails.state_code }}
+                  </span>
                 </div>
               </div>
 
@@ -356,36 +376,30 @@ const jobList = [
                 </span>
                 <div class="inline-flex gap-2">
                   <SvgoBuilding class="size-5" />
-                  <span
-                    class="text-slate-600 text-base font-medium leading-normal"
-                    >19</span
-                  >
+                  <span class="text-slate-600 text-base font-medium leading-normal">
+                    {{ schoolDistrictDetails.school_count }}
+                  </span>
                 </div>
               </div>
 
               <div class="flex flex-col gap-2">
-                <span class="text-gray-900 text-sm font-medium leading-tight"
-                  >Number of Students
-                </span>
+                <span class="text-gray-900 text-sm font-medium leading-tight">Number of Students</span>
                 <div class="inline-flex gap-2">
                   <SvgoGraduationHat class="size-5" />
                   <span
-                    class="text-slate-600 text-base font-medium leading-normal"
-                    >12,380</span
-                  >
+                    class="text-slate-600 text-base font-medium leading-normal">
+                    {{ schoolDistrictDetails.student_count }}
+                  </span>
                 </div>
               </div>
 
               <div class="flex flex-col gap-2">
-                <span class="text-gray-900 text-sm font-medium leading-tight"
-                  >Number of Jobs
-                </span>
+                <span class="text-gray-900 text-sm font-medium leading-tight">Number of Jobs</span>
                 <div class="inline-flex gap-2">
                   <SvgoBriefCase class="size-5" />
-                  <span
-                    class="text-slate-600 text-base font-medium leading-normal"
-                    >19</span
-                  >
+                  <span class="text-slate-600 text-base font-medium leading-normal">
+                    {{ schoolDistrictDetails.job_count }}
+                  </span>
                 </div>
               </div>
 
@@ -394,12 +408,13 @@ const jobList = [
                   >Website
                 </span>
                 <div class="inline-flex gap-2">
-                  <SvgoGlobe class="size-5" />
+                  <SvgoGlobe class="size-5 shrink-0" />
                   <a
-                    href="#"
-                    class="text-brand-800 text-base font-medium underline leading-normal"
+                    :href="schoolDistrictDetails.website_url"
+                    target="_blank"
+                    class="text-brand-800 text-base font-medium underline leading-normal break-all block"
                   >
-                    www.paloalto.com
+                    {{ schoolDistrictDetails.website_url }}
                   </a>
                 </div>
               </div>
@@ -445,9 +460,7 @@ const jobList = [
                         : activeTab === 2
                         ? "List of Schools"
                         : activeTab === 3
-                        ? "Photos"
-                        : activeTab === 4
-                        ? "Videos"
+                        ? "Location"
                         : ""
                     }}
                   </p>
@@ -461,10 +474,6 @@ const jobList = [
                         ? "Have a look to the list of Jobs."
                         : activeTab === 2
                         ? "Have a look to the list of schools."
-                        : activeTab === 3
-                        ? "Have a glimpse of some cherished moments from Palo Alto Unified District"
-                        : activeTab === 4
-                        ? "Here are some videos to help you learn more"
                         : ""
                     }}
                   </p>
@@ -497,8 +506,8 @@ const jobList = [
             <AboutSD :data="listData" v-if="activeTab === 0" />
 
             <div v-if="activeTab === 1">
-              <div class="grid gap-6 grid-cols-1">
-                <template v-for="job in jobList">
+              <div v-if="schoolDistrictJobs.length" class="grid gap-6 grid-cols-1">
+                <template v-for="job in schoolDistrictJobs">
                   <JobCard
                     :job="job"
                     :show-job-description="false"
@@ -506,13 +515,16 @@ const jobList = [
                   />
                 </template>
               </div>
-              <Pagination />
+
+              <NoRecordFound v-else name="jobs" />
+              <Pagination v-if="false" />
             </div>
             <ListSchools :data="schoolList" v-if="activeTab === 2" />
 
-            <PhotoCard :data="photoList" v-if="activeTab === 3" />
+<!--            <PhotoCard :data="photoList" v-if="activeTab === 3" />-->
+<!--            <VideoCard v-if="activeTab === 4" :data="videoList" />-->
 
-            <VideoCard v-if="activeTab === 4" :data="videoList" />
+            <OrgMapLocation v-if="activeTab === 3" :coordinates="[schoolDistrictDetails.geo_lat, schoolDistrictDetails.geo_lng]" />
           </div>
         </div>
       </main>

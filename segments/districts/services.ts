@@ -3,18 +3,44 @@ import { usePayloadUrl , convertQueryToString} from "~/segments/utils"
 
 
 const getDistrictList = (query: any) :Promise<DisrictResponseType> => {
-    const { typesenseBaseURL, typesenseApiKey } = usePayloadUrl()
+    const { baseUrl, apiKey } = usePayloadUrl()
         const queryString = convertQueryToString(query);
         const apiHeaders = {
-            'X-TYPESENSE-API-KEY': typesenseApiKey,
+            'API-Key': apiKey,
         }
 
-    return $fetch(`${typesenseBaseURL}/collections/districts/documents/search?${queryString}`, {
+    return $fetch(`${baseUrl}/districts/list?${queryString}`, {
+        method: 'get',
+        headers: apiHeaders,
+    })
+}
+
+const getDistrictSchoolDetail = (slug: string) :Promise<DistrictDocument> => {
+    const { baseUrl, apiKey } = usePayloadUrl()
+    const apiHeaders = {
+        'API-Key': apiKey,
+    }
+
+    return $fetch(`${baseUrl}/org/${slug}`, {
+        method: 'get',
+        headers: apiHeaders,
+    })
+}
+
+const getDistrictSchoolJobs = (slug: string) :Promise<JobResponseType> => {
+    const { baseUrl, apiKey } = usePayloadUrl()
+    const apiHeaders = {
+        'API-Key': apiKey,
+    }
+
+    return $fetch(`${baseUrl}/org/jobs/${slug}`, {
         method: 'get',
         headers: apiHeaders,
     })
 }
 
 export {
-    getDistrictList
+    getDistrictList,
+    getDistrictSchoolDetail,
+    getDistrictSchoolJobs
 }

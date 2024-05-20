@@ -1,4 +1,4 @@
-interface Document {
+interface CollegeDocument {
   city: string;
   county_name: string;
   id: string;
@@ -19,7 +19,7 @@ interface Document {
 }
 
 interface Hit {
-  document: Document;
+  document: CollegeDocument;
   highlight: Record<string, any>;
   highlights: any[];
 }

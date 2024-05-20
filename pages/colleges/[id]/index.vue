@@ -1,13 +1,15 @@
-<script setup>
+<script setup lang="ts">
+import {useCollegesStore} from "~/segments/colleges/store";
+import OrgMapLocation from "~/components/pages/schoolDistrict/OrgMapLocation.vue";
+import BaseSpinner from "~/components/core/BaseSpinner.vue";
+
 const activeTab = ref(0); // Default to first tab
 
 // Array of tab names and icons
 const tabs = ref([
   { name: "About College District" },
   { name: "Open Jobs" },
-  { name: "List of Colleges" },
-  { name: "Photos" },
-  { name: "Videos" },
+  { name: "List of Colleges" }
 ]);
 
 const listData = ref([
@@ -241,29 +243,48 @@ const jobList = [
     wage: "80k - 100k",
   },
 ];
+
+const route = useRoute();
+const router = useRouter();
+const collegeStore = useCollegesStore();
+const { collegeDetails } = storeToRefs(collegeStore);
+
+const isCollegeFetching = ref<boolean>(true);
+
+onMounted(async () => {
+  isCollegeFetching.value = true;
+  await collegeDetails.fetchCollegeDetails(route.params?.id as string);
+  isCollegeFetching.value = false;
+})
 </script>
 
 <template>
-  <div class="border-t md:border-b border-gray-200 mb-24">
+  <div v-if="isCollegeFetching" class="container">
+    <div class="flex justify-center items-center h-[calc(100vh-80px)] w-full">
+      <BaseSpinner size="lg" :show-loader="isCollegeFetching" />
+    </div>
+  </div>
+
+  <div v-else-if="collegeDetails" class="border-t md:border-b border-gray-200 mb-24">
     <div class="md:container flex">
       <!-- Sidebar -->
       <div class="flex flex-col border-r border-gray-200">
         <div class="sticky right-0 top-0 w-full">
           <aside
-            class="sticky top-0 z-[1] w-[260px] hidden lg:flex flex-col pt-8"
+              class="sticky top-0 z-[1] w-[260px] hidden lg:flex flex-col pt-8"
           >
             <!-- Tabs -->
             <div class="flex flex-col">
               <!-- Loop through tabs -->
               <button
-                v-for="(tab, index) in tabs"
-                :key="index"
-                :class="
+                  v-for="(tab, index) in tabs"
+                  :key="index"
+                  :class="
                   activeTab === index
                     ? 'text-brand-800 text-sm font-semibold py-2 px-3 flex items-center justify-between border-l-2 border-brand-600'
                     : 'py-2 px-3 flex items-center justify-between text-sm text-gray-500 '
                 "
-                @click="activeTab = index"
+                  @click="activeTab = index"
               >
                 <span>{{ tab.name }}</span>
               </button>
@@ -271,133 +292,128 @@ const jobList = [
           </aside>
         </div>
       </div>
+
       <!-- Main Content -->
       <main class="pt-8 md:pb-10 w-full">
         <!-- Content for each tab -->
         <div>
           <div
-            class="w-full h-5 justify-between items-start inline-flex pl-6 sm:pl-0"
+              class="w-full h-5 justify-between items-start inline-flex pl-6 sm:pl-0"
           >
             <div class="pl-3 justify-start items-center gap-3 hidden lg:flex">
               <div class="justify-center items-center flex">
                 <NuxtLink
-                  to="/colleges"
-                  class="text-slate-600 text-sm font-medium leading-tight"
+                    to="/colleges"
+                    class="text-slate-600 text-sm font-medium leading-tight"
                 >
-                  College districts
+                  College Districts
                 </NuxtLink>
               </div>
               <SvgoChevronRight class="size-4" />
               <div class="justify-center items-center flex">
                 <div class="text-blue-800 text-sm font-semibold leading-tight">
-                  Palo alto unified College districts
+                  {{ collegeDetails.name }}
                 </div>
               </div>
             </div>
-            <NuxtLink
-              to="/colleges"
-              class="justify-center items-center gap-1.5 flex group"
+            <button
+                @click="router.back()"
+                type="button"
+                class="justify-center items-center gap-1.5 flex group"
             >
               <SvgoArrowLeftBlue
-                class="size-5 group-hover:-translate-x-[8px] transition"
+                  class="size-5 group-hover:-translate-x-[8px] transition"
               />
               <div class="text-blue-800 text-sm font-semibold leading-tight">
                 Back
               </div>
-            </NuxtLink>
+            </button>
           </div>
 
           <div class="pt-5">
             <img
-              src="/images/college/banner.png"
-              class="h-[140px] md:h-60 w-full object-cover"
+                src="/images/schoolDistrict/cover.webp"
+                class="h-[140px] md:h-60 w-full object-cover"
             />
           </div>
           <div class="-mt-5 px-4 lg:px-8">
             <div
-              class="justify-start lg:items-center lg:gap-6 flex flex-col lg:flex-row"
+                class="justify-start lg:items-center lg:gap-6 flex flex-col lg:flex-row"
             >
-              <div class="w-24 rounded-[10px] justify-center items-center flex">
-                <img
-                  src="/images/schoolDistrict/logo-avatar.png"
-                  class="object-cover scale-110"
-                />
+              <div class="w-24 h-24 shrink-0 bg-white rounded-[10px] shadow-lg flex justify-center items-center mb-2">
+                <template v-if="collegeDetails?.logo_path?.length">
+                  <img :src="collegeDetails.logo_path" :alt="collegeDetails.name" class="w-full h-full object-cover">
+                </template>
+
+                <SvgoBuilding v-else class="size-14 shrink-0" />
               </div>
               <div class="flex-col justify-start items-start gap-5 inline-flex">
-                <p
-                  class="text-gray-900 text-2xl lg:text-3xl font-semibold leading-[38px]"
-                >
-                  Palo Alto Unified College District
-                </p>
+                <BaseTooltip :tooltip-content="collegeDetails.name" id="orgTitle">
+                  <h2 class="text-2xl lg:text-3xl md:text-ellipsis md:line-clamp-1">
+                    {{ collegeDetails.name }}
+                  </h2>
+                </BaseTooltip>
               </div>
             </div>
 
             <div
-              class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 lg:gap-9 pb-6 pt-6 lg:pt-0 border-b border-gray-200"
+                class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 lg:gap-9 pb-6 pt-6 lg:pt-0 border-b border-gray-200"
             >
               <div class="flex flex-col gap-2">
-                <span class="text-gray-900 text-sm font-medium leading-tight"
-                  >Location
-                </span>
+                <span class="text-gray-900 text-sm font-medium leading-tight">Location</span>
                 <div class="inline-flex gap-2">
-                  <SvgoUsFlag class="size-5" />
-                  <span
-                    class="text-slate-600 text-base font-medium leading-normal"
-                    >Palo Alto, CA</span
-                  >
+                  <SvgoUsFlag class="size-5 shrink-0" />
+                  <span class="text-slate-600 text-base font-medium leading-normal">
+                    {{ collegeDetails.state_name }}, {{ collegeDetails.state_code }}
+                  </span>
                 </div>
               </div>
 
               <div class="flex flex-col gap-2">
                 <span class="text-gray-900 text-sm font-medium leading-tight"
-                  >Number of Colleges
+                >Number of Schools
                 </span>
                 <div class="inline-flex gap-2">
                   <SvgoBuilding class="size-5" />
-                  <span
-                    class="text-slate-600 text-base font-medium leading-normal"
-                    >19</span
-                  >
+                  <span class="text-slate-600 text-base font-medium leading-normal">
+                    {{ collegeDetails.school_count }}
+                  </span>
                 </div>
               </div>
 
               <div class="flex flex-col gap-2">
-                <span class="text-gray-900 text-sm font-medium leading-tight"
-                  >Number of Students
-                </span>
+                <span class="text-gray-900 text-sm font-medium leading-tight">Number of Students</span>
                 <div class="inline-flex gap-2">
                   <SvgoGraduationHat class="size-5" />
                   <span
-                    class="text-slate-600 text-base font-medium leading-normal"
-                    >12,380</span
-                  >
+                      class="text-slate-600 text-base font-medium leading-normal">
+                    {{ collegeDetails.student_count }}
+                  </span>
                 </div>
               </div>
 
               <div class="flex flex-col gap-2">
-                <span class="text-gray-900 text-sm font-medium leading-tight"
-                  >Number of Jobs
-                </span>
+                <span class="text-gray-900 text-sm font-medium leading-tight">Number of Jobs</span>
                 <div class="inline-flex gap-2">
                   <SvgoBriefCase class="size-5" />
-                  <span
-                    class="text-slate-600 text-base font-medium leading-normal"
-                    >19
+                  <span class="text-slate-600 text-base font-medium leading-normal">
+                    {{ collegeDetails.job_count }}
                   </span>
                 </div>
               </div>
 
               <div class="flex flex-col gap-2 col-span-2 sm:col-span-1">
                 <span class="text-gray-900 text-sm font-medium leading-tight"
-                  >Website
+                >Website
                 </span>
                 <div class="inline-flex gap-2">
-                  <SvgoGlobe class="size-5" />
+                  <SvgoGlobe class="size-5 shrink-0" />
                   <a
-                    href="#"
-                    class="text-brand-800 text-base font-medium underline leading-normal"
+                      :href="collegeDetails.website_url"
+                      target="_blank"
+                      class="text-brand-800 text-base font-medium underline leading-normal break-all block"
                   >
-                    www.paloalto.com
+                    {{ collegeDetails.website_url }}
                   </a>
                 </div>
               </div>
@@ -405,16 +421,16 @@ const jobList = [
 
             <form class="w-full mx-auto block lg:hidden pt-8">
               <select
-                v-model="activeTab"
-                id="countries"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  v-model="activeTab"
+                  id="countries"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               >
                 <option disabled value="">Choose an option</option>
                 <option
-                  v-for="(option, index) in tabs"
-                  :key="index"
-                  :value="index"
-                  @click="activeTab = index"
+                    v-for="(option, index) in tabs"
+                    :key="index"
+                    :value="index"
+                    @click="activeTab = index"
                 >
                   {{ option.name }}
                 </option>
@@ -422,7 +438,7 @@ const jobList = [
             </form>
 
             <div
-              :class="
+                :class="
                 activeTab === 1
                   ? 'flex-col sm:flex-row w-full justify-end items-end gap-5 flex pt-8  pb-5'
                   : 'flex-col sm:flex-row w-full justify-start items-start gap-5 flex pt-8  pb-5'
@@ -430,63 +446,57 @@ const jobList = [
             >
               <div class="justify-start items-start gap-4 inline-flex w-full">
                 <div
-                  class="flex-col justify-start items-start gap-1 inline-flex"
+                    class="flex-col justify-start items-start gap-1 inline-flex"
                 >
                   <p
-                    class="text-gray-900 text-2xl md:text-3xl font-semibold leading-[38px]"
+                      class="text-gray-900 text-2xl md:text-3xl font-semibold leading-[38px]"
                   >
                     {{
                       activeTab === 0
-                        ? "About College District"
-                        : activeTab === 1
-                        ? "List of Jobs"
-                        : activeTab === 2
-                        ? "List of College"
-                        : activeTab === 3
-                        ? "Photos"
-                        : activeTab === 4
-                        ? "Videos"
-                        : ""
+                          ? "About School District"
+                          : activeTab === 1
+                              ? "List of Jobs"
+                              : activeTab === 2
+                                  ? "List of Schools"
+                                          : activeTab === 3
+                                              ? "Location"
+                                              : ""
                     }}
                   </p>
                   <p
-                    class="text-slate-600 text-base font-normal leading-normal"
+                      class="text-slate-600 text-base font-normal leading-normal"
                   >
                     {{
                       activeTab === 0
-                        ? "Read out the information about patlo alto unified school."
-                        : activeTab === 1
-                        ? "Have a look to the list of Jobs."
-                        : activeTab === 2
-                        ? "Have a look to the list of schools."
-                        : activeTab === 3
-                        ? "Have a glimpse of some cherished moments from Palo Alto Unified District"
-                        : activeTab === 4
-                        ? "Here are some videos to help you learn more"
-                        : ""
+                          ? "Read out the information about patlo alto unified school."
+                          : activeTab === 1
+                              ? "Have a look to the list of Jobs."
+                              : activeTab === 2
+                                  ? "Have a look to the list of schools."
+                                          : ""
                     }}
                   </p>
                 </div>
               </div>
 
               <form
-                v-if="activeTab === 1"
-                class="w-full sm:w-1/2 sm:flex sm:items-end sm:justify-end"
-                action="#"
-                method="GET"
+                  v-if="activeTab === 1"
+                  class="w-full sm:w-1/2 sm:flex sm:items-end sm:justify-end"
+                  action="#"
+                  method="GET"
               >
                 <label for="search-field" class="sr-only">Search</label>
                 <div class="relative">
                   <SvgoSearchIcon
-                    class="pointer-events-none absolute inset-y-0 left-2 h-full w-5 text-gray-500"
-                    aria-hidden="true"
+                      class="pointer-events-none absolute inset-y-0 left-2 h-full w-5 text-gray-500"
+                      aria-hidden="true"
                   />
                   <input
-                    id="search-field"
-                    class="block h-full rounded-lg w-full md:w-[320px] shadow border border-gray-300 bg-transparent py-[13px] pl-8 pr-0 text-black sm:text-sm"
-                    placeholder="Search..."
-                    type="search"
-                    name="search"
+                      id="search-field"
+                      class="block h-full rounded-lg w-full md:w-[320px] shadow border border-gray-300 bg-transparent py-[13px] pl-8 pr-0 text-black sm:text-sm"
+                      placeholder="Search..."
+                      type="search"
+                      name="search"
                   />
                 </div>
               </form>
@@ -495,23 +505,25 @@ const jobList = [
             <AboutSD :data="listData" v-if="activeTab === 0" />
 
             <div v-if="activeTab === 1">
-              <div class="grid gap-6 grid-cols-1">
+              <div v-if="false" class="grid gap-6 grid-cols-1">
                 <template v-for="job in jobList">
                   <JobCard
-                    :job="job"
-                    :show-job-description="false"
-                    :card-form="false"
+                      :job="job"
+                      :show-job-description="false"
+                      :card-form="false"
                   />
                 </template>
               </div>
-              <Pagination />
-            </div>
 
+              <NoRecordFound v-else name="jobs" />
+              <Pagination v-if="false" />
+            </div>
             <ListSchools :data="schoolList" v-if="activeTab === 2" />
 
-            <PhotoCard :data="photoList" v-if="activeTab === 3" />
+<!--            <PhotoCard :data="photoList" v-if="activeTab === 3" />-->
+<!--            <VideoCard v-if="activeTab === 4" :data="videoList" />-->
 
-            <VideoCard v-if="activeTab === 4" :data="videoList" />
+            <OrgMapLocation v-if="activeTab === 3" :coordinates="[collegeDetails.geo_lat, collegeDetails.geo_lng]" />
           </div>
         </div>
       </main>
