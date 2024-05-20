@@ -99,8 +99,16 @@ export const jobFilters = [
         type: 'range',
         title: 'Compensation',
         icon: 'SvgoCurrencyDollar',
-        min: 20000,
-        max: 250000
+        hasSwitcher: true,
+        isSalaryRange: true,
+        salary: {
+            min: 20000,
+            max: 200000
+        },
+        hourly: {
+            min: 10,
+            max: 100
+        }
     }
 ]
 

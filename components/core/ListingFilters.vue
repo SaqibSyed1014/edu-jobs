@@ -63,6 +63,13 @@ function isItemChecked(value :string) {
   const mappedValues = selectedValues.value.flatMap(item => item.values)
   return mappedValues.includes(value);
 }
+
+const selectedWageType = ref('salary')
+
+function toggleSwitch(eve :boolean) {
+  if (eve) selectedWageType.value = 'salary'
+  else selectedWageType.value = 'hourly'
+}
 </script>
 
 <template>
@@ -82,9 +89,11 @@ function isItemChecked(value :string) {
 
     <template v-for="(filter, index) in filterState">
       <div>
-        <div class="flex items-center gap-3 font-semibold">
-          <component :is="filter.icon" class="w-5 h-5 text-gray-500" />
-          <span class="text-gray-700">{{ filter.title }}</span>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3 font-semibold">
+            <component :is="filter.icon" class="w-5 h-5 text-gray-500"/>
+            <span class="text-gray-700">{{ filter.title }}</span>
+          </div>
         </div>
         <div class="filter-list pl-8 border-b border-gray-200">
           <template v-if="filter.type === 'checkbox'">
@@ -108,7 +117,19 @@ function isItemChecked(value :string) {
             </template>
           </template>
           <template v-else-if="filter.type === 'range'">
-            <RangeSlider :max-value="filter.max" :min-value="filter.min"  />
+            <template v-if="filter.hasSwitcher">
+              <div class="flex justify-end gap-2">
+                <span class="text-sm font-medium text-gray-900 dark:text-gray-300">Hourly</span>
+                <label class="inline-flex items-center">
+                  <input :checked="selectedWageType === 'salary'" type="checkbox" class="sr-only peer" @change="toggleSwitch($event.target.checked)">
+                  <div
+                      class="relative w-11 h-6 cursor-pointer bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                </label>
+                <span class="text-sm font-medium text-gray-900 dark:text-gray-300">Salary</span>
+              </div>
+            </template>
+            <RangeSlider v-if="selectedWageType === 'salary'" :max-value="filter.salary.max" :min-value="filter.salary.min" :step-value="10000"  />
+            <RangeSlider v-else :max-value="filter.hourly.max" :min-value="filter.hourly.min" :step-value="5"  />
             <div class="flex gap-3 first:pt-2 pb-4 pt-12">
               <div class="shrink-0 relative">
                 <input :checked="true" type="checkbox">
