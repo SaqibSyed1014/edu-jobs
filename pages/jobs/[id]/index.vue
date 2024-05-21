@@ -52,13 +52,13 @@ function copyURL() {
 function jobSharingOnX() {
   const currentJobURL = encodeURIComponent(window.location.href);
   const orgNameText = jobDetails.value?.organization_name ? ` at ${jobDetails.value.organization_name}` : '';
-  const url = `http://twitter.com/share?text=Check out this job opportunity! ${jobDetails.value?.job_title}${orgNameText}.%0A%0AApply now:&url=${currentJobURL}%0A%0A&hashtags=EducationJobs,k12,edtech`;
-  window.open(url, '_target')
+  const url = `https://x.com/intent/post?text=Check out this job opportunity! %0A${jobDetails.value?.job_title}${orgNameText}.%0A%0AApply now:&url=${currentJobURL}%0A%0A&hashtags=EducationJobs,k12,edtech`;
+  window.open(url, '_target');
 }
 
 function jobSharingOnLinkedIn() {
   const currentJobURL = encodeURIComponent(window.location.href);
-  const url = `https://www.linkedin.com/shareArticle?mini=true&url=${currentJobURL}`;
+  const url = `https://www.linkedin.com/sharing/share-offsite/?url=${currentJobURL}`;
   window.open(url, '_target');
 }
 
