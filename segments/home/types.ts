@@ -21,6 +21,7 @@ interface FeaturedOrganizations {
     name: number
     slug: string
     type: string
+    charter: string
     logo_path: string
     number_jobs: string
 }

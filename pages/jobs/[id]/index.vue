@@ -40,6 +40,33 @@ function applyBtnAction() {
 function redirectToURL() {
   if (jobDetails.value?.apply_url) window.open(jobDetails.value.apply_url, '_target')
 }
+
+function copyURL() {
+  const currentURL = window.location.href;
+  navigator.clipboard.writeText(currentURL);
+  useNuxtApp().$toast.success('Link Copied!', {
+    icon: false
+  });
+}
+
+function jobSharingOnX() {
+  const currentJobURL = encodeURIComponent(window.location.href);
+  const orgNameText = jobDetails.value?.organization_name ? ` at ${jobDetails.value.organization_name}` : '';
+  const url = `http://twitter.com/share?text=Check out this job opportunity! ${jobDetails.value?.job_title}${orgNameText}.%0A%0AApply now:&url=${currentJobURL}%0A%0A&hashtags=EducationJobs,k12,edtech`;
+  window.open(url, '_target')
+}
+
+function jobSharingOnLinkedIn() {
+  const currentJobURL = encodeURIComponent(window.location.href);
+  const url = `https://www.linkedin.com/shareArticle?mini=true&url=${currentJobURL}`;
+  window.open(url, '_target');
+}
+
+function jobSharingOnFacebook() {
+  const currentJobURL = encodeURIComponent(window.location.href);
+  const url = `https://www.facebook.com/sharer/sharer.php?u=#${currentJobURL}`;
+  window.open(url, '_target');
+}
 </script>
 
 <template>
@@ -114,6 +141,15 @@ function redirectToURL() {
                         class="option-box">
                       <span>
                         <SvgoBookmark class="w-6 h-6" />
+                      </span>
+                    </div>
+
+                    <div
+                        @click="copyURL"
+                        class="option-box"
+                    >
+                      <span>
+                        <SvgoClipboard class="w-6 h-6" />
                       </span>
                     </div>
                   </div>
@@ -217,8 +253,8 @@ function redirectToURL() {
                 </div>
                 <h2 class="mb-2">Interested in this job?</h2>
                 <p class="text-gray-600 text-sm mb-3">Don’t miss the chance. Apply now here.</p>
-                <p class="text-gray-600 text-sm mb-5">
-                  Job code: {{  jobDetails?.internal_job_code || 'N/A' }}
+                <p v-if="jobDetails?.internal_job_code?.length" class="text-gray-600 text-sm mb-5">
+                  Job code: {{  jobDetails?.internal_job_code }}
                 </p>
                 <BaseButton @click="applyBtnAction" label="Apply Now" :full-sized="true" />
               </div>
@@ -315,9 +351,9 @@ function redirectToURL() {
 
                 <h2 class="mb-5">Share this job</h2>
                 <div class="flex gap-6">
-                  <SvgoTwitterX class="w-6 h-6" />
-                  <SvgoInstagram class="w-6 h-6" />
-                  <SvgoFacebook class="w-6 h-6" />
+                  <SvgoTwitterX @click="jobSharingOnX" class="w-6 h-6 cursor-pointer" />
+                  <SvgoLinkedin @click="jobSharingOnLinkedIn" class="w-6 h-6 cursor-pointer" />
+                  <SvgoFacebook @click="jobSharingOnFacebook" class="w-6 h-6 cursor-pointer" />
                 </div>
               </div>
             </div>

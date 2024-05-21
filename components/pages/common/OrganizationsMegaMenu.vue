@@ -9,10 +9,9 @@ defineProps<{
 const homeStore = useHomeStore();
 const { featuredOrganizations } = storeToRefs(homeStore);
 
-function orgModuleType(type :string) {
-  if(type === 'district') {
-    return 'school-districts'
-  }
+function orgModuleType(org :FeaturedOrganizations) {
+  if (org.charter === 'Y') return 'charter-schools'
+  if (org.type === 'district') return 'school-districts'
 }
 </script>
 
@@ -37,7 +36,7 @@ function orgModuleType(type :string) {
         <div v-else class="grid grid-cols-2 gap-x-4">
           <template v-for="(org, i) in featuredOrganizations">
             <NuxtLink
-                :to="`/${orgModuleType(org.type)}/${org.slug}`"
+                :to="`/${orgModuleType(org)}/${org.slug}`"
                 class="flex items-center justify-between rounded-lg py-3 px-2 hover:bg-gray-200 transition cursor-pointer"
             >
               <div class="flex items-center gap-3">
