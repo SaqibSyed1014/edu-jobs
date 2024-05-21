@@ -135,7 +135,7 @@ function toggleSwitch(eve :boolean) {
                 <input :checked="true" type="checkbox">
               </div>
               <label class="font-medium cursor-pointer">
-                Includes jobs without hourly rate
+                Includes jobs without {{selectedWageType}} rate
               </label>
             </div>
 
