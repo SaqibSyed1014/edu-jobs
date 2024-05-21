@@ -6,123 +6,9 @@ import NoRecordFound from "~/components/core/NoRecordFound.vue";
 import type {JobQueryParams, JobSearchFilters, PaginationInfo, TypesenseQueryParam} from "~/segments/common.types";
 import { encode, decode } from "js-base64";
 import SignUpCard from "~/components/pages/job-listings/SignUpCard.vue";
+import { jobFilters, itemsViewOptions } from "~/components/core/constants/jobs.constants";
 
-const filters = ref([
-  {
-    fieldName: 'employment_type',
-    type: 'checkbox',
-    title: 'Employment Type',
-    icon: 'SvgoClock',
-    list: [
-      {
-        label: 'Full-time',
-        value: 'full_time',
-        checked: false,
-        counts: 15
-      },
-      {
-        label: 'Part-time',
-        value: 'part_time',
-        checked: false,
-        counts: 6
-      },
-      {
-        label: 'Internship',
-        value: 'internship',
-        checked: false,
-        counts: 23
-      },
-      {
-        label: 'Volunteer',
-        value: 'volunteer',
-        checked: false,
-        counts: 5
-      }
-    ],
-
-  },
-  {
-    fieldName: 'job_role',
-    type: 'checkbox',
-    title: 'Role Type',
-    icon: 'SvgoBarChart',
-    list: [
-      {
-        label: 'Certificated',
-        value: 'certificated',
-        checked: false,
-        counts: 54
-      },
-      {
-        label: 'Classified',
-        value: 'classified',
-        checked: false,
-        counts: 93
-      }
-    ]
-  },
-  {
-    fieldName: 'experience_level',
-    type: 'checkbox',
-    title: 'Experience Level',
-    icon: 'SvgoLineChartUp',
-    list: [
-      {
-        label: 'Entry-level',
-        value: 'entry_level',
-        checked: false,
-        counts: 15,
-        tooltipText: 'New graduates or first-year teachers'
-      },
-      {
-        label: 'Early Career',
-        value: 'early_career',
-        checked: false,
-        counts: 0,
-        tooltipText: '1-5 years of experience'
-      },
-      {
-        label: 'Mid-level',
-        value: 'mid_level',
-        checked: false,
-        counts: 6,
-        tooltipText: '5-10 years of experience'
-      },
-      {
-        label: 'Experienced',
-        value: 'experienced',
-        checked: false,
-        counts: 3,
-        tooltipText: 'Over 10 years of experience'
-      },
-      {
-        label: 'Leadership',
-        value: 'leadership',
-        checked: false,
-        counts: 5,
-        tooltipText: 'Principals, vice-principals, or district-level administrators'
-      }
-    ],
-  },
-  {
-    type: 'range',
-    title: 'Salary Range',
-    icon: 'SvgoCurrencyDollar',
-    min: 0,
-    max: 250000
-  }
-])
-
-const itemsViewOptions = [
-  {
-    label: 'List',
-    icon: 'SvgoList'
-  },
-  {
-    label: 'Grid',
-    icon: 'SvgoGrid'
-  }
-]
+const filters = ref(jobFilters);  // job's filters
 
 const route = useRoute();
 const router = useRouter();
@@ -238,7 +124,10 @@ const fetchOnSearching = (searchValues :JobSearchFilters) => {
   if (searchValues.coordinates.lat && searchValues.coordinates.lng)    // when user searches location on 'Search' click (searchValues are null when redirected from Home view)
     coordinates.value = searchValues.coordinates
   if (coordinates.value.lat && coordinates.value.lng) {    // check if both lat and lng are propagated by SearchBar
-    query.value.filter_by = `geo_location:(${coordinates.value.lat}, ${coordinates.value.lng}, 5 mi)`;
+    const geoFilter = `geo_location:(${coordinates.value.lat}, ${coordinates.value.lng}, 5 mi)`
+    if (query.value.filter_by?.length && !query.value.filter_by.includes('geo_location'))
+      query.value.filter_by = `${query.value.filter_by}&&${geoFilter}`
+    else query.value.filter_by = geoFilter;
     searchedLocationText.value = searchValues.location // saving location string for route query
   }
   // else {
@@ -257,6 +146,14 @@ function updateSideBarFilters(selectedFilters :{ field: string, values: string[]
     });
   }
   else sidebarFilters.value = {};
+
+  const sidebBarFiltersPayload = selectedFilters.map((obj :{ field: string, values: string[] }) => {
+    return `${obj.field}:=[${obj.values.join(',')}]`;
+  }).join('&&');
+
+  if (query.value.filter_by?.length && query.value.filter_by.includes('geo_location'))
+    query.value.filter_by = `{${sidebBarFiltersPayload}&&${query.value.filter_by}}`;
+  else query.value.filter_by = sidebBarFiltersPayload;
 
   if (toggleFlag) isFilterSidebarVisible.value = false;
 
