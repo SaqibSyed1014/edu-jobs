@@ -51,9 +51,21 @@ function copyURL() {
 
 function jobSharingOnX() {
   const currentJobURL = encodeURIComponent(window.location.href);
-  const orgNameText = jobDetails.value?.organization_name ? ` at ${jobDetails.value.organization_name}` : ''
-  const url = `http://twitter.com/share?text=Check out this job opportunity! ${jobDetails.value?.job_title}${orgNameText}.%0A%0AApply now:&url=${currentJobURL}%0A%0A&hashtags=EducationJobs,k12,edtech`
+  const orgNameText = jobDetails.value?.organization_name ? ` at ${jobDetails.value.organization_name}` : '';
+  const url = `http://twitter.com/share?text=Check out this job opportunity! ${jobDetails.value?.job_title}${orgNameText}.%0A%0AApply now:&url=${currentJobURL}%0A%0A&hashtags=EducationJobs,k12,edtech`;
   window.open(url, '_target')
+}
+
+function jobSharingOnLinkedIn() {
+  const currentJobURL = encodeURIComponent(window.location.href);
+  const url = `https://www.linkedin.com/shareArticle?mini=true&url=${currentJobURL}`;
+  window.open(url, '_target');
+}
+
+function jobSharingOnFacebook() {
+  const currentJobURL = encodeURIComponent(window.location.href);
+  const url = `https://www.facebook.com/sharer/sharer.php?u=#${currentJobURL}`;
+  window.open(url, '_target');
 }
 </script>
 
@@ -340,8 +352,8 @@ function jobSharingOnX() {
                 <h2 class="mb-5">Share this job</h2>
                 <div class="flex gap-6">
                   <SvgoTwitterX @click="jobSharingOnX" class="w-6 h-6 cursor-pointer" />
-                  <SvgoInstagram class="w-6 h-6 cursor-pointer" />
-                  <SvgoFacebook class="w-6 h-6 cursor-pointer" />
+                  <SvgoLinkedin @click="jobSharingOnLinkedIn" class="w-6 h-6 cursor-pointer" />
+                  <SvgoFacebook @click="jobSharingOnFacebook" class="w-6 h-6 cursor-pointer" />
                 </div>
               </div>
             </div>
