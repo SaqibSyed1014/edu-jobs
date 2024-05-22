@@ -123,3 +123,18 @@
     requestId: string;
 }
 
+interface GradeLevel {
+    grade_level_id: number;
+    grade_level_long: string;
+    grade_level: string;
+    grade_level_int: number;
+    sort_order: number;
+}
+
+interface Subject {
+    subject_id: number;
+    subject_long: string;
+    subject: string;
+    sort_order: number;
+}
+

@@ -4,11 +4,11 @@ import { Form, useForm, ErrorMessage, Field } from "vee-validate";
 import { Tooltip } from "flowbite";
 import { usePostjobStore } from "~/segments/postjobs/store";
 
-
+const postJobStore = usePostjobStore();
+const { gradeLevelDropdown, subjectsDropdown } = storeToRefs(postJobStore);
 
 const currentStep = ref(0);
-const jobRoles = ref(["Role 1", "Role 2"]);
-const grades = ref(["Grade 1", "Grade 2"]);
+const jobRoles = ref(["Instructional", "Non-instructional"]);
 const subjects = ref(["English", "Math"]);
 const paymentType = ref(["Cash", "Card"]);
 const appMethods = ref(["Email", "Text"]);
@@ -167,7 +167,7 @@ async function checkout () {
     };
 
   console.log('check ', requestBody)
-  
+
   await postjobStore.fetchPayment(null,requestBody);
 
   console.log('check chekout func content', content?.value?.url )
@@ -222,7 +222,9 @@ function prevStep() {
   });
 }
 
-onMounted(() => {
+onMounted(async() => {
+  await postJobStore.fetchGradeLevels();
+  await postJobStore.fetchSubjects();
   // set the tooltip content element
   const $targetEl = document.getElementById("tooltipContent");
   // set the element that trigger the tooltip using hover or click
@@ -281,6 +283,8 @@ function changeStep(stepIdx: number) {
 function handleStepClick() {
   useNuxtApp().$toast.error("Please Fill the Form");
 }
+
+const selectedCompensation = ref('salary');
 </script>
 
 <template>
@@ -536,6 +540,7 @@ function handleStepClick() {
                       name="startDate"
                       :values="values.startDate"
                       :error="errors.startDate"
+                      @on-input="(date) => startDate = date"
                     />
                   </div>
                 </div>
@@ -625,14 +630,50 @@ function handleStepClick() {
                 </div>
 
                 <div>
-                  <SelectBox
-                    name="paymentType"
-                    label="Payment Type"
-                    :data="paymentType"
-                    subLabel=""
-                    :value="values.paymentType"
-                    className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
-                  />
+                  <div
+                      class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+                  >
+                    <label
+                        for="employment"
+                        class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
+                    >
+                      Compensation Type
+                    </label>
+                    <div class="col-span-2">
+                      <div class="flex gap-20">
+                        <div class="flex gap-3">
+                          <Field
+                              v-model="selectedCompensation"
+                              name="Salary"
+                              type="radio"
+                              value="salary"
+                              class="cursor-pointer"
+                          />
+                          <label
+                              for="salary"
+                              class="text-sm font-medium text-gray-900"
+                          >Salary</label>
+                        </div>
+                        <div class="flex gap-3">
+                          <Field
+                              v-model="selectedCompensation"
+                              name="hourly"
+                              type="radio"
+                              value="Hourly"
+                              class="cursor-pointer"
+                          />
+                          <label
+                              for="hourly"
+                              class="text-sm font-medium text-gray-900"
+                          >Hourly</label>
+                        </div>
+                      </div>
+
+                      <p class="text-sm font-medium pt-5">
+                        {{ selectedCompensation === 'salary' ? '"Salary Range" of $20,000 to $300,000' : '"Hourly Range" of $10 - $150 / hour' }}
+                      </p>
+                    </div>
+                  </div>
 
                   <PayRangeSelectBox
                     name="paymentRange"
@@ -655,18 +696,22 @@ function handleStepClick() {
                 />
 
                 <SelectBox
+                  v-if="values.jobRole === 'Instructional'"
                   name="gradeLevel"
                   label="Grade Level(s)"
-                  :data="grades"
+                  :data="gradeLevelDropdown"
+                  :label-value-options="true"
                   subLabel=""
                   :value="values.gradeLevel"
                   className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
                 />
 
                 <SelectBox
+                  v-if="values.jobRole === 'Instructional'"
                   name="subjects"
                   label="Subject Area(s)"
-                  :data="subjects"
+                  :data="subjectsDropdown"
+                  :label-value-options="true"
                   subLabel=""
                   :value="values.subjects"
                   className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
