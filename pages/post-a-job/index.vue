@@ -167,7 +167,7 @@ async function checkout () {
     };
 
   console.log('check ', requestBody)
-  
+
   await postjobStore.fetchPayment(null,requestBody);
 
   console.log('check chekout func content', content?.value?.url )
@@ -281,6 +281,8 @@ function changeStep(stepIdx: number) {
 function handleStepClick() {
   useNuxtApp().$toast.error("Please Fill the Form");
 }
+
+const selectedCompensation = ref('salary')
 </script>
 
 <template>
@@ -625,14 +627,50 @@ function handleStepClick() {
                 </div>
 
                 <div>
-                  <SelectBox
-                    name="paymentType"
-                    label="Payment Type"
-                    :data="paymentType"
-                    subLabel=""
-                    :value="values.paymentType"
-                    className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
-                  />
+                  <div
+                      class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+                  >
+                    <label
+                        for="employment"
+                        class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
+                    >
+                      Compensation Type
+                    </label>
+                    <div class="col-span-2">
+                      <div class="flex gap-20">
+                        <div class="flex gap-3">
+                          <Field
+                              v-model="selectedCompensation"
+                              name="Salary"
+                              type="radio"
+                              value="salary"
+                              class="cursor-pointer"
+                          />
+                          <label
+                              for="salary"
+                              class="text-sm font-medium text-gray-900"
+                          >Salary</label>
+                        </div>
+                        <div class="flex gap-3">
+                          <Field
+                              v-model="selectedCompensation"
+                              name="hourly"
+                              type="radio"
+                              value="Hourly"
+                              class="cursor-pointer"
+                          />
+                          <label
+                              for="hourly"
+                              class="text-sm font-medium text-gray-900"
+                          >Hourly</label>
+                        </div>
+                      </div>
+
+                      <p class="text-sm font-medium pt-5">
+                        {{ selectedCompensation === 'salary' ? '"Salary Range" of $20,000 to $300,000' : '"Hourly Range" of $10 - $150 / hour' }}
+                      </p>
+                    </div>
+                  </div>
 
                   <PayRangeSelectBox
                     name="paymentRange"
