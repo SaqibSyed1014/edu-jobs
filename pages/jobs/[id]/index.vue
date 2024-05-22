@@ -126,13 +126,6 @@ function jobSharingOnFacebook() {
                     <div
                         class="option-box">
                       <span>
-                        <SvgoDotsHorizontal class="w-6 h-6" />
-                      </span>
-                    </div>
-
-                    <div
-                        class="option-box">
-                      <span>
                         <SvgoDownload class="w-6 h-6" />
                       </span>
                     </div>

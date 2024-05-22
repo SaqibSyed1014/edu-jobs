@@ -9,7 +9,6 @@ const router = useRouter();
 const tabs = ref([
   { name: "About School District" },
   { name: "Open Jobs" },
-  { name: "List of Schools" },
   { name: "Location" }
 ]);
 
@@ -35,215 +34,6 @@ const listData = ref([
     desc: "Like many high-performing school districts, PAUSD faces challenges related to academic pressure, student well-being, and maintaining a balance between achievement and the overall well-rounded development of students.",
   },
 ]);
-
-const schoolList = ref([
-  {
-    avatar: "/images/schoolDistrict/Avatar1.png",
-    schoolName: "Palo Alto Unified School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar2.png",
-    schoolName: "San Dieguito Union High School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar3.png",
-    schoolName: "Arcadia Unified School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar4.png",
-    schoolName: "Saratoga Joint Union High School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar5.png",
-    schoolName: "Palo Alto Unified School Districts",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar6.png",
-    schoolName: "San Dieguito Union High School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar7.png",
-    schoolName: "Arcadia Unified School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar8.png",
-    schoolName: "Saratoga Joint Union High School District",
-  },
-
-  {
-    avatar: "/images/schoolDistrict/avatar9.png",
-    schoolName: "Palo Alto Unified School Districts",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar10.png",
-    schoolName: "San Dieguito Union High School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar11.png",
-    schoolName: "Arcadia Unified School District",
-  },
-  {
-    avatar: "/images/schoolDistrict/avatar12.png",
-    schoolName: "Saratoga Joint Union High School District",
-  },
-]);
-
-const photoList = ref([
-  {
-    image: "/images/schoolDistrict/photo1.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-  {
-    image: "/images/schoolDistrict/photo2.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-  {
-    image: "/images/schoolDistrict/photo3.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-  {
-    image: "/images/schoolDistrict/photo4.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-  {
-    image: "/images/schoolDistrict/photo5.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-  {
-    image: "/images/schoolDistrict/photo6.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-]);
-
-const videoList = ref([
-  {
-    image: "/images/schoolDistrict/video1.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-  {
-    image: "/images/schoolDistrict/video2.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-  {
-    image: "/images/schoolDistrict/video3.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-  {
-    image: "/images/schoolDistrict/video4.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-  {
-    image: "/images/schoolDistrict/video5.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-  {
-    image: "/images/schoolDistrict/video6.jpg",
-    title: "Practical education",
-    date: "20 Jan 2024",
-  },
-]);
-
-const jobList = [
-  {
-    logo: "logo-one.jpg",
-    postedAt: "1h ago",
-    title: "Marketing Associate",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-  {
-    logo: "logo-two.jpg",
-    postedAt: "6h ago",
-    title: "Senior Graphic Designer",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-  {
-    logo: "logo-three.jpg",
-    postedAt: "2h ago",
-    title: "Lead Product Designer",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-  {
-    logo: "logo-four.jpg",
-    postedAt: "6h ago",
-    title: "Senior Graphic Designer",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-  {
-    logo: "logo-two.jpg",
-    postedAt: "6h ago",
-    title: "Senior Graphic Designer",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-  {
-    logo: "logo-one.jpg",
-    postedAt: "6h ago",
-    title: "Senior Graphic Designer",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-  {
-    logo: "logo-two.jpg",
-    postedAt: "2h ago",
-    title: "Lead Product Designer",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-  {
-    logo: "logo-three.jpg",
-    postedAt: "2h ago",
-    title: "Lead Product Designer",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-];
 
 const route = useRoute();
 const districtStore = useDisrictsStore();
@@ -458,8 +248,6 @@ onMounted(async () => {
                         : activeTab === 1
                         ? "List of Jobs"
                         : activeTab === 2
-                        ? "List of Schools"
-                        : activeTab === 3
                         ? "Location"
                         : ""
                     }}
@@ -472,8 +260,6 @@ onMounted(async () => {
                         ? "Read out the information about patlo alto unified school."
                         : activeTab === 1
                         ? "Have a look to the list of Jobs."
-                        : activeTab === 2
-                        ? "Have a look to the list of schools."
                         : ""
                     }}
                   </p>
@@ -519,12 +305,12 @@ onMounted(async () => {
               <NoRecordFound v-else name="jobs" />
               <Pagination v-if="false" />
             </div>
-            <ListSchools :data="schoolList" v-if="activeTab === 2" />
+<!--            <ListSchools :data="schoolList" v-if="activeTab === 2" />-->
 
 <!--            <PhotoCard :data="photoList" v-if="activeTab === 3" />-->
 <!--            <VideoCard v-if="activeTab === 4" :data="videoList" />-->
 
-            <OrgMapLocation v-if="activeTab === 3" :coordinates="[schoolDistrictDetails.geo_lat, schoolDistrictDetails.geo_lng]" />
+            <OrgMapLocation v-if="activeTab === 2" :coordinates="[schoolDistrictDetails.geo_lat, schoolDistrictDetails.geo_lng]" />
           </div>
         </div>
       </main>
