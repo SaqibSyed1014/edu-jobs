@@ -49,6 +49,16 @@ function copyURL() {
   });
 }
 
+function downloadJob() {
+  if (jobDetails.value?.job_slug)
+    window.open(`https://api.edujobs.org/job/download/${jobDetails.value.job_slug}`, '_blank')
+  else {
+    useNuxtApp().$toast.error('Job slug not found', {
+      icon: false
+    });
+  }
+}
+
 function jobSharingOnX() {
   const currentJobURL = encodeURIComponent(window.location.href);
   const orgNameText = jobDetails.value?.organization_name ? ` at ${jobDetails.value.organization_name}` : '';
@@ -123,12 +133,15 @@ function jobSharingOnFacebook() {
                   </div>
 
                   <div class="flex gap-3 text-gray-700">
-                    <div
-                        class="option-box">
-                      <span>
-                        <SvgoDownload class="w-6 h-6" />
-                      </span>
-                    </div>
+                    <BaseTooltip tooltip-content="Download job description as PDF">
+                      <div
+                          @click="downloadJob"
+                          class="option-box">
+                        <span>
+                          <SvgoDownload class="w-6 h-6" />
+                        </span>
+                      </div>
+                    </BaseTooltip>
 
                     <div
                         class="option-box">
