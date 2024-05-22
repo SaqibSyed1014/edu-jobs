@@ -28,10 +28,34 @@ const  getStripeCheckDetails = async (query: any, requestBody :any) :Promise<Str
             throw new Error('Network error: Please check your connection and try again.');
         }
     }
-    
+
+}
+
+const getGradesLevels = () :Promise<GradeLevel[]> => {
+    const { baseUrl, apiKey } = usePayloadUrl()
+    const apiHeaders = {
+        'API-Key': apiKey,
+    }
+    return $fetch(`${baseUrl}/reference/gradelevels`, {
+        method: 'get',
+        headers: apiHeaders,
+    })
+}
+
+const getSubjects = () :Promise<Subject[]> => {
+    const { baseUrl, apiKey } = usePayloadUrl()
+    const apiHeaders = {
+        'API-Key': apiKey,
+    }
+    return $fetch(`${baseUrl}/reference/subjects`, {
+        method: 'get',
+        headers: apiHeaders,
+    })
 }
 
 
 export {
-    getStripeCheckDetails
+    getStripeCheckDetails,
+    getGradesLevels,
+    getSubjects
 }

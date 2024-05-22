@@ -36,6 +36,10 @@ const props = defineProps({
     type: Array,
     default: [],
   },
+  labelValueOptions: {
+    type: Boolean,
+    default: false
+  },
   key: {
     type: String,
   },
@@ -82,14 +86,25 @@ const {
         ]"
       >
         <option value="" disabled>Select</option>
-        <option
-          v-for="item in data"
-          :key="item + '1'"
-          :value="item"
-          :selected="value && value.includes(item)"
-        >
-          {{ item }}
-        </option>
+        <template v-if="!labelValueOptions">
+          <option
+              v-for="item in data"
+              :key="item + '1'"
+              :value="item"
+              :selected="value && value.includes(item)"
+          >
+            {{ item }}
+          </option>
+        </template>
+        <template v-else>
+          <option
+              v-for="item in data"
+              :key="item + '1'"
+              :value="item.value"
+          >
+            {{ item.label }}
+          </option>
+        </template>
       </Field>
       <!-- Display the vee-validate error message -->
       <ErrorMessage
