@@ -307,11 +307,11 @@ const search = () => {
                 total-jobs="12,000"
               />
 
-              <FilterSection
-                title="No. of colleges"
-                :options="schOptions"
-                total-jobs="13"
-              />
+<!--              <FilterSection-->
+<!--                title="No. of colleges"-->
+<!--                :options="schOptions"-->
+<!--                total-jobs="13"-->
+<!--              />-->
             </div>
           </div>
         </div>
