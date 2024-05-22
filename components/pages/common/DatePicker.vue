@@ -19,6 +19,8 @@ const props = withDefaults(defineProps<Props>(), {
   error: "",
 });
 
+const emit = defineEmits(['onInput'])
+
 const date = ref(props?.values ?? "");
 
 // const onInput = (event: Event) => {
@@ -36,6 +38,10 @@ const date = ref(props?.values ?? "");
 const textInputOptions = {
   format: "MM/dd/yyyy",
 };
+
+watch(() => date.value, (val) => {
+  emit('onInput', val)
+})
 </script>
 
 <template>

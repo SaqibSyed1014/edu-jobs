@@ -4,11 +4,11 @@ import { Form, useForm, ErrorMessage, Field } from "vee-validate";
 import { Tooltip } from "flowbite";
 import { usePostjobStore } from "~/segments/postjobs/store";
 
-
+const postJobStore = usePostjobStore();
+const { gradeLevelDropdown, subjectsDropdown } = storeToRefs(postJobStore);
 
 const currentStep = ref(0);
-const jobRoles = ref(["Role 1", "Role 2"]);
-const grades = ref(["Grade 1", "Grade 2"]);
+const jobRoles = ref(["Instructional", "Non-instructional"]);
 const subjects = ref(["English", "Math"]);
 const paymentType = ref(["Cash", "Card"]);
 const appMethods = ref(["Email", "Text"]);
@@ -222,7 +222,9 @@ function prevStep() {
   });
 }
 
-onMounted(() => {
+onMounted(async() => {
+  await postJobStore.fetchGradeLevels();
+  await postJobStore.fetchSubjects();
   // set the tooltip content element
   const $targetEl = document.getElementById("tooltipContent");
   // set the element that trigger the tooltip using hover or click
@@ -282,7 +284,7 @@ function handleStepClick() {
   useNuxtApp().$toast.error("Please Fill the Form");
 }
 
-const selectedCompensation = ref('salary')
+const selectedCompensation = ref('salary');
 </script>
 
 <template>
@@ -538,6 +540,7 @@ const selectedCompensation = ref('salary')
                       name="startDate"
                       :values="values.startDate"
                       :error="errors.startDate"
+                      @on-input="(date) => startDate = date"
                     />
                   </div>
                 </div>
@@ -693,18 +696,22 @@ const selectedCompensation = ref('salary')
                 />
 
                 <SelectBox
+                  v-if="values.jobRole === 'Instructional'"
                   name="gradeLevel"
                   label="Grade Level(s)"
-                  :data="grades"
+                  :data="gradeLevelDropdown"
+                  :label-value-options="true"
                   subLabel=""
                   :value="values.gradeLevel"
                   className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
                 />
 
                 <SelectBox
+                  v-if="values.jobRole === 'Instructional'"
                   name="subjects"
                   label="Subject Area(s)"
-                  :data="subjects"
+                  :data="subjectsDropdown"
+                  :label-value-options="true"
                   subLabel=""
                   :value="values.subjects"
                   className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
