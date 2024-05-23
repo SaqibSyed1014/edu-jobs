@@ -5,9 +5,13 @@ import { Tooltip } from "flowbite";
 import { usePostjobStore } from "~/segments/postjobs/store";
 
 const postJobStore = usePostjobStore();
-const { gradeLevelDropdown, subjectsDropdown } = storeToRefs(postJobStore);
+const {
+  gradeLevelDropdown,
+  subjectsDropdown,
+  experienceLevelDropdown
+} = storeToRefs(postJobStore);
 
-const currentStep = ref(0);
+const currentStep = ref(1);
 const jobRoles = ref(["Instructional", "Non-instructional"]);
 const subjects = ref(["English", "Math"]);
 const paymentType = ref(["Cash", "Card"]);
@@ -112,6 +116,7 @@ const schemas = [
   Yup.object().shape({
     jobTitle: Yup.string().required("Job Title is required"),
     employment: Yup.string().required("Employment Type is required"),
+    experience: Yup.string().required("Experience Level is required"),
     jobRole: Yup.string().required("Job Role is required"),
     gradeLevel: Yup.string().required("Grade Level(s) is required"),
     paymentType: Yup.string().required("Payment Type is required"),
@@ -223,8 +228,12 @@ function prevStep() {
 }
 
 onMounted(async() => {
-  await postJobStore.fetchGradeLevels();
-  await postJobStore.fetchSubjects();
+  await Promise.all([
+    postJobStore.fetchGradeLevels(),
+    postJobStore.fetchSubjects(),
+    postJobStore.fetchExperienceLevels()
+  ])
+
   // set the tooltip content element
   const $targetEl = document.getElementById("tooltipContent");
   // set the element that trigger the tooltip using hover or click
@@ -628,6 +637,16 @@ const selectedCompensation = ref('salary');
                     />
                   </div>
                 </div>
+
+                <SelectBox
+                    name="experience"
+                    label="Experience Level"
+                    :data="experienceLevelDropdown"
+                    subLabel=""
+                    :value="values.jobRole"
+                    :label-value-options="true"
+                    className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+                />
 
                 <div>
                   <div
