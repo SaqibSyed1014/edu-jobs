@@ -91,7 +91,6 @@ const {
               v-for="item in data"
               :key="item.value"
               :value="item.value"
-              :title="item.desc"
           >
             {{ item.label }}
           </option>

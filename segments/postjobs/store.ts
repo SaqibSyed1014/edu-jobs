@@ -71,12 +71,9 @@ export const usePostjobStore = defineStore('postjobStore', {
                 value: grade.subject
             }))
         },
-        experienceLevelDropdown: (state) => {
-            return state.experienceLevels?.map((experience :ExperienceLevel) => ({
-                label: experience.experience_level,
-                value: experience.experience_level,
-                desc: experience.experience_level_description
-            })) || []
+        experienceLevelOptions: (state) :ExperienceLevel[] => {
+            return state.experienceLevels
+                .sort((a :ExperienceLevel, b :ExperienceLevel) => a.sort_order - b.sort_order) || []
         }
     }
 })

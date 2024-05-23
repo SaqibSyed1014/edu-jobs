@@ -8,7 +8,7 @@ const postJobStore = usePostjobStore();
 const {
   gradeLevelDropdown,
   subjectsDropdown,
-  experienceLevelDropdown
+  experienceLevelOptions
 } = storeToRefs(postJobStore);
 
 const currentStep = ref(1);
@@ -553,6 +553,7 @@ const selectedCompensation = ref('salary');
                     />
                   </div>
                 </div>
+
                 <div
                   class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
                 >
@@ -573,9 +574,8 @@ const selectedCompensation = ref('salary');
                         />
                         <label
                           for="Full-time"
-                          class="ms-2 text-sm font-medium text-gray-900"
-                          >Full-time</label
-                        >
+                          class="ms-2 text-sm font-medium text-gray-900 cursor-pointer"
+                          >Full-time</label>
                       </div>
                       <div class="flex items-center">
                         <Field
@@ -586,9 +586,9 @@ const selectedCompensation = ref('salary');
                         />
                         <label
                           for="Part-time"
-                          class="ms-2 text-sm font-medium text-gray-900"
-                          >Part-time</label
-                        >
+                          class="ms-2 text-sm font-medium text-gray-900 cursor-pointer">
+                            Part-time
+                        </label>
                       </div>
                       <div class="flex items-center">
                         <Field
@@ -599,9 +599,8 @@ const selectedCompensation = ref('salary');
                         />
                         <label
                           for="Contractor"
-                          class="ms-2 text-sm font-medium text-gray-900"
-                          >Contractor</label
-                        >
+                          class="ms-2 text-sm font-medium text-gray-900 cursor-pointer"
+                          >Contractor</label>
                       </div>
                       <div class="flex items-center">
                         <Field
@@ -612,9 +611,8 @@ const selectedCompensation = ref('salary');
                         />
                         <label
                           for="Intern"
-                          class="ms-2 text-sm font-medium text-gray-900"
-                          >Intern</label
-                        >
+                          class="ms-2 text-sm font-medium text-gray-900 cursor-pointer"
+                          >Intern</label>
                       </div>
 
                       <div class="flex items-center">
@@ -626,9 +624,8 @@ const selectedCompensation = ref('salary');
                         />
                         <label
                           for="Volunteer"
-                          class="ms-2 text-sm font-medium text-gray-900"
-                          >Volunteer</label
-                        >
+                          class="ms-2 text-sm font-medium text-gray-900 cursor-pointer"
+                          >Volunteer</label>
                       </div>
                     </div>
                     <ErrorMessage
@@ -638,15 +635,54 @@ const selectedCompensation = ref('salary');
                   </div>
                 </div>
 
-                <SelectBox
-                    name="experience"
-                    label="Experience Level"
-                    :data="experienceLevelDropdown"
-                    subLabel=""
-                    :value="values.jobRole"
-                    :label-value-options="true"
-                    className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
-                />
+                <div
+                    class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+                >
+                  <label
+                      for="employment"
+                      class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
+                  >
+                    Experience Level
+                  </label>
+                  <div class="mt-2 sm:col-span-2 sm:mt-0">
+                    <div class="flex flex-col gap-4">
+                      <template v-for="(experience, i) in experienceLevelOptions">
+                        <div class="flex items-center">
+                          <BaseTooltip
+                              :id="`exp-rb-${i}`"
+                              :tooltip-content="experience.experience_level_description"
+                              position="right"
+                          >
+                            <Field
+                                name="employment"
+                                type="radio"
+                                :value="experience.experience_level"
+                                class="cursor-pointer"
+                            />
+                            <label
+                                for="Full-time"
+                                class="ms-2 me-1 text-sm font-medium text-gray-900 cursor-pointer"
+                            >{{ experience.experience_level }}</label>
+                          </BaseTooltip>
+                        </div>
+                      </template>
+                    </div>
+                    <ErrorMessage
+                        class="text-red-500 text-sm font-normal leading-tight"
+                        name="employment"
+                    />
+                  </div>
+                </div>
+
+<!--                <SelectBox-->
+<!--                    name="experience"-->
+<!--                    label="Experience Level"-->
+<!--                    :data="experienceLevelDropdown"-->
+<!--                    subLabel=""-->
+<!--                    :value="values.jobRole"-->
+<!--                    :label-value-options="true"-->
+<!--                    className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"-->
+<!--                />-->
 
                 <div>
                   <div
