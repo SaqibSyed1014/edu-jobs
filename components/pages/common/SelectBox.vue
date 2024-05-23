@@ -86,23 +86,23 @@ const {
         ]"
       >
         <option value="" disabled>Select</option>
-        <template v-if="!labelValueOptions">
+        <template v-if="labelValueOptions">
           <option
               v-for="item in data"
-              :key="item + '1'"
-              :value="item"
-              :selected="value && value.includes(item)"
+              :key="item.value"
+              :value="item.value"
           >
-            {{ item }}
+            {{ item.label }}
           </option>
         </template>
         <template v-else>
           <option
               v-for="item in data"
-              :key="item + '1'"
-              :value="item.value"
+              :key="item"
+              :value="item"
+              :selected="value && value.includes(item)"
           >
-            {{ item.label }}
+            {{ item }}
           </option>
         </template>
       </Field>

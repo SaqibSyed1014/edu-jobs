@@ -1,4 +1,9 @@
-import { getStripeCheckDetails, getGradesLevels, getSubjects } from "~/segments/postjobs/services"
+import {
+    getStripeCheckDetails,
+    getGradesLevels,
+    getSubjects,
+    getExperienceLevels
+} from "~/segments/postjobs/services"
 
 interface StripeCheckout {
     content: StripeCheckoutSession | null ;
@@ -6,7 +11,8 @@ interface StripeCheckout {
     status: string | null;
     requestId: string | null;
     gradeLevels: GradeLevel[];
-    subjects: Subject[]
+    subjects: Subject[];
+    experienceLevels: ExperienceLevel[]
 }
 
 export const usePostjobStore = defineStore('postjobStore', {
@@ -16,7 +22,8 @@ export const usePostjobStore = defineStore('postjobStore', {
         status: null,
         requestId: null,
         gradeLevels: [],
-        subjects: []
+        subjects: [],
+        experienceLevels: []
     } as StripeCheckout),
     actions: {
         async fetchPayment(query:any  , requestBody : any) {
@@ -47,6 +54,9 @@ export const usePostjobStore = defineStore('postjobStore', {
         async fetchSubjects() {
             this.$state.subjects = await getSubjects();
         },
+        async fetchExperienceLevels() {
+            this.$state.experienceLevels = await getExperienceLevels();
+        },
     },
     getters: {
         gradeLevelDropdown: (state) => {
@@ -60,6 +70,10 @@ export const usePostjobStore = defineStore('postjobStore', {
                 label: grade.subject_long,
                 value: grade.subject
             }))
+        },
+        experienceLevelOptions: (state) :ExperienceLevel[] => {
+            return state.experienceLevels
+                .sort((a :ExperienceLevel, b :ExperienceLevel) => a.sort_order - b.sort_order) || []
         }
     }
 })

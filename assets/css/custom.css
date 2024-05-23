@@ -63,7 +63,7 @@ swiper-container::part(wrapper) {
     @apply py-24
 }
 .content-list-view .content-body{
-    @apply pt-16 md:pt-24 md:px-8 max-w-[720px] mx-auto
+    @apply pt-16 md:pt-24 md:px-8 max-w-[960px] mx-auto
 }
 .content-list-view .content-body p{
     @apply md:text-lg pb-4 last:pb-0

@@ -253,7 +253,7 @@ const isCollegeFetching = ref<boolean>(true);
 
 onMounted(async () => {
   isCollegeFetching.value = true;
-  await collegeDetails.fetchCollegeDetails(route.params?.id as string);
+  await collegeStore.fetchCollegeDetails(route.params?.id as string);
   isCollegeFetching.value = false;
 })
 </script>

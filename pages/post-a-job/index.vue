@@ -5,7 +5,11 @@ import { Tooltip } from "flowbite";
 import { usePostjobStore } from "~/segments/postjobs/store";
 
 const postJobStore = usePostjobStore();
-const { gradeLevelDropdown, subjectsDropdown } = storeToRefs(postJobStore);
+const {
+  gradeLevelDropdown,
+  subjectsDropdown,
+  experienceLevelOptions
+} = storeToRefs(postJobStore);
 
 const currentStep = ref(0);
 const jobRoles = ref(["Instructional", "Non-instructional"]);
@@ -112,10 +116,12 @@ const schemas = [
   Yup.object().shape({
     jobTitle: Yup.string().required("Job Title is required"),
     employment: Yup.string().required("Employment Type is required"),
+    experience: Yup.string().required("Experience Level is required"),
     jobRole: Yup.string().required("Job Role is required"),
     gradeLevel: Yup.string().required("Grade Level(s) is required"),
     paymentType: Yup.string().required("Payment Type is required"),
-    paymentRange: Yup.string().required("Payment Range is required"),
+    startRange: Yup.string().required("Start Range is required"),
+    endRange: Yup.string().required("End Range is required"),
     subjects: Yup.string().required("Subject Area(s) is required"),
     startDate: Yup.string().required("Start Date is required"),
   }),
@@ -223,8 +229,12 @@ function prevStep() {
 }
 
 onMounted(async() => {
-  await postJobStore.fetchGradeLevels();
-  await postJobStore.fetchSubjects();
+  await Promise.all([
+    postJobStore.fetchGradeLevels(),
+    postJobStore.fetchSubjects(),
+    postJobStore.fetchExperienceLevels()
+  ])
+
   // set the tooltip content element
   const $targetEl = document.getElementById("tooltipContent");
   // set the element that trigger the tooltip using hover or click
@@ -285,6 +295,25 @@ function handleStepClick() {
 }
 
 const selectedCompensation = ref('salary');
+
+const salaryRange = [
+  "$20,000", "$25,000", "$30,000", "$35,000", "$40,000",
+  "$45,000", "$50,000", "$55,000", "$60,000", "$65,000",
+  "$70,000", "$75,000", "$80,000", "$85,000", "$90,000",
+  "$95,000", "$100,000", "$105,000", "$110,000", "$115,000",
+  "$120,000", "$125,000", "$130,000", "$135,000", "$140,000",
+  "$145,000", "$150,000", "$155,000", "$160,000", "$165,000",
+  "$170,000", "$175,000", "$180,000", "$185,000", "$190,000",
+  "$195,000", "$200,000"
+]
+
+const hourlyRange = [
+  "$10", "$15", "$20", "$25", "$30", "$35", "$40", "$45", "$50",
+  "$55", "$60", "$65", "$70", "$75", "$80", "$85", "$90", "$95",
+  "$100", "$105", "$110", "$115", "$120", "$125", "$130", "$135",
+  "$140", "$145", "$150"
+]
+
 </script>
 
 <template>
@@ -544,6 +573,7 @@ const selectedCompensation = ref('salary');
                     />
                   </div>
                 </div>
+
                 <div
                   class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
                 >
@@ -564,9 +594,8 @@ const selectedCompensation = ref('salary');
                         />
                         <label
                           for="Full-time"
-                          class="ms-2 text-sm font-medium text-gray-900"
-                          >Full-time</label
-                        >
+                          class="ms-2 text-sm font-medium text-gray-900 cursor-pointer"
+                          >Full-time</label>
                       </div>
                       <div class="flex items-center">
                         <Field
@@ -577,9 +606,9 @@ const selectedCompensation = ref('salary');
                         />
                         <label
                           for="Part-time"
-                          class="ms-2 text-sm font-medium text-gray-900"
-                          >Part-time</label
-                        >
+                          class="ms-2 text-sm font-medium text-gray-900 cursor-pointer">
+                            Part-time
+                        </label>
                       </div>
                       <div class="flex items-center">
                         <Field
@@ -590,9 +619,8 @@ const selectedCompensation = ref('salary');
                         />
                         <label
                           for="Contractor"
-                          class="ms-2 text-sm font-medium text-gray-900"
-                          >Contractor</label
-                        >
+                          class="ms-2 text-sm font-medium text-gray-900 cursor-pointer"
+                          >Contractor</label>
                       </div>
                       <div class="flex items-center">
                         <Field
@@ -603,9 +631,8 @@ const selectedCompensation = ref('salary');
                         />
                         <label
                           for="Intern"
-                          class="ms-2 text-sm font-medium text-gray-900"
-                          >Intern</label
-                        >
+                          class="ms-2 text-sm font-medium text-gray-900 cursor-pointer"
+                          >Intern</label>
                       </div>
 
                       <div class="flex items-center">
@@ -617,14 +644,52 @@ const selectedCompensation = ref('salary');
                         />
                         <label
                           for="Volunteer"
-                          class="ms-2 text-sm font-medium text-gray-900"
-                          >Volunteer</label
-                        >
+                          class="ms-2 text-sm font-medium text-gray-900 cursor-pointer"
+                          >Volunteer</label>
                       </div>
                     </div>
                     <ErrorMessage
                       class="text-red-500 text-sm font-normal leading-tight"
                       name="employment"
+                    />
+                  </div>
+                </div>
+
+                <div
+                    class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+                >
+                  <label
+                      for="employment"
+                      class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
+                  >
+                    Experience Level
+                  </label>
+                  <div class="mt-2 sm:col-span-2 sm:mt-0">
+                    <div class="flex flex-col gap-4">
+                      <template v-for="(experience, i) in experienceLevelOptions">
+                        <div class="flex items-center">
+                          <BaseTooltip
+                              :id="`exp-rb-${i}`"
+                              :tooltip-content="experience.experience_level_description"
+                              position="right"
+                          >
+                            <Field
+                                name="experience"
+                                type="radio"
+                                :value="experience.experience_level"
+                                class="cursor-pointer"
+                            />
+                            <label
+                                for="Full-time"
+                                class="ms-2 me-1 text-sm font-medium text-gray-900 cursor-pointer"
+                            >{{ experience.experience_level }}</label>
+                          </BaseTooltip>
+                        </div>
+                      </template>
+                    </div>
+                    <ErrorMessage
+                        class="text-red-500 text-sm font-normal leading-tight"
+                        name="experience"
                     />
                   </div>
                 </div>
@@ -659,7 +724,7 @@ const selectedCompensation = ref('salary');
                               v-model="selectedCompensation"
                               name="hourly"
                               type="radio"
-                              value="Hourly"
+                              value="hourly"
                               class="cursor-pointer"
                           />
                           <label
@@ -668,21 +733,31 @@ const selectedCompensation = ref('salary');
                           >Hourly</label>
                         </div>
                       </div>
-
-                      <p class="text-sm font-medium pt-5">
-                        {{ selectedCompensation === 'salary' ? '"Salary Range" of $20,000 to $300,000' : '"Hourly Range" of $10 - $150 / hour' }}
-                      </p>
                     </div>
                   </div>
 
                   <PayRangeSelectBox
-                    name="paymentRange"
-                    label="Pay Range"
-                    :data="['1', '2']"
-                    :data2="['2', '2']"
+                    v-if="selectedCompensation === 'salary'"
+                    name="startRange"
+                    secondary-name="endRange"
+                    label="Salary Range"
+                    :data="salaryRange"
+                    :data2="salaryRange"
                     subLabel="(USD)"
-                    :value="values.paymentRange"
+                    :value="values.startRange"
                     className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+                  />
+
+                  <PayRangeSelectBox
+                      v-else-if="selectedCompensation === 'hourly'"
+                      name="startRange"
+                      secondary-name="endRange"
+                      label="Hourly Range"
+                      :data="hourlyRange"
+                      :data2="hourlyRange"
+                      subLabel="(USD)"
+                      :value="values.startRange"
+                      className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
                   />
                 </div>
 

@@ -60,35 +60,35 @@ export const jobFilters = [
         list: [
             {
                 label: 'Entry-level',
-                value: 'entry_level',
+                value: 'Entry-level',
                 checked: false,
                 counts: 15,
                 tooltipText: 'New graduates or first-year teachers'
             },
             {
                 label: 'Early Career',
-                value: 'early_career',
+                value: 'Early Career',
                 checked: false,
                 counts: 0,
                 tooltipText: '1-5 years of experience'
             },
             {
                 label: 'Mid-level',
-                value: 'mid_level',
+                value: 'Mid-Level',
                 checked: false,
                 counts: 6,
                 tooltipText: '5-10 years of experience'
             },
             {
                 label: 'Experienced',
-                value: 'experienced',
+                value: 'Experienced',
                 checked: false,
                 counts: 3,
                 tooltipText: 'Over 10 years of experience'
             },
             {
                 label: 'Leadership',
-                value: 'leadership',
+                value: 'Leadership',
                 checked: false,
                 counts: 5,
                 tooltipText: 'Principals, vice-principals, or district-level administrators'

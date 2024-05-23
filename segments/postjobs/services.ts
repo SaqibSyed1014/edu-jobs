@@ -53,9 +53,21 @@ const getSubjects = () :Promise<Subject[]> => {
     })
 }
 
+const getExperienceLevels = () :Promise<ExperienceLevel[]> => {
+    const { baseUrl, apiKey } = usePayloadUrl()
+    const apiHeaders = {
+        'API-Key': apiKey,
+    }
+    return $fetch(`${baseUrl}/reference/experiencelevels`, {
+        method: 'get',
+        headers: apiHeaders,
+    })
+}
+
 
 export {
     getStripeCheckDetails,
     getGradesLevels,
-    getSubjects
+    getSubjects,
+    getExperienceLevels
 }

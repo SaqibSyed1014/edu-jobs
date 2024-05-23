@@ -138,3 +138,11 @@ interface Subject {
     sort_order: number;
 }
 
+ interface ExperienceLevel {
+     experience_level_id: number;
+     experience_level: string;
+     experience_level_description: string;
+     sort_order: number;
+     active: number;
+ }
+
