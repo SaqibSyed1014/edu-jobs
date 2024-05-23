@@ -11,7 +11,7 @@ const {
   experienceLevelOptions
 } = storeToRefs(postJobStore);
 
-const currentStep = ref(1);
+const currentStep = ref(0);
 const jobRoles = ref(["Instructional", "Non-instructional"]);
 const subjects = ref(["English", "Math"]);
 const paymentType = ref(["Cash", "Card"]);
