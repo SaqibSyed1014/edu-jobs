@@ -38,9 +38,9 @@ export const useHomeStore = defineStore('homeStore', {
             return state.jobsByCities?.sort((a, b) => a.priority_rank - b.priority_rank) || []
         },
         partnersLogo: (state) :PartnerLogo[] => {
-            return state.partnersLogos
-                ?.filter(logo => logo.is_active === 1 && logo.logo_path)
-                .sort((a, b) => a.display_order - b.display_order) || []
+            if (!Array.isArray(state.partnersLogos)) return [];
+            return state.partnersLogos.filter((logo :PartnerLogo) => logo.is_active === 1 && logo.logo_path)
+                .sort((a :PartnerLogo, b :PartnerLogo) => a.display_order - b.display_order) || []
         }
     }
 })
