@@ -120,7 +120,8 @@ const schemas = [
     jobRole: Yup.string().required("Job Role is required"),
     gradeLevel: Yup.string().required("Grade Level(s) is required"),
     paymentType: Yup.string().required("Payment Type is required"),
-    paymentRange: Yup.string().required("Payment Range is required"),
+    startRange: Yup.string().required("Start Range is required"),
+    endRange: Yup.string().required("End Range is required"),
     subjects: Yup.string().required("Subject Area(s) is required"),
     startDate: Yup.string().required("Start Date is required"),
   }),
@@ -294,6 +295,25 @@ function handleStepClick() {
 }
 
 const selectedCompensation = ref('salary');
+
+const salaryRange = [
+  "$20,000", "$25,000", "$30,000", "$35,000", "$40,000",
+  "$45,000", "$50,000", "$55,000", "$60,000", "$65,000",
+  "$70,000", "$75,000", "$80,000", "$85,000", "$90,000",
+  "$95,000", "$100,000", "$105,000", "$110,000", "$115,000",
+  "$120,000", "$125,000", "$130,000", "$135,000", "$140,000",
+  "$145,000", "$150,000", "$155,000", "$160,000", "$165,000",
+  "$170,000", "$175,000", "$180,000", "$185,000", "$190,000",
+  "$195,000", "$200,000"
+]
+
+const hourlyRange = [
+  "$10", "$15", "$20", "$25", "$30", "$35", "$40", "$45", "$50",
+  "$55", "$60", "$65", "$70", "$75", "$80", "$85", "$90", "$95",
+  "$100", "$105", "$110", "$115", "$120", "$125", "$130", "$135",
+  "$140", "$145", "$150"
+]
+
 </script>
 
 <template>
@@ -654,7 +674,7 @@ const selectedCompensation = ref('salary');
                               position="right"
                           >
                             <Field
-                                name="employment"
+                                name="experience"
                                 type="radio"
                                 :value="experience.experience_level"
                                 class="cursor-pointer"
@@ -669,20 +689,10 @@ const selectedCompensation = ref('salary');
                     </div>
                     <ErrorMessage
                         class="text-red-500 text-sm font-normal leading-tight"
-                        name="employment"
+                        name="experience"
                     />
                   </div>
                 </div>
-
-<!--                <SelectBox-->
-<!--                    name="experience"-->
-<!--                    label="Experience Level"-->
-<!--                    :data="experienceLevelDropdown"-->
-<!--                    subLabel=""-->
-<!--                    :value="values.jobRole"-->
-<!--                    :label-value-options="true"-->
-<!--                    className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"-->
-<!--                />-->
 
                 <div>
                   <div
@@ -714,7 +724,7 @@ const selectedCompensation = ref('salary');
                               v-model="selectedCompensation"
                               name="hourly"
                               type="radio"
-                              value="Hourly"
+                              value="hourly"
                               class="cursor-pointer"
                           />
                           <label
@@ -723,21 +733,31 @@ const selectedCompensation = ref('salary');
                           >Hourly</label>
                         </div>
                       </div>
-
-                      <p class="text-sm font-medium pt-5">
-                        {{ selectedCompensation === 'salary' ? '"Salary Range" of $20,000 to $300,000' : '"Hourly Range" of $10 - $150 / hour' }}
-                      </p>
                     </div>
                   </div>
 
                   <PayRangeSelectBox
-                    name="paymentRange"
-                    label="Pay Range"
-                    :data="['1', '2']"
-                    :data2="['2', '2']"
+                    v-if="selectedCompensation === 'salary'"
+                    name="startRange"
+                    secondary-name="endRange"
+                    label="Salary Range"
+                    :data="salaryRange"
+                    :data2="salaryRange"
                     subLabel="(USD)"
-                    :value="values.paymentRange"
+                    :value="values.startRange"
                     className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+                  />
+
+                  <PayRangeSelectBox
+                      v-else-if="selectedCompensation === 'hourly'"
+                      name="startRange"
+                      secondary-name="endRange"
+                      label="Hourly Range"
+                      :data="hourlyRange"
+                      :data2="hourlyRange"
+                      subLabel="(USD)"
+                      :value="values.startRange"
+                      className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
                   />
                 </div>
 

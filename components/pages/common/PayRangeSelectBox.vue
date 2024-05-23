@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { toRef } from "vue";
 import { useField } from "vee-validate";
-import { Form, Field, ErrorMessage } from "vee-validate";
+import { Field, ErrorMessage } from "vee-validate";
 
 const props = defineProps({
   value: {
@@ -9,6 +9,10 @@ const props = defineProps({
     default: "",
   },
   name: {
+    type: String,
+    required: true,
+  },
+  secondaryName: {
     type: String,
     required: true,
   },
@@ -47,16 +51,38 @@ const props = defineProps({
 });
 
 const name = toRef(props, "name");
+const secondaryName = toRef(props, "secondaryName");
 
 const {
   value: inputValue,
   handleBlur,
   handleChange,
-  meta,
+  meta
 } = useField(name, undefined, {
   initialValue: props.value,
 });
-// console.log("errorMessage", errorMessage);
+
+const {
+  value: secondaryInputValue,
+} = useField(secondaryName, undefined, {
+  initialValue: '',
+});
+
+const selectedStartRange = ref('');
+const selectedEndRange = ref('');
+
+const rangeError = ref(false)
+
+function convertPriceToNumber(price :string) {
+  return Number(price.replace('$', '').replace(',', ''))
+}
+
+watch(() => [selectedStartRange.value, selectedEndRange.value], () => {
+  const startValue = convertPriceToNumber(selectedStartRange.value)
+  const endValue = convertPriceToNumber(selectedEndRange.value)
+  rangeError.value = !!((startValue && endValue) && (endValue < startValue));
+})
+
 </script>
 
 <template>
@@ -74,58 +100,70 @@ const {
         {{ subLabel }}
       </span>
     </label>
-    <div class="mt-2 sm:col-span-2 pt-1">
+    <div class="mt-1 sm:col-span-2 pt-1">
       <div class="flex">
-        <Field
-          v-slot="{ value }"
-          :name="name"
-          as="select"
-          :class="[
+        <div class="flex flex-col flex-1">
+          <Field
+              v-model="selectedStartRange"
+              :name="name"
+              as="select"
+              :class="[
             'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-[11px] px-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
             [errorMessage && 'border border-red-300'], // Apply border-red-300 class if errorMessage exists
           ]"
-        >
-          <option value="" disabled>($) From</option>
-          <option
-            v-for="item in data"
-            :key="item + '1'"
-            :value="item"
-            :selected="value && value.includes(item)"
           >
-            {{ item }}
-          </option>
-        </Field>
+            <option value="" disabled>($) From</option>
+            <option
+                v-for="item in data"
+                :key="item + '1'"
+                :value="item"
+            >
+              {{ item }}
+            </option>
+          </Field>
+
+          <ErrorMessage
+              class="text-red-500 text-sm font-normal leading-tight"
+              :name="name"
+          />
+        </div>
 
         <span
-          class="text-gray-600 text-sm font-normal leading-tight px-3 flex items-center"
+          class="text-gray-600 text-sm font-normal leading-tight px-3 flex items-baseline mt-4"
           >-</span
         >
 
-        <Field
-          v-slot="{ value }"
-          :name="name"
-          as="select"
-          :class="[
+        <div class="flex flex-col flex-1">
+          <Field
+              v-model="selectedEndRange"
+              :name="secondaryName"
+              as="select"
+              :class="[
             'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-[11px] px-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
-            [errorMessage && 'border border-red-300'], // Apply border-red-300 class if errorMessage exists
+            [(errorMessage || rangeError) && 'border border-red-300'],
           ]"
-        >
-          <option value="" disabled>($) To</option>
-          <option
-            v-for="item in data2"
-            :key="item + '1'"
-            :value="item"
-            :selected="value && value.includes(item)"
           >
-            {{ item }}
-          </option>
-        </Field>
+            <option value="" disabled>($) To</option>
+            <option
+                v-for="item in data2"
+                :key="item + '1'"
+                :value="item"
+            >
+              {{ item }}
+            </option>
+          </Field>
+          <ErrorMessage
+              class="text-red-500 text-sm font-normal leading-tight"
+              :name="secondaryName"
+          />
+          <div
+              v-if="rangeError"
+              class="text-red-500 text-sm font-normal leading-tight"
+          >
+            To Range can't be less than From Range
+          </div>
+        </div>
       </div>
-      <!-- Display the vee-validate error message -->
-      <ErrorMessage
-        class="text-red-500 text-sm font-normal leading-tight"
-        :name="name"
-      />
     </div>
   </div>
 </template>
