@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as Yup from "yup";
-import { Form, useForm, ErrorMessage, Field } from "vee-validate";
+import { Form, ErrorMessage, Field } from "vee-validate";
 import { Tooltip } from "flowbite";
 import { usePostjobStore } from "~/segments/postjobs/store";
 
@@ -11,7 +11,7 @@ const {
   experienceLevelOptions
 } = storeToRefs(postJobStore);
 
-const currentStep = ref(1);
+const currentStep = ref(0);
 const jobRoles = ref(["Instructional", "Non-instructional"]);
 const subjects = ref(["English", "Math"]);
 const paymentType = ref(["Cash", "Card"]);
