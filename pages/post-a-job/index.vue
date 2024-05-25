@@ -11,7 +11,7 @@ const {
   experienceLevelOptions
 } = storeToRefs(postJobStore);
 
-const currentStep = ref(0);
+const currentStep = ref(1);
 const jobRoles = ref(["Instructional", "Non-instructional"]);
 const subjects = ref(["English", "Math"]);
 const paymentType = ref(["Cash", "Card"]);
@@ -417,8 +417,7 @@ const hourlyRange = [
                               ? 'text-base font-semibold text-brand-700'
                               : 'text-base font-semibold text-gray-700'
                           "
-                          >{{ step.name }}</span
-                        >
+                          >{{ step.name }}</span>
                       </span>
                     </button>
                     <button
@@ -565,11 +564,8 @@ const hourlyRange = [
                   </label>
                   <div class="mt-2 sm:col-span-2 sm:mt-0 relative">
                     <DatePicker
-                      v-model="startDate"
                       name="startDate"
-                      :values="values.startDate"
-                      :error="errors.startDate"
-                      @on-input="(date) => startDate = date"
+                      placeholder="MM/DD/YYYY"
                     />
                   </div>
                 </div>

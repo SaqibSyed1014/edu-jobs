@@ -1,27 +1,48 @@
 <script lang="ts" setup>
 import Datepicker from "@vuepic/vue-datepicker";
+import type { DatePickerInstance } from "@vuepic/vue-datepicker"
 import "@vuepic/vue-datepicker/dist/main.css";
-import { Form, Field, ErrorMessage } from "vee-validate";
+import { ErrorMessage, useField } from "vee-validate";
 
-interface Props {
-  name?: string;
-  placeholder?: string;
-  enableTimePicker?: boolean;
-  values: string;
-  error: string;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  name: "",
-  placeholder: "",
-  enableTimePicker: true,
-  values: "",
-  error: "",
+const props = defineProps({
+  modelValue: {
+    type: String,
+    default: '',
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  placeholder: {
+    type: String,
+    default: '',
+  },
+  className: {
+    type: String,
+    default: '',
+  },
+  enableTimePicker: {
+    type: Boolean,
+    default: true
+  }
 });
 
-const emit = defineEmits(['onInput'])
+const emit = defineEmits(['onInput', 'update:modelValue'])
 
-const date = ref(props?.values ?? "");
+const name = toRef(props, 'name');
+const initialValue = toRef(props, 'modelValue');
+
+const datepicker = ref<DatePickerInstance>(null);
+
+const {
+  value: inputValue,
+  errorMessage,
+  handleBlur,
+  meta,
+  setValue,
+} = useField(name, undefined, {
+  initialValue: props.modelValue,
+});
 
 // const onInput = (event: Event) => {
 //   // Update the value of `date` with the input's value
@@ -39,45 +60,38 @@ const textInputOptions = {
   format: "MM/dd/yyyy",
 };
 
-watch(() => date.value, (val) => {
-  emit('onInput', val)
-})
+watch(inputValue, (newValue: any) => {
+  emit('update:modelValue', newValue);
+  // if (datepicker.value) datepicker.value.closeMenu()
+});
+
+watch(
+    () => props.modelValue,
+    (newValue: any) => {
+      setValue(newValue);
+    }
+);
 </script>
 
 <template>
   <div class="relative">
     <Datepicker
-      v-model="date"
+      :name="name as string"
+      ref="datepicker"
+      v-model="inputValue"
       class="fixed-input-icon"
+      input-class-name="form-input w-full"
+      menu-class-name="dp-custom-menu"
       autoApply
+      :state="!errorMessage?.length"
       :text-input="textInputOptions"
       :enable-time-picker="false"
+      @blur="handleBlur"
+      :placeholder="placeholder"
     >
       <template #input-icon> </template>
-      <template #dp-input="{ value, onBlur, onInput, onEnter, onTab, onPaste }">
-        <input
-          type="text"
-          class="form-input w-full"
-          placeholder="MM/DD/YYYY"
-          :value="value"
-          @input="onInput"
-          @keydown.enter="onEnter"
-          @blur="onBlur"
-          @keydown.tab="onTab"
-          @paste="onPaste"
-          :class="{ 'has-error': error }"
-        />
-        <TextInput
-          :name="name"
-          class="sr-only"
-          placeholder="March 25, 2024"
-          :value="value"
-          input-class="pl-5"
-          label=""
-          subLabel=""
-        />
-      </template>
     </Datepicker>
+
     <SvgoCalendar class="absolute h-5 top-3 right-3" />
 
     <ErrorMessage
@@ -88,6 +102,18 @@ watch(() => date.value, (val) => {
 </template>
 
 <style>
+.dp__input{
+  @apply bg-transparent rounded-lg border border-gray-200 py-2.5 px-3.5 shadow-field placeholder-gray-400
+}
+.dp__input_focus{
+  @apply ring-2 ring-blue-600
+}
+.dp__input_valid {
+  @apply shadow-none hover:border-inherit
+}
+.dp__input_invalid{
+  @apply ring-2 ring-error-400 hover:border-inherit
+}
 .dp__menu_inner {
   @apply rounded-lg bg-white p-4 shadow-lg;
 }

@@ -364,33 +364,33 @@ onMounted(async () => {
                 <div class="inline-flex gap-2">
                   <SvgoUsFlag class="size-5 shrink-0" />
                   <span class="text-slate-600 text-base font-medium leading-normal">
-                    {{ collegeDetails.state_name }}, {{ collegeDetails.state_code }}
+                    {{ collegeDetails.state_name }} {{ collegeDetails.state_code }}
                   </span>
                 </div>
               </div>
 
-              <div class="flex flex-col gap-2">
-                <span class="text-gray-900 text-sm font-medium leading-tight"
-                >Number of Schools
-                </span>
-                <div class="inline-flex gap-2">
-                  <SvgoBuilding class="size-5" />
-                  <span class="text-slate-600 text-base font-medium leading-normal">
-                    {{ collegeDetails.school_count }}
-                  </span>
-                </div>
-              </div>
+<!--              <div class="flex flex-col gap-2">-->
+<!--                <span class="text-gray-900 text-sm font-medium leading-tight"-->
+<!--                >Number of Schools-->
+<!--                </span>-->
+<!--                <div class="inline-flex gap-2">-->
+<!--                  <SvgoBuilding class="size-5" />-->
+<!--                  <span class="text-slate-600 text-base font-medium leading-normal">-->
+<!--                    {{ collegeDetails.school_count }}-->
+<!--                  </span>-->
+<!--                </div>-->
+<!--              </div>-->
 
-              <div class="flex flex-col gap-2">
-                <span class="text-gray-900 text-sm font-medium leading-tight">Number of Students</span>
-                <div class="inline-flex gap-2">
-                  <SvgoGraduationHat class="size-5" />
-                  <span
-                      class="text-slate-600 text-base font-medium leading-normal">
-                    {{ collegeDetails.student_count }}
-                  </span>
-                </div>
-              </div>
+<!--              <div class="flex flex-col gap-2">-->
+<!--                <span class="text-gray-900 text-sm font-medium leading-tight">Number of Students</span>-->
+<!--                <div class="inline-flex gap-2">-->
+<!--                  <SvgoGraduationHat class="size-5" />-->
+<!--                  <span-->
+<!--                      class="text-slate-600 text-base font-medium leading-normal">-->
+<!--                    {{ collegeDetails.student_count }}-->
+<!--                  </span>-->
+<!--                </div>-->
+<!--              </div>-->
 
               <div class="flex flex-col gap-2">
                 <span class="text-gray-900 text-sm font-medium leading-tight">Number of Jobs</span>
