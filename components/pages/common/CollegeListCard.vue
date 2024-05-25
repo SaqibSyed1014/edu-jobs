@@ -25,20 +25,20 @@ defineProps<{ data: any; isSchool: Boolean }>();
               0 jobs
             </span>
           </div>
-          <div class="inline-flex items-center text-center space-x-2">
-            <SvgoBuildingLight class="size-5" />
-            <span
-              class="text-gray-600 text-xs md:text-sm font-medium leading-tight"
-            >
-              0 schools
-            </span>
-          </div>
-          <div class="inline-flex items-center text-center space-x-2">
-            <SvgoGraduationHat class="size-5" />
-            <span class="text-gray-600 text-sm font-medium leading-tight">
-              0 students
-            </span>
-          </div>
+<!--          <div class="inline-flex items-center text-center space-x-2">-->
+<!--            <SvgoBuildingLight class="size-5" />-->
+<!--            <span-->
+<!--              class="text-gray-600 text-xs md:text-sm font-medium leading-tight"-->
+<!--            >-->
+<!--              0 schools-->
+<!--            </span>-->
+<!--          </div>-->
+<!--          <div class="inline-flex items-center text-center space-x-2">-->
+<!--            <SvgoGraduationHat class="size-5" />-->
+<!--            <span class="text-gray-600 text-sm font-medium leading-tight">-->
+<!--              0 students-->
+<!--            </span>-->
+<!--          </div>-->
         </div>
       </div>
     </div>
@@ -50,7 +50,7 @@ defineProps<{ data: any; isSchool: Boolean }>();
         <SvgoUsFlag class="size-4" />
         <span
           class="text-center text-gray-700 text-xs md:text-sm font-medium leading-tight"
-          >{{ data?.document?.city + "," + data?.document?.state_abbr }}
+          >{{ data?.document?.city + ", " + data?.document?.state_code }}
         </span>
       </div>
     </div>
