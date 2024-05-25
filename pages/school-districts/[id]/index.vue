@@ -193,7 +193,7 @@ onMounted(async () => {
                 </div>
               </div>
 
-              <div class="flex flex-col gap-2 col-span-2 sm:col-span-1">
+              <div v-if="schoolDistrictDetails?.website_url" class="flex flex-col gap-2 col-span-2 sm:col-span-1">
                 <span class="text-gray-900 text-sm font-medium leading-tight"
                   >Website
                 </span>
