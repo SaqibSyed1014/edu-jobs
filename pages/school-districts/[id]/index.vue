@@ -193,7 +193,7 @@ onMounted(async () => {
                 </div>
               </div>
 
-              <div class="flex flex-col gap-2 col-span-2 sm:col-span-1">
+              <div v-if="schoolDistrictDetails?.website_url" class="flex flex-col gap-2 col-span-2 sm:col-span-1">
                 <span class="text-gray-900 text-sm font-medium leading-tight"
                   >Website
                 </span>
@@ -266,27 +266,23 @@ onMounted(async () => {
                 </div>
               </div>
 
-              <form
-                v-if="activeTab === 1"
-                class="w-full sm:w-1/2 sm:flex sm:items-end sm:justify-end"
-                action="#"
-                method="GET"
+              <div
+                  v-if="activeTab === 1 && schoolDistrictJobs.length"
+                  class="w-full sm:w-1/2 sm:flex sm:items-end sm:justify-end relative"
               >
                 <label for="search-field" class="sr-only">Search</label>
-                <div class="relative">
-                  <SvgoSearchIcon
+                <SvgoSearchIcon
                     class="pointer-events-none absolute inset-y-0 left-2 h-full w-5 text-gray-500"
                     aria-hidden="true"
-                  />
-                  <input
+                />
+                <input
                     id="search-field"
-                    class="block h-full rounded-lg w-full md:w-[320px] shadow border border-gray-300 bg-transparent py-[13px] pl-8 pr-0 text-black sm:text-sm"
+                    class="form-input w-full md:w-[320px] pl-8"
                     placeholder="Search..."
                     type="search"
                     name="search"
-                  />
-                </div>
-              </form>
+                />
+              </div>
             </div>
 
             <AboutSD :data="listData" v-if="activeTab === 0" />

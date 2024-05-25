@@ -46,19 +46,19 @@ const stuOptions = ref({
   icon: "SvgoGraduationHat",
   name: "stuOptions",
   data: [
-    { id: "1", label: "0 to 100", value: "0 to 100", checked: false },
-    { id: "2", label: "101 to 500", value: "101 to 500", checked: false },
-    { id: "3", label: "501 to 1000", value: "501 to 1000", checked: false },
-    { id: "4", label: "1001 to 2000", value: "1001 to 2000", checked: false },
-    { id: "4", label: "2001 to 3000", value: "2001 to 3000", checked: false },
-    { id: "4", label: "3001 to 5000", value: "3001 to 5000", checked: false },
+    { id: "5", label: "0 to 100", value: "0 to 100", checked: false },
+    { id: "6", label: "101 to 500", value: "101 to 500", checked: false },
+    { id: "7", label: "501 to 1000", value: "501 to 1000", checked: false },
+    { id: "8", label: "1001 to 2000", value: "1001 to 2000", checked: false },
+    { id: "9", label: "2001 to 3000", value: "2001 to 3000", checked: false },
+    { id: "10", label: "3001 to 5000", value: "3001 to 5000", checked: false },
     {
-      id: "4",
+      id: "12",
       label: "5001 to 10,000",
       value: "5001 to 10000",
       checked: false,
     },
-    { id: "4", label: "10,000+", value: "10000", checked: false },
+    { id: "13", label: "10,000+", value: "10000", checked: false },
   ],
 });
 
@@ -66,11 +66,11 @@ const schOptions = ref({
   icon: "SvgoBuildingLight",
   name: "schOptions",
   data: [
-    { id: "1", label: "0 to 10", value: "0 to 10", checked: false },
-    { id: "2", label: "11 to 25", value: "11 to 25", checked: false },
-    { id: "3", label: "26 to 50", value: "26 to 50", checked: false },
-    { id: "4", label: "51 to 100", value: "51 to 100", checked: false },
-    { id: "4", label: "100+", value: "100", checked: false },
+    { id: "14", label: "0 to 10", value: "0 to 10", checked: false },
+    { id: "15", label: "11 to 25", value: "11 to 25", checked: false },
+    { id: "16", label: "26 to 50", value: "26 to 50", checked: false },
+    { id: "17", label: "51 to 100", value: "51 to 100", checked: false },
+    { id: "18", label: "100+", value: "100", checked: false },
   ],
 });
 
@@ -516,6 +516,7 @@ const search = (resetToDefaultPage = false) => {
                   title="No. of jobs"
                   :options="jobOptions"
                   total-jobs="125"
+                  :inside-sidebar="true"
                 />
 
                 <FilterSection
@@ -523,6 +524,7 @@ const search = (resetToDefaultPage = false) => {
                   :options="stuOptions"
                   total-jobs="12,000"
                   @toggleSchoolOption="toggleSchoolOption"
+                  :inside-sidebar="true"
                 />
 
                 <FilterSection
@@ -530,6 +532,7 @@ const search = (resetToDefaultPage = false) => {
                   :options="schOptions"
                   total-jobs="13"
                   @toggleSchoolOption="toggleSchoolOption"
+                  :inside-sidebar="true"
                 />
               </div>
               <!-- <div class="pt-[18px] w-full">

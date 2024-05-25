@@ -364,33 +364,33 @@ onMounted(async () => {
                 <div class="inline-flex gap-2">
                   <SvgoUsFlag class="size-5 shrink-0" />
                   <span class="text-slate-600 text-base font-medium leading-normal">
-                    {{ collegeDetails.state_name }}, {{ collegeDetails.state_code }}
+                    {{ collegeDetails.state_name }} {{ collegeDetails.state_code }}
                   </span>
                 </div>
               </div>
 
-              <div class="flex flex-col gap-2">
-                <span class="text-gray-900 text-sm font-medium leading-tight"
-                >Number of Schools
-                </span>
-                <div class="inline-flex gap-2">
-                  <SvgoBuilding class="size-5" />
-                  <span class="text-slate-600 text-base font-medium leading-normal">
-                    {{ collegeDetails.school_count }}
-                  </span>
-                </div>
-              </div>
+<!--              <div class="flex flex-col gap-2">-->
+<!--                <span class="text-gray-900 text-sm font-medium leading-tight"-->
+<!--                >Number of Schools-->
+<!--                </span>-->
+<!--                <div class="inline-flex gap-2">-->
+<!--                  <SvgoBuilding class="size-5" />-->
+<!--                  <span class="text-slate-600 text-base font-medium leading-normal">-->
+<!--                    {{ collegeDetails.school_count }}-->
+<!--                  </span>-->
+<!--                </div>-->
+<!--              </div>-->
 
-              <div class="flex flex-col gap-2">
-                <span class="text-gray-900 text-sm font-medium leading-tight">Number of Students</span>
-                <div class="inline-flex gap-2">
-                  <SvgoGraduationHat class="size-5" />
-                  <span
-                      class="text-slate-600 text-base font-medium leading-normal">
-                    {{ collegeDetails.student_count }}
-                  </span>
-                </div>
-              </div>
+<!--              <div class="flex flex-col gap-2">-->
+<!--                <span class="text-gray-900 text-sm font-medium leading-tight">Number of Students</span>-->
+<!--                <div class="inline-flex gap-2">-->
+<!--                  <SvgoGraduationHat class="size-5" />-->
+<!--                  <span-->
+<!--                      class="text-slate-600 text-base font-medium leading-normal">-->
+<!--                    {{ collegeDetails.student_count }}-->
+<!--                  </span>-->
+<!--                </div>-->
+<!--              </div>-->
 
               <div class="flex flex-col gap-2">
                 <span class="text-gray-900 text-sm font-medium leading-tight">Number of Jobs</span>
@@ -479,27 +479,23 @@ onMounted(async () => {
                 </div>
               </div>
 
-              <form
-                  v-if="activeTab === 1"
-                  class="w-full sm:w-1/2 sm:flex sm:items-end sm:justify-end"
-                  action="#"
-                  method="GET"
+              <div
+                  v-if="false"
+                  class="w-full sm:w-1/2 sm:flex sm:items-end sm:justify-end relative"
               >
                 <label for="search-field" class="sr-only">Search</label>
-                <div class="relative">
-                  <SvgoSearchIcon
-                      class="pointer-events-none absolute inset-y-0 left-2 h-full w-5 text-gray-500"
-                      aria-hidden="true"
-                  />
-                  <input
-                      id="search-field"
-                      class="block h-full rounded-lg w-full md:w-[320px] shadow border border-gray-300 bg-transparent py-[13px] pl-8 pr-0 text-black sm:text-sm"
-                      placeholder="Search..."
-                      type="search"
-                      name="search"
-                  />
-                </div>
-              </form>
+                <SvgoSearchIcon
+                    class="pointer-events-none absolute inset-y-0 left-2 h-full w-5 text-gray-500"
+                    aria-hidden="true"
+                />
+                <input
+                    id="search-field"
+                    class="form-input w-full md:w-[320px] pl-8"
+                    placeholder="Search..."
+                    type="search"
+                    name="search"
+                />
+              </div>
             </div>
 
             <AboutSD :data="listData" v-if="activeTab === 0" />

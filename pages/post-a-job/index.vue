@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as Yup from "yup";
-import { Form, useForm, ErrorMessage, Field } from "vee-validate";
+import { Form, ErrorMessage, Field } from "vee-validate";
 import { Tooltip } from "flowbite";
 import { usePostjobStore } from "~/segments/postjobs/store";
 
@@ -417,8 +417,7 @@ const hourlyRange = [
                               ? 'text-base font-semibold text-brand-700'
                               : 'text-base font-semibold text-gray-700'
                           "
-                          >{{ step.name }}</span
-                        >
+                          >{{ step.name }}</span>
                       </span>
                     </button>
                     <button
@@ -565,11 +564,8 @@ const hourlyRange = [
                   </label>
                   <div class="mt-2 sm:col-span-2 sm:mt-0 relative">
                     <DatePicker
-                      v-model="startDate"
                       name="startDate"
-                      :values="values.startDate"
-                      :error="errors.startDate"
-                      @on-input="(date) => startDate = date"
+                      placeholder="MM/DD/YYYY"
                     />
                   </div>
                 </div>
