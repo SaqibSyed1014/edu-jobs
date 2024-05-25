@@ -3,6 +3,7 @@ const props = defineProps<{
   title: String;
   options: any;
   totalJobs: string;
+  insideSidebar?: boolean;
 }>();
 </script>
 
@@ -30,7 +31,7 @@ const props = defineProps<{
     >
       <div class="flex h-6 items-center">
         <input
-          :id="item.id"
+          :id="`${insideSidebar?'sidebar-':''}filter-cb-${item.id}`"
           :name="item.id"
           type="checkbox"
           class="h-4 w-4 rounded-md border border-gray-300 text-brand-600 focus:ring-brand-600"
@@ -38,9 +39,9 @@ const props = defineProps<{
           @change="$emit('toggleSchoolOption', options?.name, index)"
         />
       </div>
-      <label :for="item.id" class="text-gray-700 text-base font-medium">{{
-        item.label
-      }}</label>
+      <label :for="`${insideSidebar?'sidebar-':''}filter-cb-${item.id}`" class="text-gray-700 text-base font-medium">
+        {{ item.label }}
+      </label>
     </div>
   </div>
 </template>

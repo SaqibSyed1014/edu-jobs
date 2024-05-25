@@ -211,6 +211,7 @@ const search = () => {
                   title="No. of jobs"
                   :options="jobOptions"
                   total-jobs="125"
+                  :inside-sidebar="true"
                 />
               </div>
               <!-- <div class="pt-[18px] w-full">
