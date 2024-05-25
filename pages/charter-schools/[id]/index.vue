@@ -266,27 +266,23 @@ onMounted(async () => {
                 </div>
               </div>
 
-              <form
-                v-if="activeTab === 1"
-                class="w-full sm:w-1/2 sm:flex sm:items-end sm:justify-end"
-                action="#"
-                method="GET"
+              <div
+                v-if="activeTab === 1 && schoolJobs.length"
+                class="w-full sm:w-1/2 sm:flex sm:items-end sm:justify-end relative"
               >
                 <label for="search-field" class="sr-only">Search</label>
-                <div class="relative">
-                  <SvgoSearchIcon
-                    class="pointer-events-none absolute inset-y-0 left-2 h-full w-5 text-gray-500"
-                    aria-hidden="true"
-                  />
-                  <input
-                    id="search-field"
-                    class="block h-full rounded-lg w-full md:w-[320px] shadow border border-gray-300 bg-transparent py-[13px] pl-8 pr-0 text-black sm:text-sm"
-                    placeholder="Search..."
-                    type="search"
-                    name="search"
-                  />
-                </div>
-              </form>
+                <SvgoSearchIcon
+                  class="pointer-events-none absolute inset-y-0 left-2 h-full w-5 text-gray-500"
+                  aria-hidden="true"
+                />
+                <input
+                  id="search-field"
+                  class="form-input w-full md:w-[320px] pl-8"
+                  placeholder="Search..."
+                  type="search"
+                  name="search"
+                />
+              </div>
             </div>
 
             <AboutSD :data="listData" v-if="activeTab === 0" />
