@@ -26,16 +26,16 @@ defineProps<{
         <div class="pt-3">
           <p class="font-semibold line-clamp-2">{{ job.job_title }}</p>
 
-          <p class="text-gray-600 text-sm">{{ job.organization_name }}</p>
+          <p v-if="job?.organization_name" class="text-gray-600 text-sm">{{ job.organization_name }}</p>
         </div>
       </div>
       <div class="job-post-body flex flex-col gap-4">
         <div class="flex gap-3 font-medium">
-          <div class="badges-outline">
+          <div v-if="job?.job_location" class="badges-outline">
             {{ job.job_location }}
           </div>
 
-          <div class="badges-outline">
+          <div v-if="job?.job_role" class="badges-outline">
             <div class="w-2 h-2 rounded-full bg-blue-500"/>
             {{ job.job_role }}
           </div>
@@ -46,12 +46,12 @@ defineProps<{
         </template>
       </div>
       <div class="job-post-footer flex items-center gap-5 font-medium text-gray-600">
-        <div class="flex items-center gap-2">
+        <div v-if="job?.employment_type" class="flex items-center gap-2">
           <SvgoClock class="w-5 h-5 text-gray-400" />
           <span>{{ job.employment_type }}</span>
         </div>
 
-        <div class="flex items-center capitalize gap-2">
+        <div v-if="job?.organization_type" class="flex items-center capitalize gap-2">
           <SvgoBuilding class="w-5 h-5 text-gray-400" />
           <span>{{ job.organization_type }}</span>
         </div>
@@ -74,7 +74,7 @@ defineProps<{
               <p class="text-gray-600 text-sm">{{ job.organization_name }}</p>
             </div>
           </div>
-          <div class="job-badge absolute top-5 right-5">
+          <div v-if="job?.date_posted" class="job-badge absolute top-5 right-5">
             {{ getDaysDifference(job.date_posted) }}
           </div>
         </div>
@@ -82,23 +82,23 @@ defineProps<{
 
       <div class="job-card-bottom flex max-md:flex-col-reverse justify-between md:items-center">
         <div class="flex items-center gap-5 text-gray-600 font-medium pt-5">
-          <div class="flex items-center gap-2">
+          <div v-if="job?.employment_type" class="flex items-center gap-2">
             <SvgoClock class="w-5 h-5 text-gray-400" />
             <span>{{ job.employment_type }}</span>
           </div>
 
-          <div class="flex items-center capitalize gap-2">
+          <div v-if="job?.organization_type" class="flex items-center capitalize gap-2">
             <SvgoCurrencyDollar class="w-5 h-5 text-gray-400" />
             <span>{{ job.organization_type }}</span>
           </div>
         </div>
 
         <div class="flex gap-3 mt-auto">
-          <div class="badges-outline">
+          <div v-if="job?.job_location" class="badges-outline">
             {{ job.job_location }}
           </div>
 
-          <div class="badges-outline">
+          <div v-if="job?.job_role" class="badges-outline">
             <div class="w-2 h-2 rounded-full bg-blue-500"/>
             {{ job.job_role }}
           </div>
