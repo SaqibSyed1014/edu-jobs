@@ -16,7 +16,7 @@ const searchedValue = ref<string>(
 );
 
 const totalPages = ref(total_page);
-const itemsPerPage = ref<number>(12);
+const itemsPerPage = ref<number>(24);
 const isGridView = ref(
   route?.query?.view
     ? route?.query?.view === "grid"
@@ -724,7 +724,7 @@ const search = (resetToDefaultPage = false) => {
               v-if="isGridView === 'grid'"
               class="grid sm:grid-cols-2 pt-8 lg:grid-cols-3 gap-6"
             >
-              <div v-if="isLoading" v-for="i in 12">
+              <div v-if="isLoading" v-for="i in 24">
                 <client-only>
                   <SDGridSkelton />
                 </client-only>
@@ -735,7 +735,7 @@ const search = (resetToDefaultPage = false) => {
             </div>
             <!-- Lsit View -->
             <div v-if="isGridView === 'list'" class="grid gap-6 pt-8">
-              <div v-if="isLoading" v-for="i in 12">
+              <div v-if="isLoading" v-for="i in 24">
                 <client-only>
                   <SDListSkelton/>
                 </client-only>
