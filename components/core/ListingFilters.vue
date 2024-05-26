@@ -1,5 +1,8 @@
 <script setup lang="ts">
-const props = defineProps<{ filtrationList: any[] }>()
+const props = defineProps<{
+  filtrationList: any[],
+  itemsLoading: boolean
+}>()
 
 const emits = defineEmits(['closeFilterSidebar', 'onFiltersChange', 'applyFiltersOnClick'])
 
@@ -7,8 +10,9 @@ const filterState = ref(JSON.parse(JSON.stringify(props.filtrationList)));
 
 const selectedValues = ref<{ field: string, values: string[] }[]>([]);
 
-watch(props.filtrationList, (val) => {
-  const parsedValue = JSON.parse(JSON.stringify(val))
+watch(props.filtrationList, (val) => {   // watcher for checking if the filters are already selected and sent down by URL params
+  const parsedValue = JSON.parse(JSON.stringify(val));
+  filterState.value = parsedValue;
   if (parsedValue.length) {
     parsedValue.forEach((filter :any, index :number) => {
       if (filter.type === 'checkbox') {
@@ -21,6 +25,7 @@ watch(props.filtrationList, (val) => {
         }
       }
     })
+    emits('onFiltersChange', selectedValues.value);
   }
 });
 
@@ -70,6 +75,10 @@ function toggleSwitch(eve :boolean) {
   if (eve) selectedWageType.value = 'salary'
   else selectedWageType.value = 'hourly'
 }
+
+onUnmounted(() => {
+  selectedValues.value = []
+})
 </script>
 
 <template>

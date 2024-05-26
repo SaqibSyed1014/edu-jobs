@@ -39,8 +39,18 @@ interface JobHit {
     highlights: any[];
 }
 
+interface FacetCounts {
+    counts: {
+        count: number
+        highlighted: string
+        value: string
+    }[]
+    field_name: string
+    sampled: boolean
+}
+
 interface JobResponseType {
-    facet_counts: any[];
+    facet_counts: FacetCounts[];
     found: number;
     hits: JobHit[];
     out_of: number;
