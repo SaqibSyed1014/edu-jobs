@@ -25,7 +25,7 @@ export const useDisrictsStore = defineStore('districtStore', {
             const { hits, found} = await getDistrictList(query)
             // const response = await useGet(`/collections/districts/documents/search?q=*&per_page=10`)
             this.$state.distictsList = hits
-            this.$state.total_page = Math.ceil(found / 12)
+            this.$state.total_page = Math.ceil(found / 24)
         },
         async fetchDistrictSchoolDetails(slug :string) {
             this.$state.schoolDistrictDetails = await getDistrictSchoolDetail(slug);

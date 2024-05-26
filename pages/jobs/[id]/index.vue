@@ -96,7 +96,7 @@ function jobSharingOnFacebook() {
               <div class="hidden md:flex items-center gap-3">
                 <span @click="router.go(-1)">Jobs</span>
                 <SvgoChevronRight class="w-4 h-4 text-gray-300" />
-                <span class="text-brand-700 font-medium">{{ jobDetails.organization_type }}</span>
+                <span class="text-brand-700 font-medium">{{ jobDetails.organization_name }}</span>
               </div>
               <span @click="router.go(-1)" class="flex items-center gap-3 group text-brand-700 font-medium cursor-pointer">
                 <SvgoArrowLeft class="w-4 h-4 group-hover:-translate-x-[8px] transition" />
@@ -126,8 +126,8 @@ function jobSharingOnFacebook() {
                           {{ jobDetails.job_title }}
                         </h2>
                       </BaseTooltip>
-                      <p class="text-gray-600">
-                        {{ jobDetails.organization_type }}
+                      <p v-if="jobDetails?.organization_name" class="text-gray-600">
+                        {{ jobDetails.organization_name }}
                       </p>
                     </div>
                   </div>

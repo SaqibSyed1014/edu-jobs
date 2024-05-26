@@ -18,7 +18,7 @@ export const useSchoolsStore = defineStore('schoolsStore', {
         async fetchCharterSchools(query:any) {
             const { hits, found} = await getSchoolsList(query)
             this.$state.schoolsList = hits.map((hit :SchoolHit) => hit.document)
-            this.$state.total_page = Math.ceil(found / 12)
+            this.$state.total_page = Math.ceil(found / 24)
         },
         async fetchCharterSchoolDetails(slug :string) {
             this.$state.singleSchoolDetails = await getSchoolDetails(slug);
