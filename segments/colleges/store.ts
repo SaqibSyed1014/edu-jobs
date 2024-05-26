@@ -16,7 +16,7 @@ export const useCollegesStore = defineStore('collegesStore', {
         async fetchColleges(query:any) {
             const { hits, found} = await getCollegesList(query)
             this.$state.collegesList = hits
-            this.$state.total_page = Math.ceil(found / 12)
+            this.$state.total_page = Math.ceil(found / 24)
         },
         async fetchCollegeDetails(slug :string) {
             this.$state.collegeDetails = await getCollegeDetails(slug);

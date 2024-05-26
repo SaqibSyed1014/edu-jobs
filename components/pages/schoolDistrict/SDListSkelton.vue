@@ -16,9 +16,9 @@
           <div class="flex flex-col w-full ml-3">
             <Skeleton class="w-3/4 h-6" />
             <div class="flex gap-3">
-              <Skeleton class="h-6 mb-2 w-1/5 mt-1.5" />
-              <Skeleton class="h-6 mb-2 w-1/5 mt-1.5" />
-              <Skeleton class="h-6 mb-2 w-1/5 mt-1.5" />
+              <Skeleton class="h-6 mb-2 w-1/6 mt-1.5" />
+<!--              <Skeleton class="h-6 mb-2 w-1/5 mt-1.5" />-->
+<!--              <Skeleton class="h-6 mb-2 w-1/5 mt-1.5" />-->
             </div>
           </div>
         </div>

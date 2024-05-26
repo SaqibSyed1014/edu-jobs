@@ -16,7 +16,7 @@ const searchedValue = ref<string>(
 );
 
 const totalPages = ref(total_page);
-const itemsPerPage = ref<number>(12);
+const itemsPerPage = ref<number>(24);
 const isGridView = ref(
   route?.query?.view
     ? route?.query?.view === "grid"
@@ -673,45 +673,43 @@ const search = (resetToDefaultPage = false) => {
           </div>
         </div>
 
-        <div
-          class="pt-6 w-full gap-2 flex flex-col xl:flex-row border-b border-gray-200"
-        >
-          <div>
-            <p class="text-gray-500 text-sm font-semibold !w-[139px]">
-              Search by alphabet
-            </p>
-          </div>
+<!--        <div-->
+<!--          class="pt-6 w-full gap-2 flex flex-col xl:flex-row border-b border-gray-200"-->
+<!--        >-->
+<!--          <div>-->
+<!--            <p class="text-gray-500 text-sm font-semibold !w-[139px]">-->
+<!--              Search by alphabet-->
+<!--            </p>-->
+<!--          </div>-->
 
-          <div
-            class="flex flex-wrap gap-2.5 sm:gap-x-0 items-center w-full justify-between"
-          >
-            <div
-              v-for="(capital, index) in capitals"
-              :key="index"
-              class="pr-1.5 borer-b border-gray-200"
-            >
-              <button
-                :class="[
-                  index === selectedAlphabet
-                    ? 'text-blue-800 border-b-2 px-[5px] border-blue-800'
-                    : 'md:px-[5px]',
-                ]"
-                @click="selectAlphabet(index)"
-              >
-                <span class="text-xs md:text-sm">{{ capital }}</span>
-              </button>
-            </div>
-            <div class="text-brand-800 text-sm font-semibold leading-tight">
-              Clear
-            </div>
-          </div>
-        </div>
+<!--          <div-->
+<!--            class="flex flex-wrap gap-2.5 sm:gap-x-0 items-center w-full justify-between"-->
+<!--          >-->
+<!--            <div-->
+<!--              v-for="(capital, index) in capitals"-->
+<!--              :key="index"-->
+<!--              class="pr-1.5 borer-b border-gray-200"-->
+<!--            >-->
+<!--              <button-->
+<!--                :class="[-->
+<!--                  index === selectedAlphabet-->
+<!--                    ? 'text-blue-800 border-b-2 px-[5px] border-blue-800'-->
+<!--                    : 'md:px-[5px]',-->
+<!--                ]"-->
+<!--                @click="selectAlphabet(index)"-->
+<!--              >-->
+<!--                <span class="text-xs md:text-sm">{{ capital }}</span>-->
+<!--              </button>-->
+<!--            </div>-->
+<!--            <div class="text-brand-800 text-sm font-semibold leading-tight">-->
+<!--              Clear-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
 
         <div class="mt-1.5 mb-8">
-          <!-- Grid View -->
-
           <div v-if="isLoading || schoolsList?.length" class="grid gap-6 pt-8" :class="[isGridView === 'grid' ? 'md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1']">
-            <template v-if="isLoading" v-for="i in 12">
+            <template v-if="isLoading" v-for="i in 24">
               <client-only>
                 <SchoolSkeleton :card-form="isGridView === 'grid'" />
               </client-only>
