@@ -147,7 +147,7 @@ onMounted(async () => {
             </div>
 
             <div
-              class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 lg:gap-9 pb-6 pt-6 lg:pt-0 border-b border-gray-200"
+              class="flex flex-wrap gap-x-12 gap-y-6 lg:gap-x-14 pb-6 pt-6 lg:pt-0 border-b border-gray-200"
             >
               <div class="flex flex-col gap-2">
                 <span class="text-gray-900 text-sm font-medium leading-tight">
@@ -201,9 +201,9 @@ onMounted(async () => {
                     v-if="charterSchoolDetails.website_url && charterSchoolDetails.website_url !== 'No Data'"
                     :href="charterSchoolDetails.website_url"
                     target="_blank"
-                    class="text-brand-800 text-base font-medium underline leading-normal break-all block"
+                    class="text-brand-800 text-base font-medium underline leading-normal hover:text-brand-600 transition"
                   >
-                    {{ charterSchoolDetails.website_url }}
+                    Visit Website
                   </a>
                   <span v-else>N/A</span>
                 </div>
