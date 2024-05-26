@@ -13,7 +13,7 @@ const filters = ref(jobFilters);  // job's filters
 const route = useRoute();
 const router = useRouter();
 const jobStore = useJobStore();
-const { jobListings, totalPages, coordinates } = storeToRefs(jobStore);
+const { jobListings, facetCounts, totalPages, coordinates } = storeToRefs(jobStore);
 
 const layoutOptionSelected = ref(0);
 const searchedLocationText = ref('');
@@ -31,7 +31,8 @@ const initialQuery = {
   q: "*",
   page: pageInfo.value.currentPage,
   per_page: pageInfo.value.itemsPerPage,
-  sort_by: 'date_posted:asc'
+  sort_by: 'date_posted:asc',
+  facet_by: 'employment_type,job_role,experience_level'
 };
 const query = ref<TypesenseQueryParam>(initialQuery);
 
@@ -70,6 +71,7 @@ onMounted(async () => {
   if (paramsString) {
     const parsedParams = JSON.parse(decode(paramsString));
     assignQueryParamsOnInitialLoad(parsedParams as JobQueryParams);
+    return;
   }
 
   // assign the saved coordinates in store (searched on Home view) for query
@@ -82,6 +84,7 @@ onUnmounted(() => {
   jobStore.jobsList = [];
   coordinates.value = { lat: 0, lng: 0 };
   query.value = initialQuery;
+  sidebarFilters.value = {}
 })
 
 const jobsLoading = ref(true);
@@ -101,8 +104,26 @@ async function doSearch(resetToDefaultPage = false) {
   if (query.value.q && query.value.q !== '*') query.value.query_by = 'job_title'  // search from job_title
   localStorage.setItem('jobsLayout', queryParams.value.mode);  // save layout before calling api
   await jobStore.fetchJobs(query.value);
-  pageInfo.value.totalPages = totalPages.value
+  updateFiltersWithFacetCounts();
+  pageInfo.value.totalPages = totalPages.value;
   jobsLoading.value = false;
+}
+
+function updateFiltersWithFacetCounts() {
+  filters.value.map((filter) => {
+    if (filter.type === 'checkbox') {
+      facetCounts.value.forEach((facet) => {
+        if (facet.field_name === filter.fieldName) {
+          filter.list.forEach((filterItem) => {
+            const count = facet.counts.find(count => count.value === filterItem.value);
+            if (count) filterItem.counts = count.count;
+          });
+        }
+      });
+    }
+
+    return filter;
+  });
 }
 
 const paginate = (page: number | "prev" | "next") => {
@@ -130,15 +151,12 @@ const fetchOnSearching = (searchValues :JobSearchFilters) => {
     else query.value.filter_by = geoFilter;
     searchedLocationText.value = searchValues.location // saving location string for route query
   }
-  // else {
-  //   query.value.filter_by = null    // safety check if no coordinates are there
-  //   searchedLocationText.value = ''
-  // }
 
   doSearch(true);
 }
 
 function updateSideBarFilters(selectedFilters :{ field: string, values: string[] }[], toggleFlag = false) {
+  if (!selectedFilters.length) return;
   if (Object.keys(selectedFilters)?.length) {
     sidebarFilters.value = {};   // reset sidebarFilters everytime for avoiding caching data
     selectedFilters.forEach(filter => {
@@ -189,6 +207,25 @@ function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
   }
 }
 
+function assignSelectedFilters(et, jr, el, loc :string, coords :number[]) {
+  if (et) sidebarFilters.value.employment_type = et;
+  if (jr) sidebarFilters.value.job_role = jr;
+  if (el) sidebarFilters.value.experience_level = el;
+  filters.value.forEach(filter => {
+    if (filter.type === 'checkbox' && filter.list?.length) {
+      filter.list.forEach(item => {
+        const filterValues = sidebarFilters.value[filter.fieldName] || [];
+        item.checked = !!filterValues.includes(item.value);
+      });
+    }
+  });
+  if (location) searchedLocationText.value = loc; // assign location in url for google map field
+  if (coords && !coords?.includes(0)) {
+    jobStore.coordinates.lat = coords[0];
+    jobStore.coordinates.lng = coords[1];
+  }
+}
+
 function sortJobs(sortBy :string) {
   if (sortBy === 'most_relevant') query.value.sort_by = 'date_posted:asc';
   if (sortBy === 'date_posted') query.value.sort_by = 'date_posted:desc';
@@ -212,12 +249,14 @@ const signUpCardIndex = Math.floor(Math.random() * 25);  // randomly generate in
           <ListingFilters
               class="hidden lg:flex"
               :filtration-list="filters"
+              :items-loading="jobsLoading"
               @on-filters-change="updateSideBarFilters"
           />
 
           <SideBarWrapper :is-sidebar-visible="isFilterSidebarVisible">
             <ListingFilters
                 :filtration-list="filters"
+                :items-loading="jobsLoading"
                 @apply-filters-on-click="(val) => updateSideBarFilters(val,true)"
                 @close-filter-sidebar="isFilterSidebarVisible = false"
             />

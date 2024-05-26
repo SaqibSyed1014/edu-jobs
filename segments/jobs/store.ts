@@ -5,6 +5,7 @@ interface JobsState {
     jobsList: Job[]
     itemsFound: number
     totalPages: number
+    facetCounts: FacetCounts[]
     singleJob: ExtendedJobDetails
     coordinates: Coordinates
 }
@@ -14,6 +15,7 @@ export const useJobStore = defineStore('jobStore', {
         jobsList: [],
         itemsFound: 0,
         totalPages: 0,
+        facetCounts: [],
         singleJob: {
             job_details: null,
             job_faqs: [],
@@ -26,10 +28,11 @@ export const useJobStore = defineStore('jobStore', {
     } as JobsState),
     actions: {
         async fetchJobs(query :TypesenseQueryParam) {
-            const { hits, found } = await getJobsList(query);
+            const { hits, found, facet_counts } = await getJobsList(query);
             this.$state.jobsList = hits.map((hit :JobHit) => hit.document);
             this.$state.itemsFound = found;
             this.$state.totalPages = Math.ceil(found / 24);
+            this.$state.facetCounts = facet_counts;
         },
         async fetchJobDetails(slug :string) {
             this.$state.singleJob = await getJobDetails(slug);
