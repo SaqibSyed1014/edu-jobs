@@ -63,7 +63,6 @@ const updateChecked = (index: number, subIndex: number, checked: boolean, value:
 };
 
 function emitSelectedValues() {
-  console.log('called')
   emits('onFiltersChange', selectedValues.value);
 }
 
