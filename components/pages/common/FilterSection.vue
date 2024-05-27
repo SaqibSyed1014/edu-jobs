@@ -36,7 +36,7 @@ const props = defineProps<{
           type="checkbox"
           class="h-4 w-4 rounded-md border border-gray-300 text-brand-600 focus:ring-brand-600"
           :checked="item.checked"
-          @change="$emit('toggleSchoolOption', options?.name, index)"
+          @change="$emit('toggleSchoolOption', options?.name, index, item.label, item.checked)"
         />
       </div>
       <label :for="`${insideSidebar?'sidebar-':''}filter-cb-${item.id}`" class="text-gray-700 text-base font-medium">

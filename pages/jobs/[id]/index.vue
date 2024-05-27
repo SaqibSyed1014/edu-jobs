@@ -77,6 +77,10 @@ function jobSharingOnFacebook() {
   const url = `https://www.facebook.com/sharer/sharer.php?u=#${currentJobURL}`;
   window.open(url, '_target');
 }
+
+function jobOrgType() {
+  if (jobDetails.value?.type === 'district') return 'school-districts'
+}
 </script>
 
 <template>
@@ -96,7 +100,9 @@ function jobSharingOnFacebook() {
               <div class="hidden md:flex items-center gap-3">
                 <span @click="router.go(-1)">Jobs</span>
                 <SvgoChevronRight class="w-4 h-4 text-gray-300" />
-                <span class="text-brand-700 font-medium">{{ jobDetails.organization_name }}</span>
+                <NuxtLink :to="`/${jobOrgType()}/${jobDetails.slug}`" class="text-brand-700 font-medium">
+                  {{ jobDetails.organization_name }}
+                </NuxtLink>
               </div>
               <span @click="router.go(-1)" class="flex items-center gap-3 group text-brand-700 font-medium cursor-pointer">
                 <SvgoArrowLeft class="w-4 h-4 group-hover:-translate-x-[8px] transition" />

@@ -461,6 +461,10 @@ const search = (resetToDefaultPage = false) => {
   });
   fetchSchools();
 };
+
+function filtersChanged(filterName :string, i :number, label :string, isChecked :boolean) {
+  console.log('check ', filterName, label, isChecked);
+}
 </script>
 
 <template>
@@ -510,21 +514,21 @@ const search = (resetToDefaultPage = false) => {
                   :inside-sidebar="true"
                 />
 
-                <FilterSection
-                  title="No. of students"
-                  :options="stuOptions"
-                  total-jobs="12,000"
-                  @toggleSchoolOption="toggleSchoolOption"
-                  :inside-sidebar="true"
-                />
+<!--                <FilterSection-->
+<!--                  title="No. of students"-->
+<!--                  :options="stuOptions"-->
+<!--                  total-jobs="12,000"-->
+<!--                  @toggleSchoolOption="toggleSchoolOption"-->
+<!--                  :inside-sidebar="true"-->
+<!--                />-->
 
-                <FilterSection
-                  title="No. of schools"
-                  :options="schOptions"
-                  total-jobs="13"
-                  @toggleSchoolOption="toggleSchoolOption"
-                  :inside-sidebar="true"
-                />
+<!--                <FilterSection-->
+<!--                  title="No. of schools"-->
+<!--                  :options="schOptions"-->
+<!--                  total-jobs="13"-->
+<!--                  @toggleSchoolOption="toggleSchoolOption"-->
+<!--                  :inside-sidebar="true"-->
+<!--                />-->
               </div>
               <!-- <div class="pt-[18px] w-full">
                 <BaseButton label="Apply" color="primary" :fullSized="true" />
@@ -568,21 +572,22 @@ const search = (resetToDefaultPage = false) => {
                 title="No. of jobs"
                 :options="jobOptions"
                 total-jobs="125"
+                @toggleSchoolOption="filtersChanged"
               />
 
-              <FilterSection
-                title="No. of students"
-                :options="stuOptions"
-                total-jobs="12,000"
-                @toggleSchoolOption="toggleSchoolOption"
-              />
+<!--              <FilterSection-->
+<!--                title="No. of students"-->
+<!--                :options="stuOptions"-->
+<!--                total-jobs="12,000"-->
+<!--                @toggleSchoolOption="toggleSchoolOption"-->
+<!--              />-->
 
-              <FilterSection
-                title="No. of schools"
-                :options="schOptions"
-                total-jobs="13"
-                @toggleSchoolOption="toggleSchoolOption"
-              />
+<!--              <FilterSection-->
+<!--                title="No. of schools"-->
+<!--                :options="schOptions"-->
+<!--                total-jobs="13"-->
+<!--                @toggleSchoolOption="toggleSchoolOption"-->
+<!--              />-->
             </div>
           </div>
         </div>
