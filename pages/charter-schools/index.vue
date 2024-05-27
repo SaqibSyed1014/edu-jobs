@@ -462,8 +462,29 @@ const search = (resetToDefaultPage = false) => {
   fetchSchools();
 };
 
+let selectedValues = ref<string[]>([])
 function filtersChanged(filterName :string, i :number, label :string, isChecked :boolean) {
-  console.log('check ', filterName, label, isChecked);
+
+  const value = jobOptions.value.data[i].value.replace(' to ', '..'); // Format value
+
+  if (isChecked) selectedValues.value.push(value);
+  else selectedValues.value = selectedValues.value.filter(v => v !== value);
+
+  if (selectedValues.value.length) {
+    query.value.filter_by = `job_counts:[${[selectedValues.value]}]`
+  }
+
+  console.log('Selected values:', selectedValues.value);
+  router.replace({
+    path: "/charter-schools",
+    query: {
+      view: isGridView.value,
+      ...(selectedValues.value.length ? { filter_by: selectedValues.value } : ''),
+      ...queryParams.value,
+    },
+  });
+
+  fetchSchools();
 }
 </script>
 
