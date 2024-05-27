@@ -119,7 +119,6 @@ const schemas = [
     experience: Yup.string().required("Experience Level is required"),
     jobRole: Yup.string().required("Job Role is required"),
     gradeLevel: Yup.string().required("Grade Level(s) is required"),
-    paymentType: Yup.string().required("Payment Type is required"),
     startRange: Yup.string().required("Start Range is required"),
     endRange: Yup.string().required("End Range is required"),
     subjects: Yup.string().required("Subject Area(s) is required"),
@@ -1488,7 +1487,7 @@ const hourlyRange = [
                 />
 
                 <BaseButton
-                  label="Next"
+                  label="Nextm"
                   color="primary"
                   type="submit"
                   :disabled="false"
