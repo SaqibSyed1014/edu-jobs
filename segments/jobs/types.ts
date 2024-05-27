@@ -64,6 +64,8 @@ interface JobDetails extends Job {
     internal_job_code: string
     geo_lat: number
     geo_lng: number
+    type: string
+    slug: string
 }
 
 interface JobFaq {

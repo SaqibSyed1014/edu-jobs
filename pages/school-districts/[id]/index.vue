@@ -167,7 +167,7 @@ onMounted(async () => {
                 <div class="inline-flex gap-2">
                   <SvgoBuilding class="size-5 text-gray-500" />
                   <span class="text-slate-600 text-base font-medium leading-normal">
-                    {{ schoolDistrictDetails.school_count }}
+                    {{ schoolDistrictDetails.school_count.toLocaleString() }}
                   </span>
                 </div>
               </div>
@@ -178,7 +178,7 @@ onMounted(async () => {
                   <SvgoGraduationHat class="size-5" />
                   <span
                     class="text-slate-600 text-base font-medium leading-normal">
-                    {{ schoolDistrictDetails.student_count }}
+                    {{ schoolDistrictDetails.student_count.toLocaleString() }}
                   </span>
                 </div>
               </div>
@@ -188,7 +188,7 @@ onMounted(async () => {
                 <div class="inline-flex gap-2">
                   <SvgoBriefCase class="size-5" />
                   <span class="text-slate-600 text-base font-medium leading-normal">
-                    {{ schoolDistrictDetails.job_count }}
+                    {{ schoolDistrictDetails.job_count.toLocaleString() }}
                   </span>
                 </div>
               </div>
