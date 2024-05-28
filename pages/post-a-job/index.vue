@@ -1314,7 +1314,9 @@ function handleStepClick() {
           />
           <DonationMessage />
 
+          <!--   Checkout Btn   -->
           <BaseButton
+            v-if="currentStep === 3"
             label="Post a Job for $49"
             :outline="true"
             color="primary"
