@@ -517,7 +517,6 @@ function setLocationsCoordinates(location :any) {
                           @place_changed="setLocationsCoordinates"
                       />
                     </client-only>
-                    {{selectedLocation}}
                     <span
                         v-if="locError"
                         class="text-red-500 text-sm font-normal leading-tight"
