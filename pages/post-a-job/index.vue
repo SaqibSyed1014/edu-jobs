@@ -1487,7 +1487,7 @@ const hourlyRange = [
                 />
 
                 <BaseButton
-                  label="Nextm"
+                  label="Next"
                   color="primary"
                   type="submit"
                   :disabled="false"

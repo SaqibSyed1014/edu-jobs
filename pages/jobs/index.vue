@@ -169,7 +169,6 @@ function updateSideBarFilters(selectedFilters :{ field: string, values: string[]
     return `${obj.field}:=[${obj.values.join(',')}]`;
   }).join('&&');
 
-  console.log('check ', sidebBarFiltersPayload, sidebBarFiltersPayload.length)
   if (query.value.filter_by?.length && query.value.filter_by.includes('geo_location'))
     query.value.filter_by = `${sidebBarFiltersPayload}&&${query.value.filter_by}`;
   else {
