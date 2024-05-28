@@ -13,6 +13,7 @@ import {
   applyMethodOptions
 } from "~/components/core/constants/post-job-form.constants";
 import FeatureJobPrompt from "~/components/pages/post-job/FeatureJobPrompt.vue";
+import type {Coordinates} from "~/segments/common.types";
 
 const postJobStore = usePostjobStore();
 const {
@@ -21,7 +22,7 @@ const {
   experienceLevelOptions
 } = storeToRefs(postJobStore);
 
-const currentStep = ref(2);
+const currentStep = ref(0);
 const jobRoles = ref(jobRolesOptions);
 const jobDesc = ref("");
 const postjobStore = usePostjobStore();
@@ -149,18 +150,27 @@ const currentSchema = computed(() => {
   return schemas[currentStep.value];
 });
 
+const locError = ref(false)
 function nextStep(values: any) {
   if (currentStep.value === 3) {
     console.log("Done: ", JSON.stringify(values, null, 2));
     return;
   }
+
   // Check if jobDesc is empty
-  if (currentStep.value === 1 && !jobDesc.value.trim()) {
+  if (currentStep.value === 1) {
     // If jobDesc is empty, set errorMessage to true
-    errorMessage.value = true;
-    return; // Prevent proceeding to the next step
+    if (!jobDesc.value.trim()) {
+      errorMessage.value = true;
+    }
+    alert(!selectedLocation.value.length)
+    if (!selectedLocation.value.length) {
+      locError.value = true
+    }
+    if (errorMessage.value || locError.value) return; // Prevent proceeding to the next step
   }
   errorMessage.value = false;
+  locError.value = false;
   // Proceed to the next step if jobDesc is not empty
   currentStep.value++;
   window.scrollTo({
@@ -236,6 +246,12 @@ function changeStep(stepIdx: number) {
 
 function handleStepClick() {
   useNuxtApp().$toast.error("Please Fill the Form");
+}
+
+const selectedLocation = ref<number[]>([])
+function setLocationsCoordinates(location :any) {
+  selectedLocation.value[0] = location.geometry.location.lat() as number;
+  selectedLocation.value[1] = location.geometry.location.lng() as number;
 }
 </script>
 
@@ -478,6 +494,39 @@ function handleStepClick() {
                   subLabel=""
                   className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
                 />
+
+                <div
+                    class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+                >
+                  <label
+                      for="date"
+                      class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
+                  >
+                    Job Location
+                  </label>
+                  <div class="mt-2 sm:col-span-2 sm:mt-0 relative">
+                    <client-only>
+                      <GMapAutocomplete
+                          id="jobLocation"
+                          placeholder="Anywhere"
+                          class="form-input job-location-input w-full"
+                          :options="{
+                              componentRestrictions: { country: 'US' },
+                              strictBounds: true
+                          }"
+                          @place_changed="setLocationsCoordinates"
+                      />
+                    </client-only>
+                    {{selectedLocation}}
+                    <span
+                        v-if="locError"
+                        class="text-red-500 text-sm font-normal leading-tight"
+                    >
+                      Location is required
+                    </span>
+                  </div>
+                </div>
+
                 <div
                   class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
                 >
@@ -1254,6 +1303,8 @@ function handleStepClick() {
                 <FeatureJobPrompt />
               </div>
             </div>
+
+            <!--    Form Buttons        -->
             <div
               class="flex flex-col md:flex-row items-end justify-between gap-3 mt-4 md:mt-0"
             >
@@ -1331,4 +1382,8 @@ function handleStepClick() {
   </div>
 </template>
 
-<style scoped lang="postcss"></style>
+<style scoped lang="postcss">
+.job-location-input{
+  @apply focus:outline-0 focus:ring-2 focus:ring-blue-600 shadow-none
+}
+</style>

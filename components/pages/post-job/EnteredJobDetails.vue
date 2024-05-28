@@ -29,9 +29,7 @@ defineProps<{
             {{ jobTitle ? jobTitle : "Job Title" }}
           </p>
           <p class="text-gray-600 text-sm font-normal leading-tight">
-            {{
-              orgName ? orgName : "Company name"
-            }}
+            {{ orgName ? orgName : "Company name" }}
           </p>
         </div>
         <div
@@ -40,9 +38,7 @@ defineProps<{
           <div class="flex items-center space-x-1.5">
             <SvgoClockLight class="h-5" />
             <p class="text-gray-600 text-sm font-medium leading-tight">
-              {{
-                employment ? employment : "Full-time"
-              }}
+              {{ employment ? employment : "Full-time" }}
             </p>
           </div>
           <div class="flex items-center space-x-1.5">
