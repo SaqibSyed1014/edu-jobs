@@ -46,7 +46,7 @@ function copyURL() {
                 </span>
               {{ blogDetails.reading_time }}
             </span>
-              <h2 class="text-4xl md:text-5xl mb-6">
+              <h2 class="text-4xl md:text-5xl md:leading-[1.2] mb-6">
                 {{ blogDetails.title }}
               </h2>
               <p class="text-black-light text-lg md:text-xl font-normal">

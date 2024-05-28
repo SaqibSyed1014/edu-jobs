@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { defineProps } from "vue"; // Import defineProps function from Vue
-
 // Define the props types
 const props = defineProps<{
   label: string;

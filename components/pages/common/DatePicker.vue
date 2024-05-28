@@ -79,6 +79,7 @@ watch(
       :name="name as string"
       ref="datepicker"
       v-model="inputValue"
+      :min-date="new Date()"
       class="fixed-input-icon"
       input-class-name="form-input w-full"
       menu-class-name="dp-custom-menu"

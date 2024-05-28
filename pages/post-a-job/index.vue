@@ -3,6 +3,17 @@ import * as Yup from "yup";
 import { Form, ErrorMessage, Field } from "vee-validate";
 import { Tooltip } from "flowbite";
 import { usePostjobStore } from "~/segments/postjobs/store";
+import {
+  employmentOptions, formStepsOptions,
+  jobRolesOptions,
+  toolbarOptions,
+  salaryRange,
+  hourlyRange,
+  compensationTypesOptions,
+  applyMethodOptions
+} from "~/components/core/constants/post-job-form.constants";
+import FeatureJobPrompt from "~/components/pages/post-job/FeatureJobPrompt.vue";
+import type {Coordinates} from "~/segments/common.types";
 
 const postJobStore = usePostjobStore();
 const {
@@ -12,10 +23,7 @@ const {
 } = storeToRefs(postJobStore);
 
 const currentStep = ref(0);
-const jobRoles = ref(["Instructional", "Non-instructional"]);
-const subjects = ref(["English", "Math"]);
-const paymentType = ref(["Cash", "Card"]);
-const appMethods = ref(["Email", "Text"]);
+const jobRoles = ref(jobRolesOptions);
 const jobDesc = ref("");
 const postjobStore = usePostjobStore();
 const { content,status } = storeToRefs(postjobStore);
@@ -23,26 +31,7 @@ const isLoading = ref<boolean>(false);
 const router = useRouter();
 const startDate = ref(new Date());
 const errorMessage = ref(false);
-const toolbarOptions = [
-  ["bold", "italic", "underline", "strike"], // toggled buttons
-  ["blockquote", "code-block"],
-  ["link", "image", "video", "formula"],
 
-  [{ header: 1 }, { header: 2 }], // custom button values
-  [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
-  [{ script: "sub" }, { script: "super" }], // superscript/subscript
-  [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
-  [{ direction: "rtl" }], // text direction
-
-  [{ size: ["small", false, "large", "huge"] }], // custom dropdown
-  [{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-  [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-  [{ font: [] }],
-  [{ align: [] }],
-
-  ["clean"], // remove formatting button
-];
 
 const options = ref({
   modules: {
@@ -51,20 +40,7 @@ const options = ref({
   readOnly: false,
 });
 
-const steps = ref([
-  { name: "Organization Information", href: "/post-a-job", status: "current" },
-  { name: "Job Details", href: "/post-a-job/job-details", status: "upcoming" },
-  {
-    name: "Application Details",
-    href: "/post-a-job/application-details",
-    status: "upcoming",
-  },
-  {
-    name: "Review Information",
-    href: "/post-a-job/review-information",
-    status: "upcoming",
-  },
-]);
+const steps = ref(formStepsOptions);
 
 const unwatch = watch(currentStep, (newValue: number, oldValue: number) => {
   if (oldValue === 0 && newValue === 1) {
@@ -83,58 +59,42 @@ const unwatch = watch(currentStep, (newValue: number, oldValue: number) => {
   }
 });
 
-
-Yup.addMethod(Yup.string, 'emailDomain', function (message) {
-  return this.test('email-domain', message, function (value) {
-    const { path, createError } = this;
-
-    if (!value) {
-      return true; // Skip validation if the value is empty, let required handle it
-    }
-
-    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value); // Standard email regex
-    const hasCorrectDomain = value.includes('@') && value.endsWith('.com');
-
-    if (isValidEmail && hasCorrectDomain) {
-      return true;
-    }
-
-    return createError({ path, message: message || 'Email must be valid and end with ".com"' });
-  });
-});
-
 const schemas = [
   Yup.object().shape({
     organizationName: Yup.string()
       .min(10, "Please enter a name that is at least 10 characters long")
       .required("Organization Name is required"),
       email: Yup.string().email('Invalid email')
-    .required('Email is required')
-    .emailDomain('Email must contain "@" and end with ".com" not a valid'),
+    .required('Email is required'),
     fullName: Yup.string().required("Full Name is required"),
   }),
   Yup.object().shape({
     jobTitle: Yup.string().required("Job Title is required"),
-    employment: Yup.string().required("Employment Type is required"),
+    startDate: Yup.string().required("Start Date is required"),
+    employmentTypeId: Yup.string().required("Employment Type is required"),
     experience: Yup.string().required("Experience Level is required"),
+    compensationTypeId: Yup.string(),
+    minSalaryId: Yup.string().required("Salary Start Range is required"),
+    maxSalaryId: Yup.string().required("Salary End Range is required"),
+    minHourlyId: Yup.string().required("Hourly Start Range is required"),
+    maxHourlyId: Yup.string().required("Hourly End Range is required"),
     jobRole: Yup.string().required("Job Role is required"),
     gradeLevel: Yup.string().required("Grade Level(s) is required"),
     startRange: Yup.string().required("Start Range is required"),
     endRange: Yup.string().required("End Range is required"),
     subjects: Yup.string().required("Subject Area(s) is required"),
-    startDate: Yup.string().required("Start Date is required"),
+    //jobDescription: Yup.string().required("Job Description is required"),
   }),
   Yup.object().shape({
-    applicationMethod: Yup.string().required(
-      "You must choose your application method"
-    ),
-    detail: Yup.string()
+    applicationMethod: Yup.string().required("You must choose your application method"),
+    applyURL: Yup.string()
       .matches(
         /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
         "Enter correct url!"
       )
-      .required("Please enter detail"),
-    deadlineDate: Yup.string().required("Please enter Date"),
+      .required("URL is required"),
+    applyEmail: Yup.string().email('Invalid email').required('Email is required'),
+    applicationDeadline: Yup.string().required("Please enter Date"),
   }),
   Yup.object().shape({
     terms: Yup.bool().required("Terms are required").equals([true]),
@@ -147,21 +107,20 @@ const uploadedImage = ref("");
 const handleImageUpload = (event: any) => {
   const file = event.target.files[0];
   if (file) {
-    // Read the uploaded file as a data URL
-    const reader = new FileReader();
+    const reader = new FileReader(); // Read the uploaded file as a data URL
     reader.onload = (e: any) => {
-      // Set the uploaded image URL to the state variable
-      uploadedImage.value = e.target.result;
+      uploadedImage.value = e.target.result; // Set the uploaded image URL to the state variable
     };
     reader.readAsDataURL(file);
   }
 };
-  const email = ref<string>('');
-  const organiName = ref<string>('');
-  const name = ref<string>('');
+
+const email = ref<string>('');
+const organiName = ref<string>('');
+const name = ref<string>('');
+
 // Function to handle checkout payment
 async function checkout () {
-
   isLoading.value = true;
   const requestBody = {
         email : email.value,
@@ -170,16 +129,13 @@ async function checkout () {
         organizationName: organiName.value,
         price : 123,
     };
-
   console.log('check ', requestBody)
-
   await postjobStore.fetchPayment(null,requestBody);
 
   console.log('check chekout func content', content?.value?.url )
   console.log('check chekout func status', status?.value)
 
   if(status?.value === '200'){
-
     window.open (content?.value?.url);
     postjobStore.reset()
     //postjobStore.$reset();
@@ -188,25 +144,33 @@ async function checkout () {
     useNuxtApp().$toast.error("Failed To make Payment");
   }
   isLoading.value = false;
-  //totalPages.value = total_page?.value;
-
 }
+
 const currentSchema = computed(() => {
   return schemas[currentStep.value];
 });
 
+const locError = ref(false)
 function nextStep(values: any) {
   if (currentStep.value === 3) {
     console.log("Done: ", JSON.stringify(values, null, 2));
     return;
   }
+
   // Check if jobDesc is empty
-  if (currentStep.value === 1 && !jobDesc.value.trim()) {
+  if (currentStep.value === 1) {
     // If jobDesc is empty, set errorMessage to true
-    errorMessage.value = true;
-    return; // Prevent proceeding to the next step
+    if (!jobDesc.value.trim()) {
+      errorMessage.value = true;
+    }
+    alert(!selectedLocation.value.length)
+    if (!selectedLocation.value.length) {
+      locError.value = true
+    }
+    if (errorMessage.value || locError.value) return; // Prevent proceeding to the next step
   }
   errorMessage.value = false;
+  locError.value = false;
   // Proceed to the next step if jobDesc is not empty
   currentStep.value++;
   window.scrollTo({
@@ -216,10 +180,7 @@ function nextStep(values: any) {
 }
 
 function prevStep() {
-  if (currentStep.value <= 0) {
-    return;
-  }
-
+  if (currentStep.value <= 0) return;
   currentStep.value--;
   window.scrollTo({
     top: 0,
@@ -260,12 +221,10 @@ onMounted(async() => {
     tooltip.hide();
   }
 });
-// const currentStep = ref(props.currentStep);
 
 // Function to handle button click
 function handleButtonClick(e: number) {
-  // Update currentStep value
-  currentStep.value = e;
+  currentStep.value = e;  // Update currentStep value
   window.scrollTo({
     top: 0,
     behavior: "smooth",
@@ -273,16 +232,12 @@ function handleButtonClick(e: number) {
 }
 
 // Watch for changes in currentStep prop
-watch(
-  () => currentStep.value,
-  (newValue: number) => {
+watch(() => currentStep.value, (newValue: number) => {
     currentStep.value = newValue;
-  }
-);
+});
 
 function changeStep(stepIdx: number) {
   currentStep.value = stepIdx;
-  // nextStep(currentStep.value)
   window.scrollTo({
     top: 0,
     behavior: "smooth",
@@ -293,26 +248,11 @@ function handleStepClick() {
   useNuxtApp().$toast.error("Please Fill the Form");
 }
 
-const selectedCompensation = ref('salary');
-
-const salaryRange = [
-  "$20,000", "$25,000", "$30,000", "$35,000", "$40,000",
-  "$45,000", "$50,000", "$55,000", "$60,000", "$65,000",
-  "$70,000", "$75,000", "$80,000", "$85,000", "$90,000",
-  "$95,000", "$100,000", "$105,000", "$110,000", "$115,000",
-  "$120,000", "$125,000", "$130,000", "$135,000", "$140,000",
-  "$145,000", "$150,000", "$155,000", "$160,000", "$165,000",
-  "$170,000", "$175,000", "$180,000", "$185,000", "$190,000",
-  "$195,000", "$200,000"
-]
-
-const hourlyRange = [
-  "$10", "$15", "$20", "$25", "$30", "$35", "$40", "$45", "$50",
-  "$55", "$60", "$65", "$70", "$75", "$80", "$85", "$90", "$95",
-  "$100", "$105", "$110", "$115", "$120", "$125", "$130", "$135",
-  "$140", "$145", "$150"
-]
-
+const selectedLocation = ref<number[]>([])
+function setLocationsCoordinates(location :any) {
+  selectedLocation.value[0] = location.geometry.location.lat() as number;
+  selectedLocation.value[1] = location.geometry.location.lng() as number;
+}
 </script>
 
 <template>
@@ -490,6 +430,8 @@ const hourlyRange = [
                 <SvgoRing44 v-else class="h-14 xl:hidden" />
               </div>
             </div>
+
+
             <div
               v-if="currentStep === 0"
               class="mt-5 space-y-8 border-b border-gray-900/10 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0"
@@ -552,6 +494,39 @@ const hourlyRange = [
                   subLabel=""
                   className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
                 />
+
+                <div
+                    class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+                >
+                  <label
+                      for="date"
+                      class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
+                  >
+                    Job Location
+                  </label>
+                  <div class="mt-2 sm:col-span-2 sm:mt-0 relative">
+                    <client-only>
+                      <GMapAutocomplete
+                          id="jobLocation"
+                          placeholder="Anywhere"
+                          class="form-input job-location-input w-full"
+                          :options="{
+                              componentRestrictions: { country: 'US' },
+                              strictBounds: true
+                          }"
+                          @place_changed="setLocationsCoordinates"
+                      />
+                    </client-only>
+                    {{selectedLocation}}
+                    <span
+                        v-if="locError"
+                        class="text-red-500 text-sm font-normal leading-tight"
+                    >
+                      Location is required
+                    </span>
+                  </div>
+                </div>
+
                 <div
                   class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
                 >
@@ -572,80 +547,29 @@ const hourlyRange = [
                 <div
                   class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
                 >
-                  <label
-                    for="employment"
-                    class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
-                  >
+                  <label class="block text-sm font-semibold text-gray-700 sm:pt-1.5">
                     Employment Type
                   </label>
                   <div class="mt-2 sm:col-span-2 sm:mt-0">
                     <div class="flex flex-col gap-4">
-                      <div class="flex items-center">
-                        <Field
-                          name="employment"
-                          type="radio"
-                          value="Full-time"
-                          class="cursor-pointer"
-                        />
-                        <label
-                          for="Full-time"
-                          class="ms-2 text-sm font-medium text-gray-900 cursor-pointer"
-                          >Full-time</label>
-                      </div>
-                      <div class="flex items-center">
-                        <Field
-                          name="employment"
-                          type="radio"
-                          value="Part-time"
-                          class="cursor-pointer"
-                        />
-                        <label
-                          for="Part-time"
-                          class="ms-2 text-sm font-medium text-gray-900 cursor-pointer">
-                            Part-time
-                        </label>
-                      </div>
-                      <div class="flex items-center">
-                        <Field
-                          name="employment"
-                          type="radio"
-                          value="Contractor"
-                          class="cursor-pointer"
-                        />
-                        <label
-                          for="Contractor"
-                          class="ms-2 text-sm font-medium text-gray-900 cursor-pointer"
-                          >Contractor</label>
-                      </div>
-                      <div class="flex items-center">
-                        <Field
-                          name="employment"
-                          type="radio"
-                          value="Intern"
-                          class="cursor-pointer"
-                        />
-                        <label
-                          for="Intern"
-                          class="ms-2 text-sm font-medium text-gray-900 cursor-pointer"
-                          >Intern</label>
-                      </div>
-
-                      <div class="flex items-center">
-                        <Field
-                          name="employment"
-                          type="radio"
-                          value="Volunteer"
-                          class="cursor-pointer"
-                        />
-                        <label
-                          for="Volunteer"
-                          class="ms-2 text-sm font-medium text-gray-900 cursor-pointer"
-                          >Volunteer</label>
-                      </div>
+                      <template v-for="option in employmentOptions">
+                        <div class="flex items-center">
+                          <Field
+                              name="employmentTypeId"
+                              type="radio"
+                              :value="option.value"
+                              class="cursor-pointer"
+                          />
+                          <label
+                              :for="option.label"
+                              class="ms-2 text-sm font-medium text-gray-900 cursor-pointer"
+                          >{{ option.label }}</label>
+                        </div>
+                      </template>
                     </div>
                     <ErrorMessage
                       class="text-red-500 text-sm font-normal leading-tight"
-                      name="employment"
+                      name="employmentTypeId"
                     />
                   </div>
                 </div>
@@ -654,7 +578,7 @@ const hourlyRange = [
                     class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
                 >
                   <label
-                      for="employment"
+                      for="experience"
                       class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
                   >
                     Experience Level
@@ -684,7 +608,7 @@ const hourlyRange = [
                     </div>
                     <ErrorMessage
                         class="text-red-500 text-sm font-normal leading-tight"
-                        name="experience"
+                        name="experienceLevelId"
                     />
                   </div>
                 </div>
@@ -694,65 +618,51 @@ const hourlyRange = [
                       class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
                   >
                     <label
-                        for="employment"
+                        for="compensation"
                         class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
                     >
                       Compensation Type
                     </label>
                     <div class="col-span-2">
                       <div class="flex gap-20">
-                        <div class="flex gap-3">
-                          <Field
-                              v-model="selectedCompensation"
-                              name="Salary"
-                              type="radio"
-                              value="salary"
-                              class="cursor-pointer"
-                          />
-                          <label
-                              for="salary"
-                              class="text-sm font-medium text-gray-900"
-                          >Salary</label>
-                        </div>
-                        <div class="flex gap-3">
-                          <Field
-                              v-model="selectedCompensation"
-                              name="hourly"
-                              type="radio"
-                              value="hourly"
-                              class="cursor-pointer"
-                          />
-                          <label
-                              for="hourly"
-                              class="text-sm font-medium text-gray-900"
-                          >Hourly</label>
-                        </div>
+                        <template v-for="option in compensationTypesOptions">
+                          <div class="flex gap-3">
+                            <Field
+                                name="compensationTypeId"
+                                type="radio"
+                                :value="option.value"
+                                class="cursor-pointer"
+                            />
+                            <label
+                                :for="option.label"
+                                class="text-sm font-medium text-gray-900"
+                            >{{ option.label }}</label>
+                          </div>
+                        </template>
                       </div>
                     </div>
                   </div>
 
                   <PayRangeSelectBox
-                    v-if="selectedCompensation === 'salary'"
-                    name="startRange"
-                    secondary-name="endRange"
+                    v-if="values.compensationTypeId === 'Salary'"
+                    name="minSalaryId"
+                    secondary-name="maxSalaryId"
                     label="Salary Range"
                     :data="salaryRange"
                     :data2="salaryRange"
                     subLabel="(USD)"
-                    :value="values.startRange"
                     className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
                   />
 
                   <PayRangeSelectBox
-                      v-else-if="selectedCompensation === 'hourly'"
-                      name="startRange"
-                      secondary-name="endRange"
-                      label="Hourly Range"
-                      :data="hourlyRange"
-                      :data2="hourlyRange"
-                      subLabel="(USD)"
-                      :value="values.startRange"
-                      className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+                    v-else-if="values.compensationTypeId === 'Hourly'"
+                    name="minHourlyId"
+                    secondary-name="maxHourlyId"
+                    label="Hourly Range"
+                    :data="hourlyRange"
+                    :data2="hourlyRange"
+                    subLabel="(USD)"
+                    className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
                   />
                 </div>
 
@@ -760,6 +670,7 @@ const hourlyRange = [
                   name="jobRole"
                   label="Job Role"
                   :data="jobRoles"
+                  :label-value-options="true"
                   subLabel=""
                   :value="values.jobRole"
                   className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
@@ -791,20 +702,19 @@ const hourlyRange = [
                   class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6 mb-0 sm:mb-12 xl:mb-0"
                 >
                   <label
-                    for="jobDesc"
+                    for="jobDescription"
                     class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
                   >
                     Job Description
                   </label>
                   <div class="mt-2 sm:col-span-2 sm:mt-0 rounded-lg">
                     <quill-editor
-                      name="jobDesc"
+                      name="jobDescription"
                       theme="snow"
                       class="min-h-[102px]"
                       placeholder="Enter a description.."
                       :option="options"
                       contentType="html"
-                      v-model:content="jobDesc"
                     />
                     <span
                       v-if="errorMessage"
@@ -815,6 +725,7 @@ const hourlyRange = [
                   </div>
                 </div>
               </div>
+              {{values}}
             </div>
 
             <div v-if="currentStep === 2" class="w-full">
@@ -824,19 +735,29 @@ const hourlyRange = [
                 <SelectBox
                   name="applicationMethod"
                   label="Your work Application method"
-                  :data="appMethods"
+                  :data="applyMethodOptions"
                   :value="values.applicationMethod"
+                  :label-value-options="true"
                   subLabel="“Please choose how you would like to receive job applications when candidates apply"
                   :errorMessage="errors.applicationMethod"
                   className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
                 />
                 <HttpInput
-                  name="detail"
+                  v-if="values.applicationMethod === 'URL'"
+                  name="applyURL"
                   type="text"
-                  label="Enter detail"
+                  label="Apply URL"
                   placeholder="example.com/apply-here"
                   subLabel=""
                   className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+                />
+                <TextInput
+                    v-if="values.applicationMethod === 'Email'"
+                    name="applyEmail"
+                    type="email"
+                    label="Apply Email"
+                    placeholder="Email here"
+                    subLabel=""
                 />
 
                 <div
@@ -850,9 +771,9 @@ const hourlyRange = [
                   </label>
                   <div class="mt-2 sm:col-span-2 relative">
                     <DatePicker
-                      name="deadlineDate"
-                      :values="values.deadlineDate"
-                      :error="errors.deadlineDate"
+                      name="applicationDeadlinel"
+                      :values="values.applicationDeadlinel"
+                      :error="errors.applicationDeadlinel"
                     />
                   </div>
                 </div>
@@ -1102,7 +1023,7 @@ const hourlyRange = [
                         <p
                           class="text-gray-600 text-base font-normal leading-normal"
                         >
-                          {{ values?.employment ? values?.employment : "N/a" }}
+                          {{ values?.employmentTypeId ? values?.employmentTypeId : "N/A" }}
                         </p>
                       </div>
                     </div>
@@ -1303,7 +1224,7 @@ const hourlyRange = [
                           {{
                             values?.applicationMethod
                               ? values?.applicationMethod
-                              : "N/a"
+                              : "N/A"
                           }}
                         </p>
                       </div>
@@ -1313,11 +1234,8 @@ const hourlyRange = [
                         class="flex-col justify-start items-start gap-2 inline-flex"
                       >
                         <div class="inline-flex items-center gap-1">
-                          <p
-                            class="text-gray-700 text-base font-semibold leading-normal"
-                          >
-                            Enter details
-                          </p>
+                          <p class="text-gray-700 text-base font-semibold leading-normal"
+                          >Enter details</p>
                           <button
                             id="tooltipButton"
                             type="button"
@@ -1337,12 +1255,8 @@ const hourlyRange = [
                           </div>
                         </div>
 
-                        <p
-                          class="text-gray-600 text-base font-normal leading-normal"
-                        >
-                          {{
-                            values.detail ? "http://" + values.detail : "N/a"
-                          }}
+                        <p class="text-gray-600 text-base font-normal leading-normal">
+                          {{ values?.applyURL ? "http://" + values.applyURL : "N/A" }}
                         </p>
                       </div>
                     </div>
@@ -1378,87 +1292,19 @@ const hourlyRange = [
                           </div>
                         </div>
 
-                        <p
-                          class="text-gray-600 text-base font-normal leading-normal"
-                        >
-                          {{
-                            values?.deadlineDate ? values?.deadlineDate : "N/a"
-                          }}
+                        <p class="text-gray-600 text-base font-normal leading-normal">
+                          {{ values?.applicationDeadlinel ? values?.applicationDeadlinel : "N/A" }}
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div
-                  class="flex-col justify-start items-start inline-flex w-full gap-6 py-4 md:py-6"
-                >
-                  <h4
-                    class="text-gray-900 text-base font-semibold leading-normal"
-                  >
-                    Upgrade
-                  </h4>
-                  <div class="grid sm:grid-cols-2 gap-4 w-full">
-                    <div class="justify-start items-start gap-8 inline-flex">
-                      <div
-                        class="flex-col justify-start items-start gap-2 inline-flex"
-                      >
-                        <p
-                          class="text-gray-700 text-base font-semibold leading-normal"
-                        >
-                          Feature your Job
-                        </p>
-                      </div>
-                    </div>
-                    <div class="flex flex-row gap-3 items-start">
-                      <div class="flex items-center">
-                        <div class="flex items-center mb-4">
-                          <Field
-                            name="terms"
-                            type="checkbox"
-                            id="terms"
-                            :value="true"
-                          />
-                        </div>
-                      </div>
-                      <div class="max-w-[303px]">
-                        <h3 class="text-gray-700 text-base font-medium">
-                          For only $25 make Featured jobs offer these benefits:
-                        </h3>
-
-                        <h2 class="mb-2.5 text-base font-normal text-gray-600">
-                          Featured jobs offer these benefits:
-                        </h2>
-                        <ol
-                          class="space-y-1 text-gray-600 list-decimal list-inside"
-                        >
-                          <li>
-                            <span class="font-normal text-gray-600">
-                              Show on our home page
-                            </span>
-                          </li>
-
-                          <li>
-                            <span class="font-normal text-gray-600">
-                              Appear higher in the search results
-                            </span>
-                          </li>
-                          <li>
-                            <span class="font-normal text-gray-600">
-                              Are styled visually to stand out
-                            </span>
-                          </li>
-                        </ol>
-                        <ErrorMessage
-                          class="text-red-500 text-sm font-normal leading-tight"
-                          name="terms"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <FeatureJobPrompt />
               </div>
             </div>
+
+            <!--    Form Buttons        -->
             <div
               class="flex flex-col md:flex-row items-end justify-between gap-3 mt-4 md:mt-0"
             >
@@ -1487,7 +1333,7 @@ const hourlyRange = [
                 />
 
                 <BaseButton
-                  label="Nextm"
+                  label="Next"
                   color="primary"
                   type="submit"
                   :disabled="false"
@@ -1510,102 +1356,18 @@ const hourlyRange = [
         </div>
 
         <div class="w-full md:w-1/4 xl:w-1/5 flex flex-col gap-4 md:pt-8">
-          <div
-            class="block xl:max-w-sm p-4 border border-gray-200 rounded-lg shadow"
-          >
-            <p class="text-gray-900 text-base font-medium">Order Summary</p>
-            <div class="w-full mt-5">
-              <div class="flex items-start justify-between gap-4">
-                <p class="text-gray-600 text-sm font-medium">Job posting fee</p>
-                <p class="text-gray-900 text-sm font-medium">$49</p>
-              </div>
-              <hr class="border-b border-gray-200 my-3 w-full" />
-              <div class="flex items-center justify-between gap-4">
-                <p class="text-gray-600 text-sm font-medium">Total</p>
-                <p class="text-gray-900 text-lg font-semibold leading-7">$49</p>
-              </div>
-            </div>
-          </div>
+          <OrderSummary />
+          <EnteredJobDetails
+              :job-title="values?.jobTitle"
+              :org-name="values?.organizationName"
+              :employment="values?.employmentTypeId"
+              :selected-image="uploadedImage"
+          />
+          <DonationMessage />
 
-          <div
-            class="hidden md:block lg:max-w-sm p-4 border border-gray-200 rounded-lg shadow"
-          >
-            <div class="flex-col items-start gap-5 flex w-full">
-              <div>
-                <img
-                  :src="uploadedImage"
-                  v-if="uploadedImage"
-                  class="size-12 rounded-full object-cover"
-                />
-                <SvgoUpload v-else class="size-12" />
-              </div>
-              <div
-                class="w-full flex-col justify-between items-start gap-5 flex"
-              >
-                <div class="w-full">
-                  <p class="text-gray-900 text-base font-medium leading-normal">
-                    {{ values?.jobTitle ? values?.jobTitle : "Job Title" }}
-                  </p>
-                  <p class="text-gray-600 text-sm font-normal leading-tight">
-                    {{
-                      values?.organizationName ? values?.organizationName : "Company name"
-                    }}
-                  </p>
-                </div>
-                <div
-                  class="justify-between w-full xl:items-center gap-4 flex lg:flex-col xl:flex-row"
-                >
-                  <div class="flex items-center space-x-1.5">
-                    <SvgoClockLight class="h-5" />
-                    <p class="text-gray-600 text-sm font-medium leading-tight">
-                      {{
-                        values?.employment ? values?.employment : "Full-time"
-                      }}
-                    </p>
-                  </div>
-                  <div class="flex items-center space-x-1.5">
-                    <SvgoCurrencyDollarLight class="h-5" />
-                    <p class="text-gray-600 text-sm font-medium leading-tight">
-                      80k - 100k
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div
-            class="block lg:max-w-sm p-4 border border-gray-200 rounded-lg shadow"
-          >
-            <div class="flex-col items-start gap-5 flex w-full">
-              <div
-                class="w-full flex-col justify-between items-start gap-5 flex"
-              >
-                <div class="w-full">
-                  <p class="text-gray-900 text-base font-medium leading-normal">
-                    We Care
-                  </p>
-                  <div class="">
-                    <span
-                      class="text-gray-600 text-xs font-normal leading-[18px]"
-                      >We donate a percentage of job posting revenue to
-                      classroom projects through our partnership</span
-                    ><span
-                      class="text-gray-600 text-sm font-normal leading-tight"
-                    >
-                    </span>
-                    <NuxtLink
-                      to="#"
-                      class="text-brand-500 text-xs font-normal underline leading-[18px]"
-                    >
-                      DonorsChoose.org.
-                    </NuxtLink>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <!--   Checkout Btn   -->
           <BaseButton
+            v-if="currentStep === 3"
             label="Post a Job for $49"
             :outline="true"
             color="primary"
@@ -1620,4 +1382,8 @@ const hourlyRange = [
   </div>
 </template>
 
-<style scoped lang="postcss"></style>
+<style scoped lang="postcss">
+.job-location-input{
+  @apply focus:outline-0 focus:ring-2 focus:ring-blue-600 shadow-none
+}
+</style>
