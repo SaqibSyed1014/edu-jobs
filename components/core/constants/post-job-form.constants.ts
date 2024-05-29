@@ -74,3 +74,22 @@ export const hourlyRange = [
     "$100", "$105", "$110", "$115", "$120", "$125", "$130", "$135",
     "$140", "$145", "$150"
 ]
+
+export const formStepsHeaderContent = [
+    {
+        title: 'Organization Information',
+        text: 'Please fill the fields below regarding institution information.'
+    },
+    {
+        title: 'Job Details',
+        text: 'Please fill the fields below regarding job information.'
+    },
+    {
+        title: 'Application Details',
+        text: 'Please fill the fields below regarding application details.'
+    },
+    {
+        title: 'Review Information',
+        text: 'Please review your application before submitting.'
+    }
+]
