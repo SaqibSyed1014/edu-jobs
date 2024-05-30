@@ -9,7 +9,7 @@ import {Form, ErrorMessage, Field, useForm} from "vee-validate";
 import {usePostjobStore} from "~/segments/postjobs/store";
 import {def} from "@vue/shared";
 
-const emit = defineEmits(['moveToPrevStep']);
+const emit = defineEmits(['moveToPrevStep', 'handleFormSubmission']);
 
 const postJobStore = usePostjobStore();
 const {
@@ -91,7 +91,7 @@ function handleInput(delta) {
 </script>
 
 <template>
-  <form @submit="onSubmit">
+  <form @submit.prevent="onSubmit">
     <div class="w-full">
       <div class="mt-5 border-b border-gray-900/10 divide-y divide-gray-900/10 border-t">
         <!--    Job Title Field    -->
@@ -341,9 +341,3 @@ function handleInput(delta) {
     />
   </form>
 </template>
-
-<style>
-.form-field-layout{
-  @apply sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6
-}
-</style>

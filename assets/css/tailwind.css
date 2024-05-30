@@ -67,6 +67,9 @@ h1, h2, h3, h4, h5, h6{
 .form-input.has-error{
     @apply ring-2 !border-0 !ring-error-400
 }
+.form-field-layout{
+    @apply sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6
+}
 .error-message{
     @apply text-red-500 text-sm font-medium leading-tight
 }
