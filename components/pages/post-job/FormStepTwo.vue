@@ -5,8 +5,9 @@ import {
   employmentOptions, hourlyRange, jobRolesOptions, salaryRange, toolbarOptions
 } from "~/components/core/constants/post-job-form.constants";
 import * as Yup from "yup";
-import {Form, ErrorMessage, Field} from "vee-validate";
+import {Form, ErrorMessage, Field, useForm} from "vee-validate";
 import {usePostjobStore} from "~/segments/postjobs/store";
+import {def} from "@vue/shared";
 
 const emit = defineEmits(['moveToPrevStep']);
 
@@ -35,7 +36,17 @@ const schema = Yup.object({
     endRange: Yup.string().required("End Range is required"),
     subjects: Yup.string().required("Subject Area(s) is required"),
     jobDescription: Yup.string(),
-  })
+})
+const initialFormValues = {
+  compensationTypeId: 'Salary'
+}
+
+const { defineField, handleSubmit, values } = useForm({
+  validationSchema: schema,
+  initialValues: initialFormValues
+});
+
+const [compensationTypeId, compensationTypeIdAttrs] = defineField('compensationTypeId');
 
 const selectedLocation = ref<number[]>([])
 function setLocationsCoordinates(location :any) {
@@ -53,35 +64,28 @@ const options = ref({
 const locError = ref(false);
 const errorMessage = ref(false);
 
-function saveFirstStep(values) {
-  emit('handleFormSubmission', values, 1)
-}
-
-
+const onSubmit = handleSubmit(values => {
+  emit('handleFormSubmission', values, 2)
+});
 </script>
 
 <template>
-  <Form
-      v-slot="{ handleSubmit, errors, values }"
-      :validation-schema="schema"
-      @submit="saveSecondStep"
-  >
+  <form @submit="onSubmit">
     <div class="w-full">
-      <div
-          class="mt-5 border-b border-gray-900/10 divide-y divide-gray-900/10 border-t"
-      >
+      <div class="mt-5 border-b border-gray-900/10 divide-y divide-gray-900/10 border-t">
+        <!--    Job Title Field    -->
         <TextInput
+            v-model="jobTitle"
             name="jobTitle"
             type="text"
             label="Job Title"
             placeholder="e.g. Project Manager"
             subLabel=""
-            className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+            className="form-field-layout"
         />
 
-        <div
-            class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
-        >
+        <!--    Location Field    -->
+        <div class="form-field-layout">
           <label
               for="date"
               class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
@@ -110,9 +114,8 @@ function saveFirstStep(values) {
           </div>
         </div>
 
-        <div
-            class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
-        >
+        <!--    Start Date Field    -->
+        <div class="form-field-layout">
           <label
               for="date"
               class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
@@ -127,9 +130,8 @@ function saveFirstStep(values) {
           </div>
         </div>
 
-        <div
-            class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
-        >
+        <!--    Employment Type Field    -->
+        <div class="form-field-layout">
           <label class="block text-sm font-semibold text-gray-700 sm:pt-1.5">
             Employment Type
           </label>
@@ -157,9 +159,8 @@ function saveFirstStep(values) {
           </div>
         </div>
 
-        <div
-            class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
-        >
+        <!--    Experience Level Field    -->
+        <div class="form-field-layout">
           <label
               for="experience"
               class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
@@ -196,9 +197,10 @@ function saveFirstStep(values) {
           </div>
         </div>
 
-        <div>
+        <!--    Compensation Type Field    -->
+        <div class="compensation-field-group">
           <div
-              class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+              class="form-field-layout"
           >
             <label
                 for="compensation"
@@ -225,7 +227,6 @@ function saveFirstStep(values) {
               </div>
             </div>
           </div>
-
           <PayRangeSelectBox
               v-if="values.compensationTypeId === 'Salary'"
               name="minSalaryId"
@@ -234,9 +235,8 @@ function saveFirstStep(values) {
               :data="salaryRange"
               :data2="salaryRange"
               subLabel="(USD)"
-              className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+              className="form-field-layout"
           />
-
           <PayRangeSelectBox
               v-else-if="values.compensationTypeId === 'Hourly'"
               name="minHourlyId"
@@ -245,10 +245,11 @@ function saveFirstStep(values) {
               :data="hourlyRange"
               :data2="hourlyRange"
               subLabel="(USD)"
-              className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+              className="form-field-layout"
           />
         </div>
 
+        <!--    Job Role Field    -->
         <SelectBox
             name="jobRole"
             label="Job Role"
@@ -256,9 +257,10 @@ function saveFirstStep(values) {
             :label-value-options="true"
             subLabel=""
             :value="values.jobRole"
-            className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+            className="form-field-layout"
         />
 
+        <!--    Grade Level Field    -->
         <SelectBox
             v-if="values.jobRole === 'Instructional'"
             name="gradeLevel"
@@ -267,9 +269,10 @@ function saveFirstStep(values) {
             :label-value-options="true"
             subLabel=""
             :value="values.gradeLevel"
-            className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+            className="form-field-layout"
         />
 
+        <!--    Subject Areas Field    -->
         <SelectBox
             v-if="values.jobRole === 'Instructional'"
             name="subjects"
@@ -278,12 +281,11 @@ function saveFirstStep(values) {
             :label-value-options="true"
             subLabel=""
             :value="values.subjects"
-            className="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6"
+            className="form-field-layout"
         />
 
-        <div
-            class="sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6 mb-0 sm:mb-12 xl:mb-0"
-        >
+        <!--    Job Description Field    -->
+        <div class="form-field-layout mb-0 sm:mb-12 xl:mb-0">
           <label
               for="jobDescription"
               class="block text-sm font-semibold text-gray-700 sm:pt-1.5"
@@ -309,11 +311,16 @@ function saveFirstStep(values) {
           </div>
         </div>
       </div>
-      {{ values }}
     </div>
 
     <FormFooterButtons
         @back-btn-clicked="() => emit('moveToPrevStep')"
     />
-  </Form>
+  </form>
 </template>
+
+<style>
+.form-field-layout{
+  @apply sm:grid xl:grid-cols-3 xl:items-start gap-1.5 xl:gap-4 py-4 xl:py-6
+}
+</style>

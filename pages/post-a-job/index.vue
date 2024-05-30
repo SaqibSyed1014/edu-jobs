@@ -9,7 +9,7 @@ import {
 import FeatureJobPrompt from "~/components/pages/post-job/FeatureJobPrompt.vue";
 import type {Coordinates} from "~/segments/common.types";
 
-const currentStep = ref(0);
+const currentStep = ref(1);
 const postjobStore = usePostjobStore();
 const { content,status } = storeToRefs(postjobStore);
 const isLoading = ref<boolean>(false);
@@ -116,9 +116,9 @@ function prevStep() {
 
 onMounted(async() => {
   await Promise.all([
-    postJobStore.fetchGradeLevels(),
-    postJobStore.fetchSubjects(),
-    postJobStore.fetchExperienceLevels()
+    postjobStore.fetchGradeLevels(),
+    postjobStore.fetchSubjects(),
+    postjobStore.fetchExperienceLevels()
   ])
 });
 

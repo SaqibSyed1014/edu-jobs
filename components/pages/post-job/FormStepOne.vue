@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as Yup from "yup";
-import {Form, ErrorMessage, Field, validate} from "vee-validate";
+import {Form, ErrorMessage, Field, useForm} from "vee-validate";
 
 const emit = defineEmits(['handleFormSubmission'])
 
@@ -20,30 +20,24 @@ const handleImageUpload = (event: any) => {
 };
 
 const schema = Yup.object({
-    organizationName: Yup.string()
-        .required("Organization Name is required")
-        .min(10, "Please enter a name that is at least 10 characters long"),
-    email: Yup.string().required('Email is required').email('Invalid email'),
-    fullName: Yup.string().required("Full Name is required"),
+  organizationName: Yup.string().default('something@email.com')
+      .required("Organization Name is required")
+      .min(10, "Please enter a name that is at least 10 characters long"),
+  email: Yup.string().required('Email is required').email('Invalid email'),
+  fullName: Yup.string().required("Full Name is required"),
 })
 
-function saveFirstStep(values) {
+const { defineField, handleSubmit } = useForm({
+  validationSchema: schema,
+});
+
+const onSubmit = handleSubmit(values => {
   emit('handleFormSubmission', values, 1)
-}
-const initialValues = {
-  organizationName: 'jhjjj',
-  email: 'jhd',
-  fullName: 'djjd'
-}
+});
 </script>
 
 <template>
-  <Form
-      v-slot="{ handleSubmit, errors, values }"
-      :validation-schema="schema"
-      :initial-values="initialValues"
-      @submit="saveFirstStep"
-  >
+  <form @submit="onSubmit">
     <div
         class="mt-5 space-y-8 border-b border-gray-900/10 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0"
     >
@@ -89,11 +83,10 @@ const initialValues = {
             className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6"
         />
       </div>
-      {{values}}
     </div>
 
     <FormFooterButtons
       :hide-back-button="true"
     />
-  </Form>
+  </form>
 </template>
