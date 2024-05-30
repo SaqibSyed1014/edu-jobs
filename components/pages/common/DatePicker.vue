@@ -96,7 +96,7 @@ watch(
     <SvgoCalendar class="absolute h-5 top-3 right-3" />
 
     <ErrorMessage
-      class="text-red-500 text-sm font-normal leading-tight"
+      class="error-message"
       :name="name"
     />
   </div>

@@ -108,7 +108,7 @@ const {
       </Field>
       <!-- Display the vee-validate error message -->
       <ErrorMessage
-        class="text-red-500 text-sm font-normal leading-tight"
+        class="error-message"
         :name="name"
       />
     </div>
