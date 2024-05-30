@@ -79,6 +79,7 @@ watch(
       :name="name as string"
       ref="datepicker"
       v-model="inputValue"
+      :min-date="new Date()"
       class="fixed-input-icon"
       input-class-name="form-input w-full"
       menu-class-name="dp-custom-menu"
@@ -95,7 +96,7 @@ watch(
     <SvgoCalendar class="absolute h-5 top-3 right-3" />
 
     <ErrorMessage
-      class="text-red-500 text-sm font-normal leading-tight"
+      class="error-message"
       :name="name"
     />
   </div>

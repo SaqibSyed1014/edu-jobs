@@ -461,6 +461,31 @@ const search = (resetToDefaultPage = false) => {
   });
   fetchSchools();
 };
+
+let selectedValues = ref<string[]>([])
+function filtersChanged(filterName :string, i :number, label :string, isChecked :boolean) {
+
+  const value = jobOptions.value.data[i].value.replace(' to ', '..'); // Format value
+
+  if (isChecked) selectedValues.value.push(value);
+  else selectedValues.value = selectedValues.value.filter(v => v !== value);
+
+  if (selectedValues.value.length) {
+    query.value.filter_by = `job_counts:[${[selectedValues.value]}]`
+  }
+
+  console.log('Selected values:', selectedValues.value);
+  router.replace({
+    path: "/charter-schools",
+    query: {
+      view: isGridView.value,
+      ...(selectedValues.value.length ? { filter_by: selectedValues.value } : ''),
+      ...queryParams.value,
+    },
+  });
+
+  fetchSchools();
+}
 </script>
 
 <template>
@@ -510,21 +535,21 @@ const search = (resetToDefaultPage = false) => {
                   :inside-sidebar="true"
                 />
 
-                <FilterSection
-                  title="No. of students"
-                  :options="stuOptions"
-                  total-jobs="12,000"
-                  @toggleSchoolOption="toggleSchoolOption"
-                  :inside-sidebar="true"
-                />
+<!--                <FilterSection-->
+<!--                  title="No. of students"-->
+<!--                  :options="stuOptions"-->
+<!--                  total-jobs="12,000"-->
+<!--                  @toggleSchoolOption="toggleSchoolOption"-->
+<!--                  :inside-sidebar="true"-->
+<!--                />-->
 
-                <FilterSection
-                  title="No. of schools"
-                  :options="schOptions"
-                  total-jobs="13"
-                  @toggleSchoolOption="toggleSchoolOption"
-                  :inside-sidebar="true"
-                />
+<!--                <FilterSection-->
+<!--                  title="No. of schools"-->
+<!--                  :options="schOptions"-->
+<!--                  total-jobs="13"-->
+<!--                  @toggleSchoolOption="toggleSchoolOption"-->
+<!--                  :inside-sidebar="true"-->
+<!--                />-->
               </div>
               <!-- <div class="pt-[18px] w-full">
                 <BaseButton label="Apply" color="primary" :fullSized="true" />
@@ -568,21 +593,22 @@ const search = (resetToDefaultPage = false) => {
                 title="No. of jobs"
                 :options="jobOptions"
                 total-jobs="125"
+                @toggleSchoolOption="filtersChanged"
               />
 
-              <FilterSection
-                title="No. of students"
-                :options="stuOptions"
-                total-jobs="12,000"
-                @toggleSchoolOption="toggleSchoolOption"
-              />
+<!--              <FilterSection-->
+<!--                title="No. of students"-->
+<!--                :options="stuOptions"-->
+<!--                total-jobs="12,000"-->
+<!--                @toggleSchoolOption="toggleSchoolOption"-->
+<!--              />-->
 
-              <FilterSection
-                title="No. of schools"
-                :options="schOptions"
-                total-jobs="13"
-                @toggleSchoolOption="toggleSchoolOption"
-              />
+<!--              <FilterSection-->
+<!--                title="No. of schools"-->
+<!--                :options="schOptions"-->
+<!--                total-jobs="13"-->
+<!--                @toggleSchoolOption="toggleSchoolOption"-->
+<!--              />-->
             </div>
           </div>
         </div>

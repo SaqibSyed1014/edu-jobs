@@ -18,6 +18,7 @@ const { jobListings, facetCounts, totalPages, coordinates } = storeToRefs(jobSto
 const layoutOptionSelected = ref(0);
 const searchedLocationText = ref('');
 const isFilterSidebarVisible = ref<boolean>(false);
+const jobSidebarFilters = ref(null);
 
 const sidebarFilters = ref<{ [key :string]: string | string[] }>({})
 
@@ -156,7 +157,6 @@ const fetchOnSearching = (searchValues :JobSearchFilters) => {
 }
 
 function updateSideBarFilters(selectedFilters :{ field: string, values: string[] }[], toggleFlag = false) {
-  if (!selectedFilters.length) return;
   if (Object.keys(selectedFilters)?.length) {
     sidebarFilters.value = {};   // reset sidebarFilters everytime for avoiding caching data
     selectedFilters.forEach(filter => {
@@ -170,9 +170,11 @@ function updateSideBarFilters(selectedFilters :{ field: string, values: string[]
   }).join('&&');
 
   if (query.value.filter_by?.length && query.value.filter_by.includes('geo_location'))
-    query.value.filter_by = `{${sidebBarFiltersPayload}&&${query.value.filter_by}}`;
-  else query.value.filter_by = sidebBarFiltersPayload;
-
+    query.value.filter_by = `${sidebBarFiltersPayload}&&${query.value.filter_by}`;
+  else {
+    if (sidebBarFiltersPayload.length) query.value.filter_by = sidebBarFiltersPayload;
+    else delete query.value.filter_by;
+  }
   if (toggleFlag) isFilterSidebarVisible.value = false;
 
   doSearch();
@@ -201,6 +203,11 @@ function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
         });
       }
     });
+  if (jobSidebarFilters.value) {
+    console.log('calling')
+    jobSidebarFilters.value.emitSelectedValues();
+  }
+
   if (coordinates && !coordinates?.includes(0)) {
     jobStore.coordinates.lat = coordinates[0];
     jobStore.coordinates.lng = coordinates[1];
@@ -247,6 +254,7 @@ const signUpCardIndex = Math.floor(Math.random() * 25);  // randomly generate in
       <ListingView>
         <template #filters>
           <ListingFilters
+              ref="jobSidebarFilters"
               class="hidden lg:flex"
               :filtration-list="filters"
               :items-loading="jobsLoading"
@@ -255,6 +263,7 @@ const signUpCardIndex = Math.floor(Math.random() * 25);  // randomly generate in
 
           <SideBarWrapper :is-sidebar-visible="isFilterSidebarVisible">
             <ListingFilters
+                ref="jobSidebarFilters"
                 :filtration-list="filters"
                 :items-loading="jobsLoading"
                 @apply-filters-on-click="(val) => updateSideBarFilters(val,true)"

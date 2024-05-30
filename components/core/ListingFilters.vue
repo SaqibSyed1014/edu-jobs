@@ -25,7 +25,7 @@ watch(props.filtrationList, (val) => {   // watcher for checking if the filters 
         }
       }
     })
-    emits('onFiltersChange', selectedValues.value);
+    // emits('onFiltersChange', selectedValues.value);
   }
 });
 
@@ -39,9 +39,7 @@ function resetFilters() {
   });
   selectedValues.value = [];
 
-  emits('onFiltersChange', selectedValues.value);
 }
-
 
 const updateChecked = (index: number, subIndex: number, checked: boolean, value: string, fieldName: string) => {
   filterState.value[index].list[subIndex].checked = checked;
@@ -61,23 +59,31 @@ const updateChecked = (index: number, subIndex: number, checked: boolean, value:
     if (selectedField.values.length === 0) selectedValues.value.splice(selectedValues.value.indexOf(selectedField), 1);
   }
 
-  emits('onFiltersChange', selectedValues.value);
+  emitSelectedValues();
 };
+
+function emitSelectedValues() {
+  emits('onFiltersChange', selectedValues.value);
+}
 
 function isItemChecked(value :string) {
   const mappedValues = selectedValues.value.flatMap(item => item.values)
   return mappedValues.includes(value);
 }
 
-const selectedWageType = ref('salary')
+const selectedWageType = ref('salary');
 
 function toggleSwitch(eve :boolean) {
-  if (eve) selectedWageType.value = 'salary'
-  else selectedWageType.value = 'hourly'
+  if (eve) selectedWageType.value = 'salary';
+  else selectedWageType.value = 'hourly';
 }
 
 onUnmounted(() => {
-  selectedValues.value = []
+  selectedValues.value = [];
+})
+
+defineExpose({
+  emitSelectedValues
 })
 </script>
 
@@ -144,7 +150,7 @@ onUnmounted(() => {
                 <input :checked="true" type="checkbox">
               </div>
               <label class="font-medium cursor-pointer">
-                Includes jobs without {{selectedWageType}} rate
+                Includes jobs without {{ selectedWageType }} rate
               </label>
             </div>
 
@@ -155,7 +161,7 @@ onUnmounted(() => {
 
 
     <div class="md:hidden pb-36">
-      <BaseButton label="Apply" :full-sized="true" @click="emits('applyFiltersOnClick', selectedValues)" />
+      <BaseButton label="Apply" :full-sized="true" @click="emitSelectedValues" />
     </div>
   </div>
 </template>

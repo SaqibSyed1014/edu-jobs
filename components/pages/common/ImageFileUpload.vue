@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { defineProps } from "vue"; // Import defineProps function from Vue
-
 // Define the props types
 const props = defineProps<{
   label: string;
@@ -24,7 +22,7 @@ const props = defineProps<{
     </label>
     <div class="mt-2 sm:col-span-2 sm:mt-0">
       <div class="flex flex-col md:flex-row items-start gap-x-5">
-        <div>
+        <div class="shrink-0">
           <img
             :src="props?.uploadedImage"
             v-if="props?.uploadedImage"
@@ -38,12 +36,10 @@ const props = defineProps<{
           >
             <div class="text-center flex flex-col justify-center items-center">
               <SvgoFileUpload class="h-10 w-10" />
-              <div
-                class="mt-4 flex text-sm leading-6 text-center justify-center items-center text-gray-600"
-              >
+              <div class="mt-4 flex text-sm leading-6 text-center justify-center items-center text-gray-600">
                 <label
                   for="file-upload"
-                  class="relative cursor-pointer rounded-md bg-white font-semibold text-brand-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-brand-600 focus-within:ring-offset-2 hover:text-brand-500"
+                  class="relative cursor-pointer rounded-md bg-white font-semibold text-brand-600 transition focus-within:outline-none hover:text-brand-400"
                 >
                   <span>Upload a file</span>
                   <input

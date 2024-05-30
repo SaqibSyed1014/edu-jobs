@@ -99,7 +99,7 @@ watch(
               :class="{ 'has-error': errorMessage }"
             />
           </div>
-          <p class="text-red-500 text-sm font-normal leading-tight" v-show="errorMessage || meta.valid">
+          <p class="error-message" v-show="errorMessage || meta.valid">
             {{ errorMessage || successMessage }}
           </p>
         </div>
