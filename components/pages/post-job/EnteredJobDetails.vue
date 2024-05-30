@@ -8,9 +8,7 @@ defineProps<{
 </script>
 
 <template>
-  <div
-      class="hidden md:block lg:max-w-sm p-4 border border-gray-200 rounded-lg shadow"
-  >
+  <div class="hidden md:block lg:max-w-sm p-4 border border-gray-200 rounded-lg shadow">
     <div class="flex-col items-start gap-5 flex w-full">
       <div>
         <img
@@ -26,19 +24,17 @@ defineProps<{
       >
         <div class="w-full">
           <p class="text-gray-900 text-base font-medium leading-normal">
-            {{ jobTitle ? jobTitle : "Job Title" }}
+            {{ jobTitle?.length ? jobTitle : "Job Title" }}
           </p>
           <p class="text-gray-600 text-sm font-normal leading-tight">
-            {{ orgName ? orgName : "Company name" }}
+            {{ orgName?.length ? orgName : "Company name" }}
           </p>
         </div>
-        <div
-            class="justify-between w-full xl:items-center gap-4 flex lg:flex-col xl:flex-row"
-        >
+        <div class="justify-between w-full xl:items-center gap-4 flex lg:flex-col xl:flex-row">
           <div class="flex items-center space-x-1.5">
             <SvgoClockLight class="h-5" />
             <p class="text-gray-600 text-sm font-medium leading-tight">
-              {{ employment ? employment : "Full-time" }}
+              {{ employment?.length ? employment : "Full-time" }}
             </p>
           </div>
           <div class="flex items-center space-x-1.5">

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import * as Yup from "yup";
 import {Form, ErrorMessage, Field, useForm} from "vee-validate";
+import {al} from "~/.output/public/_nuxt/swiper-vue.Op2YMCzV";
 
-const emit = defineEmits(['handleFormSubmission'])
+const emit = defineEmits(['handleFormSubmission', 'formDataListener'])
 
 const uploadedImage = ref("");
 const firstStep = ref(null);
@@ -27,9 +28,17 @@ const schema = Yup.object({
   fullName: Yup.string().required("Full Name is required"),
 })
 
-const { defineField, handleSubmit } = useForm({
+
+const { defineField, handleSubmit, values } = useForm({
   validationSchema: schema,
 });
+
+watch(() => [values.organizationName, uploadedImage.value], (val) => {
+  emit('formDataListener', {
+    orgName: val[0],
+    image: val[1]
+  });
+})
 
 const onSubmit = handleSubmit(values => {
   emit('handleFormSubmission', values, 1)
@@ -38,10 +47,7 @@ const onSubmit = handleSubmit(values => {
 
 <template>
   <form @submit.prevent="onSubmit">
-    <div
-        class="mt-5 space-y-8 border-b border-gray-900/10 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0"
-    >
-      <input name="organizationName" type="text">
+    <div class="mt-5 space-y-8 border-b border-gray-900/10 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0">
       <TextInput
           name="organizationName"
           type="text"

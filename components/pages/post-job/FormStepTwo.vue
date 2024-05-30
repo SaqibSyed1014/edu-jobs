@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import {
-  applyMethodOptions,
   compensationTypesOptions,
-  employmentOptions, hourlyRange, jobRolesOptions, salaryRange, toolbarOptions
+  employmentOptions,
+  hourlyRange,
+  jobRolesOptions,
+  salaryRange,
+  toolbarOptions
 } from "~/components/core/constants/post-job-form.constants";
 import * as Yup from "yup";
 import {Form, ErrorMessage, Field, useForm} from "vee-validate";
 import {usePostjobStore} from "~/segments/postjobs/store";
-import {def} from "@vue/shared";
 
-const emit = defineEmits(['moveToPrevStep', 'handleFormSubmission']);
+const emit = defineEmits(['moveToPrevStep', 'handleFormSubmission', 'formDataListener']);
 
 const postJobStore = usePostjobStore();
 const {
@@ -24,7 +26,7 @@ const schema = Yup.object({
     jobTitle: Yup.string().required("Job Title is required"),
     startDate: Yup.string().required("Start Date is required"),
     employmentTypeId: Yup.string().required("Employment Type is required"),
-    experience: Yup.string().required("Experience Level is required"),
+    experienceLevelId: Yup.string().required("Experience Level is required"),
     compensationTypeId: Yup.string(),
     minSalaryId: Yup.string().when("compensationTypeId", {
       is: "Salary",
@@ -81,8 +83,16 @@ const options = ref({
 
 const locError = ref(false);
 
+watch(() => [values.jobTitle, values.employmentTypeId], (val) => {
+  console.log('check fields ', val)
+  emit('formDataListener', {
+    jobTitle: val[0],
+    employment: val[1]
+  });
+})
+
 const onSubmit = handleSubmit(values => {
-  emit('handleFormSubmission', values, 2)
+  emit('handleFormSubmission', values, 2);
 });
 
 function handleInput(delta) {
@@ -197,7 +207,7 @@ function handleInput(delta) {
                       position="right"
                   >
                     <Field
-                        name="experience"
+                        name="experienceLevelId"
                         type="radio"
                         :value="experience.experience_level"
                         class="cursor-pointer"
@@ -331,10 +341,6 @@ function handleInput(delta) {
         </div>
       </div>
     </div>
-
-    {{errors}}
-    <h2>------</h2>
-    {{values}}
 
     <FormFooterButtons
         @back-btn-clicked="() => emit('moveToPrevStep')"

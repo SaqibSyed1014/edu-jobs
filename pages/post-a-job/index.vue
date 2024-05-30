@@ -9,7 +9,7 @@ import {
 import FeatureJobPrompt from "~/components/pages/post-job/FeatureJobPrompt.vue";
 import type {Coordinates} from "~/segments/common.types";
 
-const currentStep = ref(2);
+const currentStep = ref(0);
 const postjobStore = usePostjobStore();
 const { content,status } = storeToRefs(postjobStore);
 const isLoading = ref<boolean>(false);
@@ -147,6 +147,21 @@ function moveToNextForm(values :any, index :number) {
     top: 0,
     behavior: "smooth",
   });
+}
+
+const previewFormData = ref({
+  jobTitle: '',
+  orgName: '',
+  employment: '',
+  selectedImage: ''
+})
+function getStepOneField({ orgName, image }) {
+  previewFormData.value.orgName = orgName;
+  previewFormData.value.selectedImage = image;
+}
+function getStepTwoFields({ jobTitle, employment }) {
+  previewFormData.value.jobTitle = jobTitle;
+  previewFormData.value.employment = employment;
 }
 </script>
 
@@ -294,14 +309,15 @@ function moveToNextForm(values :any, index :number) {
                 <SvgoRing44 v-else class="h-14 xl:hidden" />
               </div>
             </div>
-            {{formsCollectiveData}}
 
             <FormStepOne
                 v-if="currentStep === 0"
+                @form-data-listener="getStepOneField"
                 @handle-form-submission="moveToNextForm"
             />
             <FormStepTwo
                 v-if="currentStep === 1"
+                @form-data-listener="getStepTwoFields"
                 @move-to-prev-step="prevStep"
                 @handle-form-submission="moveToNextForm"
             />
@@ -310,7 +326,6 @@ function moveToNextForm(values :any, index :number) {
                 @move-to-prev-step="prevStep"
                 @handle-form-submission="moveToNextForm"
             />
-<!--            <FormStepThree v-if="currentStep === 2" />-->
 
 <!--            Hiding step 4 as it depends on values object -->
 
@@ -844,12 +859,12 @@ function moveToNextForm(values :any, index :number) {
 
         <div class="w-full md:w-1/4 xl:w-1/5 flex flex-col gap-4 md:pt-8">
           <OrderSummary />
-<!--          <EnteredJobDetails-->
-<!--              :job-title="values?.jobTitle"-->
-<!--              :org-name="values?.organizationName"-->
-<!--              :employment="values?.employmentTypeId"-->
-<!--              :selected-image="uploadedImage"-->
-<!--          />-->
+          <EnteredJobDetails
+              :job-title="previewFormData?.jobTitle"
+              :org-name="previewFormData?.orgName"
+              :employment="previewFormData?.employment"
+              :selected-image="previewFormData.selectedImage"
+          />
           <DonationMessage />
 
           <!--   Checkout Btn   -->
