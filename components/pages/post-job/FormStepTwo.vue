@@ -26,27 +26,45 @@ const schema = Yup.object({
     employmentTypeId: Yup.string().required("Employment Type is required"),
     experience: Yup.string().required("Experience Level is required"),
     compensationTypeId: Yup.string(),
-    minSalaryId: Yup.string().required("Salary Start Range is required"),
-    maxSalaryId: Yup.string().required("Salary End Range is required"),
-    minHourlyId: Yup.string().required("Hourly Start Range is required"),
-    maxHourlyId: Yup.string().required("Hourly End Range is required"),
+    minSalaryId: Yup.string().when("compensationTypeId", {
+      is: "Salary",
+      then: (schema) => schema.required("Salary Start Range is required")
+    }),
+    maxSalaryId: Yup.string().when("compensationTypeId", {
+      is: "Salary",
+      then: (schema) => schema.required("Salary End Range is required")
+    }),
+    minHourlyId: Yup.string().when("compensationTypeId", {
+      is: "Hourly",
+      then: (schema) => schema.required("Hourly Start Range is required")
+    }),
+    maxHourlyId: Yup.string().when("compensationTypeId", {
+      is: "Hourly",
+      then: (schema) => schema.required("Hourly End Range is required")
+    }),
     jobRole: Yup.string().required("Job Role is required"),
-    gradeLevel: Yup.string().required("Grade Level(s) is required"),
-    startRange: Yup.string().required("Start Range is required"),
-    endRange: Yup.string().required("End Range is required"),
-    subjects: Yup.string().required("Subject Area(s) is required"),
-    jobDescription: Yup.string(),
+    gradeLevel: Yup.string().when("jobRole", {
+      is: "Instructional",
+      then: (schema) => schema.required("Grade Level(s) is required")
+    }),
+    subjects: Yup.string().when("jobRole", {
+      is: "Instructional",
+      then: (schema) => schema.required("Subject Area(s) is required")
+    }),
+    jobDescription: Yup.string().required("Job Description is required"),
 })
 const initialFormValues = {
-  compensationTypeId: 'Salary'
+  compensationTypeId: 'Salary',
+  jobDescription: ''
 }
 
-const { defineField, handleSubmit, values } = useForm({
+const { defineField, handleSubmit, values, errors } = useForm({
   validationSchema: schema,
   initialValues: initialFormValues
 });
 
 const [compensationTypeId, compensationTypeIdAttrs] = defineField('compensationTypeId');
+const [jobDescription, jobDescriptionAttrs] = defineField('jobDescription');
 
 const selectedLocation = ref<number[]>([])
 function setLocationsCoordinates(location :any) {
@@ -62,11 +80,14 @@ const options = ref({
 });
 
 const locError = ref(false);
-const errorMessage = ref(false);
 
 const onSubmit = handleSubmit(values => {
   emit('handleFormSubmission', values, 2)
 });
+
+function handleInput(delta) {
+  if (delta === '<p><br></p>') jobDescription.value = ''
+}
 </script>
 
 <template>
@@ -75,7 +96,6 @@ const onSubmit = handleSubmit(values => {
       <div class="mt-5 border-b border-gray-900/10 divide-y divide-gray-900/10 border-t">
         <!--    Job Title Field    -->
         <TextInput
-            v-model="jobTitle"
             name="jobTitle"
             type="text"
             label="Job Title"
@@ -107,7 +127,7 @@ const onSubmit = handleSubmit(values => {
             </client-only>
             <span
                 v-if="locError"
-                class="text-red-500 text-sm font-normal leading-tight"
+                class="error-message"
             >
             Location is required
           </span>
@@ -153,7 +173,7 @@ const onSubmit = handleSubmit(values => {
               </template>
             </div>
             <ErrorMessage
-                class="text-red-500 text-sm font-normal leading-tight"
+                class="error-message"
                 name="employmentTypeId"
             />
           </div>
@@ -191,7 +211,7 @@ const onSubmit = handleSubmit(values => {
               </template>
             </div>
             <ErrorMessage
-                class="text-red-500 text-sm font-normal leading-tight"
+                class="error-message"
                 name="experienceLevelId"
             />
           </div>
@@ -294,24 +314,27 @@ const onSubmit = handleSubmit(values => {
           </label>
           <div class="mt-2 sm:col-span-2 sm:mt-0 rounded-lg">
             <quill-editor
+                v-model:content="jobDescription"
                 name="jobDescription"
                 theme="snow"
                 class="min-h-[102px]"
                 placeholder="Enter a description.."
                 :option="options"
                 contentType="html"
-                @textChange="(delta) => values.jobDescription = delta"
+                @update:content="handleInput"
             />
-            <span
-                v-if="errorMessage"
-                class="text-red-500 text-sm font-normal leading-tight"
-            >
-              Please add job description
-            </span>
+            <ErrorMessage
+                class="error-message"
+                name="jobDescription"
+            />
           </div>
         </div>
       </div>
     </div>
+
+    {{errors}}
+    <h2>------</h2>
+    {{values}}
 
     <FormFooterButtons
         @back-btn-clicked="() => emit('moveToPrevStep')"

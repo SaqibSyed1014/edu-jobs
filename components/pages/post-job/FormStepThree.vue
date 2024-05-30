@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {applyMethodOptions} from "~/components/core/constants/post-job-form.constants";
 import * as Yup from "yup";
-import {Form, ErrorMessage, Field} from "vee-validate";
+import {Form, ErrorMessage, Field, useForm} from "vee-validate";
 
 const schema = Yup.object({
     applicationMethod: Yup.string().required("You must choose your application method"),
@@ -14,13 +14,18 @@ const schema = Yup.object({
     applyEmail: Yup.string().email('Invalid email').required('Email is required'),
     applicationDeadline: Yup.string().required("Please enter Date"),
 })
+
+const { defineField, handleSubmit, values, errors } = useForm({
+  validationSchema: schema
+});
+
+const onSubmit = handleSubmit(values => {
+  emit('handleFormSubmission', values, 3)
+});
 </script>
 
 <template>
-  <Form
-      v-slot="{ errors, values }"
-      :validation-schema="schema"
-  >
+  <form @submit="onSubmit">
     <div class="w-full">
       <div
           class="mt-5 space-y-0 border-b border-gray-900/10 divide-y divide-gray-900/10 border-t sm:pb-0"
@@ -72,7 +77,7 @@ const schema = Yup.object({
         </div>
       </div>
     </div>
-  </Form>
+  </form>
 </template>
 
 <style scoped lang="postcss">

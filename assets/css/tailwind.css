@@ -67,4 +67,7 @@ h1, h2, h3, h4, h5, h6{
 .form-input.has-error{
     @apply ring-2 !border-0 !ring-error-400
 }
+.error-message{
+    @apply text-red-500 text-sm font-medium leading-tight
+}
 

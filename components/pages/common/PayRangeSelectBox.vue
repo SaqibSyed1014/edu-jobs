@@ -57,7 +57,8 @@ const {
   value: inputValue,
   handleBlur,
   handleChange,
-  meta
+  meta,
+  errorMessage
 } = useField(name, undefined, {
   initialValue: props.value,
 });
@@ -123,15 +124,14 @@ watch(() => [selectedStartRange.value, selectedEndRange.value], () => {
           </Field>
 
           <ErrorMessage
-              class="text-red-500 text-sm font-normal leading-tight"
+              class="error-message"
               :name="name"
           />
         </div>
 
-        <span
-          class="text-gray-600 text-sm font-normal leading-tight px-3 flex items-baseline mt-4"
-          >-</span
-        >
+        <span class="text-gray-600 text-sm font-normal leading-tight px-3 flex items-baseline mt-4">
+          -
+        </span>
 
         <div class="flex flex-col flex-1">
           <Field
@@ -153,12 +153,12 @@ watch(() => [selectedStartRange.value, selectedEndRange.value], () => {
             </option>
           </Field>
           <ErrorMessage
-              class="text-red-500 text-sm font-normal leading-tight"
+              class="error-message"
               :name="secondaryName"
           />
           <div
               v-if="rangeError"
-              class="text-red-500 text-sm font-normal leading-tight"
+              class="error-message"
           >
             To Range can't be less than From Range
           </div>

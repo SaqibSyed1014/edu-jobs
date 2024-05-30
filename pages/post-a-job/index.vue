@@ -9,7 +9,7 @@ import {
 import FeatureJobPrompt from "~/components/pages/post-job/FeatureJobPrompt.vue";
 import type {Coordinates} from "~/segments/common.types";
 
-const currentStep = ref(1);
+const currentStep = ref(0);
 const postjobStore = usePostjobStore();
 const { content,status } = storeToRefs(postjobStore);
 const isLoading = ref<boolean>(false);
@@ -72,9 +72,6 @@ async function checkout () {
   isLoading.value = false;
 }
 
-// const currentSchema = computed(() => {
-//   return schemas[currentStep.value];
-// });
 
 const locError = ref(false)
 function nextStep(values: any) {
@@ -85,15 +82,7 @@ function nextStep(values: any) {
 
   // Check if jobDesc is empty
   if (currentStep.value === 1) {
-    // If jobDesc is empty, set errorMessage to true
-    // if (!jobDesc.value.trim()) {
-    //   errorMessage.value = true;
-    // }
-    // alert(!selectedLocation.value.length)
-    // if (!selectedLocation.value.length) {
-    //   locError.value = true
-    // }
-    // if (errorMessage.value || locError.value) return; // Prevent proceeding to the next step
+
   }
   // errorMessage.value = false;
   // locError.value = false;
@@ -314,6 +303,12 @@ function moveToNextForm(values :any, index :number) {
             <FormStepTwo
                 v-if="currentStep === 1"
                 @move-to-prev-step="prevStep"
+                @handle-form-submission="moveToNextForm"
+            />
+            <FormStepThree
+                v-if="currentStep === 2"
+                @move-to-prev-step="prevStep"
+                @handle-form-submission="moveToNextForm"
             />
 <!--            <FormStepThree v-if="currentStep === 2" />-->
 
