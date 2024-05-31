@@ -9,7 +9,7 @@ import {
 import FeatureJobPrompt from "~/components/pages/post-job/FeatureJobPrompt.vue";
 import type {Coordinates} from "~/segments/common.types";
 
-const currentStep = ref(0);
+const currentStep = ref(2);
 const postjobStore = usePostjobStore();
 const { content,status } = storeToRefs(postjobStore);
 const isLoading = ref<boolean>(false);
@@ -94,15 +94,6 @@ function nextStep(values: any) {
   });
 }
 
-function prevStep() {
-  if (currentStep.value <= 0) return;
-  currentStep.value--;
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
-}
-
 onMounted(async() => {
   await Promise.all([
     postjobStore.fetchOrgTypes(),
@@ -138,12 +129,27 @@ function handleStepClick() {
   useNuxtApp().$toast.error("Please Fill the Form");
 }
 
-const formsCollectiveData = ref({})
+let formsCollectiveData = reactive({
+  stepOne: {},
+  stepTwo: {},
+  stepThree: {}
+})
 
-function moveToNextForm(values :any, index :number) {
-  formsCollectiveData.value = { ...formsCollectiveData.value, ...values };
-  console.log('form d ', formsCollectiveData.value)
-  currentStep.value = index;
+function moveToNextForm(values :any, formNo :number) {
+  if (formNo === 1) formsCollectiveData.stepOne = values;
+  if (formNo === 2) formsCollectiveData.stepTwo = values;
+  if (formNo === 3) formsCollectiveData.stepThree = values;
+  console.log('form datas --> ', formsCollectiveData)
+  currentStep.value = formNo;
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+}
+
+function prevStep() {
+  if (currentStep.value <= 0) return;
+  currentStep.value--;
   window.scrollTo({
     top: 0,
     behavior: "smooth",
@@ -178,7 +184,7 @@ function getStepTwoFields({ jobTitle, employment }) {
         <UInput color="primary" variant="outline" placeholder="Search..." />
       </div>
       <hr class="border-b border-gray-200 mt-5" />
-      <form
+      <div
         class="flex flex-col md:flex-row justify-between gap-8"
       >
         <div class="hidden xl:block w-1/5 border-r border-gray-200">
@@ -283,9 +289,9 @@ function getStepTwoFields({ jobTitle, employment }) {
           </div>
         </div>
 
-        <!--   Form Header Content     -->
+        <!--   Job Post Form Layout     -->
         <div class="w-full md:w-3/4 xl:w-3/5 pt-8">
-          <div class="form-header-content">
+          <div class="job-post-form-layout">
             <div class="flex items-center justify-between">
               <template v-for="(header, i) in formStepsHeaderContent">
                 <div v-if="currentStep === i">
@@ -311,8 +317,10 @@ function getStepTwoFields({ jobTitle, employment }) {
               </div>
             </div>
 
+            {{formsCollectiveData}}
             <FormStepOne
                 v-if="currentStep === 0"
+                :initial-form-values="formsCollectiveData.stepOne"
                 @form-data-listener="getStepOneField"
                 @handle-form-submission="moveToNextForm"
             />
@@ -324,6 +332,7 @@ function getStepTwoFields({ jobTitle, employment }) {
             />
             <FormStepThree
                 v-if="currentStep === 2"
+                :initial-form-values="formsCollectiveData.stepThree"
                 @move-to-prev-step="prevStep"
                 @handle-form-submission="moveToNextForm"
             />
@@ -880,7 +889,7 @@ function getStepTwoFields({ jobTitle, employment }) {
             :disabled="false"
           />
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </template>

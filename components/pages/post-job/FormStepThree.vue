@@ -2,8 +2,13 @@
 import {applyMethodOptions} from "~/components/core/constants/post-job-form.constants";
 import * as Yup from "yup";
 import {Form, ErrorMessage, Field, useForm} from "vee-validate";
+import Datepicker from "@vuepic/vue-datepicker";
 
 const emit = defineEmits(['moveToPrevStep', 'handleFormSubmission']);
+
+const props = defineProps<{
+  initialFormValues: any
+}>()
 
 const urlRegex = /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/
 
@@ -23,24 +28,37 @@ const initialFormValues = {
   applicationMethod: 'URL'
 }
 
-const { defineField, handleSubmit, values, errors } = useForm({
+const { defineField, handleSubmit, values, resetForm, errors } = useForm({
   validationSchema: schema,
   initialValues: initialFormValues
 });
 const [applicationMethod, applicationMethodAttrs] = defineField('applicationMethod');
+const [applyURL, applyURLAttrs] = defineField('applyURL');
+const [applyEmail, applyEmailAttrs] = defineField('applyEmail');
+const [applicationDeadline, applicationDeadlineAttrs] = defineField('applicationDeadline');
+
+resetForm({
+  values: props.initialFormValues,
+});
 
 const onSubmit = handleSubmit(values => {
   emit('handleFormSubmission', values, 3)
 });
+
+const textInputOptions = {
+  format: "MM/dd/yyyy",
+};
 </script>
 
 <template>
-  <form @submit="onSubmit">
+  <form @submit.prevent="onSubmit">
     <div class="w-full">
       <div
           class="mt-5 space-y-0 border-b border-gray-900/10 divide-y divide-gray-900/10 border-t sm:pb-0"
       >
         <SelectBox
+            v-model="applicationMethod"
+            v-bind="applicationMethodAttrs"
             name="applicationMethod"
             label="Your work Application method"
             :data="applyMethodOptions"
@@ -52,6 +70,8 @@ const onSubmit = handleSubmit(values => {
         />
         <HttpInput
             v-if="values.applicationMethod === 'URL'"
+            v-model="applyURL"
+            v-bind="applyURLAttrs"
             name="applyURL"
             type="text"
             label="Apply URL"
@@ -61,6 +81,8 @@ const onSubmit = handleSubmit(values => {
         />
         <TextInput
             v-if="values.applicationMethod === 'Email'"
+            v-model="applyEmail"
+            v-bind="applyEmailAttrs"
             name="applyEmail"
             type="email"
             label="Apply Email"
@@ -76,11 +98,28 @@ const onSubmit = handleSubmit(values => {
             Application deadline date
           </label>
           <div class="mt-2 sm:col-span-2 relative">
-            <DatePicker
+            <Datepicker
+                v-model="applicationDeadline"
                 name="applicationDeadline"
-                :values="values.applicationDeadlinel"
-                :error="errors.applicationDeadlinel"
+                :min-date="new Date()"
+                class="fixed-input-icon"
+                input-class-name="form-input w-full"
+                menu-class-name="dp-custom-menu"
+                autoApply
+                :state="!errors?.applicationDeadline?.length"
+                :text-input="textInputOptions"
+                :enable-time-picker="false"
+            >
+              <template #input-icon> </template>
+            </Datepicker>
+
+            <SvgoCalendar class="absolute h-5 top-3 right-3" />
+
+            <ErrorMessage
+                class="error-message"
+                name="applicationDeadline"
             />
+            {{errors?.applicationDeadline?.length}}
           </div>
         </div>
       </div>

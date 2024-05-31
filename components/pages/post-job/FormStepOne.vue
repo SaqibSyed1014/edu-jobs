@@ -3,13 +3,16 @@ import * as Yup from "yup";
 import {Form, ErrorMessage, Field, useForm} from "vee-validate";
 import {usePostjobStore} from "~/segments/postjobs/store";
 
-const emit = defineEmits(['handleFormSubmission', 'formDataListener'])
+const emit = defineEmits(['handleFormSubmission', 'formDataListener']);
 
-const uploadedImage = ref("");
-const firstStep = ref(null);
+const props = defineProps<{
+  initialFormValues: any
+}>()
 
 const jobPoststore = usePostjobStore();
 const { orgTypesDropdown } = storeToRefs(jobPoststore);
+
+const uploadedImage = ref("");
 
 const handleImageUpload = (event: any) => {
   const file = event.target.files[0];
@@ -32,8 +35,16 @@ const schema = Yup.object({
 })
 
 
-const { defineField, handleSubmit, values } = useForm({
-  validationSchema: schema,
+const { defineField, handleSubmit, values, resetForm } = useForm({
+  validationSchema: schema
+});
+const [organizationName, orgNameAttrs] = defineField('organizationName');
+const [organizationTypeId, orgTypeAttrs] = defineField('organizationTypeId');
+const [email, emaileAttrs] = defineField('email');
+const [fullName, fullNameAttrs] = defineField('fullName');
+
+resetForm({
+  values: props.initialFormValues,
 });
 
 watch(() => [values.organizationName, uploadedImage.value], (val) => {
@@ -50,8 +61,11 @@ const onSubmit = handleSubmit(values => {
 
 <template>
   <form @submit.prevent="onSubmit">
+    {{initialFormValues}}
     <div class="mt-5 space-y-8 border-b border-gray-900/10 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0">
       <TextInput
+          v-model="organizationName"
+          v-bind="orgNameAttrs"
           name="organizationName"
           type="text"
           label="Organization Name*"
@@ -61,6 +75,8 @@ const onSubmit = handleSubmit(values => {
       />
 
       <SelectBox
+          v-model="organizationTypeId"
+          v-bind="orgTypeAttrs"
           name="organizationTypeId"
           label="Organization Type"
           :data="orgTypesDropdown"
@@ -81,6 +97,8 @@ const onSubmit = handleSubmit(values => {
           class="mt-5 space-y-8 divide-b divide-gray-900/10 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0"
       >
         <TextInput
+            v-model="email"
+            v-bind="emaileAttrs"
             name="email"
             type="email"
             label="Your work email address*"
@@ -94,6 +112,8 @@ const onSubmit = handleSubmit(values => {
           class="mt-5 space-y-8 border-b border-gray-900/10 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0"
       >
         <TextInput
+            v-model="fullName"
+            v-bind="fullNameAttrs"
             name="fullName"
             type="text"
             label="Your full name*"
