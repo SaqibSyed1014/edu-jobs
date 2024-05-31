@@ -44,10 +44,23 @@ const getOrgDetails = (slug :string) :Promise<Org> => {
     })
 }
 
+const getStripeCheckoutURL = (payload :any) :Promise<{ content: { url: string } }> => {
+    const { baseUrl, apiKey } = usePayloadUrl()
+    const apiHeaders = {
+        'API-Key': apiKey,
+    }
+    return $fetch(`${baseUrl}/payment/pricingcheckout`, {
+        method: 'post',
+        headers: apiHeaders,
+        body: payload
+    })
+}
+
 
 export {
     getJobsSummaryByCities,
     getPartnersLogo,
     getFeaturedOrganizations,
-    getOrgDetails
+    getOrgDetails,
+    getStripeCheckoutURL
 }

@@ -76,7 +76,7 @@ onMounted(async () => {
   }
 
   // assign the saved coordinates in store (searched on Home view) for query
-  if (coordinates.value.lat && coordinates.value.lng) query.value.filter_by = `geo_location:(${coordinates.value.lat}, ${coordinates.value.lng}, 5 mi)`;
+  if (coordinates.value.lat && coordinates.value.lng) query.value.filter_by = `geo_location:(${coordinates.value.lat}, ${coordinates.value.lng}, 10 mi)`;
 
   await doSearch(); // Initial fetch
 });
@@ -146,7 +146,7 @@ const fetchOnSearching = (searchValues :JobSearchFilters) => {
   if (searchValues.coordinates.lat && searchValues.coordinates.lng)    // when user searches location on 'Search' click (searchValues are null when redirected from Home view)
     coordinates.value = searchValues.coordinates
   if (coordinates.value.lat && coordinates.value.lng) {    // check if both lat and lng are propagated by SearchBar
-    const geoFilter = `geo_location:(${coordinates.value.lat}, ${coordinates.value.lng}, 5 mi)`
+    const geoFilter = `geo_location:(${coordinates.value.lat}, ${coordinates.value.lng}, 10 mi)`
     if (query.value.filter_by?.length && !query.value.filter_by.includes('geo_location'))
       query.value.filter_by = `${query.value.filter_by}&&${geoFilter}`
     else query.value.filter_by = geoFilter;

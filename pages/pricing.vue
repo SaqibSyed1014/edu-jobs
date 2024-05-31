@@ -6,13 +6,30 @@ import ReportIcon from 'assets/icons/report.svg'
 import HappyFaceIcon from 'assets/icons/happy-face.svg'
 import ToolIcon from 'assets/icons/tool.svg'
 import PositiveFeedbackIcon from 'assets/icons/positive-feedback.svg'
-import { faqs, features, pricingPlans} from "~/components/core/constants/pricing.constants";
+import { faqs, features, pricingPlans } from "~/components/core/constants/pricing.constants";
+import { useHomeStore } from "~/segments/home/store";
+
+const homeStore = useHomeStore();
+const { checkoutURL } = storeToRefs(homeStore);
 
 const selectedSlot = ref<number>(10);
 
 const getSelectedSlotDetails = computed(() => {
   return pricingPlans[2]?.slotsPricing.filter(slot => slot.totalSlots == selectedSlot.value)[0];
 })
+
+function getSlotPriceId() {
+  redirectToStripe(getSelectedSlotDetails.value.priceId);
+}
+
+async function redirectToStripe(priceId :string) {
+  const payload = {
+    price_id: priceId,
+    qty: 1
+  }
+  await homeStore.fetchStripeCheckoutURL(payload);
+  if (checkoutURL.value) window.open(checkoutURL.value, '_blank');
+}
 </script>
 
 <template>
@@ -47,7 +64,7 @@ const getSelectedSlotDetails = computed(() => {
                     <h3 v-else class="text-4xl my-4">{{ offer.priceText }}</h3>
                     <p v-if="offer.showSlotOptions" class="text-success-600">Saving {{ getSelectedSlotDetails.saving }}</p>
                   </div>
-                  <ul class="font-normal flex flex-col gap-4 mt-8 mb-10 h-64">
+                  <ul class="font-normal flex flex-col gap-4 mt-8 mb-8">
                     <template v-for="benefit in offer.benefits">
                       <li class="flex items-center gap-3 text-sm">
                         <span class="shrink-0">
@@ -58,282 +75,25 @@ const getSelectedSlotDetails = computed(() => {
                     </template>
                   </ul>
                   <ul class="flex flex-col justify-end grow gap-3">
-                    <SelectBox
-                        v-if="offer.showSlotOptions"
-                        v-model="selectedSlot"
-                        :label-value-options="true"
-                        label=""
-                        name="slotOptions"
-                        :data="offer?.slotsPricing?.map((slot) => ({ label: slot.totalSlots, value: slot.totalSlots }))"
-                        subLabel=""
-                    />
-                    <BaseButton v-if="offer.showBuyBtn" label="Buy Now" :full-sized="true" />
+                    <div v-if="offer.showSlotOptions">
+                      <label for="slotOptions" class="text-sm font-medium">Quantity:</label>
+                      <SelectBox
+                          v-model="selectedSlot"
+                          :label-value-options="true"
+                          label=""
+                          name="slotOptions"
+                          :data="offer?.slotsPricing?.map((slot) => ({ label: slot.totalSlots, value: slot.totalSlots }))"
+                          subLabel=""
+                      />
+                    </div>
+                    <template v-if="offer.showBuyBtn">
+                      <BaseButton v-if="offer.id === 3" label="Buy Now" :full-sized="true" @click="getSlotPriceId"/>
+                      <BaseButton v-else label="Buy Now" :full-sized="true" @click="redirectToStripe(offer.priceId)"/>
+                    </template>
                     <BaseButton v-if="offer.showContactSalesBtn" label="Contact sales" color="gray" :outline="true" :full-sized="true" />
                   </ul>
                 </div>
               </template>
-            </div>
-          </div>
-          <div class="project hidden" data-filter="annual">
-            <div class="grid lg:grid-cols-3 gap-4 lg:gap-8">
-              <div class="bg-white rounded-2xl p-6 lg:p-8 shadow-[0_12px_16px_rgba(16,24,40,0.08)] border border-white-light relative">
-                <div class="text-primary text-sm inline-flex absolute -top-6 right-0 lg:-right-16">
-                  <svg width="60" height="46" viewBox="0 0 60 46" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M9.22056 42.4487C9.06321 43.262 9.595 44.0489 10.4084 44.2063C11.2217 44.3636 12.0086 43.8318 12.166 43.0185L9.22056 42.4487ZM50.5841 3.79132C51.405 3.68035 51.9806 2.92487 51.8696 2.10391C51.7586 1.28295 51.0032 0.707389 50.1822 0.818364L50.5841 3.79132ZM4.78725 32.3309C4.36038 31.6209 3.43878 31.3914 2.7288 31.8183C2.01882 32.2452 1.78931 33.1668 2.21618 33.8768L4.78725 32.3309ZM8.9767 42.21L7.69117 42.9829L7.69189 42.9841L8.9767 42.21ZM12.5932 43.2607L11.9803 41.8917L11.979 41.8922L12.5932 43.2607ZM23.5123 40.0157C24.2684 39.6772 24.6069 38.7898 24.2684 38.0337C23.9299 37.2776 23.0425 36.939 22.2864 37.2776L23.5123 40.0157ZM10.6933 42.7336C12.166 43.0185 12.1659 43.0188 12.1658 43.0191C12.1658 43.0191 12.1658 43.0193 12.1658 43.0193C12.1658 43.0193 12.1658 43.019 12.166 43.0185C12.1662 43.0174 12.1666 43.0153 12.1672 43.0122C12.1684 43.0059 12.1705 42.9954 12.1735 42.9809C12.1794 42.9518 12.1887 42.9065 12.2016 42.8457C12.2274 42.7241 12.2676 42.5405 12.3233 42.3009C12.4349 41.8218 12.6088 41.1194 12.8551 40.2422C13.3481 38.4864 14.1291 36.0372 15.2773 33.2783C17.5833 27.7376 21.3236 21.0616 27.0838 16.2003L25.1489 13.9077C18.8763 19.2014 14.905 26.3652 12.5076 32.1256C11.3042 35.0172 10.4856 37.5838 9.96684 39.4312C9.7073 40.3556 9.52235 41.1017 9.40152 41.6205C9.34109 41.88 9.29667 42.0828 9.26695 42.2229C9.25209 42.2929 9.24091 42.3472 9.23323 42.3851C9.22939 42.404 9.22643 42.4189 9.22432 42.4295C9.22327 42.4348 9.22243 42.4391 9.22181 42.4423C9.22149 42.4439 9.22123 42.4452 9.22103 42.4463C9.22092 42.4468 9.22081 42.4474 9.22075 42.4477C9.22065 42.4482 9.22056 42.4487 10.6933 42.7336ZM27.0838 16.2003C38.8964 6.23119 48.2848 4.10213 50.5841 3.79132L50.1822 0.818364C47.3237 1.20477 37.402 3.56674 25.1489 13.9077L27.0838 16.2003ZM2.21618 33.8768L7.69117 42.9829L10.2622 41.437L4.78725 32.3309L2.21618 33.8768ZM7.69189 42.9841C8.83415 44.8799 11.2204 45.521 13.2074 44.6292L11.979 41.8922C11.2779 42.2069 10.5661 41.9414 10.2615 41.4358L7.69189 42.9841ZM13.2061 44.6298L23.5123 40.0157L22.2864 37.2776L11.9803 41.8917L13.2061 44.6298Z"
-                        fill="#A6192E"
-                    />
-                  </svg>
-                  <span class="relative -top-2">Most popular!</span>
-                </div>
-                <div class="text-center">
-                  <h3 class="text-4xl md:text-5xl mb-4">$110/year</h3>
-                  <h4 class="text-xl mb-1">Basic plan</h4>
-                  <p class="font-normal">Billed annually.</p>
-                </div>
-                <ul class="font-normal flex flex-col gap-4 mt-8 mb-10">
-                  <li class="flex gap-3">
-                                          <span class="shrink-0">
-                                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                  <path d="M0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12Z" fill="#DCFAE6" />
-                                                  <path
-                                                      fill-rule="evenodd"
-                                                      clip-rule="evenodd"
-                                                      d="M17.0964 7.39016L9.93638 14.3002L8.03638 12.2702C7.68638 11.9402 7.13638 11.9202 6.73638 12.2002C6.34638 12.4902 6.23638 13.0002 6.47638 13.4102L8.72638 17.0702C8.94638 17.4102 9.32638 17.6202 9.75638 17.6202C10.1664 17.6202 10.5564 17.4102 10.7764 17.0702C11.1364 16.6002 18.0064 8.41016 18.0064 8.41016C18.9064 7.49016 17.8164 6.68016 17.0964 7.38016V7.39016Z"
-                                                      fill="#079455"
-                                                  />
-                                              </svg>
-                                          </span>
-                    Access to all basic features
-                  </li>
-                  <li class="flex gap-3">
-                                          <span class="shrink-0">
-                                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                  <path d="M0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12Z" fill="#DCFAE6" />
-                                                  <path
-                                                      fill-rule="evenodd"
-                                                      clip-rule="evenodd"
-                                                      d="M17.0964 7.39016L9.93638 14.3002L8.03638 12.2702C7.68638 11.9402 7.13638 11.9202 6.73638 12.2002C6.34638 12.4902 6.23638 13.0002 6.47638 13.4102L8.72638 17.0702C8.94638 17.4102 9.32638 17.6202 9.75638 17.6202C10.1664 17.6202 10.5564 17.4102 10.7764 17.0702C11.1364 16.6002 18.0064 8.41016 18.0064 8.41016C18.9064 7.49016 17.8164 6.68016 17.0964 7.38016V7.39016Z"
-                                                      fill="#079455"
-                                                  />
-                                              </svg>
-                                          </span>
-                    Basic reporting and analytics
-                  </li>
-                  <li class="flex gap-3">
-                                          <span class="shrink-0">
-                                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                  <path d="M0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12Z" fill="#DCFAE6" />
-                                                  <path
-                                                      fill-rule="evenodd"
-                                                      clip-rule="evenodd"
-                                                      d="M17.0964 7.39016L9.93638 14.3002L8.03638 12.2702C7.68638 11.9402 7.13638 11.9202 6.73638 12.2002C6.34638 12.4902 6.23638 13.0002 6.47638 13.4102L8.72638 17.0702C8.94638 17.4102 9.32638 17.6202 9.75638 17.6202C10.1664 17.6202 10.5564 17.4102 10.7764 17.0702C11.1364 16.6002 18.0064 8.41016 18.0064 8.41016C18.9064 7.49016 17.8164 6.68016 17.0964 7.38016V7.39016Z"
-                                                      fill="#079455"
-                                                  />
-                                              </svg>
-                                          </span>
-                    Up to 10 individual users
-                  </li>
-                  <li class="flex gap-3">
-                                          <span class="shrink-0">
-                                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                  <path d="M0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12Z" fill="#DCFAE6" />
-                                                  <path
-                                                      fill-rule="evenodd"
-                                                      clip-rule="evenodd"
-                                                      d="M17.0964 7.39016L9.93638 14.3002L8.03638 12.2702C7.68638 11.9402 7.13638 11.9202 6.73638 12.2002C6.34638 12.4902 6.23638 13.0002 6.47638 13.4102L8.72638 17.0702C8.94638 17.4102 9.32638 17.6202 9.75638 17.6202C10.1664 17.6202 10.5564 17.4102 10.7764 17.0702C11.1364 16.6002 18.0064 8.41016 18.0064 8.41016C18.9064 7.49016 17.8164 6.68016 17.0964 7.38016V7.39016Z"
-                                                      fill="#079455"
-                                                  />
-                                              </svg>
-                                          </span>
-                    20GB individual data each user
-                  </li>
-                  <li class="flex gap-3">
-                                          <span class="shrink-0">
-                                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                  <path d="M0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12Z" fill="#DCFAE6" />
-                                                  <path
-                                                      fill-rule="evenodd"
-                                                      clip-rule="evenodd"
-                                                      d="M17.0964 7.39016L9.93638 14.3002L8.03638 12.2702C7.68638 11.9402 7.13638 11.9202 6.73638 12.2002C6.34638 12.4902 6.23638 13.0002 6.47638 13.4102L8.72638 17.0702C8.94638 17.4102 9.32638 17.6202 9.75638 17.6202C10.1664 17.6202 10.5564 17.4102 10.7764 17.0702C11.1364 16.6002 18.0064 8.41016 18.0064 8.41016C18.9064 7.49016 17.8164 6.68016 17.0964 7.38016V7.39016Z"
-                                                      fill="#079455"
-                                                  />
-                                              </svg>
-                                          </span>
-                    Basic chat and email support
-                  </li>
-                </ul>
-                <ul class="flex flex-col gap-3">
-                  <li><a href="#" class="btn w-full">Get started</a></li>
-                  <li><a href="#" class="btn bg-transparent text-[#344054] hover:text-white w-full border border-[#D0D5DD]">Contact to sales</a></li>
-                </ul>
-              </div>
-              <div class="bg-white rounded-2xl p-6 lg:p-8 shadow-[0_12px_16px_rgba(16,24,40,0.08)] border border-white-light relative">
-                <div class="text-center">
-                  <h3 class="text-4xl md:text-5xl mb-4">$220/year</h3>
-                  <h4 class="text-xl mb-1">Business plan</h4>
-                  <p class="font-normal">Billed annually.</p>
-                </div>
-                <ul class="font-normal flex flex-col gap-4 mt-8 mb-10">
-                  <li class="flex gap-3">
-                                          <span class="shrink-0">
-                                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                  <path d="M0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12Z" fill="#DCFAE6" />
-                                                  <path
-                                                      fill-rule="evenodd"
-                                                      clip-rule="evenodd"
-                                                      d="M17.0964 7.39016L9.93638 14.3002L8.03638 12.2702C7.68638 11.9402 7.13638 11.9202 6.73638 12.2002C6.34638 12.4902 6.23638 13.0002 6.47638 13.4102L8.72638 17.0702C8.94638 17.4102 9.32638 17.6202 9.75638 17.6202C10.1664 17.6202 10.5564 17.4102 10.7764 17.0702C11.1364 16.6002 18.0064 8.41016 18.0064 8.41016C18.9064 7.49016 17.8164 6.68016 17.0964 7.38016V7.39016Z"
-                                                      fill="#079455"
-                                                  />
-                                              </svg>
-                                          </span>
-                    200+ integrations
-                  </li>
-                  <li class="flex gap-3">
-                                          <span class="shrink-0">
-                                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                  <path d="M0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12Z" fill="#DCFAE6" />
-                                                  <path
-                                                      fill-rule="evenodd"
-                                                      clip-rule="evenodd"
-                                                      d="M17.0964 7.39016L9.93638 14.3002L8.03638 12.2702C7.68638 11.9402 7.13638 11.9202 6.73638 12.2002C6.34638 12.4902 6.23638 13.0002 6.47638 13.4102L8.72638 17.0702C8.94638 17.4102 9.32638 17.6202 9.75638 17.6202C10.1664 17.6202 10.5564 17.4102 10.7764 17.0702C11.1364 16.6002 18.0064 8.41016 18.0064 8.41016C18.9064 7.49016 17.8164 6.68016 17.0964 7.38016V7.39016Z"
-                                                      fill="#079455"
-                                                  />
-                                              </svg>
-                                          </span>
-                    Advanced reporting and analytics
-                  </li>
-                  <li class="flex gap-3">
-                                          <span class="shrink-0">
-                                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                  <path d="M0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12Z" fill="#DCFAE6" />
-                                                  <path
-                                                      fill-rule="evenodd"
-                                                      clip-rule="evenodd"
-                                                      d="M17.0964 7.39016L9.93638 14.3002L8.03638 12.2702C7.68638 11.9402 7.13638 11.9202 6.73638 12.2002C6.34638 12.4902 6.23638 13.0002 6.47638 13.4102L8.72638 17.0702C8.94638 17.4102 9.32638 17.6202 9.75638 17.6202C10.1664 17.6202 10.5564 17.4102 10.7764 17.0702C11.1364 16.6002 18.0064 8.41016 18.0064 8.41016C18.9064 7.49016 17.8164 6.68016 17.0964 7.38016V7.39016Z"
-                                                      fill="#079455"
-                                                  />
-                                              </svg>
-                                          </span>
-                    Up to 20 individual users
-                  </li>
-                  <li class="flex gap-3">
-                                          <span class="shrink-0">
-                                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                  <path d="M0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12Z" fill="#DCFAE6" />
-                                                  <path
-                                                      fill-rule="evenodd"
-                                                      clip-rule="evenodd"
-                                                      d="M17.0964 7.39016L9.93638 14.3002L8.03638 12.2702C7.68638 11.9402 7.13638 11.9202 6.73638 12.2002C6.34638 12.4902 6.23638 13.0002 6.47638 13.4102L8.72638 17.0702C8.94638 17.4102 9.32638 17.6202 9.75638 17.6202C10.1664 17.6202 10.5564 17.4102 10.7764 17.0702C11.1364 16.6002 18.0064 8.41016 18.0064 8.41016C18.9064 7.49016 17.8164 6.68016 17.0964 7.38016V7.39016Z"
-                                                      fill="#079455"
-                                                  />
-                                              </svg>
-                                          </span>
-                    40GB individual data each user
-                  </li>
-                  <li class="flex gap-3">
-                                          <span class="shrink-0">
-                                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                  <path d="M0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12Z" fill="#DCFAE6" />
-                                                  <path
-                                                      fill-rule="evenodd"
-                                                      clip-rule="evenodd"
-                                                      d="M17.0964 7.39016L9.93638 14.3002L8.03638 12.2702C7.68638 11.9402 7.13638 11.9202 6.73638 12.2002C6.34638 12.4902 6.23638 13.0002 6.47638 13.4102L8.72638 17.0702C8.94638 17.4102 9.32638 17.6202 9.75638 17.6202C10.1664 17.6202 10.5564 17.4102 10.7764 17.0702C11.1364 16.6002 18.0064 8.41016 18.0064 8.41016C18.9064 7.49016 17.8164 6.68016 17.0964 7.38016V7.39016Z"
-                                                      fill="#079455"
-                                                  />
-                                              </svg>
-                                          </span>
-                    Priority chat and email support
-                  </li>
-                </ul>
-                <ul class="flex flex-col gap-3">
-                  <li><a href="#" class="btn w-full">Get started</a></li>
-                  <li><a href="#" class="btn bg-transparent text-[#344054] hover:text-white w-full border border-[#D0D5DD]">Contact to sales</a></li>
-                </ul>
-              </div>
-              <div class="bg-white rounded-2xl p-6 lg:p-8 shadow-[0_12px_16px_rgba(16,24,40,0.08)] border border-white-light relative">
-                <div class="text-center">
-                  <h3 class="text-4xl md:text-5xl mb-4">$450/year</h3>
-                  <h4 class="text-xl mb-1">Enterprise plan</h4>
-                  <p class="font-normal">Billed annually.</p>
-                </div>
-                <ul class="font-normal flex flex-col gap-4 mt-8 mb-10">
-                  <li class="flex gap-3">
-                                          <span class="shrink-0">
-                                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                  <path d="M0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12Z" fill="#DCFAE6" />
-                                                  <path
-                                                      fill-rule="evenodd"
-                                                      clip-rule="evenodd"
-                                                      d="M17.0964 7.39016L9.93638 14.3002L8.03638 12.2702C7.68638 11.9402 7.13638 11.9202 6.73638 12.2002C6.34638 12.4902 6.23638 13.0002 6.47638 13.4102L8.72638 17.0702C8.94638 17.4102 9.32638 17.6202 9.75638 17.6202C10.1664 17.6202 10.5564 17.4102 10.7764 17.0702C11.1364 16.6002 18.0064 8.41016 18.0064 8.41016C18.9064 7.49016 17.8164 6.68016 17.0964 7.38016V7.39016Z"
-                                                      fill="#079455"
-                                                  />
-                                              </svg>
-                                          </span>
-                    Advanced custom fields
-                  </li>
-                  <li class="flex gap-3">
-                                          <span class="shrink-0">
-                                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                  <path d="M0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12Z" fill="#DCFAE6" />
-                                                  <path
-                                                      fill-rule="evenodd"
-                                                      clip-rule="evenodd"
-                                                      d="M17.0964 7.39016L9.93638 14.3002L8.03638 12.2702C7.68638 11.9402 7.13638 11.9202 6.73638 12.2002C6.34638 12.4902 6.23638 13.0002 6.47638 13.4102L8.72638 17.0702C8.94638 17.4102 9.32638 17.6202 9.75638 17.6202C10.1664 17.6202 10.5564 17.4102 10.7764 17.0702C11.1364 16.6002 18.0064 8.41016 18.0064 8.41016C18.9064 7.49016 17.8164 6.68016 17.0964 7.38016V7.39016Z"
-                                                      fill="#079455"
-                                                  />
-                                              </svg>
-                                          </span>
-                    Audit log and data history
-                  </li>
-                  <li class="flex gap-3">
-                                          <span class="shrink-0">
-                                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                  <path d="M0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12Z" fill="#DCFAE6" />
-                                                  <path
-                                                      fill-rule="evenodd"
-                                                      clip-rule="evenodd"
-                                                      d="M17.0964 7.39016L9.93638 14.3002L8.03638 12.2702C7.68638 11.9402 7.13638 11.9202 6.73638 12.2002C6.34638 12.4902 6.23638 13.0002 6.47638 13.4102L8.72638 17.0702C8.94638 17.4102 9.32638 17.6202 9.75638 17.6202C10.1664 17.6202 10.5564 17.4102 10.7764 17.0702C11.1364 16.6002 18.0064 8.41016 18.0064 8.41016C18.9064 7.49016 17.8164 6.68016 17.0964 7.38016V7.39016Z"
-                                                      fill="#079455"
-                                                  />
-                                              </svg>
-                                          </span>
-                    Unlimited individual users
-                  </li>
-                  <li class="flex gap-3">
-                                          <span class="shrink-0">
-                                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                  <path d="M0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12Z" fill="#DCFAE6" />
-                                                  <path
-                                                      fill-rule="evenodd"
-                                                      clip-rule="evenodd"
-                                                      d="M17.0964 7.39016L9.93638 14.3002L8.03638 12.2702C7.68638 11.9402 7.13638 11.9202 6.73638 12.2002C6.34638 12.4902 6.23638 13.0002 6.47638 13.4102L8.72638 17.0702C8.94638 17.4102 9.32638 17.6202 9.75638 17.6202C10.1664 17.6202 10.5564 17.4102 10.7764 17.0702C11.1364 16.6002 18.0064 8.41016 18.0064 8.41016C18.9064 7.49016 17.8164 6.68016 17.0964 7.38016V7.39016Z"
-                                                      fill="#079455"
-                                                  />
-                                              </svg>
-                                          </span>
-                    Unlimited individual data
-                  </li>
-                  <li class="flex gap-3">
-                                          <span class="shrink-0">
-                                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                  <path d="M0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12Z" fill="#DCFAE6" />
-                                                  <path
-                                                      fill-rule="evenodd"
-                                                      clip-rule="evenodd"
-                                                      d="M17.0964 7.39016L9.93638 14.3002L8.03638 12.2702C7.68638 11.9402 7.13638 11.9202 6.73638 12.2002C6.34638 12.4902 6.23638 13.0002 6.47638 13.4102L8.72638 17.0702C8.94638 17.4102 9.32638 17.6202 9.75638 17.6202C10.1664 17.6202 10.5564 17.4102 10.7764 17.0702C11.1364 16.6002 18.0064 8.41016 18.0064 8.41016C18.9064 7.49016 17.8164 6.68016 17.0964 7.38016V7.39016Z"
-                                                      fill="#079455"
-                                                  />
-                                              </svg>
-                                          </span>
-                    Personalised+priotity service
-                  </li>
-                </ul>
-                <ul class="flex flex-col gap-3">
-                  <li><a href="#" class="btn w-full">Get started</a></li>
-                  <li><a href="#" class="btn bg-transparent text-[#344054] hover:text-white w-full border border-[#D0D5DD]">Contact to sales</a></li>
-                </ul>
-              </div>
             </div>
           </div>
         </div>

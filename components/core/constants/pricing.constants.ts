@@ -81,7 +81,8 @@ export const pricingPlans = [
             'Basic chat and email support'
         ],
         showBuyBtn: true,
-        showContactSalesBtn: false
+        showContactSalesBtn: false,
+        priceId: 'price_1P0v2M00kiM97A5ms79o8u4q'
     },
     {
         id: 2,
@@ -98,7 +99,8 @@ export const pricingPlans = [
             'Priority chat and email support'
         ],
         showBuyBtn: true,
-        showContactSalesBtn: false
+        showContactSalesBtn: false,
+        priceId: 'price_1PKr2b00kiM97A5mt29JKGeI'
     },
     {
         id: 3,
@@ -106,10 +108,10 @@ export const pricingPlans = [
         priceText: '',
         showSlotOptions: true,
         slotsPricing: [
-            { totalSlots: 10, price: '$440', saving: '$50' },
-            { totalSlots: 15, price: '$615', saving: '$120' },
-            { totalSlots: 20, price: '$780', saving: '$200' },
-            { totalSlots: 25, price: '$925', saving: '$300' },
+            { totalSlots: 10, price: '$440', saving: '$50', priceId: 'price_1PKr7j00kiM97A5mv5eFqisi' },
+            { totalSlots: 15, price: '$615', saving: '$120', priceId: 'price_1PKr7j00kiM97A5mwpdXsERn' },
+            { totalSlots: 20, price: '$780', saving: '$200', priceId: 'price_1PKr7j00kiM97A5mMwDzlWl7' },
+            { totalSlots: 25, price: '$925', saving: '$300', priceId: 'price_1PKr7j00kiM97A5mMJaL1Sa1' },
         ],
         benefits: [
             'Advanced custom fields',
