@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import * as Yup from "yup";
 import {Form, ErrorMessage, Field, useForm} from "vee-validate";
-import {al} from "~/.output/public/_nuxt/swiper-vue.Op2YMCzV";
+import {usePostjobStore} from "~/segments/postjobs/store";
 
 const emit = defineEmits(['handleFormSubmission', 'formDataListener'])
 
 const uploadedImage = ref("");
 const firstStep = ref(null);
 
-// Function to handle image upload
+const jobPoststore = usePostjobStore();
+const { orgTypesDropdown } = storeToRefs(jobPoststore);
+
 const handleImageUpload = (event: any) => {
   const file = event.target.files[0];
   if (file) {
@@ -24,6 +26,7 @@ const schema = Yup.object({
   organizationName: Yup.string().default('something@email.com')
       .required("Organization Name is required")
       .min(10, "Please enter a name that is at least 10 characters long"),
+  organizationTypeId: Yup.string().required('Organization type is required'),
   email: Yup.string().required('Email is required').email('Invalid email'),
   fullName: Yup.string().required("Full Name is required"),
 })
@@ -55,6 +58,16 @@ const onSubmit = handleSubmit(values => {
           placeholder="e.g. Unified School District"
           subLabel=""
           className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6"
+      />
+
+      <SelectBox
+          name="organizationTypeId"
+          label="Organization Type"
+          :data="orgTypesDropdown"
+          :label-value-options="true"
+          subLabel=""
+          :value="values.organizationTypeId"
+          className="form-field-layout"
       />
 
       <ImageFileUpload

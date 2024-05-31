@@ -105,6 +105,7 @@ function prevStep() {
 
 onMounted(async() => {
   await Promise.all([
+    postjobStore.fetchOrgTypes(),
     postjobStore.fetchGradeLevels(),
     postjobStore.fetchSubjects(),
     postjobStore.fetchExperienceLevels()

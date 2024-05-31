@@ -31,6 +31,17 @@ const  getStripeCheckDetails = async (query: any, requestBody :any) :Promise<Str
 
 }
 
+const getOrgTypes = () :Promise<OrganizationType[]> => {
+    const { baseUrl, apiKey } = usePayloadUrl()
+    const apiHeaders = {
+        'API-Key': apiKey,
+    }
+    return $fetch(`${baseUrl}/reference/organizationtypes`, {
+        method: 'get',
+        headers: apiHeaders,
+    })
+}
+
 const getGradesLevels = () :Promise<GradeLevel[]> => {
     const { baseUrl, apiKey } = usePayloadUrl()
     const apiHeaders = {
@@ -69,5 +80,6 @@ export {
     getStripeCheckDetails,
     getGradesLevels,
     getSubjects,
-    getExperienceLevels
+    getExperienceLevels,
+    getOrgTypes
 }
