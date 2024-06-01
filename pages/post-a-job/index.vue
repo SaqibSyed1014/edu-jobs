@@ -320,7 +320,6 @@ function getStepTwoFields({ jobTitle, employment }) {
               </div>
             </div>
 
-            {{formsCollectiveData}}
             <FormStepOne
                 v-if="currentStep === 0"
                 :initial-form-values="formsCollectiveData.stepOne"
