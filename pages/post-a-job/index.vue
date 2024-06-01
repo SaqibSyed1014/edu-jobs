@@ -1,21 +1,28 @@
 <script setup lang="ts">
-import * as Yup from "yup";
-import { Form, ErrorMessage, Field } from "vee-validate";
 import { usePostjobStore } from "~/segments/postjobs/store";
 import {
   formStepsHeaderContent,
   formStepsOptions,
 } from "~/components/core/constants/post-job-form.constants";
-import FeatureJobPrompt from "~/components/pages/post-job/FeatureJobPrompt.vue";
-import type {Coordinates} from "~/segments/common.types";
+import BaseSpinner from "~/components/core/BaseSpinner.vue";
 
-const currentStep = ref(0);
+const currentStep = ref(2);
 const postjobStore = usePostjobStore();
 const { content,status } = storeToRefs(postjobStore);
 const isLoading = ref<boolean>(false);
+const isFormLoading = ref<boolean>(false);
 const router = useRouter();
-const startDate = ref(new Date());
-const errorMessage = ref(false);
+
+onMounted(async() => {
+  isFormLoading.value = true;
+  await Promise.all([
+    postjobStore.fetchOrgTypes(),
+    postjobStore.fetchGradeLevels(),
+    postjobStore.fetchSubjects(),
+    postjobStore.fetchExperienceLevels()
+  ])
+  isFormLoading.value = false;
+});
 
 
 const steps = ref(formStepsOptions);
@@ -93,15 +100,6 @@ function nextStep(values: any) {
     behavior: "smooth",
   });
 }
-
-onMounted(async() => {
-  await Promise.all([
-    postjobStore.fetchOrgTypes(),
-    postjobStore.fetchGradeLevels(),
-    postjobStore.fetchSubjects(),
-    postjobStore.fetchExperienceLevels()
-  ])
-});
 
 // Function to handle button click
 function handleButtonClick(e: number) {
@@ -294,7 +292,7 @@ function getStepTwoFields({ jobTitle, employment }) {
 
         <!--   Job Post Form Layout     -->
         <div class="w-full md:w-3/4 xl:w-3/5 pt-8">
-          <div class="job-post-form-layout">
+          <div class="job-post-form-layout h-full">
             <div class="flex items-center justify-between">
               <template v-for="(header, i) in formStepsHeaderContent">
                 <div v-if="currentStep === i">
@@ -320,25 +318,35 @@ function getStepTwoFields({ jobTitle, employment }) {
               </div>
             </div>
 
-            <FormStepOne
-                v-if="currentStep === 0"
-                :initial-form-values="formsCollectiveData.stepOne"
-                @form-data-listener="getStepOneField"
-                @handle-form-submission="moveToNextForm"
-            />
-            <FormStepTwo
-                v-if="currentStep === 1"
-                :initial-form-values="formsCollectiveData.stepTwo"
-                @form-data-listener="getStepTwoFields"
-                @move-to-prev-step="prevStep"
-                @handle-form-submission="moveToNextForm"
-            />
-            <FormStepThree
-                v-if="currentStep === 2"
-                :initial-form-values="formsCollectiveData.stepThree"
-                @move-to-prev-step="prevStep"
-                @handle-form-submission="moveToNextForm"
-            />
+            <template v-if="isFormLoading">
+              <div class="container h-full">
+                <div class="flex justify-center items-center h-screen md:h-full w-full">
+                  <BaseSpinner size="lg" :show-loader="isFormLoading" />
+                </div>
+              </div>
+            </template>
+
+            <template v-else>
+              <FormStepOne
+                  v-if="currentStep === 0"
+                  :initial-form-values="formsCollectiveData.stepOne"
+                  @form-data-listener="getStepOneField"
+                  @handle-form-submission="moveToNextForm"
+              />
+              <FormStepTwo
+                  v-if="currentStep === 1"
+                  :initial-form-values="formsCollectiveData.stepTwo"
+                  @form-data-listener="getStepTwoFields"
+                  @move-to-prev-step="prevStep"
+                  @handle-form-submission="moveToNextForm"
+              />
+              <FormStepThree
+                  v-if="currentStep === 2"
+                  :initial-form-values="formsCollectiveData.stepThree"
+                  @move-to-prev-step="prevStep"
+                  @handle-form-submission="moveToNextForm"
+              />
+            </template>
 
 <!--            Hiding step 4 as it depends on values object -->
 
