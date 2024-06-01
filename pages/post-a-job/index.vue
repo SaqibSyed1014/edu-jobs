@@ -6,7 +6,7 @@ import {
 } from "~/components/core/constants/post-job-form.constants";
 import BaseSpinner from "~/components/core/BaseSpinner.vue";
 
-const currentStep = ref(2);
+const currentStep = ref(0);
 const postjobStore = usePostjobStore();
 const { content,status } = storeToRefs(postjobStore);
 const isLoading = ref<boolean>(false);
