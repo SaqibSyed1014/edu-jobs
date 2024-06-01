@@ -24,6 +24,11 @@ export function convertDateFormat(date: Date | string) {
     }
 }
 
+export function convertTZDateToShortDate(givenDate :Date | string) {
+    const date = new Date(givenDate);
+    return (date.getMonth() + 1).toString().padStart(2, '0') + '/' + date.getDate().toString().padStart(2, '0') + '/' + date.getFullYear();
+}
+
 export function getDaysDifference(givenDateString :Date | string) :string {
     const givenDate :any = new Date(givenDateString);
     const currentDate :any = new Date();
@@ -32,3 +37,4 @@ export function getDaysDifference(givenDateString :Date | string) :string {
     else if (daysDifference === 0) return 'Today'
     else return `${daysDifference}d ago`;
 }
+
