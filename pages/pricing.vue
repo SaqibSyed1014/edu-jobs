@@ -78,9 +78,8 @@ async function redirectToStripe(priceId :string, idx :number) {
                   </ul>
                   <ul class="flex flex-col justify-end grow gap-3">
                     <div v-if="offer.id !== 4">
-                      {{selectedFQty}}
-                      <label class="text-sm font-medium">Quantity: {{selectedSlot}}</label>
-                      <template v-if="offer.id === 3">  // quantity select options for job slots plans
+                      <label class="text-sm font-medium">Quantity:</label>
+                      <template v-if="offer.id === 3">  <!--- quantity select options for job slots plans --->
                         <select v-model="selectedSlot" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-[11px] px-2.5">
                           <option value="" disabled>Select</option>
                           <template v-for="option in offer?.slotsPricing">
@@ -90,7 +89,7 @@ async function redirectToStripe(priceId :string, idx :number) {
                           </template>
                         </select>
                       </template>
-                      <template v-else> // quantity select options for standard and featured plans
+                      <template v-else> <!--- quantity select options for standard and featured plans --->
                         <select v-model="selectedQty[index]" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-[11px] px-2.5">
                           <option value="" disabled>Select</option>
                           <template v-for="value in Array.from({ length: offer.slotEndRange - offer.slotStartRange + 1 }, (_, i) => offer.slotStartRange + i)">

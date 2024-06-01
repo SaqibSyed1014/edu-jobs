@@ -9,7 +9,7 @@ import {
 import FeatureJobPrompt from "~/components/pages/post-job/FeatureJobPrompt.vue";
 import type {Coordinates} from "~/segments/common.types";
 
-const currentStep = ref(2);
+const currentStep = ref(0);
 const postjobStore = usePostjobStore();
 const { content,status } = storeToRefs(postjobStore);
 const isLoading = ref<boolean>(false);
@@ -131,7 +131,10 @@ function handleStepClick() {
 
 let formsCollectiveData = reactive({
   stepOne: {},
-  stepTwo: {},
+  stepTwo: {
+    compensationTypeId: 'Salary',
+    jobDescription: 'hh',
+  },
   stepThree: {}
 })
 
@@ -317,7 +320,6 @@ function getStepTwoFields({ jobTitle, employment }) {
               </div>
             </div>
 
-            {{formsCollectiveData}}
             <FormStepOne
                 v-if="currentStep === 0"
                 :initial-form-values="formsCollectiveData.stepOne"
@@ -326,6 +328,7 @@ function getStepTwoFields({ jobTitle, employment }) {
             />
             <FormStepTwo
                 v-if="currentStep === 1"
+                :initial-form-values="formsCollectiveData.stepTwo"
                 @form-data-listener="getStepTwoFields"
                 @move-to-prev-step="prevStep"
                 @handle-form-submission="moveToNextForm"

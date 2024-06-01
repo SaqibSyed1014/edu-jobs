@@ -119,7 +119,6 @@ const textInputOptions = {
                 class="error-message"
                 name="applicationDeadline"
             />
-            {{errors?.applicationDeadline?.length}}
           </div>
         </div>
       </div>
