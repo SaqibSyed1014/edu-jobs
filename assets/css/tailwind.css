@@ -74,3 +74,51 @@ h1, h2, h3, h4, h5, h6{
     @apply text-red-500 text-sm font-medium leading-tight
 }
 
+
+.dp__input{
+    @apply bg-transparent rounded-lg border border-gray-200 py-2.5 px-3.5 shadow-field placeholder-gray-400
+}
+.dp__input_focus{
+    @apply ring-2 ring-blue-600
+}
+.dp__input_valid {
+    @apply shadow-none hover:border-inherit
+}
+.dp__input_invalid{
+    @apply ring-2 ring-error-400 hover:border-inherit
+}
+.dp__menu_inner {
+    @apply rounded-lg bg-white p-4 shadow-lg;
+}
+
+.dp__arrow_bottom {
+    @apply bg-white transform-none;
+}
+.dp__month_year_select {
+    width: 20%;
+}
+
+.dp__month_year_wrap {
+    align-items: center;
+    justify-content: center;
+}
+
+.dp__active_date {
+    @apply bg-brand-600 !text-white;
+}
+
+.dp__today {
+    @apply border border-brand-600;
+}
+
+.dp__calendar_header {
+    @apply leading-6 text-sm font-medium text-gray-500;
+}
+
+.dp__cell_inner {
+    @apply font-semibold text-sm;
+}
+
+.dp__icon {
+    @apply stroke-gray-600;
+}

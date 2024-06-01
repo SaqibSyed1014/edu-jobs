@@ -123,6 +123,11 @@
     requestId: string;
 }
 
+ interface OrganizationType {
+     organization_type_id: number;
+     organization_type: string;
+ }
+
 interface GradeLevel {
     grade_level_id: number;
     grade_level_long: string;

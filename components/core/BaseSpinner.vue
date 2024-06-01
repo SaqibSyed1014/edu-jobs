@@ -1,14 +1,15 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<{
   showLoader: boolean
-  size: 'lg' | 'md' | 'sm'
+  size: 'lg' | 'md' | 'sm' | 'xs'
 }>(), {
   showLoader: false,
   size: 'lg'
 })
 
 const spinnerSize = computed(() => {
-  if (props.size === 'sm') return 'w-8 h-8'
+  if (props.size === 'xs') return 'w-6 h-6'
+  else if (props.size === 'sm') return 'w-8 h-8'
   else if (props.size === 'md') return 'w-12 h-12'
   else if (props.size === 'lg') return 'w-16 h-16'
 })

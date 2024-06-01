@@ -1,5 +1,6 @@
 import {
     getStripeCheckDetails,
+    getOrgTypes,
     getGradesLevels,
     getSubjects,
     getExperienceLevels
@@ -10,6 +11,7 @@ interface StripeCheckout {
     duration: number | null;
     status: string | null;
     requestId: string | null;
+    organizationTypes: OrganizationType[];
     gradeLevels: GradeLevel[];
     subjects: Subject[];
     experienceLevels: ExperienceLevel[]
@@ -21,6 +23,7 @@ export const usePostjobStore = defineStore('postjobStore', {
         duration: null,
         status: null,
         requestId: null,
+        organizationTypes: [],
         gradeLevels: [],
         subjects: [],
         experienceLevels: []
@@ -48,6 +51,9 @@ export const usePostjobStore = defineStore('postjobStore', {
             this.$state.status  = null;
         },
 
+        async fetchOrgTypes() {
+            this.$state.organizationTypes = await getOrgTypes();
+        },
         async fetchGradeLevels() {
             this.$state.gradeLevels = await getGradesLevels();
         },
@@ -59,6 +65,12 @@ export const usePostjobStore = defineStore('postjobStore', {
         },
     },
     getters: {
+        orgTypesDropdown: (state) => {
+            return state.organizationTypes.map((org :OrganizationType) => ({
+                label: org.organization_type,
+                value: org.organization_type_id
+            }))
+        },
         gradeLevelDropdown: (state) => {
             return state.gradeLevels.map((grade :GradeLevel) => ({
                 label: grade.grade_level_long,

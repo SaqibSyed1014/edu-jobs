@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import * as Yup from "yup";
 import {Form, ErrorMessage, Field, useForm} from "vee-validate";
-import {al} from "~/.output/public/_nuxt/swiper-vue.Op2YMCzV";
+import {usePostjobStore} from "~/segments/postjobs/store";
 
-const emit = defineEmits(['handleFormSubmission', 'formDataListener'])
+const emit = defineEmits(['handleFormSubmission', 'formDataListener']);
+
+const props = defineProps<{
+  initialFormValues: any
+}>()
+
+const jobPoststore = usePostjobStore();
+const { orgTypesDropdown } = storeToRefs(jobPoststore);
 
 const uploadedImage = ref("");
-const firstStep = ref(null);
 
-// Function to handle image upload
 const handleImageUpload = (event: any) => {
   const file = event.target.files[0];
   if (file) {
@@ -24,13 +29,22 @@ const schema = Yup.object({
   organizationName: Yup.string().default('something@email.com')
       .required("Organization Name is required")
       .min(10, "Please enter a name that is at least 10 characters long"),
+  organizationTypeId: Yup.string().required('Organization type is required'),
   email: Yup.string().required('Email is required').email('Invalid email'),
   fullName: Yup.string().required("Full Name is required"),
 })
 
 
-const { defineField, handleSubmit, values } = useForm({
-  validationSchema: schema,
+const { defineField, handleSubmit, values, resetForm } = useForm({
+  validationSchema: schema
+});
+const [organizationName, orgNameAttrs] = defineField('organizationName');
+const [organizationTypeId, orgTypeAttrs] = defineField('organizationTypeId');
+const [email, emaileAttrs] = defineField('email');
+const [fullName, fullNameAttrs] = defineField('fullName');
+
+resetForm({
+  values: props.initialFormValues,
 });
 
 watch(() => [values.organizationName, uploadedImage.value], (val) => {
@@ -47,14 +61,29 @@ const onSubmit = handleSubmit(values => {
 
 <template>
   <form @submit.prevent="onSubmit">
+    {{initialFormValues}}
     <div class="mt-5 space-y-8 border-b border-gray-900/10 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0">
       <TextInput
+          v-model="organizationName"
+          v-bind="orgNameAttrs"
           name="organizationName"
           type="text"
           label="Organization Name*"
           placeholder="e.g. Unified School District"
           subLabel=""
           className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6"
+      />
+
+      <SelectBox
+          v-model="organizationTypeId"
+          v-bind="orgTypeAttrs"
+          name="organizationTypeId"
+          label="Organization Type"
+          :data="orgTypesDropdown"
+          :label-value-options="true"
+          subLabel=""
+          :value="values.organizationTypeId"
+          className="form-field-layout"
       />
 
       <ImageFileUpload
@@ -68,6 +97,8 @@ const onSubmit = handleSubmit(values => {
           class="mt-5 space-y-8 divide-b divide-gray-900/10 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0"
       >
         <TextInput
+            v-model="email"
+            v-bind="emaileAttrs"
             name="email"
             type="email"
             label="Your work email address*"
@@ -81,6 +112,8 @@ const onSubmit = handleSubmit(values => {
           class="mt-5 space-y-8 border-b border-gray-900/10 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0"
       >
         <TextInput
+            v-model="fullName"
+            v-bind="fullNameAttrs"
             name="fullName"
             type="text"
             label="Your full name*"

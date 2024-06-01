@@ -12,22 +12,24 @@ import { useHomeStore } from "~/segments/home/store";
 const homeStore = useHomeStore();
 const { checkoutURL } = storeToRefs(homeStore);
 
+const selectedQty = ref<number[]>([1, 1]);
+const selectedFQty = ref<number>(1);
+const selectedSQty = ref<number>(1);
 const selectedSlot = ref<number>(10);
+const btnsLoading = ref<boolean[]>([false, false, false]);
 
 const getSelectedSlotDetails = computed(() => {
-  return pricingPlans[2]?.slotsPricing.filter(slot => slot.totalSlots == selectedSlot.value)[0];
+  return pricingPlans[2]?.slotsPricing?.filter(slot => slot.totalSlots == selectedSlot.value)[0];
 })
 
-function getSlotPriceId() {
-  redirectToStripe(getSelectedSlotDetails.value.priceId);
-}
-
-async function redirectToStripe(priceId :string) {
+async function redirectToStripe(priceId :string, idx :number) {
   const payload = {
     price_id: priceId,
-    qty: 1
+    qty: [0, 1].includes(idx) ? selectedQty.value[idx] : 1
   }
+  btnsLoading.value[idx] = true;
   await homeStore.fetchStripeCheckoutURL(payload);
+  btnsLoading.value[idx] = false;
   if (checkoutURL.value) window.open(checkoutURL.value, '_blank');
 }
 </script>
@@ -46,7 +48,7 @@ async function redirectToStripe(priceId :string) {
         <div class="projects-blocks projects">
           <div class="project" data-filter="monthly">
             <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-8">
-              <template v-for="(offer, index) in pricingPlans">
+              <template v-for="(offer, index) in pricingPlans" :key="index">
                 <div class="flex flex-col bg-white rounded-2xl p-6 lg:p-8 shadow-[0_12px_16px_rgba(16,24,40,0.08)] border border-white-light relative">
                   <div v-if="false" class="text-brand-600 text-sm inline-flex absolute -top-6 right-0 lg:-right-16">
                     <svg width="60" height="46" viewBox="0 0 60 46" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -58,7 +60,7 @@ async function redirectToStripe(priceId :string) {
                   </div>
                   <div class="text-center">
                     <h4 class="capitalize text-xl mb-1">{{ offer.title }}</h4>
-                    <h3 v-if="offer?.slotsPricing" class="text-4xl my-4">
+                    <h3 v-if="offer?.slotsPricing" class="text-3xl my-4">
                       Starting at {{ getSelectedSlotDetails.price }} for {{ selectedSlot }}
                     </h3>
                     <h3 v-else class="text-4xl my-4">{{ offer.priceText }}</h3>
@@ -75,20 +77,33 @@ async function redirectToStripe(priceId :string) {
                     </template>
                   </ul>
                   <ul class="flex flex-col justify-end grow gap-3">
-                    <div v-if="offer.showSlotOptions">
-                      <label for="slotOptions" class="text-sm font-medium">Quantity:</label>
-                      <SelectBox
-                          v-model="selectedSlot"
-                          :label-value-options="true"
-                          label=""
-                          name="slotOptions"
-                          :data="offer?.slotsPricing?.map((slot) => ({ label: slot.totalSlots, value: slot.totalSlots }))"
-                          subLabel=""
-                      />
+                    <div v-if="offer.id !== 4">
+                      {{selectedFQty}}
+                      <label class="text-sm font-medium">Quantity: {{selectedSlot}}</label>
+                      <template v-if="offer.id === 3">  // quantity select options for job slots plans
+                        <select v-model="selectedSlot" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-[11px] px-2.5">
+                          <option value="" disabled>Select</option>
+                          <template v-for="option in offer?.slotsPricing">
+                            <option :value="option.totalSlots">
+                              {{ option.totalSlots }}
+                            </option>
+                          </template>
+                        </select>
+                      </template>
+                      <template v-else> // quantity select options for standard and featured plans
+                        <select v-model="selectedQty[index]" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-[11px] px-2.5">
+                          <option value="" disabled>Select</option>
+                          <template v-for="value in Array.from({ length: offer.slotEndRange - offer.slotStartRange + 1 }, (_, i) => offer.slotStartRange + i)">
+                            <option :value="value">
+                              {{ value }}
+                            </option>
+                          </template>
+                        </select>
+                      </template>
                     </div>
                     <template v-if="offer.showBuyBtn">
-                      <BaseButton v-if="offer.id === 3" label="Buy Now" :full-sized="true" @click="getSlotPriceId"/>
-                      <BaseButton v-else label="Buy Now" :full-sized="true" @click="redirectToStripe(offer.priceId)"/>
+                      <BaseButton v-if="offer.id === 3" :is-loading="btnsLoading[index]" label="Buy Now" :full-sized="true" @click="redirectToStripe(getSelectedSlotDetails.priceId, index)" />
+                      <BaseButton v-else label="Buy Now" :is-loading="btnsLoading[index]" :full-sized="true" @click="redirectToStripe(offer.priceId, index)"/>
                     </template>
                     <BaseButton v-if="offer.showContactSalesBtn" label="Contact sales" color="gray" :outline="true" :full-sized="true" />
                   </ul>
