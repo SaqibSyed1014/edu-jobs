@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { toRef } from "vue";
+import {toRef, watch} from "vue";
 import { useField } from "vee-validate";
 import { Field, ErrorMessage } from "vee-validate";
 
 const props = defineProps({
+  modelValue: {
+    type: Array,
+    default: [],
+  },
   value: {
     type: String,
     default: "",
@@ -60,19 +64,19 @@ const {
   meta,
   errorMessage
 } = useField(name, undefined, {
-  initialValue: props.value,
+  initialValue: props.modelValue[0],
 });
 
 const {
   value: secondaryInputValue,
 } = useField(secondaryName, undefined, {
-  initialValue: '',
+  initialValue: props.modelValue[1],
 });
 
-const selectedStartRange = ref('');
-const selectedEndRange = ref('');
+const selectedStartRange = ref(props.modelValue[0] || '');
+const selectedEndRange = ref(props.modelValue[1] || '');
 
-const rangeError = ref(false)
+const rangeError = ref(false);
 
 function convertPriceToNumber(price :string) {
   return Number(price.replace('$', '').replace(',', ''))
@@ -84,6 +88,14 @@ watch(() => [selectedStartRange.value, selectedEndRange.value], () => {
   rangeError.value = !!((startValue && endValue) && (endValue < startValue));
 })
 
+const modelValue = computed({
+  get() {
+    return [selectedStartRange.value, selectedEndRange.value]; // Return an array of both values
+  },
+  set(newValue) {
+    [selectedStartRange.value, selectedEndRange.value] = newValue; // Update the refs when newValue changes
+  }
+});
 </script>
 
 <template>
