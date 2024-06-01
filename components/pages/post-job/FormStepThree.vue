@@ -3,6 +3,7 @@ import {applyMethodOptions} from "~/components/core/constants/post-job-form.cons
 import * as Yup from "yup";
 import {Form, ErrorMessage, Field, useForm} from "vee-validate";
 import Datepicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 
 const emit = defineEmits(['moveToPrevStep', 'handleFormSubmission']);
 
