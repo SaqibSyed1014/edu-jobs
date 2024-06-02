@@ -60,8 +60,9 @@ async function redirectToStripe(priceId :string, idx :number) {
                   </div>
                   <div class="text-center">
                     <h4 class="capitalize text-xl mb-1">{{ offer.title }}</h4>
-                    <h3 v-if="offer?.slotsPricing" class="text-3xl my-4">
-                      Starting at {{ getSelectedSlotDetails.price }} for {{ selectedSlot }}
+                    <h3 v-if="[3, 4].includes(offer.id)" class="text-2xl my-4">
+                      Starts at {{ getSelectedSlotDetails.price }}
+                      <template v-if="offer.showSlotOptions">for {{ selectedSlot }}</template>
                     </h3>
                     <h3 v-else class="text-4xl my-4">{{ offer.priceText }}</h3>
                     <p v-if="offer.showSlotOptions" class="text-success-600">Saving {{ getSelectedSlotDetails.saving }}</p>
@@ -81,7 +82,7 @@ async function redirectToStripe(priceId :string, idx :number) {
                       <label class="text-sm font-medium">Quantity:</label>
                       <template v-if="offer.id === 3">  <!--- quantity select options for job slots plans --->
                         <select v-model="selectedSlot" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-[11px] px-2.5">
-                          <option value="" disabled>Select</option>
+                          <option value="">Please choose slots</option>
                           <template v-for="option in offer?.slotsPricing">
                             <option :value="option.totalSlots">
                               {{ option.totalSlots }}
@@ -91,7 +92,7 @@ async function redirectToStripe(priceId :string, idx :number) {
                       </template>
                       <template v-else> <!--- quantity select options for standard and featured plans --->
                         <select v-model="selectedQty[index]" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-[11px] px-2.5">
-                          <option value="" disabled>Select</option>
+                          <option value="">Please choose quantity</option>
                           <template v-for="value in Array.from({ length: offer.slotEndRange - offer.slotStartRange + 1 }, (_, i) => offer.slotStartRange + i)">
                             <option :value="value">
                               {{ value }}
