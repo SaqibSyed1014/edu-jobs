@@ -9,9 +9,11 @@ const props = withDefaults(defineProps<{
   navigateTo?: string
   disabled?: boolean
   isExternalLink?: boolean
+  isLoading?: boolean
 }>(), {
   color: 'primary',
-  isExternalLink: false
+  isExternalLink: false,
+  isLoading: false
 })
 
 const defaultStyles = 'inline-flex items-center justify-center gap-3 shrink-0 disabled:cursor-not-allowed'
@@ -56,7 +58,8 @@ const component = computed(() => {
 <template>
   <component :is="component" :to="navigateTo" :target="isExternalLink ? '_blank':''" :class="[defaultStyles, btnStyleClasses]" :disabled="disabled">
     <slot name="prepend-icon" />
-    {{ label }}
+    <template v-if="!isLoading">{{ label }}</template>
+    <BaseSpinner size="xs" :show-loader="isLoading" />
     <slot name="append-icon" />
   </component>
 </template>

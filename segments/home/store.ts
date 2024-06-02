@@ -2,7 +2,8 @@ import {
     getJobsSummaryByCities,
     getPartnersLogo,
     getFeaturedOrganizations,
-    getOrgDetails
+    getOrgDetails,
+    getStripeCheckoutURL
 } from "~/segments/home/services";
 
 interface HomeSectionsData {
@@ -10,6 +11,7 @@ interface HomeSectionsData {
     partnersLogos: PartnerLogo[]
     featuredOrganizations: FeaturedOrganizations[]
     orgDetail: Org | null
+    checkoutURL: string
 }
 
 export const useHomeStore = defineStore('homeStore', {
@@ -17,7 +19,8 @@ export const useHomeStore = defineStore('homeStore', {
         jobsByCities: [],
         partnersLogos: [],
         featuredOrganizations: [],
-        orgDetail: null
+        orgDetail: null,
+        checkoutURL: ''
     } as HomeSectionsData),
     actions: {
         async fetchJobsSummaryByCities() {
@@ -31,6 +34,10 @@ export const useHomeStore = defineStore('homeStore', {
         },
         async fetchOrgDetails(slug :string) {
             this.$state.orgDetail = await getOrgDetails(slug);
+        },
+        async fetchStripeCheckoutURL(payload :any) {
+            const { content } = await getStripeCheckoutURL(payload);
+            this.$state.checkoutURL = content.url;
         }
     },
     getters: {

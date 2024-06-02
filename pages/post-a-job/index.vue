@@ -1,21 +1,29 @@
 <script setup lang="ts">
-import * as Yup from "yup";
-import { Form, ErrorMessage, Field } from "vee-validate";
 import { usePostjobStore } from "~/segments/postjobs/store";
 import {
   formStepsHeaderContent,
   formStepsOptions,
 } from "~/components/core/constants/post-job-form.constants";
-import FeatureJobPrompt from "~/components/pages/post-job/FeatureJobPrompt.vue";
-import type {Coordinates} from "~/segments/common.types";
+import BaseSpinner from "~/components/core/BaseSpinner.vue";
+import FormStepFour from "~/components/pages/post-job/FormStepFour.vue";
 
 const currentStep = ref(0);
 const postjobStore = usePostjobStore();
 const { content,status } = storeToRefs(postjobStore);
 const isLoading = ref<boolean>(false);
+const isFormLoading = ref<boolean>(false);
 const router = useRouter();
-const startDate = ref(new Date());
-const errorMessage = ref(false);
+
+onMounted(async() => {
+  isFormLoading.value = true;
+  await Promise.all([
+    postjobStore.fetchOrgTypes(),
+    postjobStore.fetchGradeLevels(),
+    postjobStore.fetchSubjects(),
+    postjobStore.fetchExperienceLevels()
+  ])
+  isFormLoading.value = false;
+});
 
 
 const steps = ref(formStepsOptions);
@@ -73,44 +81,6 @@ async function checkout () {
 }
 
 
-const locError = ref(false)
-function nextStep(values: any) {
-  if (currentStep.value === 3) {
-    console.log("Done: ", JSON.stringify(values, null, 2));
-    return;
-  }
-
-  // Check if jobDesc is empty
-  if (currentStep.value === 1) {
-
-  }
-  // errorMessage.value = false;
-  // locError.value = false;
-  // Proceed to the next step if jobDesc is not empty
-  currentStep.value++;
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
-}
-
-function prevStep() {
-  if (currentStep.value <= 0) return;
-  currentStep.value--;
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
-}
-
-onMounted(async() => {
-  await Promise.all([
-    postjobStore.fetchGradeLevels(),
-    postjobStore.fetchSubjects(),
-    postjobStore.fetchExperienceLevels()
-  ])
-});
-
 // Function to handle button click
 function handleButtonClick(e: number) {
   currentStep.value = e;  // Update currentStep value
@@ -137,12 +107,30 @@ function handleStepClick() {
   useNuxtApp().$toast.error("Please Fill the Form");
 }
 
-const formsCollectiveData = ref({})
+let formsCollectiveData = reactive({
+  stepOne: {},
+  stepTwo: {
+    compensationTypeId: 'Salary',
+    jobDescription: '',
+  },
+  stepThree: {}
+})
 
-function moveToNextForm(values :any, index :number) {
-  formsCollectiveData.value = { ...formsCollectiveData.value, ...values };
-  console.log('form d ', formsCollectiveData.value)
-  currentStep.value = index;
+function moveToNextForm(values :any, formNo :number) {
+  if (formNo === 1) formsCollectiveData.stepOne = values;
+  if (formNo === 2) formsCollectiveData.stepTwo = values;
+  if (formNo === 3) formsCollectiveData.stepThree = values;
+  console.log('form datas --> ', formsCollectiveData)
+  currentStep.value = formNo;
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+}
+
+function prevStep() {
+  if (currentStep.value <= 0) return;
+  currentStep.value--;
   window.scrollTo({
     top: 0,
     behavior: "smooth",
@@ -177,7 +165,7 @@ function getStepTwoFields({ jobTitle, employment }) {
         <UInput color="primary" variant="outline" placeholder="Search..." />
       </div>
       <hr class="border-b border-gray-200 mt-5" />
-      <form
+      <div
         class="flex flex-col md:flex-row justify-between gap-8"
       >
         <div class="hidden xl:block w-1/5 border-r border-gray-200">
@@ -282,9 +270,9 @@ function getStepTwoFields({ jobTitle, employment }) {
           </div>
         </div>
 
-        <!--   Form Header Content     -->
+        <!--   Job Post Form Layout     -->
         <div class="w-full md:w-3/4 xl:w-3/5 pt-8">
-          <div class="form-header-content">
+          <div class="job-post-form-layout h-full">
             <div class="flex items-center justify-between">
               <template v-for="(header, i) in formStepsHeaderContent">
                 <div v-if="currentStep === i">
@@ -310,550 +298,41 @@ function getStepTwoFields({ jobTitle, employment }) {
               </div>
             </div>
 
-            <FormStepOne
-                v-if="currentStep === 0"
-                @form-data-listener="getStepOneField"
-                @handle-form-submission="moveToNextForm"
-            />
-            <FormStepTwo
-                v-if="currentStep === 1"
-                @form-data-listener="getStepTwoFields"
-                @move-to-prev-step="prevStep"
-                @handle-form-submission="moveToNextForm"
-            />
-            <FormStepThree
-                v-if="currentStep === 2"
-                @move-to-prev-step="prevStep"
-                @handle-form-submission="moveToNextForm"
-            />
+            <template v-if="isFormLoading">
+              <div class="container h-full">
+                <div class="flex justify-center items-center h-screen md:h-full w-full">
+                  <BaseSpinner size="lg" :show-loader="isFormLoading" />
+                </div>
+              </div>
+            </template>
 
-<!--            Hiding step 4 as it depends on values object -->
-
-<!--            <div v-if="currentStep === 3" class="w-full">-->
-<!--              <div-->
-<!--                class="mt-5 border-b border-gray-900/10 divide-y divide-gray-900/10 border-t pb-0"-->
-<!--              >-->
-<!--                <div-->
-<!--                  class="flex-col justify-start items-start inline-flex w-full gap-6 py-4 md:py-6"-->
-<!--                >-->
-<!--                  <h4-->
-<!--                    class="text-gray-900 text-base font-semibold leading-normal"-->
-<!--                  >-->
-<!--                    Organization Information-->
-<!--                  </h4>-->
-<!--                  <div class="grid sm:grid-cols-2 gap-4 w-full">-->
-<!--                    <div class="justify-start items-start gap-8 inline-flex">-->
-<!--                      <div-->
-<!--                        class="flex-col justify-start items-start gap-2 inline-flex"-->
-<!--                      >-->
-<!--                        <div class="inline-flex items-center gap-1">-->
-<!--                          <p-->
-<!--                            class="text-gray-700 text-base font-semibold leading-normal"-->
-<!--                          >-->
-<!--                            Organization Name*-->
-<!--                          </p>-->
-<!--                          <button-->
-<!--                            id="tooltipButton"-->
-<!--                            type="button"-->
-<!--                            @click="handleButtonClick(0)"-->
-<!--                          >-->
-<!--                            <SvgoEditPensil class="h-4" />-->
-<!--                          </button>-->
-
-<!--                          <div-->
-<!--                            id="tooltipContent"-->
-<!--                            role="tooltip"-->
-<!--                            data-tooltip-style="light"-->
-<!--                            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"-->
-<!--                          >-->
-<!--                            Edit-->
-<!--                            <div class="tooltip-arrow" data-popper-arrow></div>-->
-<!--                          </div>-->
-<!--                        </div>-->
-
-<!--                        <p-->
-<!--                          class="text-gray-600 text-base font-normal leading-normal"-->
-<!--                        >-->
-<!--                          {{ values?.organizationName ? values?.organizationName : "N/a" }}-->
-<!--                        </p>-->
-<!--                      </div>-->
-<!--                    </div>-->
-<!--                    <div class="justify-start items-start gap-8 inline-flex">-->
-<!--                      <div-->
-<!--                        class="flex-col justify-start items-start gap-2 inline-flex"-->
-<!--                      >-->
-<!--                        <div class="inline-flex items-center gap-1">-->
-<!--                          <p-->
-<!--                            class="text-gray-700 text-base font-semibold leading-normal"-->
-<!--                          >-->
-<!--                            Your work email address-->
-<!--                          </p>-->
-<!--                          <button-->
-<!--                            id="tooltipButton"-->
-<!--                            type="button"-->
-<!--                            @click="handleButtonClick(0)"-->
-<!--                          >-->
-<!--                            <SvgoEditPensil class="h-4" />-->
-<!--                          </button>-->
-
-<!--                          <div-->
-<!--                            id="tooltipContent"-->
-<!--                            role="tooltip"-->
-<!--                            data-tooltip-style="light"-->
-<!--                            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"-->
-<!--                          >-->
-<!--                            Edit-->
-<!--                            <div class="tooltip-arrow" data-popper-arrow></div>-->
-<!--                          </div>-->
-<!--                        </div>-->
-
-<!--                        <p-->
-<!--                          class="text-gray-600 text-base font-normal leading-normal"-->
-<!--                        >-->
-<!--                          {{ values?.email ? values?.email : "N/a" }}-->
-<!--                        </p>-->
-<!--                      </div>-->
-<!--                    </div>-->
-<!--                  </div>-->
-
-<!--                  <div class="grid sm:grid-cols-2 gap-4 w-full">-->
-<!--                    <div class="justify-start items-start gap-8 inline-flex">-->
-<!--                      <div-->
-<!--                        class="flex-col justify-start items-start gap-2 inline-flex"-->
-<!--                      >-->
-<!--                        <div class="inline-flex items-center gap-1">-->
-<!--                          <p-->
-<!--                            class="text-gray-700 text-base font-semibold leading-normal"-->
-<!--                          >-->
-<!--                            Your full name-->
-<!--                          </p>-->
-<!--                          <button-->
-<!--                            id="tooltipButton"-->
-<!--                            type="button"-->
-<!--                            @click="handleButtonClick(0)"-->
-<!--                          >-->
-<!--                            <SvgoEditPensil class="h-4" />-->
-<!--                          </button>-->
-
-<!--                          <div-->
-<!--                            id="tooltipContent"-->
-<!--                            role="tooltip"-->
-<!--                            data-tooltip-style="light"-->
-<!--                            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"-->
-<!--                          >-->
-<!--                            Edit-->
-<!--                            <div class="tooltip-arrow" data-popper-arrow></div>-->
-<!--                          </div>-->
-<!--                        </div>-->
-
-<!--                        <p-->
-<!--                          class="text-gray-600 text-base font-normal leading-normal"-->
-<!--                        >-->
-<!--                          {{ values?.fullName ? values?.fullName : "N/a" }}-->
-<!--                        </p>-->
-<!--                      </div>-->
-<!--                    </div>-->
-<!--                  </div>-->
-<!--                </div>-->
-
-<!--                <div-->
-<!--                  class="flex-col justify-start items-start inline-flex w-full gap-6 py-4 md:py-6"-->
-<!--                >-->
-<!--                  <h4-->
-<!--                    class="text-gray-900 text-base font-semibold leading-normal"-->
-<!--                  >-->
-<!--                    Job Details-->
-<!--                  </h4>-->
-<!--                  <div class="grid sm:grid-cols-2 gap-4 w-full">-->
-<!--                    <div class="justify-start items-start gap-8 inline-flex">-->
-<!--                      <div-->
-<!--                        class="flex-col justify-start items-start gap-2 inline-flex"-->
-<!--                      >-->
-<!--                        <div class="inline-flex items-center gap-1">-->
-<!--                          <p-->
-<!--                            class="text-gray-700 text-base font-semibold leading-normal"-->
-<!--                          >-->
-<!--                            Job Title-->
-<!--                          </p>-->
-<!--                          <button-->
-<!--                            id="tooltipButton"-->
-<!--                            type="button"-->
-<!--                            @click="handleButtonClick(1)"-->
-<!--                          >-->
-<!--                            <SvgoEditPensil class="h-4" />-->
-<!--                          </button>-->
-
-<!--                          <div-->
-<!--                            id="tooltipContent"-->
-<!--                            role="tooltip"-->
-<!--                            data-tooltip-style="light"-->
-<!--                            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"-->
-<!--                          >-->
-<!--                            Edit-->
-<!--                            <div class="tooltip-arrow" data-popper-arrow></div>-->
-<!--                          </div>-->
-<!--                        </div>-->
-
-<!--                        <p-->
-<!--                          class="text-gray-600 text-base font-normal leading-normal"-->
-<!--                        >-->
-<!--                          {{ values?.jobTitle ? values?.jobTitle : "N/a" }}-->
-<!--                        </p>-->
-<!--                      </div>-->
-<!--                    </div>-->
-<!--                    <div class="justify-start items-start gap-8 inline-flex">-->
-<!--                      <div-->
-<!--                        class="flex-col justify-start items-start gap-2 inline-flex"-->
-<!--                      >-->
-<!--                        <div class="inline-flex items-center gap-1">-->
-<!--                          <p-->
-<!--                            class="text-gray-700 text-base font-semibold leading-normal"-->
-<!--                          >-->
-<!--                            Start Date-->
-<!--                          </p>-->
-<!--                          <button-->
-<!--                            id="tooltipButton"-->
-<!--                            type="button"-->
-<!--                            @click="handleButtonClick(1)"-->
-<!--                          >-->
-<!--                            <SvgoEditPensil class="h-4" />-->
-<!--                          </button>-->
-
-<!--                          <div-->
-<!--                            id="tooltipContent"-->
-<!--                            role="tooltip"-->
-<!--                            data-tooltip-style="light"-->
-<!--                            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"-->
-<!--                          >-->
-<!--                            Edit-->
-<!--                            <div class="tooltip-arrow" data-popper-arrow></div>-->
-<!--                          </div>-->
-<!--                        </div>-->
-
-<!--                        <p-->
-<!--                          class="text-gray-600 text-base font-normal leading-normal"-->
-<!--                        >-->
-<!--                          {{ values?.startDate ? values?.startDate : "N/a" }}-->
-<!--                        </p>-->
-<!--                      </div>-->
-<!--                    </div>-->
-<!--                  </div>-->
-
-<!--                  <div class="grid sm:grid-cols-2 gap-4 w-full">-->
-<!--                    <div class="justify-start items-start gap-8 inline-flex">-->
-<!--                      <div-->
-<!--                        class="flex-col justify-start items-start gap-2 inline-flex"-->
-<!--                      >-->
-<!--                        <div class="inline-flex items-center gap-1">-->
-<!--                          <p-->
-<!--                            class="text-gray-700 text-base font-semibold leading-normal"-->
-<!--                          >-->
-<!--                            Employment Type-->
-<!--                          </p>-->
-<!--                          <button-->
-<!--                            id="tooltipButton"-->
-<!--                            type="button"-->
-<!--                            @click="handleButtonClick(1)"-->
-<!--                          >-->
-<!--                            <SvgoEditPensil class="h-4" />-->
-<!--                          </button>-->
-
-<!--                          <div-->
-<!--                            id="tooltipContent"-->
-<!--                            role="tooltip"-->
-<!--                            data-tooltip-style="light"-->
-<!--                            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"-->
-<!--                          >-->
-<!--                            Edit-->
-<!--                            <div class="tooltip-arrow" data-popper-arrow></div>-->
-<!--                          </div>-->
-<!--                        </div>-->
-
-<!--                        <p-->
-<!--                          class="text-gray-600 text-base font-normal leading-normal"-->
-<!--                        >-->
-<!--                          {{ values?.employmentTypeId ? values?.employmentTypeId : "N/A" }}-->
-<!--                        </p>-->
-<!--                      </div>-->
-<!--                    </div>-->
-
-<!--                    <div class="justify-start items-start gap-8 inline-flex">-->
-<!--                      <div-->
-<!--                        class="flex-col justify-start items-start gap-2 inline-flex"-->
-<!--                      >-->
-<!--                        <div class="inline-flex items-center gap-1">-->
-<!--                          <p-->
-<!--                            class="text-gray-700 text-base font-semibold leading-normal"-->
-<!--                          >-->
-<!--                            Job Role-->
-<!--                          </p>-->
-<!--                          <button-->
-<!--                            id="tooltipButton"-->
-<!--                            type="button"-->
-<!--                            @click="handleButtonClick(1)"-->
-<!--                          >-->
-<!--                            <SvgoEditPensil class="h-4" />-->
-<!--                          </button>-->
-
-<!--                          <div-->
-<!--                            id="tooltipContent"-->
-<!--                            role="tooltip"-->
-<!--                            data-tooltip-style="light"-->
-<!--                            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"-->
-<!--                          >-->
-<!--                            Edit-->
-<!--                            <div class="tooltip-arrow" data-popper-arrow></div>-->
-<!--                          </div>-->
-<!--                        </div>-->
-
-<!--                        <p-->
-<!--                          class="text-gray-600 text-base font-normal leading-normal"-->
-<!--                        >-->
-<!--                          {{ values?.jobRole ? values?.jobRole : "N/a" }}-->
-<!--                        </p>-->
-<!--                      </div>-->
-<!--                    </div>-->
-<!--                  </div>-->
-
-<!--                  <div class="grid sm:grid-cols-2 gap-4 w-full">-->
-<!--                    <div class="justify-start items-start gap-8 inline-flex">-->
-<!--                      <div-->
-<!--                        class="flex-col justify-start items-start gap-2 inline-flex"-->
-<!--                      >-->
-<!--                        <div class="inline-flex items-center gap-1">-->
-<!--                          <p-->
-<!--                            class="text-gray-700 text-base font-semibold leading-normal"-->
-<!--                          >-->
-<!--                            Grade Level(s)-->
-<!--                          </p>-->
-<!--                          <button-->
-<!--                            id="tooltipButton"-->
-<!--                            type="button"-->
-<!--                            @click="handleButtonClick(1)"-->
-<!--                          >-->
-<!--                            <SvgoEditPensil class="h-4" />-->
-<!--                          </button>-->
-
-<!--                          <div-->
-<!--                            id="tooltipContent"-->
-<!--                            role="tooltip"-->
-<!--                            data-tooltip-style="light"-->
-<!--                            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"-->
-<!--                          >-->
-<!--                            Edit-->
-<!--                            <div class="tooltip-arrow" data-popper-arrow></div>-->
-<!--                          </div>-->
-<!--                        </div>-->
-
-<!--                        <p-->
-<!--                          class="text-gray-600 text-base font-normal leading-normal"-->
-<!--                        >-->
-<!--                          {{ values?.gradeLevel ? values?.gradeLevel : "N/a" }}-->
-<!--                        </p>-->
-<!--                      </div>-->
-<!--                    </div>-->
-
-<!--                    <div class="justify-start items-start gap-8 inline-flex">-->
-<!--                      <div-->
-<!--                        class="flex-col justify-start items-start gap-2 inline-flex"-->
-<!--                      >-->
-<!--                        <div class="inline-flex items-center gap-1">-->
-<!--                          <p-->
-<!--                            class="text-gray-700 text-base font-semibold leading-normal"-->
-<!--                          >-->
-<!--                            Subject Area(s)-->
-<!--                          </p>-->
-<!--                          <button-->
-<!--                            id="tooltipButton"-->
-<!--                            type="button"-->
-<!--                            @click="handleButtonClick(1)"-->
-<!--                          >-->
-<!--                            <SvgoEditPensil class="h-4" />-->
-<!--                          </button>-->
-
-<!--                          <div-->
-<!--                            id="tooltipContent"-->
-<!--                            role="tooltip"-->
-<!--                            data-tooltip-style="light"-->
-<!--                            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"-->
-<!--                          >-->
-<!--                            Edit-->
-<!--                            <div class="tooltip-arrow" data-popper-arrow></div>-->
-<!--                          </div>-->
-<!--                        </div>-->
-
-<!--                        <p-->
-<!--                          class="text-gray-600 text-base font-normal leading-normal"-->
-<!--                        >-->
-<!--                          {{ values?.subjects ? values?.subjects : "N/a" }}-->
-<!--                        </p>-->
-<!--                      </div>-->
-<!--                    </div>-->
-<!--                  </div>-->
-
-<!--                  <div class="flex flex-col gap-4 w-full">-->
-<!--                    <div class="justify-start items-start gap-8 inline-flex">-->
-<!--                      <div-->
-<!--                        class="flex-col justify-start items-start gap-2 inline-flex"-->
-<!--                      >-->
-<!--                        <div class="inline-flex items-center gap-1">-->
-<!--                          <p-->
-<!--                            class="text-gray-700 text-base font-semibold leading-normal"-->
-<!--                          >-->
-<!--                            Job Description-->
-<!--                          </p>-->
-<!--                          <button-->
-<!--                            id="tooltipButton"-->
-<!--                            type="button"-->
-<!--                            @click="handleButtonClick(1)"-->
-<!--                          >-->
-<!--                            <SvgoEditPensil class="h-4" />-->
-<!--                          </button>-->
-
-<!--                          <div-->
-<!--                            id="tooltipContent"-->
-<!--                            role="tooltip"-->
-<!--                            data-tooltip-style="light"-->
-<!--                            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"-->
-<!--                          >-->
-<!--                            Edit-->
-<!--                            <div class="tooltip-arrow" data-popper-arrow></div>-->
-<!--                          </div>-->
-<!--                        </div>-->
-<!--                        <p-->
-<!--                          class="text-gray-600 text-base font-normal leading-normal"-->
-<!--                          v-html="jobDesc"-->
-<!--                        ></p>-->
-<!--                      </div>-->
-<!--                    </div>-->
-<!--                  </div>-->
-<!--                </div>-->
-
-<!--                <div-->
-<!--                  class="flex-col justify-start items-start inline-flex w-full gap-6 py-4 md:py-6"-->
-<!--                >-->
-<!--                  <h4-->
-<!--                    class="text-gray-900 text-base font-semibold leading-normal"-->
-<!--                  >-->
-<!--                    Application Details-->
-<!--                  </h4>-->
-<!--                  <div class="grid sm:grid-cols-2 gap-4 w-full">-->
-<!--                    <div class="justify-start items-start gap-8 inline-flex">-->
-<!--                      <div-->
-<!--                        class="flex-col justify-start items-start gap-2 inline-flex"-->
-<!--                      >-->
-<!--                        <div class="inline-flex items-center gap-1">-->
-<!--                          <p-->
-<!--                            class="text-gray-700 text-base font-semibold leading-normal"-->
-<!--                          >-->
-<!--                            Application method-->
-<!--                          </p>-->
-<!--                          <button-->
-<!--                            id="tooltipButton"-->
-<!--                            type="button"-->
-<!--                            @click="handleButtonClick(2)"-->
-<!--                          >-->
-<!--                            <SvgoEditPensil class="h-4" />-->
-<!--                          </button>-->
-
-<!--                          <div-->
-<!--                            id="tooltipContent"-->
-<!--                            role="tooltip"-->
-<!--                            data-tooltip-style="light"-->
-<!--                            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"-->
-<!--                          >-->
-<!--                            Edit-->
-<!--                            <div class="tooltip-arrow" data-popper-arrow></div>-->
-<!--                          </div>-->
-<!--                        </div>-->
-
-<!--                        <p-->
-<!--                          class="text-gray-600 text-base font-normal leading-normal"-->
-<!--                        >-->
-<!--                          {{-->
-<!--                            values?.applicationMethod-->
-<!--                              ? values?.applicationMethod-->
-<!--                              : "N/A"-->
-<!--                          }}-->
-<!--                        </p>-->
-<!--                      </div>-->
-<!--                    </div>-->
-<!--                    <div class="justify-start items-start gap-8 inline-flex">-->
-<!--                      <div-->
-<!--                        class="flex-col justify-start items-start gap-2 inline-flex"-->
-<!--                      >-->
-<!--                        <div class="inline-flex items-center gap-1">-->
-<!--                          <p class="text-gray-700 text-base font-semibold leading-normal"-->
-<!--                          >Enter details</p>-->
-<!--                          <button-->
-<!--                            id="tooltipButton"-->
-<!--                            type="button"-->
-<!--                            @click="handleButtonClick(2)"-->
-<!--                          >-->
-<!--                            <SvgoEditPensil class="h-4" />-->
-<!--                          </button>-->
-
-<!--                          <div-->
-<!--                            id="tooltipContent"-->
-<!--                            role="tooltip"-->
-<!--                            data-tooltip-style="light"-->
-<!--                            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"-->
-<!--                          >-->
-<!--                            Edit-->
-<!--                            <div class="tooltip-arrow" data-popper-arrow></div>-->
-<!--                          </div>-->
-<!--                        </div>-->
-
-<!--                        <p class="text-gray-600 text-base font-normal leading-normal">-->
-<!--                          {{ values?.applyURL ? "http://" + values.applyURL : "N/A" }}-->
-<!--                        </p>-->
-<!--                      </div>-->
-<!--                    </div>-->
-<!--                  </div>-->
-
-<!--                  <div class="grid sm:grid-cols-2 gap-4 w-full">-->
-<!--                    <div class="justify-start items-start gap-8 inline-flex">-->
-<!--                      <div-->
-<!--                        class="flex-col justify-start items-start gap-2 inline-flex"-->
-<!--                      >-->
-<!--                        <div class="inline-flex items-center gap-1">-->
-<!--                          <p-->
-<!--                            class="text-gray-700 text-base font-semibold leading-normal"-->
-<!--                          >-->
-<!--                            Application deadline date-->
-<!--                          </p>-->
-<!--                          <button-->
-<!--                            id="tooltipButton"-->
-<!--                            type="button"-->
-<!--                            @click="handleButtonClick(2)"-->
-<!--                          >-->
-<!--                            <SvgoEditPensil class="h-4" />-->
-<!--                          </button>-->
-
-<!--                          <div-->
-<!--                            id="tooltipContent"-->
-<!--                            role="tooltip"-->
-<!--                            data-tooltip-style="light"-->
-<!--                            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 tooltip"-->
-<!--                          >-->
-<!--                            Edit-->
-<!--                            <div class="tooltip-arrow" data-popper-arrow></div>-->
-<!--                          </div>-->
-<!--                        </div>-->
-
-<!--                        <p class="text-gray-600 text-base font-normal leading-normal">-->
-<!--                          {{ values?.applicationDeadlinel ? values?.applicationDeadlinel : "N/A" }}-->
-<!--                        </p>-->
-<!--                      </div>-->
-<!--                    </div>-->
-<!--                  </div>-->
-<!--                </div>-->
-
-<!--                <FeatureJobPrompt />-->
-<!--              </div>-->
-<!--            </div>-->
-
-
+            <template v-else>
+              <FormStepOne
+                  v-if="currentStep === 0"
+                  :initial-form-values="formsCollectiveData.stepOne"
+                  @form-data-listener="getStepOneField"
+                  @handle-form-submission="moveToNextForm"
+              />
+              <FormStepTwo
+                  v-if="currentStep === 1"
+                  :initial-form-values="formsCollectiveData.stepTwo"
+                  @form-data-listener="getStepTwoFields"
+                  @move-to-prev-step="prevStep"
+                  @handle-form-submission="moveToNextForm"
+              />
+              <FormStepThree
+                  v-if="currentStep === 2"
+                  :initial-form-values="formsCollectiveData.stepThree"
+                  @move-to-prev-step="prevStep"
+                  @handle-form-submission="moveToNextForm"
+              />
+              <FormStepFour
+                  v-if="currentStep === 3"
+                  :form-data="formsCollectiveData"
+                  @edit-icon-clicked="handleButtonClick"
+                  @move-to-prev-step="prevStep"
+              />
+            </template>
           </div>
         </div>
 
@@ -879,7 +358,7 @@ function getStepTwoFields({ jobTitle, employment }) {
             :disabled="false"
           />
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </template>
