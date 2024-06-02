@@ -72,12 +72,9 @@ onMounted(async () => {
   if (paramsString) {
     const parsedParams = JSON.parse(decode(paramsString));
     assignQueryParamsOnInitialLoad(parsedParams as JobQueryParams);
-    return;
+    // assign the saved coordinates in store (searched on Home view) for query
+    if (coordinates.value.lat && coordinates.value.lng) query.value.filter_by = `geo_location:(${coordinates.value.lat}, ${coordinates.value.lng}, 10 mi)`;
   }
-
-  // assign the saved coordinates in store (searched on Home view) for query
-  if (coordinates.value.lat && coordinates.value.lng) query.value.filter_by = `geo_location:(${coordinates.value.lat}, ${coordinates.value.lng}, 10 mi)`;
-
   await doSearch(); // Initial fetch
 });
 
@@ -203,10 +200,7 @@ function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
         });
       }
     });
-  if (jobSidebarFilters.value) {
-    console.log('calling')
-    jobSidebarFilters.value.emitSelectedValues();
-  }
+  if (jobSidebarFilters.value) jobSidebarFilters.value.emitSelectedValues();
 
   if (coordinates && !coordinates?.includes(0)) {
     jobStore.coordinates.lat = coordinates[0];
