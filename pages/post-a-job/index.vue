@@ -112,6 +112,7 @@ let formsCollectiveData = reactive({
   stepTwo: {
     compensationTypeId: 'Salary',
     jobDescription: '',
+    gradeLevel: []
   },
   stepThree: {}
 })

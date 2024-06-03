@@ -8,10 +8,12 @@ import {
   toolbarOptions
 } from "~/components/core/constants/post-job-form.constants";
 import * as Yup from "yup";
-import {Form, ErrorMessage, Field, useForm} from "vee-validate";
+import {ErrorMessage, Field, Form, useForm} from "vee-validate";
 import {usePostjobStore} from "~/segments/postjobs/store";
 import Datepicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
+import Multiselect from 'vue-multiselect'
+import "vue-multiselect/dist/vue-multiselect.css"
 
 const emit = defineEmits(['moveToPrevStep', 'handleFormSubmission', 'formDataListener']);
 
@@ -51,9 +53,9 @@ const schema = Yup.object({
       then: (schema) => schema.required("Hourly End Range is required")
     }),
     jobRole: Yup.string().required("Job Role is required"),
-    gradeLevel: Yup.string().when("jobRole", {
+    gradeLevel: Yup.array().of(Yup.string()).when("jobRole", {
       is: "Instructional",
-      then: (schema) => schema.required("Grade Level(s) is required")
+      then: (schema) => schema.min(1, "Grade Level(s) is required")
     }),
     subjects: Yup.string().when("jobRole", {
       is: "Instructional",
@@ -114,7 +116,7 @@ const onSubmit = handleSubmit(values => {
   emit('handleFormSubmission', values, 2);
 });
 
-function handleInput(delta) {
+function handleInput(delta :string) {
   if (delta === '<p><br></p>') jobDescription.value = ''
 }
 
@@ -125,6 +127,18 @@ const textInputOptions = {
 const selectedMin = computed(() => {
   return compensationTypeId.value === 'Salary' ? minSalaryId.value : minHourlyId.value;
 });
+
+let selectedGrades = ref<{ label: string, value: string }[]>([]);
+
+watch(() => props.initialFormValues, () => {
+  selectedGrades.value = (props.initialFormValues?.gradeLevel || []).map((selectedGrade :any) => {
+    return gradeLevelDropdown.value.find(grade => grade.value === selectedGrade);
+  }).filter((item :any) => item !== undefined) as any[];
+}, { immediate: true })
+
+function checkSelection() {
+  gradeLevel.value = selectedGrades.value.map(grade => grade.value);
+}
 </script>
 
 <template>
@@ -326,18 +340,56 @@ const selectedMin = computed(() => {
             className="form-field-layout"
         />
 
+        <div class="form-field-layout mb-2"  v-if="jobRole === 'Instructional'">
+          <label class="block text-sm font-semibold text-gray-700 sm:pt-1.5">
+            Grade Level
+          </label>
+          <div class="mt-2 sm:col-span-2 sm:mt-0">
+            <multiselect
+                v-model="selectedGrades"
+                :options="gradeLevelDropdown"
+                label="label"
+                track-by="value"
+                :multiple="true"
+                :taggable="true"
+                :show-labels="false"
+                :searchable="false"
+                :max="4"
+                class="custom-multi-select"
+                @select="checkSelection"
+                @Remove="checkSelection"
+            >
+              <template #caret>
+                <div class="multiselect__select">
+                  <SvgoChevronDown class="w-4 h-4" />
+                </div>
+              </template>
+              <template #maxElements>
+                <span class="error-message">
+                  Maximum of 4 grades have been elements. First remove a selected option to select another.
+                </span>
+              </template>
+            </multiselect>
+
+            <ErrorMessage
+                class="error-message"
+                name="gradeLevel"
+            />
+          </div>
+        </div>
+
         <!--    Grade Level Field    -->
-        <SelectBox
-            v-if="jobRole === 'Instructional'"
-            v-model="gradeLevel"
-            name="gradeLevel"
-            label="Grade Level(s)"
-            :data="gradeLevelDropdown"
-            :label-value-options="true"
-            subLabel=""
-            :value="values.gradeLevel"
-            className="form-field-layout"
-        />
+<!--        <SelectBox-->
+<!--            v-if="jobRole === 'Instructional'"-->
+<!--            v-model="gradeLevel"-->
+<!--            name="gradeLevel"-->
+<!--            label="Grade Level(s)"-->
+<!--            :data="gradeLevelDropdown"-->
+<!--            :label-value-options="true"-->
+<!--            subLabel=""-->
+<!--            :value="values.gradeLevel"-->
+<!--            className="form-field-layout"-->
+<!--        />-->
 
         <!--    Subject Areas Field    -->
         <SelectBox

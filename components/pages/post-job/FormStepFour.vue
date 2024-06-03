@@ -1,11 +1,22 @@
 <script setup lang="ts">
 import {convertTZDateToShortDate} from "~/segments/utils";
+import {usePostjobStore} from "~/segments/postjobs/store";
 
-defineProps<{
+const props = defineProps<{
   formData: any
 }>()
 
+const postJobStore = usePostjobStore();
+const { gradeLevelDropdown } = storeToRefs(postJobStore);
+
 const emit = defineEmits(['editIconClicked', 'moveToPrevStep'])
+
+const gradeLevelsLabels = computed(() => {
+  return props.formData.stepTwo?.gradeLevel.map((value :any) => {
+    const foundItem = gradeLevelDropdown.value.find(item => item.value === value);
+    return foundItem ? foundItem.label : null;
+  }).join(', ');
+})
 </script>
 
 <template>
@@ -218,7 +229,7 @@ const emit = defineEmits(['editIconClicked', 'moveToPrevStep'])
               </div>
 
               <p class="text-gray-600 text-base font-normal leading-normal">
-                {{ formData.stepTwo?.gradeLevel ? formData.stepTwo?.gradeLevel : "N/A" }}
+                {{ formData.stepTwo?.gradeLevel.length ? gradeLevelsLabels : "N/A" }}
               </p>
             </div>
           </div>
