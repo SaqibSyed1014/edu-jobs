@@ -8,7 +8,7 @@ import {
   toolbarOptions
 } from "~/components/core/constants/post-job-form.constants";
 import * as Yup from "yup";
-import {Form, ErrorMessage, Field, useForm} from "vee-validate";
+import {ErrorMessage, Field, Form, useForm} from "vee-validate";
 import {usePostjobStore} from "~/segments/postjobs/store";
 import Datepicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
@@ -130,10 +130,14 @@ const selectedMin = computed(() => {
 
 let selectedGrades = ref<{ label: string, value: string }[]>([]);
 
+watch(() => props.initialFormValues, () => {
+  selectedGrades.value = (props.initialFormValues?.gradeLevel || []).map((selectedGrade :any) => {
+    return gradeLevelDropdown.value.find(grade => grade.value === selectedGrade);
+  }).filter((item :any) => item !== undefined) as any[];
+}, { immediate: true })
+
 function checkSelection() {
-  console.log('checl ', selectedGrades.value)
   gradeLevel.value = selectedGrades.value.map(grade => grade.value);
-  console.log('test ', gradeLevel.value)
 }
 </script>
 
@@ -336,7 +340,7 @@ function checkSelection() {
             className="form-field-layout"
         />
 
-        <div class="form-field-layout mb-4"  v-if="jobRole === 'Instructional'">
+        <div class="form-field-layout mb-2"  v-if="jobRole === 'Instructional'">
           <label class="block text-sm font-semibold text-gray-700 sm:pt-1.5">
             Grade Level
           </label>

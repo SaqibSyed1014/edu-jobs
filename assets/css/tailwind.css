@@ -143,3 +143,6 @@ h1, h2, h3, h4, h5, h6{
 .multiselect.custom-multi-select .multiselect__content-wrapper .multiselect__option:has(> .error-message) {
     @apply hover:bg-transparent
 }
+.multiselect.custom-multi-select.multiselect--active .multiselect__tags .multiselect__placeholder{
+    @apply !block
+}
