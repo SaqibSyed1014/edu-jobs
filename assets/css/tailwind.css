@@ -115,3 +115,31 @@ h1, h2, h3, h4, h5, h6{
 .form-input.dp__icon {
     @apply stroke-gray-600;
 }
+.multiselect.custom-multi-select .multiselect__tags{
+    @apply h-11 bg-transparent !rounded-lg border border-gray-300 py-2.5 px-3.5 shadow-field placeholder-gray-400 bg-gray-50 text-gray-900 text-sm
+}
+.multiselect.custom-multi-select .multiselect__tag{
+    @apply bg-brand-600 mb-0
+}
+.multiselect.custom-multi-select .multiselect__tags-wrap{
+    @apply flex flex-nowrap overflow-x-auto mr-5
+}
+.multiselect.custom-multi-select .multiselect__tag-icon::after{
+    @apply text-white
+}
+.multiselect.custom-multi-select .multiselect__option--selected.multiselect__option--highlight{
+    @apply bg-brand-300
+}
+.multiselect.custom-multi-select .multiselect__content-wrapper .multiselect__option:hover,
+.multiselect.custom-multi-select .multiselect__content-wrapper .multiselect__option--highlight{
+    @apply bg-brand-600
+}
+.multiselect.custom-multi-select .multiselect__select:before{
+    @apply hidden
+}
+.multiselect.custom-multi-select .multiselect__select{
+    @apply !rotate-0 -right-1 top-1/4
+}
+.multiselect.custom-multi-select .multiselect__content-wrapper .multiselect__option:has(> .error-message) {
+    @apply hover:bg-transparent
+}
