@@ -136,6 +136,10 @@ watch(() => props.initialFormValues, () => {
   }).filter((item :any) => item !== undefined) as any[];
 }, { immediate: true })
 
+watch(() => jobRole.value, (val) => {  // remove selected grades on non-instructional selection
+  if (val === 'Non-instructional') selectedGrades.value = [];
+})
+
 function checkSelection() {
   gradeLevel.value = selectedGrades.value.map(grade => grade.value);
 }
@@ -340,6 +344,7 @@ function checkSelection() {
             className="form-field-layout"
         />
 
+        <!--    Grade Level Field    -->
         <div class="form-field-layout mb-2"  v-if="jobRole === 'Instructional'">
           <label class="block text-sm font-semibold text-gray-700 sm:pt-1.5">
             Grade Level
@@ -356,6 +361,7 @@ function checkSelection() {
                 :searchable="false"
                 :max="4"
                 class="custom-multi-select"
+                placeholder="Select grades"
                 @select="checkSelection"
                 @Remove="checkSelection"
             >
@@ -378,19 +384,6 @@ function checkSelection() {
           </div>
         </div>
 
-        <!--    Grade Level Field    -->
-<!--        <SelectBox-->
-<!--            v-if="jobRole === 'Instructional'"-->
-<!--            v-model="gradeLevel"-->
-<!--            name="gradeLevel"-->
-<!--            label="Grade Level(s)"-->
-<!--            :data="gradeLevelDropdown"-->
-<!--            :label-value-options="true"-->
-<!--            subLabel=""-->
-<!--            :value="values.gradeLevel"-->
-<!--            className="form-field-layout"-->
-<!--        />-->
-
         <!--    Subject Areas Field    -->
         <SelectBox
             v-if="jobRole === 'Instructional'"
@@ -401,6 +394,7 @@ function checkSelection() {
             :label-value-options="true"
             subLabel=""
             :value="values.subjects"
+            placeholder="Select subject"
             className="form-field-layout"
         />
 

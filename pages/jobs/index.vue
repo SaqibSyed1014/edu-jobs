@@ -250,6 +250,7 @@ const signUpCardIndex = Math.floor(Math.random() * 25);  // randomly generate in
           <ListingFilters
               ref="jobSidebarFilters"
               class="hidden lg:flex"
+              :inside-sidebar="true"
               :filtration-list="filters"
               :items-loading="jobsLoading"
               @on-filters-change="updateSideBarFilters"

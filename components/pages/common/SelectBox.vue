@@ -108,7 +108,7 @@ watch(() => props.modelValue, (newValue: any) => {
         ]"
         @change="updatedValue"
       >
-        <option value="" disabled>Select</option>
+        <option value="" disabled>{{ placeholder.length ? placeholder : 'Select' }}</option>
         <template v-if="labelValueOptions">
           <option
               v-for="item in data"
