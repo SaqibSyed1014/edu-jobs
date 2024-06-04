@@ -3,9 +3,11 @@ defineProps<{
   hideBackButton?: boolean,
   hideCancelButton?: boolean,
   hideNextButton?: boolean
-}>()
+}>();
 
-const emit = defineEmits(['backBtnClicked', 'nextBtnClicked'])
+const emit = defineEmits(['backBtnClicked', 'nextBtnClicked']);
+
+const router = useRouter();
 </script>
 
 <template>
@@ -47,10 +49,8 @@ const emit = defineEmits(['backBtnClicked', 'nextBtnClicked'])
           class="order-1 md:order-2"
           @click="() => emit('nextBtnClicked')"
       />
+
+      <slot name="checkoutBtn" />
     </div>
   </div>
 </template>
-
-<style scoped lang="postcss">
-
-</style>
