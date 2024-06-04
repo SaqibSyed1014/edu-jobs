@@ -151,3 +151,42 @@ interface Subject {
      active: number;
  }
 
+
+ interface OrgResponseType {
+     facet_counts: any[];
+     found: number;
+     hits: OrgHit[];
+     out_of: number;
+     page: number;
+     request_params: RequestParams;
+     search_cutoff: boolean;
+     search_time_ms: number;
+ }
+
+ interface OrgHit {
+     document: OrgDocument;
+     highlight: Record<string, any>;
+     highlights: any[];
+ }
+
+ interface OrgDocument {
+     name: string;
+     city: string;
+     county_name: string;
+     id: string;
+     institution_level: number;
+     institution_name: string;
+     latitude: number;
+     location:  [number, number];
+     longitude: number;
+     mission_statement: string;
+     mission_statement_url: string;
+     ope_id_number: number;
+     phone_number: string;
+     size_category: number;
+     state_abbr: string;
+     street_address: string;
+     website_url: string;
+     zip_code: string;
+ }
+
