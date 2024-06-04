@@ -11,7 +11,7 @@ const props = defineProps<{
 }>()
 
 const jobPostStore = usePostjobStore();
-const { orgTypesDropdown, orgNamesDropdown } = storeToRefs(jobPostStore);
+const { orgTypesDropdown, orgNamesDropdown, searchedOrgNames } = storeToRefs(jobPostStore);
 
 const uploadedImage = ref("");
 
@@ -28,7 +28,7 @@ const handleImageUpload = (event: any) => {
 
 const schema = Yup.object({
   id: Yup.string(),
-  organizationName: Yup.string().default('something@email.com')
+  organizationName: Yup.string()
       .required("Organization Name is required")
       .min(10, "Please enter a name that is at least 10 characters long"),
   organizationTypeId: Yup.string().required('Organization type is required'),
@@ -76,6 +76,9 @@ async function getSearchedText(val :string) {
       }
       checkSelection(); // assign to form values
     }
+  } else {
+    searchedOrgNames.value = [];
+    searchedName.value = null;
   }
 }
 
@@ -99,7 +102,7 @@ watch(() => props.initialFormValues, (val) => {
     <div class="mt-5 space-y-8 border-b border-gray-900/10 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0">
       <div class="form-field-layout mb-2">
         <label class="block text-sm font-semibold text-gray-700 sm:pt-1.5">
-          Org Name
+          Organization Name*
         </label>
         <div class="mt-2 sm:col-span-2 sm:mt-0">
           <multiselect
