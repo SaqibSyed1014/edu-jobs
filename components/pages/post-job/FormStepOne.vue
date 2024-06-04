@@ -27,7 +27,7 @@ const handleImageUpload = (event: any) => {
 };
 
 const schema = Yup.object({
-  id: Yup.string(),
+  OrgId: Yup.string(),
   organizationName: Yup.string()
       .required("Organization Name is required")
       .min(10, "Please enter a name that is at least 10 characters long"),
@@ -40,7 +40,7 @@ const schema = Yup.object({
 const { defineField, handleSubmit, values, resetForm } = useForm({
   validationSchema: schema
 });
-const [id] = defineField('id');
+const [OrgId] = defineField('OrgId');
 const [organizationName, orgNameAttrs] = defineField('organizationName');
 const [organizationTypeId, orgTypeAttrs] = defineField('organizationTypeId');
 const [email, emaileAttrs] = defineField('email');
@@ -84,14 +84,14 @@ async function getSearchedText(val :string) {
 
 function checkSelection() {
   organizationName.value = searchedName.value.label;
-  id.value = searchedName.value.value;
+  OrgId.value = searchedName.value.value;
 }
 
 watch(() => props.initialFormValues, (val) => {
   if (val.organizationName) {  // if orgName is selected and exists in form
     searchedName.value = {
       label: val.organizationName,
-      value: val.id
+      value: val.OrgId
     }
   }
 }, { immediate: true })
