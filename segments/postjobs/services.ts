@@ -75,11 +75,23 @@ const getExperienceLevels = () :Promise<ExperienceLevel[]> => {
     })
 }
 
+const getSearchedOrgName = (query :string) :Promise<OrgResponseType> => {
+    const { baseUrl, apiKey } = usePayloadUrl()
+    const apiHeaders = {
+        'API-Key': apiKey,
+    }
+    return $fetch(`${baseUrl}/org/search?q=*&filter_by=name:${query}`, {
+        method: 'get',
+        headers: apiHeaders,
+    })
+}
+
 
 export {
     getStripeCheckDetails,
     getGradesLevels,
     getSubjects,
     getExperienceLevels,
-    getOrgTypes
+    getOrgTypes,
+    getSearchedOrgName
 }

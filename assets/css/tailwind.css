@@ -146,3 +146,22 @@ h1, h2, h3, h4, h5, h6{
 .multiselect.custom-multi-select .multiselect__tags .multiselect__placeholder{
     @apply !block !text-gray-900
 }
+.multiselect.custom-multi-select.autocomplete .multiselect__input{
+    @apply !p-0 focus:ring-0 placeholder-gray-400 text-sm !shadow-none mt-0.5
+}
+.multiselect.custom-multi-select.autocomplete .multiselect__placeholder{
+    @apply !text-gray-400
+}
+.multiselect.custom-multi-select .multiselect__spinner::before,
+.multiselect.custom-multi-select .multiselect__spinner::after{
+    @apply border-t-brand-600
+}
+.multiselect.custom-multi-select.autocomplete .multiselect__single{
+    @apply text-sm mb-0 mt-0.5 pl-0
+}
+.multiselect.custom-multi-select.multiselect--active .multiselect__tags{
+    @apply ring-2 ring-brand-600
+}
+.multiselect.custom-multi-select .multiselect__content-wrapper{
+    @apply border-0
+}

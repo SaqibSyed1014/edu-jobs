@@ -152,6 +152,13 @@ function getStepTwoFields({ jobTitle, employment }) {
   previewFormData.value.jobTitle = jobTitle;
   previewFormData.value.employment = employment;
 }
+
+let jobPostingPrice = ref<string>('$49');
+
+function updatePostingPrice(val :boolean) {
+  if (val) jobPostingPrice.value = '$79'
+  else jobPostingPrice.value = '$49'
+}
 </script>
 
 <template>
@@ -330,8 +337,10 @@ function getStepTwoFields({ jobTitle, employment }) {
               <FormStepFour
                   v-if="currentStep === 3"
                   :form-data="formsCollectiveData"
+                  :job-posting-price="jobPostingPrice"
                   @edit-icon-clicked="handleButtonClick"
                   @move-to-prev-step="prevStep"
+                  @updated-job-posting-pricing="updatePostingPrice"
               />
             </template>
           </div>
@@ -350,7 +359,7 @@ function getStepTwoFields({ jobTitle, employment }) {
           <!--   Checkout Btn   -->
           <BaseButton
             v-if="currentStep === 3"
-            label="Post a Job for $49"
+            :label="`Post a Job for ${jobPostingPrice}`"
             :outline="true"
             color="primary"
             full-sized

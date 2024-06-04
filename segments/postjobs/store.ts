@@ -3,7 +3,8 @@ import {
     getOrgTypes,
     getGradesLevels,
     getSubjects,
-    getExperienceLevels
+    getExperienceLevels,
+    getSearchedOrgName
 } from "~/segments/postjobs/services"
 
 interface StripeCheckout {
@@ -14,7 +15,8 @@ interface StripeCheckout {
     organizationTypes: OrganizationType[];
     gradeLevels: GradeLevel[];
     subjects: Subject[];
-    experienceLevels: ExperienceLevel[]
+    experienceLevels: ExperienceLevel[];
+    searchedOrgNames: OrgDocument[]
 }
 
 export const usePostjobStore = defineStore('postjobStore', {
@@ -26,7 +28,8 @@ export const usePostjobStore = defineStore('postjobStore', {
         organizationTypes: [],
         gradeLevels: [],
         subjects: [],
-        experienceLevels: []
+        experienceLevels: [],
+        searchedOrgNames: []
     } as StripeCheckout),
     actions: {
         async fetchPayment(query:any  , requestBody : any) {
@@ -63,6 +66,10 @@ export const usePostjobStore = defineStore('postjobStore', {
         async fetchExperienceLevels() {
             this.$state.experienceLevels = await getExperienceLevels();
         },
+        async fetchSearchedOrgNames(name :string) {
+            const { hits } = await getSearchedOrgName(name);
+            this.$state.searchedOrgNames = hits.map((org:OrgHit) => org.document)
+        },
     },
     getters: {
         orgTypesDropdown: (state) => {
@@ -86,6 +93,12 @@ export const usePostjobStore = defineStore('postjobStore', {
         experienceLevelOptions: (state) :ExperienceLevel[] => {
             return state.experienceLevels
                 .sort((a :ExperienceLevel, b :ExperienceLevel) => a.sort_order - b.sort_order) || []
-        }
+        },
+        orgNamesDropdown: (state) => {
+            return state.searchedOrgNames?.map((org :OrgDocument) => ({
+                label: org.name,
+                value: org.id
+            })) || []
+        },
     }
 })

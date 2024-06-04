@@ -3,13 +3,14 @@ import {convertTZDateToShortDate} from "~/segments/utils";
 import {usePostjobStore} from "~/segments/postjobs/store";
 
 const props = defineProps<{
-  formData: any
+  formData: any,
+  jobPostingPrice: string
 }>()
 
 const postJobStore = usePostjobStore();
 const { gradeLevelDropdown } = storeToRefs(postJobStore);
 
-const emit = defineEmits(['editIconClicked', 'moveToPrevStep'])
+const emit = defineEmits(['editIconClicked', 'moveToPrevStep', 'updatedJobPostingPricing'])
 
 const gradeLevelsLabels = computed(() => {
   return props.formData.stepTwo?.gradeLevel.map((value :any) => {
@@ -376,13 +377,27 @@ const gradeLevelsLabels = computed(() => {
         </div>
       </div>
 
-      <FeatureJobPrompt />
+      <FeatureJobPrompt
+        @featured-selection="(val :boolean) => emit('updatedJobPostingPricing', val)"
+      />
 
       <FormFooterButtons
         :hide-cancel-button="true"
         :hide-next-button="true"
         @back-btn-clicked="() => emit('moveToPrevStep')"
-      />
+      >
+        <template #checkoutBtn>
+          <!--   Checkout Btn   -->
+          <BaseButton
+              :label="`Post Job - ${jobPostingPrice}`"
+              :outline="true"
+              color="primary"
+              @click="() => emit('checkoutBtnClicked')"
+              type="button"
+              :disabled="false"
+          />
+        </template>
+      </FormFooterButtons>
     </div>
   </div>
 </template>

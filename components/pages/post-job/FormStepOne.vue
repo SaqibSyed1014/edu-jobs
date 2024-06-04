@@ -2,6 +2,7 @@
 import * as Yup from "yup";
 import {Form, ErrorMessage, Field, useForm} from "vee-validate";
 import {usePostjobStore} from "~/segments/postjobs/store";
+import Multiselect from "vue-multiselect";
 
 const emit = defineEmits(['handleFormSubmission', 'formDataListener']);
 
@@ -9,8 +10,8 @@ const props = defineProps<{
   initialFormValues: any
 }>()
 
-const jobPoststore = usePostjobStore();
-const { orgTypesDropdown } = storeToRefs(jobPoststore);
+const jobPostStore = usePostjobStore();
+const { orgTypesDropdown, orgNamesDropdown, searchedOrgNames } = storeToRefs(jobPostStore);
 
 const uploadedImage = ref("");
 
@@ -26,7 +27,8 @@ const handleImageUpload = (event: any) => {
 };
 
 const schema = Yup.object({
-  organizationName: Yup.string().default('something@email.com')
+  id: Yup.string(),
+  organizationName: Yup.string()
       .required("Organization Name is required")
       .min(10, "Please enter a name that is at least 10 characters long"),
   organizationTypeId: Yup.string().required('Organization type is required'),
@@ -38,6 +40,7 @@ const schema = Yup.object({
 const { defineField, handleSubmit, values, resetForm } = useForm({
   validationSchema: schema
 });
+const [id] = defineField('id');
 const [organizationName, orgNameAttrs] = defineField('organizationName');
 const [organizationTypeId, orgTypeAttrs] = defineField('organizationTypeId');
 const [email, emaileAttrs] = defineField('email');
@@ -57,21 +60,85 @@ watch(() => [values.organizationName, uploadedImage.value], (val) => {
 const onSubmit = handleSubmit(values => {
   emit('handleFormSubmission', values, 1)
 });
+
+const searchedName = ref<any>(null);
+const searchingName = ref<boolean>(false)
+
+async function getSearchedText(val :string) {
+  if (val.length) {
+    searchingName.value = true;
+    await jobPostStore.fetchSearchedOrgNames(val);
+    searchingName.value = false;
+    if (!orgNamesDropdown.value.length) {  // if no results are found, assign default id
+      searchedName.value = {
+        label: val,
+        value: 0
+      }
+      checkSelection(); // assign to form values
+    }
+  } else {
+    searchedOrgNames.value = [];
+    searchedName.value = null;
+  }
+}
+
+function checkSelection() {
+  organizationName.value = searchedName.value.label;
+  id.value = searchedName.value.value;
+}
+
+watch(() => props.initialFormValues, (val) => {
+  if (val.organizationName) {  // if orgName is selected and exists in form
+    searchedName.value = {
+      label: val.organizationName,
+      value: val.id
+    }
+  }
+}, { immediate: true })
 </script>
 
 <template>
   <form @submit.prevent="onSubmit">
     <div class="mt-5 space-y-8 border-b border-gray-900/10 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0">
-      <TextInput
-          v-model="organizationName"
-          v-bind="orgNameAttrs"
-          name="organizationName"
-          type="text"
-          label="Organization Name*"
-          placeholder="e.g. Unified School District"
-          subLabel=""
-          className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6"
-      />
+      <div class="form-field-layout mb-2">
+        <label class="block text-sm font-semibold text-gray-700 sm:pt-1.5">
+          Organization Name*
+        </label>
+        <div class="mt-2 sm:col-span-2 sm:mt-0">
+          <multiselect
+              v-model="searchedName"
+              :options="orgNamesDropdown"
+              label="label"
+              track-by="value"
+              :multiple="false"
+              :show-labels="false"
+              :searchable="true"
+              :preserve-search="true"
+              :show-no-options="false"
+              :show-no-results="false"
+              class="custom-multi-select autocomplete"
+              placeholder="e.g. Unified School District"
+              :loading="searchingName"
+              @search-change="getSearchedText"
+              @select="checkSelection"
+          >
+            <template #caret>
+              <span></span>
+            </template>
+            <template #noResult>
+                <span></span>
+            </template>
+            <template #noOptions>
+              <span></span>
+            </template>
+          </multiselect>
+
+          <ErrorMessage
+              class="error-message"
+              name="organizationName"
+          />
+        </div>
+      </div>
 
       <SelectBox
           v-model="organizationTypeId"
