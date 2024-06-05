@@ -38,3 +38,19 @@ export function getDaysDifference(givenDateString :Date | string) :string {
     else return `${daysDifference}d ago`;
 }
 
+
+export function debounce<T extends (...args: any[]) => any>(
+    func: T,
+    wait: number = 500
+): (...args: Parameters<T>) => void {
+    let timeout: NodeJS.Timeout | null = null;
+
+    return function(this: ThisParameterType<T>, ...args: Parameters<T>): void {
+        const context = this;
+
+        if (timeout) {
+            clearTimeout(timeout); // Clear previous timeout if it exists
+        }
+        timeout = setTimeout(() => func.apply(context, args), wait);
+    };
+}

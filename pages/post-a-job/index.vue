@@ -11,7 +11,7 @@ const currentStep = ref(0);
 const postjobStore = usePostjobStore();
 const { content,status } = storeToRefs(postjobStore);
 const isLoading = ref<boolean>(false);
-const isFormLoading = ref<boolean>(false);
+const isFormLoading = ref<boolean>(true);
 const router = useRouter();
 
 onMounted(async() => {
@@ -347,7 +347,9 @@ function updatePostingPrice(val :boolean) {
         </div>
 
         <div class="w-full md:w-1/4 xl:w-1/5 flex flex-col gap-4 md:pt-8">
-          <OrderSummary />
+          <OrderSummary
+            :total-posting-price="jobPostingPrice"
+          />
           <EnteredJobDetails
               :job-title="previewFormData?.jobTitle"
               :org-name="previewFormData?.orgName"

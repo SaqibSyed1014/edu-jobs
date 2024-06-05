@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import * as Yup from "yup";
-import {Form, ErrorMessage, Field, useForm} from "vee-validate";
+import {Form, ErrorMessage, useForm} from "vee-validate";
 import {usePostjobStore} from "~/segments/postjobs/store";
 import Multiselect from "vue-multiselect";
+import {debounce} from "~/segments/utils";
 
 const emit = defineEmits(['handleFormSubmission', 'formDataListener']);
 
@@ -27,10 +28,8 @@ const handleImageUpload = (event: any) => {
 };
 
 const schema = Yup.object({
-  id: Yup.string(),
-  organizationName: Yup.string()
-      .required("Organization Name is required")
-      .min(10, "Please enter a name that is at least 10 characters long"),
+  OrgId: Yup.string(),
+  organizationName: Yup.string().required("Organization Name is required"),
   organizationTypeId: Yup.string().required('Organization type is required'),
   email: Yup.string().required('Email is required').email('Invalid email'),
   fullName: Yup.string().required("Full Name is required"),
@@ -40,7 +39,7 @@ const schema = Yup.object({
 const { defineField, handleSubmit, values, resetForm } = useForm({
   validationSchema: schema
 });
-const [id] = defineField('id');
+const [OrgId] = defineField('OrgId');
 const [organizationName, orgNameAttrs] = defineField('organizationName');
 const [organizationTypeId, orgTypeAttrs] = defineField('organizationTypeId');
 const [email, emaileAttrs] = defineField('email');
@@ -62,10 +61,13 @@ const onSubmit = handleSubmit(values => {
 });
 
 const searchedName = ref<any>(null);
-const searchingName = ref<boolean>(false)
+const searchingName = ref<boolean>(false);
 
-async function getSearchedText(val :string) {
+
+
+const getSearchedText = debounce(async (val :string) => {
   if (val.length) {
+    orgAuto.value.search = val;
     searchingName.value = true;
     await jobPostStore.fetchSearchedOrgNames(val);
     searchingName.value = false;
@@ -77,24 +79,34 @@ async function getSearchedText(val :string) {
       checkSelection(); // assign to form values
     }
   } else {
-    searchedOrgNames.value = [];
-    searchedName.value = null;
+    if (searchedName.value.label) return; // if an org name is selected, don't reset the autocomplete
   }
-}
+}, 1000)
 
 function checkSelection() {
   organizationName.value = searchedName.value.label;
-  id.value = searchedName.value.value;
+  OrgId.value = searchedName.value.value;
+  orgAuto.value.search = organizationName.value;
 }
 
+const orgAuto = ref(null);
 watch(() => props.initialFormValues, (val) => {
   if (val.organizationName) {  // if orgName is selected and exists in form
     searchedName.value = {
       label: val.organizationName,
-      value: val.id
+      value: val.OrgId
     }
   }
 }, { immediate: true })
+
+watch(() => searchedName.value, (val :any) => {
+  if (!val) {  // reset search fields if autocomplete gets empty
+    searchedOrgNames.value = [];
+    searchedName.value = null;
+    organizationName.value = '';
+    OrgId.value = null;
+  }
+})
 </script>
 
 <template>
@@ -106,6 +118,7 @@ watch(() => props.initialFormValues, (val) => {
         </label>
         <div class="mt-2 sm:col-span-2 sm:mt-0">
           <multiselect
+              ref="orgAuto"
               v-model="searchedName"
               :options="orgNamesDropdown"
               label="label"
@@ -116,6 +129,7 @@ watch(() => props.initialFormValues, (val) => {
               :preserve-search="true"
               :show-no-options="false"
               :show-no-results="false"
+              :clear-on-select="false"
               class="custom-multi-select autocomplete"
               placeholder="e.g. Unified School District"
               :loading="searchingName"
@@ -132,7 +146,9 @@ watch(() => props.initialFormValues, (val) => {
               <span></span>
             </template>
           </multiselect>
+          {{searchedName}}
 
+          {{OrgId}}{{organizationName}}
           <ErrorMessage
               class="error-message"
               name="organizationName"

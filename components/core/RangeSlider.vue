@@ -39,7 +39,7 @@ const sliderMax = computed({
     <input type="range" :min="minValue" :max="maxValue" :step="stepValue" v-model="sliderMax">
     <div class="absolute -bottom-8 flex justify-between w-full text-sm font-medium">
       <span>{{ `$${sliderMin.toLocaleString()}` }}</span>
-      <span>{{ `$${sliderMax.toLocaleString()}+` }}</span>
+      <span>{{ sliderMax === maxValue ? `$${sliderMax.toLocaleString()}+` : `$${sliderMax.toLocaleString()}` }}</span>
     </div>
   </div>
 </template>
