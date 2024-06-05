@@ -1,20 +1,27 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<{
   id?: string
-  width: string
-  canDismiss: boolean
-  okText: string,
-  cancelText: string
-  okDisabled: boolean
+  title: string
+  width?: string
+  canDismiss?: boolean
+  okText?: string,
+  cancelText?: string
+  okDisabled?: boolean
+  loadingOkBtn?: boolean
   onCancel: () => void
-  onOk: () => void
+  onOk: () => Promise<any>
+  hideOkBtn: boolean
+  hideCancelBtn: boolean
 }>(), {
   id: 'base-modal',
   width: '672px',
   canDismiss: true,
   okText: 'Ok',
+  loadingOkBtn: false,
   cancelText: 'Cancel',
   okDisabled: false,
+  hideOkBtn: false,
+  hideCancelBtn: false
 })
 
 const emit = defineEmits(['close'])
@@ -26,9 +33,14 @@ const dismiss = () => {
   }
 }
 
-const onSubmit = () => {
-  if (props.onOk) props.onOk()
-  emit('close', false)
+const onSubmit = async () => {
+  if (props.onOk) {
+    await props.onOk().then(
+        (val: any) => {
+          emit('close', val)
+        },
+    )
+  }
 }
 
 const cancel = () => {
@@ -54,7 +66,7 @@ const cancel = () => {
             <!-- Modal header -->
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
               <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                Sign up today!
+                {{ title }}
               </h3>
               <button @click="cancel" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
                 <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -69,8 +81,8 @@ const cancel = () => {
             </div>
             <!-- Modal footer -->
             <div class="flex items-center justify-center gap-3 p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-              <BaseButton color="gray" :outline="true" :label="cancelText" @click="cancel" />
-              <BaseButton :label="okText" :disabled="okDisabled" @click="onSubmit" />
+              <BaseButton v-if="!hideCancelBtn" color="gray" :outline="true" :label="cancelText" @click="cancel" />
+              <BaseButton v-if="!hideOkBtn" :label="okText" :is-loading="loadingOkBtn" :disabled="okDisabled" @click="onSubmit" />
             </div>
           </div>
         </div>
