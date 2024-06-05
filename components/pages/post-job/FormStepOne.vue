@@ -146,9 +146,7 @@ watch(() => searchedName.value, (val :any) => {
               <span></span>
             </template>
           </multiselect>
-          {{searchedName}}
 
-          {{OrgId}}{{organizationName}}
           <ErrorMessage
               class="error-message"
               name="organizationName"
