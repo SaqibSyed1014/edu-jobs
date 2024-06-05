@@ -11,7 +11,7 @@ const currentStep = ref(0);
 const postjobStore = usePostjobStore();
 const { content,status } = storeToRefs(postjobStore);
 const isLoading = ref<boolean>(false);
-const isFormLoading = ref<boolean>(false);
+const isFormLoading = ref<boolean>(true);
 const router = useRouter();
 
 onMounted(async() => {
