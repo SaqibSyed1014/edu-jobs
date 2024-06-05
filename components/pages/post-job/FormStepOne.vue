@@ -111,12 +111,12 @@ watch(() => searchedName.value, (val :any) => {
 
 <template>
   <form @submit.prevent="onSubmit">
-    <div class="mt-5 space-y-8 border-b border-gray-900/10 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0">
-      <div class="form-field-layout mb-2">
+    <div class="mt-5 border-b border-gray-900/10 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0">
+      <div class="form-field-layout">
         <label class="block text-sm font-semibold text-gray-700 sm:pt-1.5">
           Organization Name*
         </label>
-        <div class="mt-2 sm:col-span-2 sm:mt-0">
+        <div class="sm:col-span-2 sm:mt-0">
           <multiselect
               ref="orgAuto"
               v-model="searchedName"
@@ -163,7 +163,7 @@ watch(() => searchedName.value, (val :any) => {
           :label-value-options="true"
           subLabel=""
           :value="values.organizationTypeId"
-          className="form-field-layout"
+          className="form-field-layout mt-0"
       />
 
       <ImageFileUpload
