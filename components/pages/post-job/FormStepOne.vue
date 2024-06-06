@@ -4,6 +4,7 @@ import {Form, ErrorMessage, useForm} from "vee-validate";
 import {usePostjobStore} from "~/segments/postjobs/store";
 import Multiselect from "vue-multiselect";
 import {debounce} from "~/segments/utils";
+import {drop} from "lodash-es";
 
 const emit = defineEmits(['handleFormSubmission', 'formDataListener']);
 
@@ -64,32 +65,30 @@ const searchedName = ref<any>(null);
 const searchingName = ref<boolean>(false);
 
 
+const orgAutocomplete = ref(null);
 
-const getSearchedText = debounce(async (val :string) => {
-  if (val.length) {
-    orgAuto.value.search = val;
+const getSearchedText = debounce(async (input :string) => {
+  if (input.length) {
+    if (orgAutocomplete.value) orgAutocomplete.value.search = input;
     searchingName.value = true;
-    await jobPostStore.fetchSearchedOrgNames(val);
+    await jobPostStore.fetchSearchedOrgNames(input);
     searchingName.value = false;
-    if (!orgNamesDropdown.value.length) {  // if no results are found, assign default id
+    if (!orgNamesDropdown.value.length) {  // if no results are found, assign default id i-e: 0
       searchedName.value = {
-        label: val,
+        label: input,
         value: 0
       }
       checkSelection(); // assign to form values
     }
-  } else {
-    if (searchedName.value.label) return; // if an org name is selected, don't reset the autocomplete
-  }
-}, 1000)
+  } else resetOrgAutocomplete();
+}, 600)
 
 function checkSelection() {
   organizationName.value = searchedName.value.label;
   OrgId.value = searchedName.value.value;
-  orgAuto.value.search = organizationName.value;
+  if (orgAutocomplete.value) orgAutocomplete.value.search = organizationName.value;
 }
 
-const orgAuto = ref(null);
 watch(() => props.initialFormValues, (val) => {
   if (val.organizationName) {  // if orgName is selected and exists in form
     searchedName.value = {
@@ -100,13 +99,18 @@ watch(() => props.initialFormValues, (val) => {
 }, { immediate: true })
 
 watch(() => searchedName.value, (val :any) => {
-  if (!val) {  // reset search fields if autocomplete gets empty
-    searchedOrgNames.value = [];
-    searchedName.value = null;
-    organizationName.value = '';
-    OrgId.value = null;
-  }
+  if (!val) resetOrgAutocomplete(); // reset search fields if autocomplete gets empty
 })
+function dropdownClosed() {
+  if (!searchedName.value) resetOrgAutocomplete();
+}
+
+function resetOrgAutocomplete() {
+  searchedOrgNames.value = [];
+  searchedName.value = null;
+  organizationName.value = '';
+  OrgId.value = null;
+}
 </script>
 
 <template>
@@ -118,7 +122,7 @@ watch(() => searchedName.value, (val :any) => {
         </label>
         <div class="sm:col-span-2 sm:mt-0">
           <multiselect
-              ref="orgAuto"
+              ref="orgAutocomplete"
               v-model="searchedName"
               :options="orgNamesDropdown"
               label="label"
@@ -135,6 +139,7 @@ watch(() => searchedName.value, (val :any) => {
               :loading="searchingName"
               @search-change="getSearchedText"
               @select="checkSelection"
+              @close="dropdownClosed"
           >
             <template #caret>
               <span></span>

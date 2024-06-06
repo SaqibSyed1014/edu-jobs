@@ -80,7 +80,7 @@ const getSearchedOrgName = (query :string) :Promise<OrgResponseType> => {
     const apiHeaders = {
         'API-Key': apiKey,
     }
-    return $fetch(`${baseUrl}/org/search?q=*&filter_by=name:${query}`, {
+    return $fetch(`${baseUrl}/org/search?q=*&filter_by=name:${query}*`, {
         method: 'get',
         headers: apiHeaders,
     })
