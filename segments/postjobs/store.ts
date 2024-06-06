@@ -4,7 +4,8 @@ import {
     getGradesLevels,
     getSubjects,
     getExperienceLevels,
-    getSearchedOrgName
+    getSearchedOrgName,
+    saveJobData
 } from "~/segments/postjobs/services"
 
 interface StripeCheckout {
@@ -70,6 +71,17 @@ export const usePostjobStore = defineStore('postjobStore', {
             const { hits } = await getSearchedOrgName(name);
             this.$state.searchedOrgNames = hits.map((org:OrgHit) => org.document)
         },
+        async savingJobFormData(payload :any) {
+            return await saveJobData(payload)
+                .then((resp) => {
+                    console.log('resp ', resp)
+                    return resp;
+                })
+                .catch((err) => {
+                    useNuxtApp().$toast.error('An Error Occurred');
+                    throw err;
+                })
+        },
     },
     getters: {
         orgTypesDropdown: (state) => {
@@ -81,13 +93,13 @@ export const usePostjobStore = defineStore('postjobStore', {
         gradeLevelDropdown: (state) => {
             return state.gradeLevels.map((grade :GradeLevel) => ({
                 label: grade.grade_level_long,
-                value: grade.grade_level
+                value: grade.grade_level_id
             }))
         },
         subjectsDropdown: (state) => {
             return state.subjects.map((grade :Subject) => ({
                 label: grade.subject_long,
-                value: grade.subject
+                value: grade.subject_id
             }))
         },
         experienceLevelOptions: (state) :ExperienceLevel[] => {

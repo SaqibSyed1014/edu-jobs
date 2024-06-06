@@ -7,7 +7,7 @@ import {
 import BaseSpinner from "~/components/core/BaseSpinner.vue";
 import FormStepFour from "~/components/pages/post-job/FormStepFour.vue";
 
-const currentStep = ref(1);
+const currentStep = ref(0);
 const postjobStore = usePostjobStore();
 const { content,status } = storeToRefs(postjobStore);
 const isLoading = ref<boolean>(false);
@@ -112,9 +112,7 @@ let formsCollectiveData = reactive({
   stepTwo: {
     compensationTypeId: 'Salary',
     jobDescription: '',
-    gradeLevel: [],
-    jobLocation: '',
-    geo_location: []
+    jobLocation: ''
   },
   stepThree: {}
 })
@@ -160,6 +158,17 @@ let jobPostingPrice = ref<string>('$49');
 function updatePostingPrice(val :boolean) {
   if (val) jobPostingPrice.value = '$79'
   else jobPostingPrice.value = '$49'
+}
+
+let processingSaveJob = ref<boolean>(false);
+async function processJobSaving() {
+  processingSaveJob.value = true;
+  await postjobStore.savingJobFormData({
+    ...formsCollectiveData.stepOne,
+    ...formsCollectiveData.stepTwo,
+    ...formsCollectiveData.stepThree,
+  });
+  processingSaveJob.value = false;
 }
 </script>
 
@@ -307,7 +316,6 @@ function updatePostingPrice(val :boolean) {
                 <SvgoRing44 v-else class="h-14 xl:hidden" />
               </div>
             </div>
-            {{formsCollectiveData}}
 
             <template v-if="isFormLoading">
               <div class="container h-full">
@@ -368,7 +376,8 @@ function updatePostingPrice(val :boolean) {
             :outline="true"
             color="primary"
             full-sized
-            @click="checkout"
+            :is-loading="processingSaveJob"
+            @click="processJobSaving"
             type="button"
             :disabled="false"
           />

@@ -8,16 +8,31 @@ const props = defineProps<{
 }>()
 
 const postJobStore = usePostjobStore();
-const { gradeLevelDropdown } = storeToRefs(postJobStore);
+const { gradeLevelDropdown, subjectsDropdown } = storeToRefs(postJobStore);
 
 const emit = defineEmits(['editIconClicked', 'moveToPrevStep', 'updatedJobPostingPricing'])
 
 const gradeLevelsLabels = computed(() => {
-  return props.formData.stepTwo?.gradeLevel.map((value :any) => {
+  return props.formData.stepTwo?.grades.map((value :any) => {
     const foundItem = gradeLevelDropdown.value.find(item => item.value === value);
     return foundItem ? foundItem.label : null;
   }).join(', ');
 })
+
+const subjectLabel = computed(() => {
+  return subjectsDropdown.value.filter((subject) => subject?.value == props.formData.stepTwo?.subjects)[0].label
+})
+
+let processingSaveJob = ref<boolean>(false);
+async function processJobSaving() {
+  processingSaveJob.value = true;
+  await postJobStore.savingJobFormData({
+    ...props.formData.stepOne,
+    ...props.formData.stepTwo,
+    ...props.formData.stepThree,
+  });
+  processingSaveJob.value = false;
+}
 </script>
 
 <template>
@@ -205,13 +220,13 @@ const gradeLevelsLabels = computed(() => {
               </div>
 
               <p class="text-gray-600 text-base font-normal leading-normal">
-                {{ formData.stepTwo?.jobRole ? formData.stepTwo?.jobRole : "N/A" }}
+                {{ formData.stepTwo?.jobRoleId ? formData.stepTwo?.jobRoleId : "N/A" }}
               </p>
             </div>
           </div>
         </div>
 
-        <div v-if="formData.stepTwo?.jobRole === 'Instructional'" class="grid sm:grid-cols-2 gap-4 w-full">
+        <div v-if="formData.stepTwo?.jobRoleId === 'Instructional'" class="grid sm:grid-cols-2 gap-4 w-full">
           <div class="justify-start items-start gap-8 inline-flex">
             <div class="flex-col justify-start items-start gap-2 inline-flex">
               <div class="inline-flex items-center gap-1">
@@ -230,7 +245,7 @@ const gradeLevelsLabels = computed(() => {
               </div>
 
               <p class="text-gray-600 text-base font-normal leading-normal">
-                {{ formData.stepTwo?.gradeLevel.length ? gradeLevelsLabels : "N/A" }}
+                {{ formData.stepTwo?.grades.length ? gradeLevelsLabels : "N/A" }}
               </p>
             </div>
           </div>
@@ -257,7 +272,7 @@ const gradeLevelsLabels = computed(() => {
               <p
                 class="text-gray-600 text-base font-normal leading-normal"
               >
-                {{ formData.stepTwo?.subjects ? formData.stepTwo?.subjects : "N/A" }}
+                {{ formData.stepTwo?.subjects ? subjectLabel : "N/A" }}
               </p>
             </div>
           </div>
@@ -392,9 +407,10 @@ const gradeLevelsLabels = computed(() => {
               :label="`Post Job - ${jobPostingPrice}`"
               :outline="true"
               color="primary"
-              @click="() => emit('checkoutBtnClicked')"
               type="button"
               :disabled="false"
+              :is-loading="processingSaveJob"
+              @click="processJobSaving"
           />
         </template>
       </FormFooterButtons>

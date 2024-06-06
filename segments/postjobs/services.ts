@@ -86,6 +86,18 @@ const getSearchedOrgName = (query :string) :Promise<OrgResponseType> => {
     })
 }
 
+const saveJobData = (payload :any) :Promise<any> => {
+    const { baseUrl, apiKey } = usePayloadUrl()
+    const apiHeaders = {
+        'API-Key': apiKey,
+    }
+    return $fetch(`${baseUrl}/job/save`, {
+        method: 'post',
+        headers: apiHeaders,
+        body: payload
+    })
+}
+
 
 export {
     getStripeCheckDetails,
@@ -93,5 +105,6 @@ export {
     getSubjects,
     getExperienceLevels,
     getOrgTypes,
-    getSearchedOrgName
+    getSearchedOrgName,
+    saveJobData
 }

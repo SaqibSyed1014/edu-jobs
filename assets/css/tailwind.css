@@ -162,6 +162,9 @@ h1, h2, h3, h4, h5, h6{
 .multiselect.custom-multi-select.multiselect--active .multiselect__tags{
     @apply ring-2 ring-brand-600
 }
+.multiselect.custom-multi-select.has-error .multiselect__tags{
+    @apply ring-2 ring-red-400
+}
 .multiselect.custom-multi-select .multiselect__content-wrapper{
     @apply border-0
 }
