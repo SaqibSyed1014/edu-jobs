@@ -32,6 +32,11 @@ const jobRoles = ref(jobRolesOptions);
 
 const schema = Yup.object({
     jobTitle: Yup.string().required("Job Title is required"),
+    jobLocation: Yup.string().required("Location is required"),
+    city: Yup.string(),
+    state: Yup.string(),
+    country: Yup.string(),
+    geo_location: Yup.array().of(Yup.number()),
     startDate: Yup.string().required("Start Date is required"),
     employmentTypeId: Yup.string().required("Employment Type is required"),
     experienceLevelId: Yup.string().required("Experience Level is required"),
@@ -68,6 +73,11 @@ const { defineField, handleSubmit, values, errors, resetForm } = useForm({
   validationSchema: schema,
 });
 const [jobTitle, jobTitleAttrs] = defineField('jobTitle');
+const [jobLocation] = defineField('jobLocation');
+const [city] = defineField('city');
+const [state] = defineField('state');
+const [country] = defineField('country');
+const [geo_location] = defineField('geo_location');
 const [startDate, startDateAttrs] = defineField('startDate');
 const [employmentTypeId, employmentTypeIdAttrs] = defineField('employmentTypeId');
 const [experienceLevelId, experienceLevelIdAttrs] = defineField('experienceLevelId');
@@ -90,10 +100,31 @@ const selectedHourlyRange = ref([])
 if (minSalaryId.value && maxSalaryId.value) selectedSalaryRange.value = [minSalaryId.value, maxSalaryId.value];
 if (minHourlyId.value && maxHourlyId.value) selectedHourlyRange.value = [minHourlyId.value, maxHourlyId.value];
 
-const selectedLocation = ref<number[]>([])
 function setLocationsCoordinates(location :any) {
-  selectedLocation.value[0] = location.geometry.location.lat() as number;
-  selectedLocation.value[1] = location.geometry.location.lng() as number;
+  const locationInput = document.getElementById('jobLocationInput')
+  if (locationInput) jobLocation.value = locationInput.value;
+
+  geo_location.value[0] = location.geometry.location.lat() as number;
+  geo_location.value[1] = location.geometry.location.lng() as number;
+  const addressComponents = location.address_components;
+  let selectedCity = '', selectedState = '', selectedCountry = '';
+  addressComponents.forEach((component :any) => {
+    const types = component.types;
+    if (types.includes('locality')) selectedCity = component.long_name;
+    else if (types.includes('administrative_area_level_1')) selectedState = component.short_name;
+    else if (types.includes('country')) selectedCountry = component.long_name;
+  });
+  city.value = selectedCity;
+  state.value = selectedState;
+  country.value = selectedCountry;
+}
+
+function resetLocationOnInput() {
+  jobLocation.value = ''
+  city.value = ''
+  state.value = '';
+  country.value = '';
+  geo_location.value = []
 }
 
 const options = ref({
@@ -130,10 +161,15 @@ const selectedMin = computed(() => {
 
 let selectedGrades = ref<{ label: string, value: string }[]>([]);
 
-watch(() => props.initialFormValues, () => {
+watch(() => props.initialFormValues, (initialData) => {
   selectedGrades.value = (props.initialFormValues?.gradeLevel || []).map((selectedGrade :any) => {
     return gradeLevelDropdown.value.find(grade => grade.value === selectedGrade);
   }).filter((item :any) => item !== undefined) as any[];
+
+  setTimeout(() => {
+    const locationInput = document.getElementById('jobLocationInput')
+    if (locationInput) locationInput.value = jobLocation.value;
+  }, 1000)
 }, { immediate: true })
 
 watch(() => jobRole.value, (val) => {  // remove selected grades on non-instructional selection
@@ -168,22 +204,23 @@ function checkSelection() {
           <div class="mt-2 sm:col-span-2 sm:mt-0 relative">
             <client-only>
               <GMapAutocomplete
-                  id="jobLocation"
+                  id="jobLocationInput"
                   placeholder="Anywhere"
                   class="form-input job-location-input w-full"
+                  :class="{ 'has-error': errors?.jobLocation }"
                   :options="{
                     componentRestrictions: { country: 'US' },
                     strictBounds: true
                   }"
                   @place_changed="setLocationsCoordinates"
+                  @input="resetLocationOnInput"
               />
             </client-only>
-            <span
-                v-if="locError"
+
+            <ErrorMessage
                 class="error-message"
-            >
-            Location is required
-          </span>
+                name="jobLocation"
+            />
           </div>
         </div>
 
@@ -428,3 +465,9 @@ function checkSelection() {
     />
   </form>
 </template>
+
+<style>
+.job-location-input{
+  @apply outline-0 focus:ring-2 focus:ring-brand-600
+}
+</style>

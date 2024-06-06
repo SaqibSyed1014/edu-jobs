@@ -7,7 +7,7 @@ import {
 import BaseSpinner from "~/components/core/BaseSpinner.vue";
 import FormStepFour from "~/components/pages/post-job/FormStepFour.vue";
 
-const currentStep = ref(0);
+const currentStep = ref(1);
 const postjobStore = usePostjobStore();
 const { content,status } = storeToRefs(postjobStore);
 const isLoading = ref<boolean>(false);
@@ -112,7 +112,9 @@ let formsCollectiveData = reactive({
   stepTwo: {
     compensationTypeId: 'Salary',
     jobDescription: '',
-    gradeLevel: []
+    gradeLevel: [],
+    jobLocation: '',
+    geo_location: []
   },
   stepThree: {}
 })
@@ -305,6 +307,7 @@ function updatePostingPrice(val :boolean) {
                 <SvgoRing44 v-else class="h-14 xl:hidden" />
               </div>
             </div>
+            {{formsCollectiveData}}
 
             <template v-if="isFormLoading">
               <div class="container h-full">
