@@ -93,13 +93,13 @@ export const usePostjobStore = defineStore('postjobStore', {
         gradeLevelDropdown: (state) => {
             return state.gradeLevels.map((grade :GradeLevel) => ({
                 label: grade.grade_level_long,
-                value: grade.grade_level
+                value: grade.grade_level_id
             }))
         },
         subjectsDropdown: (state) => {
             return state.subjects.map((grade :Subject) => ({
                 label: grade.subject_long,
-                value: grade.subject
+                value: grade.subject_id
             }))
         },
         experienceLevelOptions: (state) :ExperienceLevel[] => {

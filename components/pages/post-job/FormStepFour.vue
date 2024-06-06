@@ -8,7 +8,7 @@ const props = defineProps<{
 }>()
 
 const postJobStore = usePostjobStore();
-const { gradeLevelDropdown } = storeToRefs(postJobStore);
+const { gradeLevelDropdown, subjectsDropdown } = storeToRefs(postJobStore);
 
 const emit = defineEmits(['editIconClicked', 'moveToPrevStep', 'updatedJobPostingPricing'])
 
@@ -17,6 +17,10 @@ const gradeLevelsLabels = computed(() => {
     const foundItem = gradeLevelDropdown.value.find(item => item.value === value);
     return foundItem ? foundItem.label : null;
   }).join(', ');
+})
+
+const subjectLabel = computed(() => {
+  return subjectsDropdown.value.filter((subject) => subject?.value == props.formData.stepTwo?.subjects)[0].label
 })
 
 let processingSaveJob = ref<boolean>(false);
@@ -268,7 +272,7 @@ async function processJobSaving() {
               <p
                 class="text-gray-600 text-base font-normal leading-normal"
               >
-                {{ formData.stepTwo?.subjects ? formData.stepTwo?.subjects : "N/A" }}
+                {{ formData.stepTwo?.subjects ? subjectLabel : "N/A" }}
               </p>
             </div>
           </div>
