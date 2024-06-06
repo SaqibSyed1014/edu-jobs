@@ -160,6 +160,17 @@ function updatePostingPrice(val :boolean) {
   if (val) jobPostingPrice.value = '$79'
   else jobPostingPrice.value = '$49'
 }
+
+let processingSaveJob = ref<boolean>(false)
+async function processJobSaving() {
+  processingSaveJob.value = true;
+  await postjobStore.savingJobFormData({
+    ...formsCollectiveData.stepOne,
+    ...formsCollectiveData.stepTwo,
+    ...formsCollectiveData.stepThree,
+  });
+  processingSaveJob.value = false;
+}
 </script>
 
 <template>
@@ -340,6 +351,7 @@ function updatePostingPrice(val :boolean) {
                   v-if="currentStep === 3"
                   :form-data="formsCollectiveData"
                   :job-posting-price="jobPostingPrice"
+                  :processing-save-job="processingSaveJob"
                   @edit-icon-clicked="handleButtonClick"
                   @move-to-prev-step="prevStep"
                   @updated-job-posting-pricing="updatePostingPrice"
@@ -367,7 +379,8 @@ function updatePostingPrice(val :boolean) {
             :outline="true"
             color="primary"
             full-sized
-            @click="checkout"
+            :is-loading="processingSaveJob"
+            @click="processJobSaving"
             type="button"
             :disabled="false"
           />

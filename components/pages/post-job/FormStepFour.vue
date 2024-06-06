@@ -4,7 +4,8 @@ import {usePostjobStore} from "~/segments/postjobs/store";
 
 const props = defineProps<{
   formData: any,
-  jobPostingPrice: string
+  jobPostingPrice: string,
+  processingSaveJob: boolean
 }>()
 
 const postJobStore = usePostjobStore();
@@ -395,6 +396,7 @@ const gradeLevelsLabels = computed(() => {
               @click="() => emit('checkoutBtnClicked')"
               type="button"
               :disabled="false"
+              :is-loading="processingSaveJob"
           />
         </template>
       </FormFooterButtons>

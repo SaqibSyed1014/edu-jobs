@@ -4,7 +4,8 @@ import {
     getGradesLevels,
     getSubjects,
     getExperienceLevels,
-    getSearchedOrgName
+    getSearchedOrgName,
+    saveJobData
 } from "~/segments/postjobs/services"
 
 interface StripeCheckout {
@@ -69,6 +70,12 @@ export const usePostjobStore = defineStore('postjobStore', {
         async fetchSearchedOrgNames(name :string) {
             const { hits } = await getSearchedOrgName(name);
             this.$state.searchedOrgNames = hits.map((org:OrgHit) => org.document)
+        },
+        async savingJobFormData(payload :any) {
+            return await saveJobData(payload)
+                .then((resp) => {
+                    console.log('resp ', resp)
+                })
         },
     },
     getters: {
