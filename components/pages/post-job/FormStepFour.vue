@@ -13,7 +13,7 @@ const { gradeLevelDropdown } = storeToRefs(postJobStore);
 const emit = defineEmits(['editIconClicked', 'moveToPrevStep', 'updatedJobPostingPricing'])
 
 const gradeLevelsLabels = computed(() => {
-  return props.formData.stepTwo?.gradeLevel.map((value :any) => {
+  return props.formData.stepTwo?.grades.map((value :any) => {
     const foundItem = gradeLevelDropdown.value.find(item => item.value === value);
     return foundItem ? foundItem.label : null;
   }).join(', ');
@@ -205,13 +205,13 @@ const gradeLevelsLabels = computed(() => {
               </div>
 
               <p class="text-gray-600 text-base font-normal leading-normal">
-                {{ formData.stepTwo?.jobRole ? formData.stepTwo?.jobRole : "N/A" }}
+                {{ formData.stepTwo?.jobRoleId ? formData.stepTwo?.jobRoleId : "N/A" }}
               </p>
             </div>
           </div>
         </div>
 
-        <div v-if="formData.stepTwo?.jobRole === 'Instructional'" class="grid sm:grid-cols-2 gap-4 w-full">
+        <div v-if="formData.stepTwo?.jobRoleId === 'Instructional'" class="grid sm:grid-cols-2 gap-4 w-full">
           <div class="justify-start items-start gap-8 inline-flex">
             <div class="flex-col justify-start items-start gap-2 inline-flex">
               <div class="inline-flex items-center gap-1">
@@ -230,7 +230,7 @@ const gradeLevelsLabels = computed(() => {
               </div>
 
               <p class="text-gray-600 text-base font-normal leading-normal">
-                {{ formData.stepTwo?.gradeLevel.length ? gradeLevelsLabels : "N/A" }}
+                {{ formData.stepTwo?.grades.length ? gradeLevelsLabels : "N/A" }}
               </p>
             </div>
           </div>

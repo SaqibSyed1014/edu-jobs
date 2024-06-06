@@ -33,10 +33,11 @@ const jobRoles = ref(jobRolesOptions);
 const schema = Yup.object({
     jobTitle: Yup.string().required("Job Title is required"),
     jobLocation: Yup.string().required("Location is required"),
-    city: Yup.string(),
-    state: Yup.string(),
-    country: Yup.string(),
-    geo_location: Yup.array().of(Yup.number()),
+    jobCity: Yup.string(),
+    jobState: Yup.string(),
+    jobCountry: Yup.string(),
+    geoLat: Yup.number(),
+    geoLng: Yup.number(),
     startDate: Yup.string().required("Start Date is required"),
     employmentTypeId: Yup.string().required("Employment Type is required"),
     experienceLevelId: Yup.string().required("Experience Level is required"),
@@ -57,12 +58,12 @@ const schema = Yup.object({
       is: "Hourly",
       then: (schema) => schema.required("Hourly End Range is required")
     }),
-    jobRole: Yup.string().required("Job Role is required"),
-    gradeLevel: Yup.array().of(Yup.string()).when("jobRole", {
+    jobRoleId: Yup.string().required("Job Role is required"),
+    grades: Yup.array().of(Yup.string()).when("jobRoleId", {
       is: "Instructional",
       then: (schema) => schema.min(1, "Grade Level(s) is required")
     }),
-    subjects: Yup.string().when("jobRole", {
+    subjects: Yup.string().when("jobRoleId", {
       is: "Instructional",
       then: (schema) => schema.required("Subject Area(s) is required")
     }),
@@ -74,10 +75,11 @@ const { defineField, handleSubmit, values, errors, resetForm } = useForm({
 });
 const [jobTitle, jobTitleAttrs] = defineField('jobTitle');
 const [jobLocation] = defineField('jobLocation');
-const [city] = defineField('city');
-const [state] = defineField('state');
-const [country] = defineField('country');
-const [geo_location] = defineField('geo_location');
+const [jobCity] = defineField('jobCity');
+const [jobState] = defineField('jobState');
+const [jobCountry] = defineField('jobCountry');
+const [geoLat] = defineField('geoLat');
+const [geoLng] = defineField('geoLng');
 const [startDate, startDateAttrs] = defineField('startDate');
 const [employmentTypeId, employmentTypeIdAttrs] = defineField('employmentTypeId');
 const [experienceLevelId, experienceLevelIdAttrs] = defineField('experienceLevelId');
@@ -86,8 +88,8 @@ const [minSalaryId, minSalaryIdAttrs] = defineField('minSalaryId');
 const [maxSalaryId, maxSalaryIdAttrs] = defineField('maxSalaryId');
 const [minHourlyId, minHourlyIdAttrs] = defineField('minHourlyId');
 const [maxHourlyId, maxHourlyIdAttrs] = defineField('maxHourlyId');
-const [jobRole, jobRoleAttrs] = defineField('jobRole');
-const [gradeLevel, gradeLevelAttrs] = defineField('gradeLevel');
+const [jobRoleId] = defineField('jobRoleId');
+const [grades] = defineField('grades');
 const [subjects, subjectsAttrs] = defineField('subjects');
 const [jobDescription, jobDescriptionAttrs] = defineField('jobDescription');
 
@@ -104,8 +106,8 @@ function setLocationsCoordinates(location :any) {
   const locationInput = document.getElementById('jobLocationInput')
   if (locationInput) jobLocation.value = locationInput.value;
 
-  geo_location.value[0] = location.geometry.location.lat() as number;
-  geo_location.value[1] = location.geometry.location.lng() as number;
+  geoLat.value = location.geometry.location.lat() as number;
+  geoLng.value = location.geometry.location.lng() as number;
   const addressComponents = location.address_components;
   let selectedCity = '', selectedState = '', selectedCountry = '';
   addressComponents.forEach((component :any) => {
@@ -114,16 +116,16 @@ function setLocationsCoordinates(location :any) {
     else if (types.includes('administrative_area_level_1')) selectedState = component.short_name;
     else if (types.includes('country')) selectedCountry = component.long_name;
   });
-  city.value = selectedCity;
-  state.value = selectedState;
-  country.value = selectedCountry;
+  jobCity.value = selectedCity;
+  jobState.value = selectedState;
+  jobCountry.value = selectedCountry;
 }
 
 function resetLocationOnInput() {
   jobLocation.value = ''
-  city.value = ''
-  state.value = '';
-  country.value = '';
+  jobCity.value = ''
+  jobState.value = '';
+  jobCountry.value = '';
   geo_location.value = []
 }
 
@@ -162,7 +164,7 @@ const selectedMin = computed(() => {
 let selectedGrades = ref<{ label: string, value: string }[]>([]);
 
 watch(() => props.initialFormValues, (initialData) => {
-  selectedGrades.value = (props.initialFormValues?.gradeLevel || []).map((selectedGrade :any) => {
+  selectedGrades.value = (props.initialFormValues?.grades || []).map((selectedGrade :any) => {
     return gradeLevelDropdown.value.find(grade => grade.value === selectedGrade);
   }).filter((item :any) => item !== undefined) as any[];
 
@@ -172,12 +174,12 @@ watch(() => props.initialFormValues, (initialData) => {
   }, 1000)
 }, { immediate: true })
 
-watch(() => jobRole.value, (val) => {  // remove selected grades on non-instructional selection
+watch(() => jobRoleId.value, (val) => {  // remove selected grades on non-instructional selection
   if (val === 'Non-instructional') selectedGrades.value = [];
 })
 
 function checkSelection() {
-  gradeLevel.value = selectedGrades.value.map(grade => grade.value);
+  grades.value = selectedGrades.value.map(grade => grade.value);
 }
 </script>
 
@@ -371,18 +373,18 @@ function checkSelection() {
 
         <!--    Job Role Field    -->
         <SelectBox
-            v-model="jobRole"
-            name="jobRole"
+            v-model="jobRoleId"
+            name="jobRoleId"
             label="Job Role"
             :data="jobRoles"
             :label-value-options="true"
             subLabel=""
-            :value="values.jobRole"
+            :value="values.jobRoleId"
             className="form-field-layout"
         />
 
         <!--    Grade Level Field    -->
-        <div class="form-field-layout mb-2"  v-if="jobRole === 'Instructional'">
+        <div class="form-field-layout mb-2"  v-if="jobRoleId === 'Instructional'">
           <label class="block text-sm font-semibold text-gray-700 sm:pt-1.5">
             Grade Level
           </label>
@@ -416,14 +418,14 @@ function checkSelection() {
 
             <ErrorMessage
                 class="error-message"
-                name="gradeLevel"
+                name="grades"
             />
           </div>
         </div>
 
         <!--    Subject Areas Field    -->
         <SelectBox
-            v-if="jobRole === 'Instructional'"
+            v-if="jobRoleId === 'Instructional'"
             v-model="subjects"
             name="subjects"
             label="Subject Area(s)"
