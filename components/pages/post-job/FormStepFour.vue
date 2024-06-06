@@ -4,8 +4,7 @@ import {usePostjobStore} from "~/segments/postjobs/store";
 
 const props = defineProps<{
   formData: any,
-  jobPostingPrice: string,
-  processingSaveJob: boolean
+  jobPostingPrice: string
 }>()
 
 const postJobStore = usePostjobStore();
@@ -19,6 +18,17 @@ const gradeLevelsLabels = computed(() => {
     return foundItem ? foundItem.label : null;
   }).join(', ');
 })
+
+let processingSaveJob = ref<boolean>(false);
+async function processJobSaving() {
+  processingSaveJob.value = true;
+  await postJobStore.savingJobFormData({
+    ...props.formData.stepOne,
+    ...props.formData.stepTwo,
+    ...props.formData.stepThree,
+  });
+  processingSaveJob.value = false;
+}
 </script>
 
 <template>
@@ -393,10 +403,10 @@ const gradeLevelsLabels = computed(() => {
               :label="`Post Job - ${jobPostingPrice}`"
               :outline="true"
               color="primary"
-              @click="() => emit('checkoutBtnClicked')"
               type="button"
               :disabled="false"
               :is-loading="processingSaveJob"
+              @click="processJobSaving"
           />
         </template>
       </FormFooterButtons>

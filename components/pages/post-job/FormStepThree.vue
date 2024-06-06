@@ -23,7 +23,7 @@ const schema = Yup.object({
       is: "Email",
       then: (schema) => schema.email('Invalid email').required('Email is required')
     }),
-    applicationDeadline: Yup.string().required("Please Enter Date"),
+    applicationDeadline: Yup.string().required("Deadline Date is required"),
 })
 const initialFormValues = {
   applicationMethod: 'URL'

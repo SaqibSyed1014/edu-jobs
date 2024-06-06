@@ -161,7 +161,7 @@ function updatePostingPrice(val :boolean) {
   else jobPostingPrice.value = '$49'
 }
 
-let processingSaveJob = ref<boolean>(false)
+let processingSaveJob = ref<boolean>(false);
 async function processJobSaving() {
   processingSaveJob.value = true;
   await postjobStore.savingJobFormData({
@@ -317,7 +317,6 @@ async function processJobSaving() {
                 <SvgoRing44 v-else class="h-14 xl:hidden" />
               </div>
             </div>
-            {{formsCollectiveData}}
 
             <template v-if="isFormLoading">
               <div class="container h-full">
@@ -351,7 +350,6 @@ async function processJobSaving() {
                   v-if="currentStep === 3"
                   :form-data="formsCollectiveData"
                   :job-posting-price="jobPostingPrice"
-                  :processing-save-job="processingSaveJob"
                   @edit-icon-clicked="handleButtonClick"
                   @move-to-prev-step="prevStep"
                   @updated-job-posting-pricing="updatePostingPrice"

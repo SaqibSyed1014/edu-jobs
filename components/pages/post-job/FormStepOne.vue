@@ -37,7 +37,7 @@ const schema = Yup.object({
 })
 
 
-const { defineField, handleSubmit, values, resetForm } = useForm({
+const { defineField, handleSubmit, values, errors, resetForm } = useForm({
   validationSchema: schema
 });
 const [OrgId] = defineField('OrgId');
@@ -140,6 +140,7 @@ function resetOrgAutocomplete() {
               @search-change="getSearchedText"
               @select="checkSelection"
               @close="dropdownClosed"
+              :class="{ 'has-error': errors?.organizationName }"
           >
             <template #caret>
               <span></span>
