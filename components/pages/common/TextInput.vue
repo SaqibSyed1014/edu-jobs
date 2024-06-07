@@ -45,7 +45,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'input', 'blur']);
 
 const name = toRef(props, 'name');
 const initialValue = toRef(props, 'modelValue');
@@ -57,6 +57,7 @@ const {
   handleChange,
   meta,
   setValue,
+    errors
 } = useField(name, undefined, {
   initialValue: props.modelValue,
 });
@@ -65,12 +66,19 @@ watch(inputValue, (newValue: any) => {
   emit('update:modelValue', newValue);
 });
 
-watch(
-  () => props.modelValue,
-  (newValue: any) => {
+watch(() => props.modelValue, (newValue: any) => {
     setValue(newValue);
   }
 );
+
+function onBlur() {
+  handleBlur();
+  emit('blur', meta.valid);
+}
+function onInput(event :InputEvent) {
+  handleChange(event.target.value);
+  emit('input', event);
+}
 </script>
 
 <template>
@@ -94,7 +102,8 @@ watch(
               :placeholder="placeholder"
               :autofocus="autofocus"
               :disabled="disabled"
-              @blur="handleBlur"
+              @blur="onBlur"
+              @input="onInput"
               class="form-input w-full"
               :class="{ 'has-error': errorMessage }"
             />

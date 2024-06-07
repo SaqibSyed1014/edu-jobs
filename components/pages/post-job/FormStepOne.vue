@@ -46,6 +46,9 @@ const [organizationTypeId, orgTypeAttrs] = defineField('organizationTypeId');
 const [email, emaileAttrs] = defineField('email');
 const [fullName, fullNameAttrs] = defineField('fullName');
 
+let showUserLoginModal= ref<boolean>(false);
+let isUserExist = ref<boolean>(false);
+
 resetForm({
   values: props.initialFormValues,
 });
@@ -58,6 +61,10 @@ watch(() => [values.organizationName, uploadedImage.value], (val) => {
 })
 
 const onSubmit = handleSubmit(values => {
+  if (isUserExist.value) {
+    showUserLoginModal.value = true;
+    return;
+  }
   emit('handleFormSubmission', values, 1)
 });
 
@@ -110,6 +117,16 @@ function resetOrgAutocomplete() {
   searchedName.value = null;
   organizationName.value = '';
   OrgId.value = null;
+}
+
+async function checkUserEmail(isFieldValid :boolean) {
+  if (isFieldValid) {
+    await jobPostStore.checkUserMail(email.value)
+        .then((isUserFound) => {
+            isUserExist.value = isUserFound;
+            showUserLoginModal.value = isUserFound;
+        })
+  }
 }
 </script>
 
@@ -192,6 +209,7 @@ function resetOrgAutocomplete() {
             placeholder="example@edujobs.com"
             subLabel="Used to send you an email confirmation"
             className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6"
+            @blur="checkUserEmail"
         />
       </div>
 
@@ -215,4 +233,24 @@ function resetOrgAutocomplete() {
       :hide-back-button="true"
     />
   </form>
+
+  <BaseModal
+    v-model="showUserLoginModal"
+    id="user-login-prompt"
+    title=""
+    width="450px"
+    :hide-cancel-btn="true"
+    :hide-ok-btn="true"
+    @close="() => showUserLoginModal = false"
+  >
+    <template #body>
+      <div class="flex flex-col items-center gap-4">
+        <p class="font-semibold text-lg text-center">
+          A user account exists with this email address.
+          Please log in before posting a job.
+        </p>
+        <BaseButton navigate-to="/login" label="Login"/>
+      </div>
+    </template>
+  </BaseModal>
 </template>
