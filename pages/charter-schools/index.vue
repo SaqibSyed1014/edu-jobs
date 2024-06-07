@@ -8,7 +8,7 @@ const router = useRouter();
 const isLoading = ref<boolean>(true);
 const schoolsStore = useSchoolsStore();
 const selectedAlphabet = ref<number>(0);
-const { schoolsList, total_page } = storeToRefs(schoolsStore);
+const { schoolsList, total_page, schoolsFound } = storeToRefs(schoolsStore);
 const currentPage = ref<number>(Number(route?.query?.page) || 1);
 const queryValue = route?.query?.q === "*" ? "" : route?.query?.q;
 const searchedValue = ref<string>(
@@ -471,7 +471,7 @@ function filtersChanged(filterName :string, i :number, label :string, isChecked 
   else selectedValues.value = selectedValues.value.filter(v => v !== value);
 
   if (selectedValues.value.length) {
-    query.value.filter_by = `job_counts:[${[selectedValues.value]}]`
+    query.value.filter_by = `job_count:[${[selectedValues.value]}]`
   }
 
   console.log('Selected values:', selectedValues.value);
@@ -485,6 +485,10 @@ function filtersChanged(filterName :string, i :number, label :string, isChecked 
   });
 
   fetchSchools();
+}
+
+function testFilters(name, index, labal, checked) {
+  console.log('check ', name, index, label, checked)
 }
 </script>
 
@@ -533,6 +537,7 @@ function filtersChanged(filterName :string, i :number, label :string, isChecked 
                   :options="jobOptions"
                   total-jobs="125"
                   :inside-sidebar="true"
+                  @toggle-school-options="testFilters"
                 />
 
 <!--                <FilterSection-->
@@ -592,7 +597,7 @@ function filtersChanged(filterName :string, i :number, label :string, isChecked 
               <FilterSection
                 title="No. of jobs"
                 :options="jobOptions"
-                total-jobs="125"
+                :total-jobs="schoolsFound"
                 @toggleSchoolOption="filtersChanged"
               />
 

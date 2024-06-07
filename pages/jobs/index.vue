@@ -208,25 +208,6 @@ function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
   }
 }
 
-function assignSelectedFilters(et, jr, el, loc :string, coords :number[]) {
-  if (et) sidebarFilters.value.employment_type = et;
-  if (jr) sidebarFilters.value.job_role = jr;
-  if (el) sidebarFilters.value.experience_level = el;
-  filters.value.forEach(filter => {
-    if (filter.type === 'checkbox' && filter.list?.length) {
-      filter.list.forEach(item => {
-        const filterValues = sidebarFilters.value[filter.fieldName] || [];
-        item.checked = !!filterValues.includes(item.value);
-      });
-    }
-  });
-  if (location) searchedLocationText.value = loc; // assign location in url for google map field
-  if (coords && !coords?.includes(0)) {
-    jobStore.coordinates.lat = coords[0];
-    jobStore.coordinates.lng = coords[1];
-  }
-}
-
 function sortJobs(sortBy :string) {
   if (sortBy === 'most_relevant') query.value.sort_by = 'date_posted:asc';
   if (sortBy === 'date_posted') query.value.sort_by = 'date_posted:desc';

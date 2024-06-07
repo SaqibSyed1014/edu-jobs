@@ -3,6 +3,7 @@ import { getSchoolsList, getSchoolDetails, getSchoolJobs } from "~/segments/scho
 interface SchoolState {
     schoolsList: School[]
     total_page: number
+    schoolsFound: number
     singleSchoolDetails: School | null
     schoolJobs: Job[]
 }
@@ -11,14 +12,16 @@ export const useSchoolsStore = defineStore('schoolsStore', {
     state: () => ({
         schoolsList: [],
         total_page: 0,
+        schoolsFound: 0,
         singleSchoolDetails: null,
         schoolJobs: []
     } as SchoolState),
     actions: {
         async fetchCharterSchools(query:any) {
-            const { hits, found} = await getSchoolsList(query)
-            this.$state.schoolsList = hits.map((hit :SchoolHit) => hit.document)
-            this.$state.total_page = Math.ceil(found / 24)
+            const { hits, found} = await getSchoolsList(query);
+            this.$state.schoolsList = hits.map((hit :SchoolHit) => hit.document);
+            this.$state.total_page = Math.ceil(found / 24);
+            this.$state.schoolsFound = found;
         },
         async fetchCharterSchoolDetails(slug :string) {
             this.$state.singleSchoolDetails = await getSchoolDetails(slug);
