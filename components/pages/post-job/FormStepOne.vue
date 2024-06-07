@@ -31,7 +31,7 @@ const handleImageUpload = (event: any) => {
 const schema = Yup.object({
   OrgId: Yup.string(),
   organizationName: Yup.string().required("Organization Name is required"),
-  organizationTypeId: Yup.string().required('Organization type is required'),
+  organizationTypeId: Yup.number().required('Organization type is required'),
   email: Yup.string().required('Email is required').email('Invalid email'),
   fullName: Yup.string().required("Full Name is required"),
 })
@@ -123,6 +123,7 @@ function resetOrgAutocomplete() {
         <div class="sm:col-span-2 sm:mt-0">
           <multiselect
               ref="orgAutocomplete"
+              id="orgName"
               v-model="searchedName"
               :options="orgNamesDropdown"
               label="label"

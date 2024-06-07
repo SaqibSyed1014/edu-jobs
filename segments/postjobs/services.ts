@@ -86,7 +86,7 @@ const getSearchedOrgName = (query :string) :Promise<OrgResponseType> => {
     })
 }
 
-const saveJobData = (payload :any) :Promise<any> => {
+const saveJobData = (payload :any) :Promise<JobSaveResponseType> => {
     const { baseUrl, apiKey } = usePayloadUrl()
     const apiHeaders = {
         'API-Key': apiKey,

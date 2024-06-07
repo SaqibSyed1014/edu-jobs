@@ -73,9 +73,8 @@ export const usePostjobStore = defineStore('postjobStore', {
         },
         async savingJobFormData(payload :any) {
             return await saveJobData(payload)
-                .then((resp) => {
-                    console.log('resp ', resp)
-                    return resp;
+                .then(({ message }) => {
+                    useNuxtApp().$toast.success(message);
                 })
                 .catch((err) => {
                     useNuxtApp().$toast.error('An Error Occurred');
@@ -102,9 +101,14 @@ export const usePostjobStore = defineStore('postjobStore', {
                 value: grade.subject_id
             }))
         },
-        experienceLevelOptions: (state) :ExperienceLevel[] => {
+        experienceLevelOptions: (state) => {
             return state.experienceLevels
-                .sort((a :ExperienceLevel, b :ExperienceLevel) => a.sort_order - b.sort_order) || []
+                .sort((a :ExperienceLevel, b :ExperienceLevel) => a.sort_order - b.sort_order)
+                .map((experience :ExperienceLevel) => ({
+                    label: experience.experience_level,
+                    value: experience.experience_level_id,
+                    desc: experience.experience_level_description
+                })) || []
         },
         orgNamesDropdown: (state) => {
             return state.searchedOrgNames?.map((org :OrgDocument) => ({

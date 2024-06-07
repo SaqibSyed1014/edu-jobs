@@ -163,6 +163,15 @@ interface Subject {
      search_time_ms: number;
  }
 
+ interface JobSaveResponseType {
+    data: {
+        email: string;
+        job_id: number;
+        job_slug: string;
+    }
+     message: string;
+ }
+
  interface OrgHit {
      document: OrgDocument;
      highlight: Record<string, any>;

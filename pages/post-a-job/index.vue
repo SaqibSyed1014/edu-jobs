@@ -7,7 +7,7 @@ import {
 import BaseSpinner from "~/components/core/BaseSpinner.vue";
 import FormStepFour from "~/components/pages/post-job/FormStepFour.vue";
 
-const currentStep = ref(0);
+const currentStep = ref(1);
 const postjobStore = usePostjobStore();
 const { content,status } = storeToRefs(postjobStore);
 const isLoading = ref<boolean>(false);
@@ -24,7 +24,6 @@ onMounted(async() => {
   ])
   isFormLoading.value = false;
 });
-
 
 const steps = ref(formStepsOptions);
 
@@ -82,11 +81,14 @@ async function checkout () {
 
 
 // Function to handle button click
-function handleButtonClick(e: number) {
+function handleButtonClick(e: number, fieldId :string) {
   currentStep.value = e;  // Update currentStep value
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
+  nextTick(() => { // Wait for DOM update
+    const destinationField = document.getElementById(fieldId);
+    if (destinationField) { // Ensure element exists
+      destinationField.scrollIntoView({ behavior: "smooth", block: "center" });
+      destinationField.focus();
+    }
   });
 }
 
@@ -110,7 +112,7 @@ function handleStepClick() {
 let formsCollectiveData = reactive({
   stepOne: {},
   stepTwo: {
-    compensationTypeId: 'Salary',
+    compensationTypeId: 1,
     jobDescription: '',
     jobLocation: ''
   },

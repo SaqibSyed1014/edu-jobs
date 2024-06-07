@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import {applyMethodOptions} from "~/components/core/constants/post-job-form.constants";
+import {
+  applyMethodOptions
+} from "~/components/core/constants/post-job-form.constants";
 import * as Yup from "yup";
 import {Form, ErrorMessage, Field, useForm} from "vee-validate";
 import Datepicker from "@vuepic/vue-datepicker";
@@ -100,6 +102,7 @@ const textInputOptions = {
           </label>
           <div class="mt-2 sm:col-span-2 relative">
             <Datepicker
+                id="applicationDeadline"
                 v-model="applicationDeadline"
                 name="applicationDeadline"
                 :min-date="new Date()"
@@ -130,7 +133,3 @@ const textInputOptions = {
     />
   </form>
 </template>
-
-<style scoped lang="postcss">
-
-</style>

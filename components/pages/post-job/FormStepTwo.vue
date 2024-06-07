@@ -39,32 +39,32 @@ const schema = Yup.object({
     geoLat: Yup.number(),
     geoLng: Yup.number(),
     startDate: Yup.string().required("Start Date is required"),
-    employmentTypeId: Yup.string().required("Employment Type is required"),
-    experienceLevelId: Yup.string().required("Experience Level is required"),
-    compensationTypeId: Yup.string(),
+    employmentTypeId: Yup.number().required("Employment Type is required"),
+    experienceLevelId: Yup.number().required("Experience Level is required"),
+    compensationTypeId: Yup.number(),
     minSalaryId: Yup.string().when("compensationTypeId", {
-      is: "Salary",
+      is: 1,
       then: (schema) => schema.required("Salary Start Range is required")
     }),
     maxSalaryId: Yup.string().when("compensationTypeId", {
-      is: "Salary",
+      is: 1,
       then: (schema) => schema.required("Salary End Range is required")
     }),
     minHourlyId: Yup.string().when("compensationTypeId", {
-      is: "Hourly",
+      is: 2,
       then: (schema) => schema.required("Hourly Start Range is required")
     }),
     maxHourlyId: Yup.string().when("compensationTypeId", {
-      is: "Hourly",
+      is: 2,
       then: (schema) => schema.required("Hourly End Range is required")
     }),
-    jobRoleId: Yup.string().required("Job Role is required"),
-    grades: Yup.array().of(Yup.string()).when("jobRoleId", {
-      is: "Instructional",
+    jobRoleId: Yup.number().required("Job Role is required"),
+    grades: Yup.array().of(Yup.number()).when("jobRoleId", {
+      is: 1,
       then: (schema) => schema.min(1, "Grade Level(s) is required")
     }),
-    subjects: Yup.string().when("jobRoleId", {
-      is: "Instructional",
+    subjects: Yup.number().when("jobRoleId", {
+      is: 1,
       then: (schema) => schema.required("Subject Area(s) is required")
     }),
     jobDescription: Yup.string().required("Job Description is required"),
@@ -126,7 +126,8 @@ function resetLocationOnInput() {
   jobCity.value = ''
   jobState.value = '';
   jobCountry.value = '';
-  geo_location.value = []
+  geoLat.value = 0;
+  geoLng.value = 0;
 }
 
 const options = ref({
@@ -135,8 +136,6 @@ const options = ref({
   },
   readOnly: false,
 });
-
-const locError = ref(false);
 
 watch(() => [values.jobTitle, values.employmentTypeId], (val) => {
   emit('formDataListener', {
@@ -158,7 +157,7 @@ const textInputOptions = {
 };
 
 const selectedMin = computed(() => {
-  return compensationTypeId.value === 'Salary' ? minSalaryId.value : minHourlyId.value;
+  return compensationTypeId.value === 1 ? minSalaryId.value : minHourlyId.value;
 });
 
 let selectedGrades = ref<{ label: string, value: string }[]>([]);
@@ -175,7 +174,7 @@ watch(() => props.initialFormValues, (initialData) => {
 }, { immediate: true })
 
 watch(() => jobRoleId.value, (val) => {  // remove selected grades on non-instructional selection
-  if (val === 'Non-instructional') selectedGrades.value = [];
+  if (val === 2) selectedGrades.value = [];
 })
 
 function checkSelection() {
@@ -233,6 +232,7 @@ function checkSelection() {
           </label>
           <div class="mt-2 sm:col-span-2 sm:mt-0 relative">
             <Datepicker
+                id="startDate"
                 v-model="startDate"
                 name="startDate"
                 :min-date="new Date()"
@@ -257,7 +257,7 @@ function checkSelection() {
 
         <!--    Employment Type Field    -->
         <div class="form-field-layout">
-          <label class="block text-sm font-semibold text-gray-700 sm:pt-1.5">
+          <label id="employmentTypeId" class="block text-sm font-semibold text-gray-700 sm:pt-1.5">
             Employment Type
           </label>
           <div class="mt-2 sm:col-span-2 sm:mt-0">
@@ -287,7 +287,7 @@ function checkSelection() {
 
         <!--    Experience Level Field    -->
         <div class="form-field-layout">
-          <label for="experience" class="block text-sm font-semibold text-gray-700 sm:pt-1.5">
+          <label id="experienceLevelId" for="experience" class="block text-sm font-semibold text-gray-700 sm:pt-1.5">
             Experience Level
           </label>
           <div class="mt-2 sm:col-span-2 sm:mt-0">
@@ -296,20 +296,20 @@ function checkSelection() {
                 <div class="flex items-center">
                   <BaseTooltip
                       :id="`exp-rb-${i}`"
-                      :tooltip-content="experience.experience_level_description"
+                      :tooltip-content="experience.desc"
                       position="right"
                   >
                     <Field
                         v-model="experienceLevelId"
                         name="experienceLevelId"
                         type="radio"
-                        :value="experience.experience_level"
+                        :value="experience.value"
                         class="cursor-pointer"
                     />
                     <label
                         for="Full-time"
                         class="ms-2 me-1 text-sm font-medium text-gray-900 cursor-pointer"
-                    >{{ experience.experience_level }}</label>
+                    >{{ experience.label }}</label>
                   </BaseTooltip>
                 </div>
               </template>
@@ -324,7 +324,7 @@ function checkSelection() {
         <!--    Compensation Type Field    -->
         <div class="compensation-field-group">
           <div class="form-field-layout">
-            <label for="compensation" class="block text-sm font-semibold text-gray-700 sm:pt-1.5">
+            <label id="compensationTypeId" for="compensation" class="block text-sm font-semibold text-gray-700 sm:pt-1.5">
               Compensation Type
             </label>
             <div class="col-span-2">
@@ -348,7 +348,7 @@ function checkSelection() {
             </div>
           </div>
           <PayRangeSelectBox
-              v-if="compensationTypeId === 'Salary'"
+              v-if="compensationTypeId === 1"
               v-model="selectedSalaryRange"
               name="minSalaryId"
               secondary-name="maxSalaryId"
@@ -359,7 +359,7 @@ function checkSelection() {
               className="form-field-layout"
           />
           <PayRangeSelectBox
-              v-else-if="compensationTypeId === 'Hourly'"
+              v-else-if="compensationTypeId === 2"
               v-model="selectedHourlyRange"
               name="minHourlyId"
               secondary-name="maxHourlyId"
@@ -384,12 +384,13 @@ function checkSelection() {
         />
 
         <!--    Grade Level Field    -->
-        <div class="form-field-layout mb-2"  v-if="jobRoleId === 'Instructional'">
+        <div class="form-field-layout mb-2"  v-if="jobRoleId === 1">
           <label class="block text-sm font-semibold text-gray-700 sm:pt-1.5">
             Grade Level
           </label>
           <div class="mt-2 sm:col-span-2 sm:mt-0">
             <multiselect
+                id="gradeLevels"
                 v-model="selectedGrades"
                 :options="gradeLevelDropdown"
                 label="label"
@@ -425,7 +426,7 @@ function checkSelection() {
 
         <!--    Subject Areas Field    -->
         <SelectBox
-            v-if="jobRoleId === 'Instructional'"
+            v-if="jobRoleId === 1"
             v-model="subjects"
             name="subjects"
             label="Subject Area(s)"
@@ -444,6 +445,7 @@ function checkSelection() {
           </label>
           <div class="mt-2 sm:col-span-2 sm:mt-0 rounded-lg">
             <quill-editor
+                id="jobDescription"
                 v-model:content="jobDescription"
                 name="jobDescription"
                 theme="snow"
