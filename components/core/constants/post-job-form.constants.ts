@@ -1,19 +1,19 @@
 export const employmentOptions = [
-    { label: 'Full-time', value: 'Full-time' },
-    { label: 'Part-time', value: 'Part-time' },
-    { label: 'Contractor', value: 'Contractor' },
-    { label: 'Intern', value: 'Intern' },
-    { label: 'Volunteer', value: 'Volunteer' },
+    { label: 'Full-time', value: 1 },
+    { label: 'Part-time', value: 2 },
+    { label: 'Contractor', value: 3 },
+    { label: 'Intern', value: 4 },
+    { label: 'Volunteer', value: 5 },
 ]
 
 export const jobRolesOptions = [
-    { label: "Instructional", value: "Instructional" },
-    { label: "Non-instructional", value: "Non-instructional" }
+    { label: "Instructional", value: 1 },
+    { label: "Non-instructional", value: 2 }
 ]
 
 export const compensationTypesOptions = [
-    { label: "Salary", value: "Salary" },
-    { label: "Hourly", value: "Hourly" }
+    { label: "Salary", value: 1 },
+    { label: "Hourly", value: 2 }
 ]
 
 export const applyMethodOptions = [

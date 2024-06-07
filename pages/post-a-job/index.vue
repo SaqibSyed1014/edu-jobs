@@ -82,11 +82,14 @@ async function checkout () {
 
 
 // Function to handle button click
-function handleButtonClick(e: number) {
+function handleButtonClick(e: number, fieldId :string) {
   currentStep.value = e;  // Update currentStep value
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
+  nextTick(() => { // Wait for DOM update
+    const destinationField = document.getElementById(fieldId);
+    if (destinationField) { // Ensure element exists
+      destinationField.scrollIntoView({ behavior: "smooth", block: "center" });
+      destinationField.focus();
+    }
   });
 }
 
@@ -110,7 +113,7 @@ function handleStepClick() {
 let formsCollectiveData = reactive({
   stepOne: {},
   stepTwo: {
-    compensationTypeId: 'Salary',
+    compensationTypeId: 1,
     jobDescription: '',
     jobLocation: ''
   },

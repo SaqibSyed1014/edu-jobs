@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import {convertTZDateToShortDate} from "~/segments/utils";
 import {usePostjobStore} from "~/segments/postjobs/store";
+import {
+  compensationTypesOptions,
+  employmentOptions,
+  jobRolesOptions
+} from "~/components/core/constants/post-job-form.constants";
 
 const props = defineProps<{
   formData: any,
@@ -8,9 +13,30 @@ const props = defineProps<{
 }>()
 
 const postJobStore = usePostjobStore();
-const { gradeLevelDropdown, subjectsDropdown } = storeToRefs(postJobStore);
+const {
+  orgTypesDropdown,
+  gradeLevelDropdown,
+  subjectsDropdown,
+  experienceLevelOptions
+} = storeToRefs(postJobStore);
 
-const emit = defineEmits(['editIconClicked', 'moveToPrevStep', 'updatedJobPostingPricing'])
+const emit = defineEmits(['editIconClicked', 'moveToPrevStep', 'updatedJobPostingPricing']);
+
+const orgTypeLabel = computed(() => {
+  return orgTypesDropdown.value.filter((org) => org?.value == props.formData.stepOne?.organizationTypeId)[0].label
+})
+
+const employmentTypeLabel = computed(() => {
+  return employmentOptions.filter((employment) => employment?.value == props.formData.stepTwo?.employmentTypeId)[0].label
+})
+
+const experienceLevelLabel = computed(() => {
+  return experienceLevelOptions.value.filter((experience) => experience?.value == props.formData.stepTwo?.experienceLevelId)[0].label
+})
+
+const jobRoleLabel= computed(() => {
+  return jobRolesOptions.filter((job) => job?.value == props.formData.stepTwo?.jobRoleId)[0].label
+})
 
 const gradeLevelsLabels = computed(() => {
   return props.formData.stepTwo?.grades.map((value :any) => {
@@ -21,6 +47,12 @@ const gradeLevelsLabels = computed(() => {
 
 const subjectLabel = computed(() => {
   return subjectsDropdown.value.filter((subject) => subject?.value == props.formData.stepTwo?.subjects)[0].label
+})
+
+const compensationPreview = computed(() => {
+  const stepTwoData = props.formData.stepTwo;
+  const selectedCompensationTypeLabel = compensationTypesOptions.filter(compensation => compensation.value === stepTwoData.compensationTypeId)[0].label
+  return selectedCompensationTypeLabel
 })
 
 let processingSaveJob = ref<boolean>(false);
@@ -42,79 +74,91 @@ async function processJobSaving() {
         <h4 class="text-gray-900 text-base font-semibold leading-normal">
           Organization Information
         </h4>
-        <div class="grid sm:grid-cols-2 gap-4 w-full">
-          <div class="justify-start items-start gap-8 inline-flex">
-            <div class="flex-col justify-start items-start gap-2 inline-flex">
-              <div class="inline-flex items-center gap-1">
-                <p class="text-gray-700 text-base font-semibold leading-normal">
-                  Organization Name
-                </p>
-                <button
-                  id="tooltipButton"
-                  type="button"
-                  @click="() => emit('editIconClicked', 0)"
-                >
-                  <BaseTooltip id="edit-icon-1" tooltip-content="Edit" position="right">
-                    <SvgoEditPensil class="ml-0.5 h-4 text-gray-500 hover:text-brand-500 transition" />
-                  </BaseTooltip>
-                </button>
-              </div>
-
-              <p class="text-gray-600 text-base font-normal leading-normal">
-                {{ formData.stepOne?.organizationName ? formData.stepOne.organizationName : "N/A" }}
+        <div class="preview-field-layout">
+          <div class="preview-field-wrapper">
+            <div class="preview-field-update">
+              <p class="preview-field-heading">
+                Organization Name
               </p>
+              <button
+                id="tooltipButton"
+                type="button"
+                @click="() => emit('editIconClicked', 0, 'orgName')"
+              >
+                <BaseTooltip id="edit-icon-1" tooltip-content="Edit" position="right">
+                  <SvgoEditPensil class="edit-field-icon" />
+                </BaseTooltip>
+              </button>
             </div>
+
+            <p class="preview-field-text">
+              {{ formData.stepOne?.organizationName ? formData.stepOne.organizationName : "N/A" }}
+            </p>
           </div>
-          <div class="justify-start items-start gap-8 inline-flex">
-            <div
-              class="flex-col justify-start items-start gap-2 inline-flex"
-            >
-              <div class="inline-flex items-center gap-1">
-                <p class="text-gray-700 text-base font-semibold leading-normal">
-                  Your work email address
-                </p>
-                <button
+
+          <div class="preview-field-wrapper">
+            <div class="preview-field-update">
+              <p class="preview-field-heading">
+                Organization Type
+              </p>
+              <button
                   id="tooltipButton"
                   type="button"
-                  @click="() => emit('editIconClicked', 0)"
-                >
-                  <BaseTooltip id="edit-icon-2" tooltip-content="Edit" position="right">
-                    <SvgoEditPensil class="ml-0.5 h-4 text-gray-500 hover:text-brand-500 transition" />
-                  </BaseTooltip>
-                </button>
-              </div>
-
-              <p class="text-gray-600 text-base font-normal leading-normal">
-                {{ formData.stepOne?.email ? formData.stepOne.email : "N/A" }}
-              </p>
+                  @click="() => emit('editIconClicked', 0, 'organizationTypeId')"
+              >
+                <BaseTooltip id="edit-icon-2" tooltip-content="Edit" position="right">
+                  <SvgoEditPensil class="edit-field-icon" />
+                </BaseTooltip>
+              </button>
             </div>
+
+            <p class="preview-field-text">
+              {{ orgTypeLabel }}
+            </p>
           </div>
         </div>
 
-        <div class="grid sm:grid-cols-2 gap-4 w-full">
-          <div class="justify-start items-start gap-8 inline-flex">
-            <div
-              class="flex-col justify-start items-start gap-2 inline-flex"
-            >
-              <div class="inline-flex items-center gap-1">
-                <p class="text-gray-700 text-base font-semibold leading-normal">
-                  Your full name
-                </p>
-                <button
+        <div class="preview-field-layout">
+          <div class="preview-field-wrapper">
+            <div class="preview-field-update">
+              <p class="preview-field-heading">
+                Your work email address
+              </p>
+              <button
                   id="tooltipButton"
                   type="button"
-                  @click="() => emit('editIconClicked', 0)"
-                >
-                  <BaseTooltip id="edit-icon-3" tooltip-content="Edit" position="right">
-                    <SvgoEditPensil class="ml-0.5 h-4 text-gray-500 hover:text-brand-500 transition" />
-                  </BaseTooltip>
-                </button>
-              </div>
-
-              <p class="text-gray-600 text-base font-normal leading-normal">
-                {{ formData.stepOne?.fullName ? formData.stepOne.fullName : "N/A" }}
-              </p>
+                  @click="() => emit('editIconClicked', 0, 'email')"
+              >
+                <BaseTooltip id="edit-icon-2" tooltip-content="Edit" position="right">
+                  <SvgoEditPensil class="edit-field-icon" />
+                </BaseTooltip>
+              </button>
             </div>
+
+            <p class="preview-field-text">
+              {{ formData.stepOne?.email ? formData.stepOne.email : "N/A" }}
+            </p>
+          </div>
+
+          <div class="preview-field-wrapper">
+            <div class="preview-field-update">
+              <p class="preview-field-heading">
+                Your full name
+              </p>
+              <button
+                id="tooltipButton"
+                type="button"
+                @click="() => emit('editIconClicked', 0, 'fullName')"
+              >
+                <BaseTooltip id="edit-icon-3" tooltip-content="Edit" position="right">
+                  <SvgoEditPensil class="edit-field-icon" />
+                </BaseTooltip>
+              </button>
+            </div>
+
+            <p class="preview-field-text">
+              {{ formData.stepOne?.fullName ? formData.stepOne.fullName : "N/A" }}
+            </p>
           </div>
         </div>
       </div>
@@ -123,154 +167,189 @@ async function processJobSaving() {
         <h4 class="text-gray-900 text-base font-semibold leading-normal">
           Job Details
         </h4>
-        <div class="grid sm:grid-cols-2 gap-4 w-full">
-          <div class="justify-start items-start gap-8 inline-flex">
-            <div
-              class="flex-col justify-start items-start gap-2 inline-flex"
-            >
-              <div class="inline-flex items-center gap-1">
-                <p class="text-gray-700 text-base font-semibold leading-normal">
-                  Job Title
-                </p>
-                <button
-                  id="tooltipButton"
-                  type="button"
-                  @click="() => emit('editIconClicked', 1)"
-                >
-                  <BaseTooltip id="edit-icon-4" tooltip-content="Edit" position="right">
-                    <SvgoEditPensil class="ml-0.5 h-4 text-gray-500 hover:text-brand-500 transition" />
-                  </BaseTooltip>
-                </button>
-              </div>
-
-              <p class="text-gray-600 text-base font-normal leading-normal">
-                {{ formData.stepTwo?.jobTitle ? formData.stepTwo.jobTitle : "N/A" }}
+        <div class="preview-field-layout">
+          <div class="preview-field-wrapper">
+            <div class="preview-field-update">
+              <p class="preview-field-heading">
+                Job Title
               </p>
+              <button
+                id="tooltipButton"
+                type="button"
+                @click="() => emit('editIconClicked', 1, 'jobTitle')"
+              >
+                <BaseTooltip id="edit-icon-4" tooltip-content="Edit" position="right">
+                  <SvgoEditPensil class="edit-field-icon" />
+                </BaseTooltip>
+              </button>
             </div>
+
+            <p class="preview-field-text">
+              {{ formData.stepTwo?.jobTitle ? formData.stepTwo.jobTitle : "N/A" }}
+            </p>
           </div>
-          <div class="justify-start items-start gap-8 inline-flex">
-            <div
-              class="flex-col justify-start items-start gap-2 inline-flex"
+
+          <div
+              class="preview-field-wrapper"
             >
-              <div class="inline-flex items-center gap-1">
-                <p class="text-gray-700 text-base font-semibold leading-normal">
+              <div class="preview-field-update">
+                <p class="preview-field-heading">
                   Start Date
                 </p>
                 <button
                   id="tooltipButton"
                   type="button"
-                  @click="() => emit('editIconClicked', 1)"
+                  @click="() => emit('editIconClicked', 1, 'startDate')"
                 >
                   <BaseTooltip id="edit-icon-5" tooltip-content="Edit" position="right">
-                    <SvgoEditPensil class="ml-0.5 h-4 text-gray-500 hover:text-brand-500 transition" />
+                    <SvgoEditPensil class="edit-field-icon" />
                   </BaseTooltip>
                 </button>
               </div>
 
-              <p class="text-gray-600 text-base font-normal leading-normal">
+              <p class="preview-field-text">
                 {{ formData.stepTwo?.startDate ? convertTZDateToShortDate(formData.stepTwo.startDate) : "N/A" }}
               </p>
             </div>
-          </div>
         </div>
 
-        <div class="grid sm:grid-cols-2 gap-4 w-full">
-          <div class="justify-start items-start gap-8 inline-flex">
-            <div
-              class="flex-col justify-start items-start gap-2 inline-flex"
-            >
-              <div class="inline-flex items-center gap-1">
-                <p class="text-gray-700 text-base font-semibold leading-normal">
-                  Employment Type
+        <div class="preview-field-layout">
+          <div class="preview-field-wrapper">
+            <div class="preview-field-update">
+              <p class="preview-field-heading">
+                Employment Type
+              </p>
+              <button
+                id="tooltipButton"
+                type="button"
+                @click="() => emit('editIconClicked', 1, 'employmentTypeId')"
+              >
+                <BaseTooltip id="edit-icon-6" tooltip-content="Edit" position="right">
+                  <SvgoEditPensil class="edit-field-icon" />
+                </BaseTooltip>
+              </button>
+            </div>
+
+            <p class="preview-field-text">
+              {{ employmentTypeLabel }}
+            </p>
+          </div>
+
+          <div class="preview-field-wrapper">
+              <div class="preview-field-update">
+                <p class="preview-field-heading">
+                  Experience Level
                 </p>
                 <button
                   id="tooltipButton"
                   type="button"
-                  @click="() => emit('editIconClicked', 1)"
+                  @click="() => emit('editIconClicked', 1, 'experienceLevelId')"
                 >
-                  <BaseTooltip id="edit-icon-6" tooltip-content="Edit" position="right">
-                    <SvgoEditPensil class="ml-0.5 h-4 text-gray-500 hover:text-brand-500 transition" />
+                  <BaseTooltip id="edit-icon-7" tooltip-content="Edit" position="right">
+                    <SvgoEditPensil class="edit-field-icon" />
                   </BaseTooltip>
                 </button>
               </div>
 
-              <p class="text-gray-600 text-base font-normal leading-normal">
-                {{ formData.stepTwo?.employmentTypeId ? formData.stepTwo?.employmentTypeId : "N/A" }}
+              <p class="preview-field-text">
+                {{ experienceLevelLabel }}
+              </p>
+            </div>
+        </div>
+
+        <div class="preview-field-layout">
+          <div class="">
+            <div class="preview-field-wrapper">
+              <div class="preview-field-update">
+                <p class="preview-field-heading">
+                  Compensation
+                </p>
+                <button
+                    id="tooltipButton"
+                    type="button"
+                    @click="() => emit('editIconClicked', 1, 'compensationTypeId')"
+                >
+                  <BaseTooltip id="edit-icon-6" tooltip-content="Edit" position="right">
+                    <SvgoEditPensil class="edit-field-icon" />
+                  </BaseTooltip>
+                </button>
+              </div>
+
+              <p class="preview-field-text">
+                {{ compensationPreview }}
               </p>
             </div>
           </div>
 
-          <div class="justify-start items-start gap-8 inline-flex">
+          <div class="">
             <div
-              class="flex-col justify-start items-start gap-2 inline-flex"
+                class="preview-field-wrapper"
             >
-              <div class="inline-flex items-center gap-1">
-                <p class="text-gray-700 text-base font-semibold leading-normal">
+              <div class="preview-field-update">
+                <p class="preview-field-heading">
                   Job Role
                 </p>
                 <button
-                  id="tooltipButton"
-                  type="button"
-                  @click="() => emit('editIconClicked', 1)"
+                    id="tooltipButton"
+                    type="button"
+                    @click="() => emit('editIconClicked', 1, 'jobRoleId')"
                 >
                   <BaseTooltip id="edit-icon-7" tooltip-content="Edit" position="right">
-                    <SvgoEditPensil class="ml-0.5 h-4 text-gray-500 hover:text-brand-500 transition" />
+                    <SvgoEditPensil class="edit-field-icon" />
                   </BaseTooltip>
                 </button>
               </div>
 
-              <p class="text-gray-600 text-base font-normal leading-normal">
-                {{ formData.stepTwo?.jobRoleId ? formData.stepTwo?.jobRoleId : "N/A" }}
+              <p class="preview-field-text">
+                {{ jobRoleLabel }}
               </p>
             </div>
           </div>
         </div>
 
-        <div v-if="formData.stepTwo?.jobRoleId === 'Instructional'" class="grid sm:grid-cols-2 gap-4 w-full">
-          <div class="justify-start items-start gap-8 inline-flex">
-            <div class="flex-col justify-start items-start gap-2 inline-flex">
-              <div class="inline-flex items-center gap-1">
-                <p class="text-gray-700 text-base font-semibold leading-normal">
+        <div v-if="formData.stepTwo?.jobRoleId === 'Instructional'" class="preview-field-layout">
+          <div class="">
+            <div class="preview-field-wrapper">
+              <div class="preview-field-update">
+                <p class="preview-field-heading">
                   Grade Level(s)
                 </p>
                 <button
                   id="tooltipButton"
                   type="button"
-                  @click="() => emit('editIconClicked', 1)"
+                  @click="() => emit('editIconClicked', 1, 'gradeLevels')"
                 >
                   <BaseTooltip id="edit-icon-8" tooltip-content="Edit" position="right">
-                    <SvgoEditPensil class="ml-0.5 h-4 text-gray-500 hover:text-brand-500 transition" />
+                    <SvgoEditPensil class="edit-field-icon" />
                   </BaseTooltip>
                 </button>
               </div>
 
-              <p class="text-gray-600 text-base font-normal leading-normal">
+              <p class="preview-field-text">
                 {{ formData.stepTwo?.grades.length ? gradeLevelsLabels : "N/A" }}
               </p>
             </div>
           </div>
 
-          <div class="justify-start items-start gap-8 inline-flex">
-            <div
-              class="flex-col justify-start items-start gap-2 inline-flex"
-            >
-              <div class="inline-flex items-center gap-1">
-                <p class="text-gray-700 text-base font-semibold leading-normal">
+          <div class="">
+            <div class="preview-field-wrapper">
+              <div class="preview-field-update">
+                <p class="preview-field-heading">
                   Subject Area(s)
                 </p>
                 <button
                   id="tooltipButton"
                   type="button"
-                  @click="() => emit('editIconClicked', 1)"
+                  @click="() => emit('editIconClicked', 1, 'subjects')"
                 >
                   <BaseTooltip id="edit-icon-9" tooltip-content="Edit" position="right">
-                    <SvgoEditPensil class="ml-0.5 h-4 text-gray-500 hover:text-brand-500 transition" />
+                    <SvgoEditPensil class="edit-field-icon" />
                   </BaseTooltip>
                 </button>
               </div>
 
               <p
-                class="text-gray-600 text-base font-normal leading-normal"
+                class="preview-field-text"
               >
                 {{ formData.stepTwo?.subjects ? subjectLabel : "N/A" }}
               </p>
@@ -278,28 +357,46 @@ async function processJobSaving() {
           </div>
         </div>
 
-        <div class="flex flex-col gap-4 w-full">
-          <div class="justify-start items-start gap-8 inline-flex">
-            <div class="flex-col justify-start items-start gap-2 inline-flex">
-              <div class="inline-flex items-center gap-1">
-                <p class="text-gray-700 text-base font-semibold leading-normal">
-                  Job Description
-                </p>
-                <button
+        <div class="preview-field-layout">
+          <div class="preview-field-wrapper">
+            <div class="preview-field-update">
+              <p class="preview-field-heading">
+                Job Description
+              </p>
+              <button
+                id="tooltipButton"
+                type="button"
+                @click="() => emit('editIconClicked', 1, 'jobDescription')"
+              >
+                <BaseTooltip id="edit-icon-10" tooltip-content="Edit" position="right">
+                  <SvgoEditPensil class="edit-field-icon" />
+                </BaseTooltip>
+              </button>
+            </div>
+            <p
+              class="preview-field-text"
+              v-html="formData.stepTwo.jobDescription"
+            ></p>
+          </div>
+
+          <div class="preview-field-wrapper">
+            <div class="preview-field-update">
+              <p class="preview-field-heading">
+                Job Location
+              </p>
+              <button
                   id="tooltipButton"
                   type="button"
-                  @click="() => emit('editIconClicked', 1)"
-                >
-                  <BaseTooltip id="edit-icon-10" tooltip-content="Edit" position="right">
-                    <SvgoEditPensil class="ml-0.5 h-4 text-gray-500 hover:text-brand-500 transition" />
-                  </BaseTooltip>
-                </button>
-              </div>
-              <p
-                class="text-gray-600 text-base font-normal leading-normal"
-                v-html="formData.stepTwo.jobDescription"
-              ></p>
+                  @click="() => emit('editIconClicked', 1, 'jobLocationInput')"
+              >
+                <BaseTooltip id="edit-icon-10" tooltip-content="Edit" position="right">
+                  <SvgoEditPensil class="edit-field-icon" />
+                </BaseTooltip>
+              </button>
             </div>
+            <p class="preview-field-text">
+              {{ formData.stepTwo?.jobLocation ? formData.stepTwo.jobLocation : "N/A" }}
+            </p>
           </div>
         </div>
       </div>
@@ -308,83 +405,77 @@ async function processJobSaving() {
         <h4 class="text-gray-900 text-base font-semibold leading-normal">
           Application Details
         </h4>
-        <div class="grid sm:grid-cols-2 gap-4 w-full">
-          <div class="justify-start items-start gap-8 inline-flex">
+        <div class="preview-field-layout">
+          <div class="">
             <div
-              class="flex-col justify-start items-start gap-2 inline-flex"
+              class="preview-field-wrapper"
             >
-              <div class="inline-flex items-center gap-1">
-                <p
-                  class="text-gray-700 text-base font-semibold leading-normal"
-                >
+              <div class="preview-field-update">
+                <p class="preview-field-heading">
                   Application method
                 </p>
                 <button
                   id="tooltipButton"
                   type="button"
-                  @click="() => emit('editIconClicked', 2)"
+                  @click="() => emit('editIconClicked', 2, 'applicationMethod')"
                 >
                   <BaseTooltip id="edit-icon-11" tooltip-content="Edit" position="right">
-                    <SvgoEditPensil class="ml-0.5 h-4 text-gray-500 hover:text-brand-500 transition" />
+                    <SvgoEditPensil class="edit-field-icon" />
                   </BaseTooltip>
                 </button>
               </div>
 
-              <p
-                class="text-gray-600 text-base font-normal leading-normal"
-              >
+              <p class="preview-field-text">
                 {{ formData.stepThree?.applicationMethod ? formData.stepThree?.applicationMethod : "N/A" }}
               </p>
             </div>
           </div>
-          <div class="justify-start items-start gap-8 inline-flex">
-            <div
-              class="flex-col justify-start items-start gap-2 inline-flex"
-            >
-              <div class="inline-flex items-center gap-1">
-                <p class="text-gray-700 text-base font-semibold leading-normal">
-                  {{ formData.stepThree?.applicationMethod }}
+          <div class="">
+            <div class="preview-field-wrapper">
+              <div class="preview-field-update">
+                <p class="preview-field-heading">
+                  {{ formData.stepThree?.applicationMethod ? formData.stepThree?.applicationMethod : "N/A" }}
                 </p>
                 <button
                   id="tooltipButton"
                   type="button"
-                  @click="() => emit('editIconClicked', 2)"
+                  @click="() => emit('editIconClicked', 2, formData.stepThree?.applicationMethod === 'Email' ? 'applyEmail' : 'applyURL')"
                 >
                   <BaseTooltip id="edit-icon-12" tooltip-content="Edit">
-                    <SvgoEditPensil class="ml-0.5 h-4 text-gray-500 hover:text-brand-500 transition" />
+                    <SvgoEditPensil class="edit-field-icon" />
                   </BaseTooltip>
                 </button>
               </div>
 
-              <p v-if="formData.stepThree?.applicationMethod === 'URL'" class="text-gray-600 text-base font-normal leading-normal">
+              <p v-if="formData.stepThree?.applicationMethod === 'URL'" class="preview-field-text">
                 {{ formData.stepThree?.applyURL ? "http://" + formData.stepThree.applyURL : "N/A" }}
               </p>
-              <p v-if="formData.stepThree?.applicationMethod === 'Email'" class="text-gray-600 text-base font-normal leading-normal">
+              <p v-if="formData.stepThree?.applicationMethod === 'Email'" class="preview-field-text">
                 {{ formData.stepThree?.applyEmail ? formData.stepThree.applyEmail : "N/A" }}
               </p>
             </div>
           </div>
         </div>
 
-        <div class="grid sm:grid-cols-2 gap-4 w-full">
-          <div class="justify-start items-start gap-8 inline-flex">
-            <div class="flex-col justify-start items-start gap-2 inline-flex">
-              <div class="inline-flex items-center gap-1">
-                <p class="text-gray-700 text-base font-semibold leading-normal">
+        <div class="preview-field-layout">
+          <div class="">
+            <div class="preview-field-wrapper">
+              <div class="preview-field-update">
+                <p class="preview-field-heading">
                   Application deadline date
                 </p>
                 <button
                   id="tooltipButton"
                   type="button"
-                  @click="() => emit('editIconClicked', 2)"
+                  @click="() => emit('editIconClicked', 2, 'applicationDeadline')"
                 >
                   <BaseTooltip id="edit-icon-13" tooltip-content="Edit">
-                    <SvgoEditPensil class="ml-0.5 h-4 text-gray-500 hover:text-brand-500 transition" />
+                    <SvgoEditPensil class="edit-field-icon" />
                   </BaseTooltip>
                 </button>
               </div>
 
-              <p class="text-gray-600 text-base font-normal leading-normal">
+              <p class="preview-field-text">
                 {{ formData.stepThree?.applicationDeadline ? convertTZDateToShortDate(formData.stepThree?.applicationDeadline) : "N/A" }}
               </p>
             </div>
@@ -417,3 +508,24 @@ async function processJobSaving() {
     </div>
   </div>
 </template>
+
+<style scoped>
+.preview-field-layout{
+  @apply grid sm:grid-cols-2 gap-4 w-full
+}
+.preview-field-wrapper{
+  @apply flex-col justify-start items-start gap-2 inline-flex
+}
+.preview-field-update{
+  @apply inline-flex items-center gap-1
+}
+.preview-field-heading{
+  @apply text-gray-700 text-base font-semibold leading-normal
+}
+.edit-field-icon{
+  @apply ml-0.5 h-4 text-gray-500 hover:text-brand-500 transition
+}
+.preview-field-text{
+  @apply text-gray-600 text-base font-normal leading-normal
+}
+</style>

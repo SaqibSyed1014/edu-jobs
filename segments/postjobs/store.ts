@@ -102,9 +102,14 @@ export const usePostjobStore = defineStore('postjobStore', {
                 value: grade.subject_id
             }))
         },
-        experienceLevelOptions: (state) :ExperienceLevel[] => {
+        experienceLevelOptions: (state) => {
             return state.experienceLevels
-                .sort((a :ExperienceLevel, b :ExperienceLevel) => a.sort_order - b.sort_order) || []
+                .sort((a :ExperienceLevel, b :ExperienceLevel) => a.sort_order - b.sort_order)
+                .map((experience :ExperienceLevel) => ({
+                    label: experience.experience_level,
+                    value: experience.experience_level_id,
+                    desc: experience.experience_level_description
+                })) || []
         },
         orgNamesDropdown: (state) => {
             return state.searchedOrgNames?.map((org :OrgDocument) => ({
