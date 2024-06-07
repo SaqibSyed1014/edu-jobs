@@ -43,7 +43,7 @@ const { defineField, handleSubmit, values, errors, resetForm } = useForm({
 const [OrgId] = defineField('OrgId');
 const [organizationName, orgNameAttrs] = defineField('organizationName');
 const [organizationTypeId, orgTypeAttrs] = defineField('organizationTypeId');
-const [email, emaileAttrs] = defineField('email');
+const [email, emailAttrs] = defineField('email');
 const [fullName, fullNameAttrs] = defineField('fullName');
 
 let showUserLoginModal= ref<boolean>(false);
@@ -202,7 +202,7 @@ async function checkUserEmail(isFieldValid :boolean) {
       >
         <TextInput
             v-model="email"
-            v-bind="emaileAttrs"
+            v-bind="emailAttrs"
             name="email"
             type="email"
             label="Your work email address*"

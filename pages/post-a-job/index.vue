@@ -123,7 +123,6 @@ function moveToNextForm(values :any, formNo :number) {
   if (formNo === 1) formsCollectiveData.stepOne = values;
   if (formNo === 2) formsCollectiveData.stepTwo = values;
   if (formNo === 3) formsCollectiveData.stepThree = values;
-  console.log('form datas --> ', formsCollectiveData)
   currentStep.value = formNo;
   window.scrollTo({
     top: 0,
