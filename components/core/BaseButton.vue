@@ -56,7 +56,7 @@ const component = computed(() => {
 </script>
 
 <template>
-  <component :is="component" :to="navigateTo" :target="isExternalLink ? '_blank':''" :class="[defaultStyles, btnStyleClasses]" :disabled="disabled">
+  <component :is="component" :to="navigateTo" :target="isExternalLink ? '_blank':''" :class="[defaultStyles, btnStyleClasses]" :disabled="disabled || isLoading">
     <slot name="prepend-icon" />
     <template v-if="!isLoading">{{ label }}</template>
     <BaseSpinner size="xs" :show-loader="isLoading" />

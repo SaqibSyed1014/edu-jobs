@@ -8,10 +8,10 @@ const props = withDefaults(defineProps<{
   cancelText?: string
   okDisabled?: boolean
   loadingOkBtn?: boolean
-  onCancel: () => void
-  onOk: () => Promise<any>
-  hideOkBtn: boolean
-  hideCancelBtn: boolean
+  onCancel?: () => void
+  onOk?: () => Promise<any>
+  hideOkBtn?: boolean
+  hideCancelBtn?: boolean
 }>(), {
   id: 'base-modal',
   width: '672px',

@@ -5,6 +5,7 @@ import {
     getSubjects,
     getExperienceLevels,
     getSearchedOrgName,
+    checkUserMailExists,
     saveJobData
 } from "~/segments/postjobs/services"
 
@@ -70,6 +71,16 @@ export const usePostjobStore = defineStore('postjobStore', {
         async fetchSearchedOrgNames(name :string) {
             const { hits } = await getSearchedOrgName(name);
             this.$state.searchedOrgNames = hits.map((org:OrgHit) => org.document)
+        },
+        async checkUserMail(mail :string) {
+            return await checkUserMailExists(mail)
+                .then(({ error }) => {
+                    return error;
+                })
+                .catch((err) => {
+                    useNuxtApp().$toast.error('An Error Occurred');
+                    throw err;
+                })
         },
         async savingJobFormData(payload :any) {
             return await saveJobData(payload)

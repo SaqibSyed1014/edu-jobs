@@ -86,6 +86,17 @@ const getSearchedOrgName = (query :string) :Promise<OrgResponseType> => {
     })
 }
 
+const checkUserMailExists = (mail :string) :Promise<CheckUserMailResponseType> => {
+    const { baseUrl, apiKey } = usePayloadUrl()
+    const apiHeaders = {
+        'API-Key': apiKey,
+    }
+    return $fetch(`${baseUrl}/auth/userexists?email=${mail}`, {
+        method: 'post',
+        headers: apiHeaders,
+    })
+}
+
 const saveJobData = (payload :any) :Promise<JobSaveResponseType> => {
     const { baseUrl, apiKey } = usePayloadUrl()
     const apiHeaders = {
@@ -106,5 +117,6 @@ export {
     getExperienceLevels,
     getOrgTypes,
     getSearchedOrgName,
+    checkUserMailExists,
     saveJobData
 }

@@ -7,7 +7,7 @@ import {
 import BaseSpinner from "~/components/core/BaseSpinner.vue";
 import FormStepFour from "~/components/pages/post-job/FormStepFour.vue";
 
-const currentStep = ref(1);
+const currentStep = ref(0);
 const postjobStore = usePostjobStore();
 const { content,status } = storeToRefs(postjobStore);
 const isLoading = ref<boolean>(false);
@@ -123,7 +123,6 @@ function moveToNextForm(values :any, formNo :number) {
   if (formNo === 1) formsCollectiveData.stepOne = values;
   if (formNo === 2) formsCollectiveData.stepTwo = values;
   if (formNo === 3) formsCollectiveData.stepThree = values;
-  console.log('form datas --> ', formsCollectiveData)
   currentStep.value = formNo;
   window.scrollTo({
     top: 0,

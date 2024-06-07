@@ -172,6 +172,13 @@ interface Subject {
      message: string;
  }
 
+ interface CheckUserMailResponseType {
+     data: {
+         message: string;
+     }
+     error: boolean;
+ }
+
  interface OrgHit {
      document: OrgDocument;
      highlight: Record<string, any>;
