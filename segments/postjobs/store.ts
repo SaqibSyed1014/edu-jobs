@@ -73,9 +73,8 @@ export const usePostjobStore = defineStore('postjobStore', {
         },
         async savingJobFormData(payload :any) {
             return await saveJobData(payload)
-                .then((resp) => {
-                    console.log('resp ', resp)
-                    return resp;
+                .then(({ message }) => {
+                    useNuxtApp().$toast.success(message);
                 })
                 .catch((err) => {
                     useNuxtApp().$toast.error('An Error Occurred');

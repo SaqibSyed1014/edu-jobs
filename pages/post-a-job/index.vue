@@ -25,7 +25,6 @@ onMounted(async() => {
   isFormLoading.value = false;
 });
 
-
 const steps = ref(formStepsOptions);
 
 const unwatch = watch(currentStep, (newValue: number, oldValue: number) => {

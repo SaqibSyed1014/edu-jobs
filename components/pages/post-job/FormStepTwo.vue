@@ -137,8 +137,6 @@ const options = ref({
   readOnly: false,
 });
 
-const locError = ref(false);
-
 watch(() => [values.jobTitle, values.employmentTypeId], (val) => {
   emit('formDataListener', {
     jobTitle: val[0],
@@ -187,7 +185,6 @@ function checkSelection() {
 <template>
   <form @submit.prevent="onSubmit">
     <div class="w-full">
-      {{errors}}{{values}}
       <div class="mt-5 border-b border-gray-900/10 divide-y divide-gray-900/10 border-t">
         <!--    Job Title Field    -->
         <TextInput
