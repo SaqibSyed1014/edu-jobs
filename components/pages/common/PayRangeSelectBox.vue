@@ -83,8 +83,10 @@ function convertPriceToNumber(price :string) {
 }
 
 watch(() => [selectedStartRange.value, selectedEndRange.value], () => {
-  const startValue = convertPriceToNumber(selectedStartRange.value)
-  const endValue = convertPriceToNumber(selectedEndRange.value)
+  // const startValue = convertPriceToNumber(selectedStartRange.value)
+  // const endValue = convertPriceToNumber(selectedEndRange.value)
+  const startValue = selectedStartRange.value
+  const endValue = selectedEndRange.value
   rangeError.value = !!((startValue && endValue) && (endValue < startValue));
 })
 
@@ -129,9 +131,9 @@ const modelValue = computed({
             <option
                 v-for="item in data"
                 :key="item + '1'"
-                :value="item"
+                :value="item.value"
             >
-              {{ item }}
+              {{ item.label }}
             </option>
           </Field>
 
@@ -159,9 +161,9 @@ const modelValue = computed({
             <option
                 v-for="item in data2"
                 :key="item + '1'"
-                :value="item"
+                :value="item.value"
             >
-              {{ item }}
+              {{ item.label }}
             </option>
           </Field>
           <ErrorMessage
