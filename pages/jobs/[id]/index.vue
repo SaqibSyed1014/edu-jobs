@@ -38,7 +38,8 @@ function applyBtnAction() {
 }
 
 function redirectToURL() {
-  if (jobDetails.value?.apply_url) window.open(jobDetails.value.apply_url, '_target')
+  if (jobDetails.value?.apply_url) window.open(jobDetails.value.apply_url, '_target');
+  showSignupModal.value = false;
 }
 
 function copyURL() {
