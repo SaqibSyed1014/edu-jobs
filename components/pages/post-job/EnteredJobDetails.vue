@@ -11,7 +11,6 @@ const props = defineProps<{
 const salaryRangePreview = computed(() => {
   let startRange = props.salaryStartRange;
   let endRange = props.salaryEndRange;
-  console.log('check ', startRange, endRange)
   if (startRange.length && startRange.includes('000')) startRange = startRange.replace(",000", "k");
   if (endRange.length && endRange.includes('000')) endRange = endRange.replace(",000", "k");
   return startRange && endRange ? `${startRange} - ${endRange}` : '80k - 100k'
