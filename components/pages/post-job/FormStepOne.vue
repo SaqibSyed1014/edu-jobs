@@ -17,21 +17,11 @@ const { orgTypesDropdown, orgNamesDropdown, searchedOrgNames } = storeToRefs(job
 
 const uploadedImage = ref("");
 
-const handleImageUpload = (event: any) => {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader(); // Read the uploaded file as a data URL
-    reader.onload = (e: any) => {
-      uploadedImage.value = e.target.result; // Set the uploaded image URL to the state variable
-    };
-    reader.readAsDataURL(file);
-  }
-};
-
 const schema = Yup.object({
   OrgId: Yup.string(),
   organizationName: Yup.string().required("Organization Name is required"),
   organizationTypeId: Yup.number().required('Organization type is required'),
+  logoPath: Yup.mixed(),
   email: Yup.string().required('Email is required').email('Invalid email'),
   fullName: Yup.string().required("Full Name is required"),
 })
@@ -43,8 +33,21 @@ const { defineField, handleSubmit, values, errors, resetForm } = useForm({
 const [OrgId] = defineField('OrgId');
 const [organizationName, orgNameAttrs] = defineField('organizationName');
 const [organizationTypeId, orgTypeAttrs] = defineField('organizationTypeId');
+const [logoPath] = defineField('logoPath');
 const [email, emailAttrs] = defineField('email');
 const [fullName, fullNameAttrs] = defineField('fullName');
+
+const handleImageUpload = (event: any) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader(); // Read the uploaded file as a data URL
+    reader.onload = (e: any) => {
+      uploadedImage.value = e.target.result; // Set the uploaded image URL to the state variable
+      logoPath.value = uploadedImage.value;
+    };
+    reader.readAsDataURL(file);
+  }
+};
 
 let showUserLoginModal= ref<boolean>(false);
 let isUserExist = ref<boolean>(false);

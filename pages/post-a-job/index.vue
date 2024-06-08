@@ -110,7 +110,9 @@ function handleStepClick() {
 }
 
 let formsCollectiveData = reactive({
-  stepOne: {},
+  stepOne: {
+    logoPath: ""
+  },
   stepTwo: {
     compensationTypeId: 1,
     jobDescription: '',
