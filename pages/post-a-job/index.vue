@@ -110,7 +110,9 @@ function handleStepClick() {
 }
 
 let formsCollectiveData = reactive({
-  stepOne: {},
+  stepOne: {
+    logoPath: ""
+  },
   stepTwo: {
     compensationTypeId: 1,
     jobDescription: '',
@@ -143,15 +145,19 @@ const previewFormData = ref({
   jobTitle: '',
   orgName: '',
   employment: '',
-  selectedImage: ''
+  selectedImage: '',
+  salaryStartRange: '',
+  salaryEndRange: ''
 })
 function getStepOneField({ orgName, image }) {
   previewFormData.value.orgName = orgName;
   previewFormData.value.selectedImage = image;
 }
-function getStepTwoFields({ jobTitle, employment }) {
+function getStepTwoFields({ jobTitle, employment, salaryStartRange, salaryEndRange }) {
   previewFormData.value.jobTitle = jobTitle;
   previewFormData.value.employment = employment;
+  previewFormData.value.salaryStartRange = salaryStartRange;
+  previewFormData.value.salaryEndRange = salaryEndRange;
 }
 
 let jobPostingPrice = ref<string>('$49');
@@ -363,10 +369,12 @@ async function processJobSaving() {
             :total-posting-price="jobPostingPrice"
           />
           <EnteredJobDetails
-              :job-title="previewFormData?.jobTitle"
-              :org-name="previewFormData?.orgName"
-              :employment="previewFormData?.employment"
+              :job-title="previewFormData.jobTitle"
+              :org-name="previewFormData.orgName"
+              :employment="previewFormData.employment"
               :selected-image="previewFormData.selectedImage"
+              :salary-start-range="previewFormData.salaryStartRange"
+              :salary-end-range="previewFormData.salaryEndRange"
           />
           <DonationMessage />
 

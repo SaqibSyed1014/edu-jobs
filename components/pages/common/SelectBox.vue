@@ -67,7 +67,6 @@ const {
 // console.log("errorMessage", errorMessage);
 
 function updatedValue($event) {
-  console.log('jfjf ', $event.target.value)
   if (typeof props.modelValue === 'number') {
     emit('update:modelValue', Number($event.target.value))
     return

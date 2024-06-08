@@ -2,7 +2,7 @@
 const props = defineProps<{
   title: String;
   options: any;
-  totalJobs: string;
+  totalJobs: string | number;
   insideSidebar?: boolean;
 }>();
 </script>

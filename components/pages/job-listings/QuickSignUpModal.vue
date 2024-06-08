@@ -46,7 +46,7 @@ const canProceed = computed(() => {
   return meta.value.dirty && meta.value.valid;
 });
 
-function redirection() {
+function redirectionToApplyURL() {
   emit('proceed')
 }
 
@@ -92,7 +92,7 @@ onUnmounted(() => {
       :on-ok="processCandidateAction"
       :hide-ok-btn="showConfirmationMessage"
       :hide-cancel-btn="showConfirmationMessage"
-      @close="model = false"
+      @close="redirectionToApplyURL"
   >
     <template #body>
       <template v-if="showConfirmationMessage">
@@ -103,7 +103,7 @@ onUnmounted(() => {
           <p class="pb-4">
             A confirmation email has been sent to your inbox. Please check your email to verify your account.
           </p>
-          <BaseButton label="Continue to apply to this job" @click="redirection" />
+          <BaseButton label="Continue to apply to this job" @click="redirectionToApplyURL" />
         </div>
       </template>
       <template v-else>
