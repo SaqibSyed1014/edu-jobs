@@ -1,10 +1,21 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   jobTitle: string,
   orgName: string,
   employment: string,
   selectedImage: string,
+  salaryStartRange: string,
+  salaryEndRange: string
 }>()
+
+const salaryRangePreview = computed(() => {
+  let startRange = props.salaryStartRange;
+  let endRange = props.salaryEndRange;
+  console.log('check ', startRange, endRange)
+  if (startRange.length && startRange.includes('000')) startRange = startRange.replace(",000", "k");
+  if (endRange.length && endRange.includes('000')) endRange = endRange.replace(",000", "k");
+  return startRange && endRange ? `${startRange} - ${endRange}` : '80k - 100k'
+})
 </script>
 
 <template>
@@ -40,7 +51,7 @@ defineProps<{
           <div class="flex items-center space-x-1.5">
             <SvgoCurrencyDollarLight class="h-5" />
             <p class="text-gray-600 text-sm font-medium leading-tight">
-              80k - 100k
+              {{ salaryRangePreview }}
             </p>
           </div>
         </div>
@@ -49,7 +60,3 @@ defineProps<{
   </div>
 
 </template>
-
-<style scoped lang="postcss">
-
-</style>

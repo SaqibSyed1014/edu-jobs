@@ -137,10 +137,24 @@ const options = ref({
   readOnly: false,
 });
 
-watch(() => [values.jobTitle, values.employmentTypeId], (val) => {
+watch(() => [
+  values.jobTitle,
+  values.employmentTypeId,
+  values.minSalaryId,
+  values.maxSalaryId,
+  values.minHourlyId,
+  values.maxHourlyId
+], (val) => {
+  let startRange = '', endRange = '';
+  if (val[2]) startRange = salaryRange.filter((salary) => salary.value === val[2])[0].label;
+  if (val[3]) endRange = salaryRange.filter((salary) => salary.value === val[3])[0].label;
+  if (val[4]) startRange = hourlyRange.filter((salary) => salary.value === val[4])[0].label;
+  if (val[5]) endRange = hourlyRange.filter((salary) => salary.value === val[5])[0].label;
   emit('formDataListener', {
     jobTitle: val[0],
-    employment: val[1]
+    employment: val[1],
+    salaryStartRange: startRange,
+    salaryEndRange: endRange
   });
 })
 
