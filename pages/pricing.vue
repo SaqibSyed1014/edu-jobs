@@ -1,11 +1,4 @@
 <script setup lang="ts">
-import CheckMarkIcon from 'assets/icons/check-mark.svg'
-import ChatsIcon from 'assets/icons/chats.svg'
-import FlashIcon from 'assets/icons/flash.svg'
-import ReportIcon from 'assets/icons/report.svg'
-import HappyFaceIcon from 'assets/icons/happy-face.svg'
-import ToolIcon from 'assets/icons/tool.svg'
-import PositiveFeedbackIcon from 'assets/icons/positive-feedback.svg'
 import { faqs, features, pricingPlans } from "~/components/core/constants/pricing.constants";
 import { useHomeStore } from "~/segments/home/store";
 
@@ -13,8 +6,6 @@ const homeStore = useHomeStore();
 const { checkoutURL } = storeToRefs(homeStore);
 
 const selectedQty = ref<number[]>([1, 1]);
-const selectedFQty = ref<number>(1);
-const selectedSQty = ref<number>(1);
 const selectedSlot = ref<number>(10);
 const btnsLoading = ref<boolean[]>([false, false, false]);
 

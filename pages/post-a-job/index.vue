@@ -4,12 +4,13 @@ import {
   formStepsHeaderContent,
   formStepsOptions,
 } from "~/components/core/constants/post-job-form.constants";
+import { pricingPlansIDs } from "~/components/core/constants/pricing.constants";
 import BaseSpinner from "~/components/core/BaseSpinner.vue";
 import FormStepFour from "~/components/pages/post-job/FormStepFour.vue";
 
 const currentStep = ref(0);
 const postjobStore = usePostjobStore();
-const { content,status } = storeToRefs(postjobStore);
+const { content,status, checkoutURL } = storeToRefs(postjobStore);
 const isLoading = ref<boolean>(false);
 const isFormLoading = ref<boolean>(true);
 const router = useRouter();
@@ -44,38 +45,27 @@ const unwatch = watch(currentStep, (newValue: number, oldValue: number) => {
   }
 });
 
-// const schemas = Yup.object({
-//     terms: Yup.bool().required("Terms are required").equals([true]),
-//   })
-
 const email = ref<string>('');
-const organiName = ref<string>('');
 const name = ref<string>('');
+let jobPostingPrice = ref<string>('$49');
+
 
 // Function to handle checkout payment
 async function checkout () {
   isLoading.value = true;
-  const requestBody = {
-        email : email.value,
-        price_id : 'price_1P0v2M00kiM97A5ms79o8u4q',
-        fullname : name.value,
-        organizationName: organiName.value,
-        price : 123,
+  const payload :JobPaymentPayload = {
+        email: formsCollectiveData.stepOne.email,
+        price_id: jobPostingPrice.value === '$49' ? pricingPlansIDs[0] : pricingPlansIDs[1],
+        fullName: formsCollectiveData.stepOne.fullName,
+        organizationName: formsCollectiveData.stepOne.organizationName,
+        organizationTypeId: formsCollectiveData.stepOne.organizationTypeId,
+        jobTitle : formsCollectiveData.stepTwo.jobTitle,
     };
-  console.log('check ', requestBody)
-  await postjobStore.fetchPayment(null,requestBody);
-
-  console.log('check chekout func content', content?.value?.url )
-  console.log('check chekout func status', status?.value)
-
-  if(status?.value === '200'){
-    window.open (content?.value?.url);
-    postjobStore.reset()
-    //postjobStore.$reset();
-
-  } else {
-    useNuxtApp().$toast.error("Failed To make Payment");
-  }
+  console.log('check payload: ', payload)
+  await postjobStore.fetchPayment(payload)
+      .then(() => {
+        if (checkoutURL.value) window.open(checkoutURL.value, '_blank');
+      })
   isLoading.value = false;
 }
 
@@ -159,8 +149,6 @@ function getStepTwoFields({ jobTitle, employment, salaryStartRange, salaryEndRan
   previewFormData.value.salaryStartRange = salaryStartRange;
   previewFormData.value.salaryEndRange = salaryEndRange;
 }
-
-let jobPostingPrice = ref<string>('$49');
 
 function updatePostingPrice(val :boolean) {
   if (val) jobPostingPrice.value = '$79'

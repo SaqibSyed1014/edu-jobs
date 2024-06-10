@@ -65,6 +65,15 @@ export const features = [
     }
 ]
 
+export const pricingPlansIDs = [
+    'price_1P0v2M00kiM97A5ms79o8u4q',
+    'price_1PKr2b00kiM97A5mt29JKGeI',
+    'price_1PKr7j00kiM97A5mv5eFqisi',
+    'price_1PKr7j00kiM97A5mwpdXsERn',
+    'price_1PKr7j00kiM97A5mMwDzlWl7',
+    'price_1PKr7j00kiM97A5mMJaL1Sa1'
+]
+
 export const pricingPlans = [
     {
         id: 1,
@@ -82,7 +91,7 @@ export const pricingPlans = [
         ],
         showBuyBtn: true,
         showContactSalesBtn: false,
-        priceId: 'price_1P0v2M00kiM97A5ms79o8u4q'
+        priceId: pricingPlansIDs[0]
     },
     {
         id: 2,
@@ -100,7 +109,7 @@ export const pricingPlans = [
         ],
         showBuyBtn: true,
         showContactSalesBtn: false,
-        priceId: 'price_1PKr2b00kiM97A5mt29JKGeI'
+        priceId: pricingPlansIDs[1]
     },
     {
         id: 3,
@@ -108,10 +117,10 @@ export const pricingPlans = [
         priceText: '',
         showSlotOptions: true,
         slotsPricing: [
-            { totalSlots: 10, price: '$440', saving: '$50', priceId: 'price_1PKr7j00kiM97A5mv5eFqisi' },
-            { totalSlots: 15, price: '$615', saving: '$120', priceId: 'price_1PKr7j00kiM97A5mwpdXsERn' },
-            { totalSlots: 20, price: '$780', saving: '$200', priceId: 'price_1PKr7j00kiM97A5mMwDzlWl7' },
-            { totalSlots: 25, price: '$925', saving: '$300', priceId: 'price_1PKr7j00kiM97A5mMJaL1Sa1' },
+            { totalSlots: 10, price: '$440', saving: '$50', priceId: pricingPlansIDs[2] },
+            { totalSlots: 15, price: '$615', saving: '$120', priceId: pricingPlansIDs[3] },
+            { totalSlots: 20, price: '$780', saving: '$200', priceId: pricingPlansIDs[4] },
+            { totalSlots: 25, price: '$925', saving: '$300', priceId: pricingPlansIDs[5] }
         ],
         benefits: [
             'Advanced custom fields',
