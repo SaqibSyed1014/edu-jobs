@@ -9,7 +9,8 @@ import {
 
 const props = defineProps<{
   formData: any,
-  jobPostingPrice: string
+  jobPostingPrice: string,
+  makePayment: () => void
 }>()
 
 const postJobStore = usePostjobStore();
@@ -62,6 +63,10 @@ async function processJobSaving() {
     ...props.formData.stepOne,
     ...props.formData.stepTwo,
     ...props.formData.stepThree,
+  }).then(() => {
+    props.makePayment();
+  }).catch(() => {
+    console.log('unknown error occurred');
   });
   processingSaveJob.value = false;
 }

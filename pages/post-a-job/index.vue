@@ -11,7 +11,6 @@ import FormStepFour from "~/components/pages/post-job/FormStepFour.vue";
 const currentStep = ref(0);
 const postjobStore = usePostjobStore();
 const { content,status, checkoutURL } = storeToRefs(postjobStore);
-const isLoading = ref<boolean>(false);
 const isFormLoading = ref<boolean>(true);
 const router = useRouter();
 
@@ -52,7 +51,6 @@ let jobPostingPrice = ref<string>('$49');
 
 // Function to handle checkout payment
 async function checkout () {
-  isLoading.value = true;
   const payload :JobPaymentPayload = {
         email: formsCollectiveData.stepOne.email,
         price_id: jobPostingPrice.value === '$49' ? pricingPlansIDs[0] : pricingPlansIDs[1],
@@ -61,12 +59,12 @@ async function checkout () {
         organizationTypeId: formsCollectiveData.stepOne.organizationTypeId,
         jobTitle : formsCollectiveData.stepTwo.jobTitle,
     };
-  console.log('check payload: ', payload)
   await postjobStore.fetchPayment(payload)
       .then(() => {
-        if (checkoutURL.value) window.open(checkoutURL.value, '_blank');
+        if (checkoutURL.value) {
+          window.open(checkoutURL.value, '_blank');
+        }
       })
-  isLoading.value = false;
 }
 
 
@@ -162,7 +160,11 @@ async function processJobSaving() {
     ...formsCollectiveData.stepOne,
     ...formsCollectiveData.stepTwo,
     ...formsCollectiveData.stepThree,
-  });
+  }).then(async () => {
+    await checkout();
+  }).catch(() => {
+    console.log('unknown error occurred');
+  })
   processingSaveJob.value = false;
 }
 </script>
@@ -344,6 +346,7 @@ async function processJobSaving() {
                   v-if="currentStep === 3"
                   :form-data="formsCollectiveData"
                   :job-posting-price="jobPostingPrice"
+                  :make-payment="checkout"
                   @edit-icon-clicked="handleButtonClick"
                   @move-to-prev-step="prevStep"
                   @updated-job-posting-pricing="updatePostingPrice"

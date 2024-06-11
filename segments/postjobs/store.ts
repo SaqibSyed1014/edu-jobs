@@ -41,6 +41,7 @@ export const usePostjobStore = defineStore('postjobStore', {
                     .then(({ content }) => {
                         console.log('check content response: ', content)
                         this.$state.checkoutURL = content.url;
+                        return content;
                     })
                     .catch((err) => {
                         console.log('error ', err)
