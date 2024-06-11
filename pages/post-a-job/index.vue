@@ -4,13 +4,13 @@ import {
   formStepsHeaderContent,
   formStepsOptions,
 } from "~/components/core/constants/post-job-form.constants";
+import { pricingPlansIDs } from "~/components/core/constants/pricing.constants";
 import BaseSpinner from "~/components/core/BaseSpinner.vue";
 import FormStepFour from "~/components/pages/post-job/FormStepFour.vue";
 
 const currentStep = ref(0);
 const postjobStore = usePostjobStore();
-const { content,status } = storeToRefs(postjobStore);
-const isLoading = ref<boolean>(false);
+const { content,status, checkoutURL } = storeToRefs(postjobStore);
 const isFormLoading = ref<boolean>(true);
 const router = useRouter();
 
@@ -44,39 +44,27 @@ const unwatch = watch(currentStep, (newValue: number, oldValue: number) => {
   }
 });
 
-// const schemas = Yup.object({
-//     terms: Yup.bool().required("Terms are required").equals([true]),
-//   })
-
 const email = ref<string>('');
-const organiName = ref<string>('');
 const name = ref<string>('');
+let jobPostingPrice = ref<string>('$49');
+
 
 // Function to handle checkout payment
 async function checkout () {
-  isLoading.value = true;
-  const requestBody = {
-        email : email.value,
-        price_id : 'price_1P0v2M00kiM97A5ms79o8u4q',
-        fullname : name.value,
-        organizationName: organiName.value,
-        price : 123,
+  const payload :JobPaymentPayload = {
+        email: formsCollectiveData.stepOne.email,
+        price_id: jobPostingPrice.value === '$49' ? pricingPlansIDs[0] : pricingPlansIDs[1],
+        fullName: formsCollectiveData.stepOne.fullName,
+        organizationName: formsCollectiveData.stepOne.organizationName,
+        organizationTypeId: formsCollectiveData.stepOne.organizationTypeId,
+        jobTitle : formsCollectiveData.stepTwo.jobTitle,
     };
-  console.log('check ', requestBody)
-  await postjobStore.fetchPayment(null,requestBody);
-
-  console.log('check chekout func content', content?.value?.url )
-  console.log('check chekout func status', status?.value)
-
-  if(status?.value === '200'){
-    window.open (content?.value?.url);
-    postjobStore.reset()
-    //postjobStore.$reset();
-
-  } else {
-    useNuxtApp().$toast.error("Failed To make Payment");
-  }
-  isLoading.value = false;
+  await postjobStore.fetchPayment(payload)
+      .then(() => {
+        if (checkoutURL.value) {
+          window.open(checkoutURL.value, '_blank');
+        }
+      })
 }
 
 
@@ -105,8 +93,13 @@ function changeStep(stepIdx: number) {
   });
 }
 
-function handleStepClick() {
-  useNuxtApp().$toast.error("Please Fill the Form");
+const firstStep = ref(null);
+const secondStep = ref(null);
+const thirdStep = ref(null);
+function handleStepClick(index :number) {
+  if (currentStep.value === 0 && index > currentStep.value) firstStep.value.onSubmit();
+  if (currentStep.value === 1 && index > currentStep.value) secondStep.value.onSubmit();
+  if (currentStep.value === 2 && index > currentStep.value) thirdStep.value.onSubmit();
 }
 
 let formsCollectiveData = reactive({
@@ -160,8 +153,6 @@ function getStepTwoFields({ jobTitle, employment, salaryStartRange, salaryEndRan
   previewFormData.value.salaryEndRange = salaryEndRange;
 }
 
-let jobPostingPrice = ref<string>('$49');
-
 function updatePostingPrice(val :boolean) {
   if (val) jobPostingPrice.value = '$79'
   else jobPostingPrice.value = '$49'
@@ -174,7 +165,11 @@ async function processJobSaving() {
     ...formsCollectiveData.stepOne,
     ...formsCollectiveData.stepTwo,
     ...formsCollectiveData.stepThree,
-  });
+  }).then(async () => {
+    await checkout();
+  }).catch(() => {
+    console.log('unknown error occurred');
+  })
   processingSaveJob.value = false;
 }
 </script>
@@ -278,7 +273,7 @@ async function processJobSaving() {
                       @click="
                         step.status === 'complete' || step.status === 'current'
                           ? changeStep(stepIdx)
-                          : handleStepClick()
+                          : handleStepClick(stepIdx)
                       "
                       class="flex flex-col cursor-pointer"
                     >
@@ -334,12 +329,14 @@ async function processJobSaving() {
 
             <template v-else>
               <FormStepOne
+                  ref="firstStep"
                   v-if="currentStep === 0"
                   :initial-form-values="formsCollectiveData.stepOne"
                   @form-data-listener="getStepOneField"
                   @handle-form-submission="moveToNextForm"
               />
               <FormStepTwo
+                  ref="secondStep"
                   v-if="currentStep === 1"
                   :initial-form-values="formsCollectiveData.stepTwo"
                   @form-data-listener="getStepTwoFields"
@@ -347,6 +344,7 @@ async function processJobSaving() {
                   @handle-form-submission="moveToNextForm"
               />
               <FormStepThree
+                  ref="thirdStep"
                   v-if="currentStep === 2"
                   :initial-form-values="formsCollectiveData.stepThree"
                   @move-to-prev-step="prevStep"
@@ -356,6 +354,7 @@ async function processJobSaving() {
                   v-if="currentStep === 3"
                   :form-data="formsCollectiveData"
                   :job-posting-price="jobPostingPrice"
+                  :make-payment="checkout"
                   @edit-icon-clicked="handleButtonClick"
                   @move-to-prev-step="prevStep"
                   @updated-job-posting-pricing="updatePostingPrice"

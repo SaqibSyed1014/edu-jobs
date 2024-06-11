@@ -105,10 +105,6 @@ onMounted(async () => {
   }
   if (route?.query?.q?.length) await search();  // if search param is there, call search() function
   else await fetchSchools(); // Initial fetch
-  if (route?.query?.filter_by) {
-    query.value.filter_by = route?.query?.filter_by.toString();
-  }
-  setCheckedValues(route?.query?.filter_by);
 });
 
 const setCheckedValues = (filterBy: any) => {
@@ -172,14 +168,6 @@ const query = ref<TypesenseQueryParam>({
   per_page: itemsPerPage.value,
   page: currentPage.value,
 });
-
-if (route?.query?.filter_by) {
-  // If it exists, assign its value to the filter_by property
-  query.value.filter_by = route?.query?.filter_by.toString();
-} else {
-  // If it doesn't exist, delete the filter_by key
-  delete query?.value?.filter_by;
-}
 
 const queryParams = computed(() => {
   return {
@@ -452,6 +440,13 @@ const search = (resetToDefaultPage = false) => {
   if (resetToDefaultPage) query.value.page = 1;
   else query.value.page = route?.query?.page ? route.query.page : 1;  // search with page number if there's page number in the query params
   currentPage.value = 1;
+  if (route?.query?.filter_by) {  // If it exists, assign its value to the filter_by property
+    const jobCountsValues = route?.query?.filter_by
+    const jobCountsParams = `job_count:[${jobCountsValues}]`
+    query.value.filter_by = jobCountsParams.toString();
+    // setCheckedValues(jobCountsValues);
+  } else delete query?.value?.filter_by;  // If it doesn't exist, delete the filter_by key
+  console.log('search ', query.value)
   router.replace({
     path: "/charter-schools",
     query: {
@@ -486,10 +481,6 @@ function filtersChanged(filterName :string, i :number, label :string, isChecked 
 
   fetchSchools();
 }
-
-function testFilters(name, index, labal, checked) {
-  console.log('check ', name, index, label, checked)
-}
 </script>
 
 <template>
@@ -508,7 +499,7 @@ function testFilters(name, index, labal, checked) {
               @click="togglingSidebarVisibility"
             />
             <div
-              class="py-2 flex-col justify-start items-start gap-2.5 inline-flex"
+              class="py-2 flex-col justify-start items-start gap-2.5 inline-flex w-full"
             >
               <div
                 class="justify-between items-center inline-flex w-full border-b border-gray-200 pb-2"
@@ -535,9 +526,9 @@ function testFilters(name, index, labal, checked) {
                 <FilterSection
                   title="No. of jobs"
                   :options="jobOptions"
-                  total-jobs="125"
+                  :total-jobs="schoolsFound"
                   :inside-sidebar="true"
-                  @toggle-school-options="testFilters"
+                  @toggleSchoolOption="filtersChanged"
                 />
 
 <!--                <FilterSection-->

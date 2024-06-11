@@ -18,7 +18,8 @@ interface StripeCheckout {
     gradeLevels: GradeLevel[];
     subjects: Subject[];
     experienceLevels: ExperienceLevel[];
-    searchedOrgNames: OrgDocument[]
+    searchedOrgNames: OrgDocument[];
+    checkoutURL: string;
 }
 
 export const usePostjobStore = defineStore('postjobStore', {
@@ -31,24 +32,20 @@ export const usePostjobStore = defineStore('postjobStore', {
         gradeLevels: [],
         subjects: [],
         experienceLevels: [],
-        searchedOrgNames: []
+        searchedOrgNames: [],
+        checkoutURL: ''
     } as StripeCheckout),
     actions: {
-        async fetchPayment(query:any  , requestBody : any) {
-            try {
-                const  { content,status }  = await getStripeCheckDetails(query,requestBody)
-
-                console.log("check content for return response ",content)
-                this.$state.content = content;
-                this.$state.status = status;
-                // console.log(this.$state.content)
-                //console.log("this.$state.data",this.$state.stripedata);
-            } catch (error: any) {
-                console.log("check content error",error)
-            }
-            // const response = await useGet(`/collections/districts/documents/search?q=*&per_page=10`)
-            //this.$state.stripeData = data
-            //this.$state.total_page = Math.ceil(found / 12)
+        async fetchPayment( requestBody :JobPaymentPayload) {
+                return await getStripeCheckDetails(requestBody)
+                    .then(({ content }) => {
+                        this.$state.checkoutURL = content.url;
+                        return content;
+                    })
+                    .catch((err) => {
+                        console.log('error ', err)
+                        throw err;
+                    })
         },
 
         reset() {

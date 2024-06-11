@@ -48,6 +48,10 @@ const onSubmit = handleSubmit(values => {
   emit('handleFormSubmission', values, 3)
 });
 
+defineExpose({
+  onSubmit
+})
+
 const textInputOptions = {
   format: "MM/dd/yyyy",
 };

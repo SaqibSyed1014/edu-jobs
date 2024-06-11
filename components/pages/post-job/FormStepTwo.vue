@@ -162,6 +162,10 @@ const onSubmit = handleSubmit(values => {
   emit('handleFormSubmission', values, 2);
 });
 
+defineExpose({
+  onSubmit
+})
+
 function handleInput(delta :string) {
   if (delta === '<p><br></p>') jobDescription.value = ''
 }
@@ -398,7 +402,7 @@ function checkSelection() {
         />
 
         <!--    Grade Level Field    -->
-        <div class="form-field-layout mb-2"  v-if="jobRoleId === 1">
+        <div class="form-field-layout mb-2"  v-if="jobRoleId == 1">
           <label class="block text-sm font-semibold text-gray-700 sm:pt-1.5">
             Grade Level
           </label>
@@ -440,7 +444,7 @@ function checkSelection() {
 
         <!--    Subject Areas Field    -->
         <SelectBox
-            v-if="jobRoleId === 1"
+            v-if="jobRoleId == 1"
             v-model="subjects"
             name="subjects"
             label="Subject Area(s)"

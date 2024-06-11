@@ -123,6 +123,15 @@
     requestId: string;
 }
 
+ interface JobPaymentPayload {
+     email: string;
+     price_id: string;
+     fullName: string;
+     organizationName: string;
+     organizationTypeId: number;
+     jobTitle: string;
+ }
+
  interface OrganizationType {
      organization_type_id: number;
      organization_type: string;

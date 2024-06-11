@@ -20,7 +20,7 @@ const uploadedImage = ref("");
 const schema = Yup.object({
   OrgId: Yup.string(),
   organizationName: Yup.string().required("Organization Name is required"),
-  organizationTypeId: Yup.number().required('Organization type is required'),
+  organizationTypeId: Yup.number().typeError('Organization type is required').required('Organization type is required'),
   logoPath: Yup.mixed(),
   email: Yup.string().required('Email is required').email('Invalid email'),
   fullName: Yup.string().required("Full Name is required"),
@@ -70,6 +70,10 @@ const onSubmit = handleSubmit(values => {
   }
   emit('handleFormSubmission', values, 1)
 });
+
+defineExpose({
+  onSubmit
+})
 
 const searchedName = ref<any>(null);
 const searchingName = ref<boolean>(false);
