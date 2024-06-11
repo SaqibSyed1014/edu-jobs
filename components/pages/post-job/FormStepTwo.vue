@@ -162,6 +162,10 @@ const onSubmit = handleSubmit(values => {
   emit('handleFormSubmission', values, 2);
 });
 
+defineExpose({
+  onSubmit
+})
+
 function handleInput(delta :string) {
   if (delta === '<p><br></p>') jobDescription.value = ''
 }

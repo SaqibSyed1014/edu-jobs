@@ -71,6 +71,10 @@ const onSubmit = handleSubmit(values => {
   emit('handleFormSubmission', values, 1)
 });
 
+defineExpose({
+  onSubmit
+})
+
 const searchedName = ref<any>(null);
 const searchingName = ref<boolean>(false);
 

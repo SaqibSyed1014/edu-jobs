@@ -93,8 +93,13 @@ function changeStep(stepIdx: number) {
   });
 }
 
-function handleStepClick() {
-  useNuxtApp().$toast.error("Please Fill the Form");
+const firstStep = ref(null);
+const secondStep = ref(null);
+const thirdStep = ref(null);
+function handleStepClick(index :number) {
+  if (currentStep.value === 0 && index > currentStep.value) firstStep.value.onSubmit();
+  if (currentStep.value === 1 && index > currentStep.value) secondStep.value.onSubmit();
+  if (currentStep.value === 2 && index > currentStep.value) thirdStep.value.onSubmit();
 }
 
 let formsCollectiveData = reactive({
@@ -268,7 +273,7 @@ async function processJobSaving() {
                       @click="
                         step.status === 'complete' || step.status === 'current'
                           ? changeStep(stepIdx)
-                          : handleStepClick()
+                          : handleStepClick(stepIdx)
                       "
                       class="flex flex-col cursor-pointer"
                     >
@@ -324,12 +329,14 @@ async function processJobSaving() {
 
             <template v-else>
               <FormStepOne
+                  ref="firstStep"
                   v-if="currentStep === 0"
                   :initial-form-values="formsCollectiveData.stepOne"
                   @form-data-listener="getStepOneField"
                   @handle-form-submission="moveToNextForm"
               />
               <FormStepTwo
+                  ref="secondStep"
                   v-if="currentStep === 1"
                   :initial-form-values="formsCollectiveData.stepTwo"
                   @form-data-listener="getStepTwoFields"
@@ -337,6 +344,7 @@ async function processJobSaving() {
                   @handle-form-submission="moveToNextForm"
               />
               <FormStepThree
+                  ref="thirdStep"
                   v-if="currentStep === 2"
                   :initial-form-values="formsCollectiveData.stepThree"
                   @move-to-prev-step="prevStep"
