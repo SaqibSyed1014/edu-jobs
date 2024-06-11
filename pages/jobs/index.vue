@@ -55,7 +55,7 @@ watch(() => layoutOptionSelected.value, (val) => {
   router.replace({  // update route with updated query when layout mode is changed
     path: "/jobs",
     query: {
-      params: encode(JSON.stringify(queryParams.value))
+      params: JSON.stringify(queryParams.value)
     },
   });
 })
@@ -70,7 +70,7 @@ onMounted(async () => {
   }
   const paramsString = route.query.params as string;
   if (paramsString) {
-    const parsedParams = JSON.parse(decode(paramsString));
+    const parsedParams = JSON.parse(paramsString);
     assignQueryParamsOnInitialLoad(parsedParams as JobQueryParams);
     // assign the saved coordinates in store (searched on Home view) for query
     if (coordinates.value.lat && coordinates.value.lng) query.value.filter_by = `geo_location:(${coordinates.value.lat}, ${coordinates.value.lng}, 10 mi)`;
@@ -96,7 +96,7 @@ async function doSearch(resetToDefaultPage = false) {
   await router.replace({
     path: '/jobs',
     query: {
-      params: encode(JSON.stringify(queryParams.value))
+      params: JSON.stringify(queryParams.value)
     }
   })
   if (query.value.q && query.value.q !== '*') query.value.query_by = 'job_title'  // search from job_title
@@ -177,7 +177,7 @@ function updateSideBarFilters(selectedFilters :{ field: string, values: string[]
   doSearch();
 }
 
-function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
+async function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
   const { keyword, mode, location, employment_type, job_role, experience_level, coordinates, ...otherParams }
       = queryParams
   query.value = {
@@ -193,14 +193,16 @@ function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
   if (job_role) sidebarFilters.value.job_role = job_role
   if (experience_level) sidebarFilters.value.experience_level = experience_level
   filters.value.forEach(filter => {
-      if (filter.type === 'checkbox' && filter.list?.length) {
-        filter.list.forEach(item => {
-          const filterValues = sidebarFilters.value[filter.fieldName] || [];
-          item.checked = !!filterValues.includes(item.value);
-        });
-      }
-    });
-  if (jobSidebarFilters.value) jobSidebarFilters.value.emitSelectedValues();
+    if (filter.type === 'checkbox' && filter.list?.length) {
+      filter.list.forEach(item => {
+        const filterValues = sidebarFilters.value[filter.fieldName] || [];
+        item.checked = !!filterValues.includes(item.value);
+      });
+    }
+  });
+  if (jobSidebarFilters.value) {
+    jobSidebarFilters.value.emitSelectedValues();
+  }
 
   if (coordinates && !coordinates?.includes(0)) {
     jobStore.coordinates.lat = coordinates[0];
@@ -231,7 +233,7 @@ const signUpCardIndex = Math.floor(Math.random() * 25);  // randomly generate in
           <ListingFilters
               ref="jobSidebarFilters"
               class="hidden lg:flex"
-              :inside-sidebar="true"
+              :inside-sidebar="false"
               :filtration-list="filters"
               :items-loading="jobsLoading"
               @on-filters-change="updateSideBarFilters"
@@ -239,7 +241,7 @@ const signUpCardIndex = Math.floor(Math.random() * 25);  // randomly generate in
 
           <SideBarWrapper :is-sidebar-visible="isFilterSidebarVisible">
             <ListingFilters
-                ref="jobSidebarFilters"
+                :inside-sidebar="true"
                 :filtration-list="filters"
                 :items-loading="jobsLoading"
                 @apply-filters-on-click="(val) => updateSideBarFilters(val,true)"

@@ -19,11 +19,13 @@ watch(props.filtrationList, (val) => {   // watcher for checking if the filters 
       if (filter.type === 'checkbox') {
         const updatedValues = filter.list.filter((item :any) => item.checked).map((item :any) => item.value);
         if (updatedValues.length > 0) {
+          console.log('inside ', index)
           selectedValues.value[index] = {
             field: filter.fieldName,
             values: updatedValues,
           };
         }
+        console.log('watcher ', selectedValues.value, parsedValue)
       }
     })
     // emits('onFiltersChange', selectedValues.value);
@@ -39,12 +41,17 @@ function resetFilters() {
     }
   });
   selectedValues.value = [];
+}
+
+function removeSelectedNullValues() {
+  selectedValues.value = selectedValues.value.filter((item) => item !== null);  // removing null values probably added from watcher
 
 }
 
 const updateChecked = (index: number, subIndex: number, checked: boolean, value: string, fieldName: string) => {
   filterState.value[index].list[subIndex].checked = checked;
 
+  removeSelectedNullValues();
   const selectedField = selectedValues.value.find(val => val.field === fieldName);
 
   // If the checkbox is checked and the value is not already selected, add it to the selected field
@@ -59,11 +66,13 @@ const updateChecked = (index: number, subIndex: number, checked: boolean, value:
     // If the selected field becomes empty after removing a value, remove the field from selectedValues array
     if (selectedField.values.length === 0) selectedValues.value.splice(selectedValues.value.indexOf(selectedField), 1);
   }
+  console.log('checked ', selectedValues.value)
 
   emitSelectedValues();
 };
 
 function emitSelectedValues() {
+  removeSelectedNullValues();
   emits('onFiltersChange', selectedValues.value);
 }
 
