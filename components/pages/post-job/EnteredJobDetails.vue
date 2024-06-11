@@ -1,12 +1,18 @@
 <script setup lang="ts">
+import {employmentOptions} from "~/components/core/constants/post-job-form.constants";
+
 const props = defineProps<{
   jobTitle: string,
   orgName: string,
-  employment: string,
+  employment: number,
   selectedImage: string,
   salaryStartRange: string,
   salaryEndRange: string
 }>()
+
+const employmentTypeLabel = computed(() => {
+  return employmentOptions.filter((employment) => employment?.value == props.employment)[0].label
+})
 
 const salaryRangePreview = computed(() => {
   let startRange = props.salaryStartRange;
@@ -44,7 +50,7 @@ const salaryRangePreview = computed(() => {
           <div class="flex items-center space-x-1.5">
             <SvgoClockLight class="h-5" />
             <p class="text-gray-600 text-sm font-medium leading-tight">
-              {{ employment?.length ? employment : "Full-time" }}
+              {{ employment ? employmentTypeLabel : "Full-time" }}
             </p>
           </div>
           <div class="flex items-center space-x-1.5">

@@ -39,7 +39,6 @@ export const usePostjobStore = defineStore('postjobStore', {
         async fetchPayment( requestBody :JobPaymentPayload) {
                 return await getStripeCheckDetails(requestBody)
                     .then(({ content }) => {
-                        console.log('check content response: ', content)
                         this.$state.checkoutURL = content.url;
                         return content;
                     })
