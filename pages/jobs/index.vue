@@ -103,11 +103,13 @@ function setInitialCompensationValues(wageType :string, applyFilter :boolean = f
   if (wageType === 'salary') values = [20000, 200000];
   else if (wageType === 'hourly') values = [10, 200];
   selectedCompensation.value = values;
+
   let compensationFilter = `min_${wageType}:>=${values[0]}&&max_${wageType}:<=${values[1]}`;
   appliedCompensationFilters.value = compensationFilter;
   if (appliedCheckboxFilters.value.length) {
     query.value.filter_by = `${compensationFilter}&&${appliedCheckboxFilters.value}`;
-  } else query.value.filter_by = compensationFilter;
+  } else query.value.filter_by = compensationFilter+ '&&jobs_with_salary:=false';
+
   if (applyFilter) doSearch();
 }
 

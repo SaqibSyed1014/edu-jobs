@@ -87,6 +87,7 @@ function isItemChecked(value :string) {
 }
 
 const selectedWageType = ref('salary');
+const includeAllJobs = ref(true);
 
 function toggleSwitch(eve :boolean) {
   if (eve) selectedWageType.value = 'salary';
@@ -183,7 +184,12 @@ function handleValueChange(values :number[]) {
             />
             <div class="flex gap-3 first:pt-2 pb-4 pt-12">
               <div class="shrink-0 relative">
-                <input :checked="true" type="checkbox">
+                <input
+                    id="includeAllJobsCB"
+                    :checked="includeAllJobs"
+                    type="checkbox"
+                    @change="($event) => includeAllJobs = $event.target.checked"
+                >
               </div>
               <label class="font-medium cursor-pointer">
                 Includes jobs without {{ selectedWageType }} rate
