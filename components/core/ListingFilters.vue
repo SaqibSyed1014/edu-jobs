@@ -2,10 +2,17 @@
 const props = defineProps<{
   filtrationList: any[],
   itemsLoading: boolean,
-  insideSidebar: boolean
+  insideSidebar: boolean,
+  selectedCompensation: number[]
 }>()
 
-const emits = defineEmits(['closeFilterSidebar', 'onFiltersChange', 'applyFiltersOnClick'])
+const emits = defineEmits([
+  'closeFilterSidebar',
+  'onFiltersChange',
+  'compensationFilterChange',
+  'compensationFilterTypeChange',
+  'applyFiltersOnClick'
+])
 
 const filterState = ref(JSON.parse(JSON.stringify(props.filtrationList)));
 
@@ -43,9 +50,8 @@ function resetFilters() {
   selectedValues.value = [];
 }
 
-function removeSelectedNullValues() {
-  selectedValues.value = selectedValues.value.filter((item) => item !== null);  // removing null values probably added from watcher
-
+function removeSelectedNullValues() {  // removing null values probably added from watcher
+  selectedValues.value = selectedValues.value.filter((item) => item !== null);
 }
 
 const updateChecked = (index: number, subIndex: number, checked: boolean, value: string, fieldName: string) => {
@@ -66,7 +72,6 @@ const updateChecked = (index: number, subIndex: number, checked: boolean, value:
     // If the selected field becomes empty after removing a value, remove the field from selectedValues array
     if (selectedField.values.length === 0) selectedValues.value.splice(selectedValues.value.indexOf(selectedField), 1);
   }
-  console.log('checked ', selectedValues.value)
 
   emitSelectedValues();
 };
@@ -86,15 +91,20 @@ const selectedWageType = ref('salary');
 function toggleSwitch(eve :boolean) {
   if (eve) selectedWageType.value = 'salary';
   else selectedWageType.value = 'hourly';
+  emits('compensationFilterTypeChange', selectedWageType.value, true)
 }
 
 onUnmounted(() => {
   selectedValues.value = [];
 })
 
-defineExpose({
-  emitSelectedValues
-})
+defineExpose({ emitSelectedValues })
+
+function handleValueChange(values :number[]) {
+  const wageType = selectedWageType.value;
+  const compensationString = `min_${wageType}:>=${values[0]}&&max_${wageType}:<=${values[1]}`;
+  emits('compensationFilterChange', compensationString)
+}
 </script>
 
 <template>
@@ -153,8 +163,24 @@ defineExpose({
                 <span class="text-sm font-medium text-gray-900 dark:text-gray-300">Salary</span>
               </div>
             </template>
-            <RangeSlider v-if="selectedWageType === 'salary'" :max-value="filter.salary.max" :min-value="filter.salary.min" :step-value="10000"  />
-            <RangeSlider v-else :max-value="filter.hourly.max" :min-value="filter.hourly.min" :step-value="5"  />
+            <RangeSlider
+                v-if="selectedWageType === 'salary'"
+                :max-value="filter.salary.max"
+                :min-value="filter.salary.min"
+                :selected-min="selectedCompensation[0]"
+                :selected-max="selectedCompensation[1]"
+                :step-value="10000"
+                @update:value="handleValueChange"
+            />
+            <RangeSlider
+                v-else
+                :max-value="filter.hourly.max"
+                :min-value="filter.hourly.min"
+                :selected-min="selectedCompensation[0]"
+                :selected-max="selectedCompensation[1]"
+                :step-value="5"
+                @update:value="handleValueChange"
+            />
             <div class="flex gap-3 first:pt-2 pb-4 pt-12">
               <div class="shrink-0 relative">
                 <input :checked="true" type="checkbox">
@@ -163,7 +189,6 @@ defineExpose({
                 Includes jobs without {{ selectedWageType }} rate
               </label>
             </div>
-
           </template>
         </div>
       </div>

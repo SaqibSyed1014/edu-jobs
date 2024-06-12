@@ -4,7 +4,13 @@ import { ref, computed } from 'vue';
 const props = defineProps<{
   minValue: number;
   maxValue: number;
-  stepValue: number; // New prop for step difference
+  stepValue: number;
+  selectedMin: number;
+  selectedMax: number;
+}>();
+
+const emit = defineEmits<{
+  (e: 'update:value', value: number[]): void;
 }>();
 
 const minAngle = ref(props.minValue);
@@ -31,14 +37,22 @@ const sliderMax = computed({
     maxAngle.value = val;
   },
 });
+
+function updateValue() {
+  emit('update:value', [sliderMin.value, sliderMax.value]);
+}
+
+watch(() => props.selectedMin, (newSelectedMin) => minAngle.value = newSelectedMin, { immediate: true });
+
+watch(() => props.selectedMax, (newSelectedMax) => maxAngle.value = newSelectedMax, { immediate: true });
 </script>
 
 <template>
   <div class="range-slider">
-    <input type="range" :min="minValue" :max="maxValue" :step="stepValue" v-model="sliderMin">
-    <input type="range" :min="minValue" :max="maxValue" :step="stepValue" v-model="sliderMax">
+    <input type="range" :min="minValue" :max="maxValue" :step="stepValue" v-model="sliderMin" @change="updateValue">
+    <input type="range" :min="minValue" :max="maxValue" :step="stepValue" v-model="sliderMax" @change="updateValue">
     <div class="absolute -bottom-8 flex justify-between w-full text-sm font-medium">
-      <span>{{ `$${sliderMin.toLocaleString()}` }}</span>
+      <span>{{ sliderMin || `$${sliderMin.toLocaleString()}` }}</span>
       <span>{{ sliderMax === maxValue ? `$${sliderMax.toLocaleString()}+` : `$${sliderMax.toLocaleString()}` }}</span>
     </div>
   </div>

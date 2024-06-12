@@ -6,7 +6,11 @@ import NoRecordFound from "~/components/core/NoRecordFound.vue";
 import type {JobQueryParams, JobSearchFilters, PaginationInfo, TypesenseQueryParam} from "~/segments/common.types";
 import { encode, decode } from "js-base64";
 import SignUpCard from "~/components/pages/job-listings/SignUpCard.vue";
-import { jobFilters, itemsViewOptions } from "~/components/core/constants/jobs.constants";
+import {
+  jobFilters,
+  itemsViewOptions,
+  extractSpecificFilterValues, extractMinMaxCompensationValues
+} from "~/components/core/constants/jobs.constants";
 
 const filters = ref(jobFilters);  // job's filters
 
@@ -33,7 +37,8 @@ const initialQuery = {
   page: pageInfo.value.currentPage,
   per_page: pageInfo.value.itemsPerPage,
   sort_by: 'date_posted:asc',
-  facet_by: 'employment_type,job_role,experience_level'
+  facet_by: 'employment_type,job_role,experience_level',
+  filter_by: ''
 };
 const query = ref<TypesenseQueryParam>(initialQuery);
 
@@ -45,7 +50,8 @@ const queryParams = computed(() => {
     page: pageInfo.value.currentPage,
     mode: layoutOptionSelected.value === 0 ? 'list' : 'grid',
     coordinates: [coordinates.value.lat, coordinates.value.lng],
-    sort_by: query.value.sort_by
+    sort_by: query.value.sort_by,
+    filter_by: query.value.filter_by
   }
   return urlParams
 })
@@ -86,6 +92,25 @@ onUnmounted(() => {
 })
 
 const jobsLoading = ref(true);
+let selectedCompensation = ref<number[]>([0, 0]);
+let appliedCheckboxFilters = ref<string>('');
+let appliedCompensationFilters = ref<string>('');
+
+setInitialCompensationValues('salary');
+
+function setInitialCompensationValues(wageType :string, applyFilter :boolean = false) {
+  let values :number[] = [];
+  if (wageType === 'salary') values = [20000, 200000];
+  else if (wageType === 'hourly') values = [10, 200];
+  selectedCompensation.value = values;
+  let compensationFilter = `min_${wageType}:>=${values[0]}&&max_${wageType}:<=${values[1]}`;
+  appliedCompensationFilters.value = compensationFilter;
+  if (appliedCheckboxFilters.value.length) {
+    query.value.filter_by = `${compensationFilter}&&${appliedCheckboxFilters.value}`;
+  } else query.value.filter_by = compensationFilter;
+  if (applyFilter) doSearch();
+}
+
 async function doSearch(resetToDefaultPage = false) {
   jobsLoading.value = true;
   if (resetToDefaultPage) pageInfo.value.currentPage = 1;  // set the current page to default (1)
@@ -169,16 +194,31 @@ function updateSideBarFilters(selectedFilters :{ field: string, values: string[]
   if (query.value.filter_by?.length && query.value.filter_by.includes('geo_location'))
     query.value.filter_by = `${sidebBarFiltersPayload}&&${query.value.filter_by}`;
   else {
-    if (sidebBarFiltersPayload.length) query.value.filter_by = sidebBarFiltersPayload;
-    else delete query.value.filter_by;
+    if (sidebBarFiltersPayload.length) {   // if the checkbox filters are selected
+      appliedCheckboxFilters.value = sidebBarFiltersPayload;
+      query.value.filter_by = `${appliedCompensationFilters.value}&&${sidebBarFiltersPayload}`
+    }
+    else {
+      appliedCheckboxFilters.value = '';
+      query.value.filter_by = appliedCompensationFilters.value; // don't use checkbox filters}
+    }
   }
   if (toggleFlag) isFilterSidebarVisible.value = false;
 
   doSearch();
 }
 
+function applyCompensationFilters(filterString :string) { // replacing old compensation filters with new filter values
+  appliedCompensationFilters.value = filterString;
+  if (appliedCheckboxFilters.value.length) {  // if checkboxes filters are already applied
+    let updatedFilters: string = extractSpecificFilterValues(query.value.filter_by, 'compensation');
+    query.value.filter_by = `${filterString}&&${updatedFilters}`;
+  } else query.value.filter_by = filterString;
+  doSearch();
+}
+
 async function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
-  const { keyword, mode, location, employment_type, job_role, experience_level, coordinates, ...otherParams }
+  const { keyword, mode, location, employment_type, job_role, experience_level, coordinates, filter_by, ...otherParams }
       = queryParams
   query.value = {
     ...query.value,
@@ -202,6 +242,11 @@ async function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
   });
   if (jobSidebarFilters.value) {
     jobSidebarFilters.value.emitSelectedValues();
+  }
+  if (filter_by) {
+    const { min, max } = extractMinMaxCompensationValues(filter_by);  // get min/max compensation values from params
+    selectedCompensation.value[0] = min;
+    selectedCompensation.value[1] = max;
   }
 
   if (coordinates && !coordinates?.includes(0)) {
@@ -235,8 +280,11 @@ const signUpCardIndex = Math.floor(Math.random() * 25);  // randomly generate in
               class="hidden lg:flex"
               :inside-sidebar="false"
               :filtration-list="filters"
+              :selected-compensation="selectedCompensation"
+              @compensation-filter-type-change="setInitialCompensationValues"
               :items-loading="jobsLoading"
               @on-filters-change="updateSideBarFilters"
+              @compensation-filter-change="applyCompensationFilters"
           />
 
           <SideBarWrapper :is-sidebar-visible="isFilterSidebarVisible">
@@ -244,6 +292,8 @@ const signUpCardIndex = Math.floor(Math.random() * 25);  // randomly generate in
                 :inside-sidebar="true"
                 :filtration-list="filters"
                 :items-loading="jobsLoading"
+                :selected-compensation="selectedCompensation"
+                @compensation-filter-type-change="setInitialCompensationValues"
                 @apply-filters-on-click="(val) => updateSideBarFilters(val,true)"
                 @close-filter-sidebar="isFilterSidebarVisible = false"
             />

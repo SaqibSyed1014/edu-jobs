@@ -122,3 +122,30 @@ export const itemsViewOptions = [
         icon: 'SvgoGrid'
     }
 ]
+
+interface CompensationResult {
+    min :number,
+    max:number,
+    type: string
+}
+
+export function extractMinMaxCompensationValues(compensationFilters :string) :CompensationResult  {
+    const result :Partial<CompensationResult> = {};
+    const conditions :string[] = compensationFilters.split('&&');
+    conditions.forEach((condition :string) => {
+        // @ts-ignore
+        const [, key, type, value] = condition.match(/(min|max)_(salary|hourly):[><=]+(\d+)/);
+        if (key === 'min') result.min = Number(value);
+        else if (key === 'max') result.max = Number(value);
+        result.type = type;
+    });
+    return result as CompensationResult;
+}
+
+export function extractSpecificFilterValues(filterString :string, filterName :'compensation' | 'checkboxes') {
+    let extractedFilters :string = '';
+    if (filterName === 'compensation') {
+        extractedFilters = filterString.replace(/(min_(salary|hourly):>=\d+&&max_(salary|hourly):<=\d+&&)/, '');
+    }
+    return extractedFilters;
+}
