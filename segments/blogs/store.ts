@@ -2,6 +2,7 @@ import {
     getBlogsList,
     getBlogDetails
 } from "~/segments/blogs/services";
+import type {PaginationInfo} from "~/segments/common.types";
 
 interface BlogState {
     blogs: Blog[]
@@ -26,10 +27,16 @@ export const useBlogStore = defineStore('blogStore', {
         }
     } as BlogState),
     actions: {
-        async fetchBlogs() {
-            const { data, meta } = await getBlogsList();
-            this.$state.blogs = data;
-            this.$state.pagination = meta.pagination
+        async fetchBlogs(pageInfo :PaginationInfo) {
+            return await getBlogsList(pageInfo.currentPage, pageInfo.itemsPerPage)
+                .then(({data, meta }) => {
+                    this.$state.blogs = data;
+                    this.$state.pagination = meta.pagination
+                })
+                .catch((err) => {
+                    console.log('error ', err);
+                    throw err;
+                })
         },
         async fetchBlogDetails(blogSlug :string) {
             return await getBlogDetails(blogSlug)

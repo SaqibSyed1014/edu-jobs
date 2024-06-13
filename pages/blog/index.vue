@@ -2,26 +2,49 @@
 import {useBlogStore} from "~/segments/blogs/store";
 import {convertDateFormat} from "~/segments/utils";
 import BaseSpinner from "~/components/core/BaseSpinner.vue";
+import type {PaginationInfo} from "~/segments/common.types";
 
 const blogsStore = useBlogStore();
 const { blogs, pagination } = storeToRefs(blogsStore);
 
-const showSpinner = ref<boolean>(false);
+const showPageLoader = ref<boolean>(false);
+const showBlogsLoader = ref<boolean>(false);
+
+const pageInfo = ref<PaginationInfo>({
+  currentPage: 1,
+  itemsPerPage: 6,
+  totalPages: 0
+});
 
 onMounted(async () => {
   if (!blogs.value.length) {
-    showSpinner.value = true;
-    await blogsStore.fetchBlogs();
-    showSpinner.value = false;
+    showPageLoader.value = true;
+    await blogsStore.fetchBlogs(pageInfo.value);
+    pageInfo.value.totalPages = pagination.value.pageCount;
+    showPageLoader.value = false;
   }
 })
+
+async function fetchingBlogs() {
+  showBlogsLoader.value = true;
+  await blogsStore.fetchBlogs(pageInfo.value);
+  pageInfo.value.totalPages = pagination.value.pageCount;
+  showBlogsLoader.value = false;
+}
+
+function paginateBlogs(page: number | "prev" | "next") {
+  if (page === "prev") pageInfo.value.currentPage--;
+  else if (page === "next") pageInfo.value.currentPage++;
+  else pageInfo.value.currentPage = page;
+  fetchingBlogs();
+}
 </script>
 
 <template>
-  <template v-if="showSpinner">
+  <template v-if="showPageLoader">
     <div class="container">
       <div class="flex justify-center items-center h-[calc(100vh-80px)] w-full">
-        <BaseSpinner size="lg" :show-loader="showSpinner" />
+        <BaseSpinner size="lg" :show-loader="showPageLoader" />
       </div>
     </div>
   </template>
@@ -112,44 +135,54 @@ onMounted(async () => {
       </section>
       <section class="py-16 md:py-24">
         <div class="container md:px-8">
-          <h2 class="text-2xl mb-8"> All blog posts</h2>
-          <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 pb-16">
-            <template v-for="blog in blogs">
-              <div class="flex flex-col justify-around">
-                <div class="overflow-hidden rounded-2xl mb-5">
-                  <div class="h-60 sm:h-52">
-                    <img :src="blog.post_photo?.url ?? '/images/others/blog-mockup.jpg'" alt="blog-list-img4"
-                         class="w-full h-full object-cover">
+          <h2 class="text-2xl mb-8">All blog posts</h2>
+          <template v-if="showBlogsLoader">
+            <div class="flex justify-center items-center h-[40vh] w-full">
+              <BaseSpinner size="lg" :show-loader="showBlogsLoader" />
+            </div>
+          </template>
+          <template v-else>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 pb-16">
+              <template v-for="blog in blogs">
+                <div class="flex flex-col justify-around">
+                  <div class="overflow-hidden rounded-2xl mb-5">
+                    <div class="h-60 sm:h-52">
+                      <img :src="blog.post_photo?.url ?? '/images/others/blog-mockup.jpg'" alt="blog-list-img4"
+                           class="w-full h-full object-cover">
+                    </div>
                   </div>
-                </div>
-                <div class="flex flex-col gap-2 mb-6">
-                  <p class="text-brand-600 text-sm">{{ blog.author.name }} • {{ convertDateFormat(blog.post_date) }}</p>
-                  <h3>
-                    <NuxtLink :to="`/blog/${blog.slug}`"
-                              class="flex items-center justify-between gap-3 text-lg hover:text-brand-600">
-                      <div class="line-clamp-2">{{ blog.title }}</div>
-                      <span class="shrink-0">
+                  <div class="flex flex-col gap-2 mb-6">
+                    <p class="text-brand-600 text-sm">{{ blog.author.name }} • {{
+                        convertDateFormat(blog.post_date)
+                      }}</p>
+                    <h3>
+                      <NuxtLink :to="`/blog/${blog.slug}`"
+                                class="flex items-center justify-between gap-3 text-lg hover:text-brand-600">
+                        <div class="line-clamp-2">{{ blog.title }}</div>
+                        <span class="shrink-0">
                       <SvgoArrowNarrowUpRight class="w-4 h-4"/>
                     </span>
-                    </NuxtLink>
-                  </h3>
-                  <p class="font-normal line-clamp-2">{{ blog.post_excerpt }}</p>
-                </div>
-                <div class="flex flex-wrap gap-2 font-medium text-sm">
-                  <div class="text-[#6941C6] bg-[#F9F5FF] border border-[#E9D7FE] rounded-full px-2.5 py-0.5">
-                    {{ blog?.category?.category_name || 'General' }}
+                      </NuxtLink>
+                    </h3>
+                    <p class="font-normal line-clamp-2">{{ blog.post_excerpt }}</p>
+                  </div>
+                  <div class="flex flex-wrap gap-2 font-medium text-sm">
+                    <div class="text-[#6941C6] bg-[#F9F5FF] border border-[#E9D7FE] rounded-full px-2.5 py-0.5">
+                      {{ blog?.category?.category_name || 'General' }}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </template>
-          </div>
+              </template>
+            </div>
+          </template>
 
           <hr class="mb-5">
 
           <CustomPagination
-              v-if="pagination.pageCount !== 0"
-              :current-page="pagination.page"
-              :total-pages="pagination.pageCount"
+              v-if="pageInfo.totalPages !== 0"
+              :current-page="pageInfo.currentPage"
+              :total-pages="pageInfo.totalPages"
+              @paginate="paginateBlogs"
           />
         </div>
       </section>
