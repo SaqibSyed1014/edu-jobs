@@ -5,7 +5,7 @@ import BaseSpinner from "~/components/core/BaseSpinner.vue";
 import type {PaginationInfo} from "~/segments/common.types";
 
 const blogsStore = useBlogStore();
-const { blogs, pagination } = storeToRefs(blogsStore);
+const { recentBlogs, blogs, pagination } = storeToRefs(blogsStore);
 
 const showPageLoader = ref<boolean>(false);
 const showBlogsLoader = ref<boolean>(false);
@@ -19,6 +19,7 @@ const pageInfo = ref<PaginationInfo>({
 onMounted(async () => {
   if (!blogs.value.length) {
     showPageLoader.value = true;
+    await blogsStore.fetchRecentBlogs();
     await blogsStore.fetchBlogs(pageInfo.value);
     pageInfo.value.totalPages = pagination.value.pageCount;
     showPageLoader.value = false;
@@ -75,7 +76,7 @@ function paginateBlogs(page: number | "prev" | "next") {
         <div class="container md:px-8">
           <h2 class="text-xl md:text-2xl mb-8">Recent blog posts</h2>
           <div class="grid lg:grid-cols-2 gap-8">
-            <template v-for="blog in blogs.slice(0, 1)">
+            <template v-for="blog in recentBlogs.slice(0, 1)">
               <div class="flex flex-col justify-around">
                 <div class="overflow-hidden rounded-2xl mb-5">
                   <img :src="blog.post_photo?.url ?? '/images/others/blog-mockup.jpg'" alt="blog-list-img"
@@ -102,7 +103,7 @@ function paginateBlogs(page: number | "prev" | "next") {
               </div>
             </template>
             <div class="grid grid-cols-1 gap-8">
-              <template v-for="blog in blogs.slice(1, 3)">
+              <template v-for="blog in recentBlogs.slice(1, 3)">
                 <div class="flex flex-col sm:flex-row gap-5">
                   <div class="flex-none sm:w-60 2xl:w-80 overflow-hidden rounded-2xl">
                     <img :src="blog.post_photo?.url ?? '/images/others/blog-mockup.jpg'" alt="blog-list-img"

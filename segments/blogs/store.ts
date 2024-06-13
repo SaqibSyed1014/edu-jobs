@@ -1,11 +1,13 @@
 import {
     getBlogsList,
+    getRecentBlogs,
     getBlogDetails
 } from "~/segments/blogs/services";
 import type {PaginationInfo} from "~/segments/common.types";
 
 interface BlogState {
     blogs: Blog[]
+    recentBlogs: Blog[]
     blogDetails: Blog | null
     pagination: {
         page: number
@@ -18,6 +20,7 @@ interface BlogState {
 export const useBlogStore = defineStore('blogStore', {
     state: () => ({
         blogs: [],
+        recentBlogs: [],
         blogDetails: null,
         pagination: {
             page: 0,
@@ -38,10 +41,24 @@ export const useBlogStore = defineStore('blogStore', {
                     throw err;
                 })
         },
+        async fetchRecentBlogs() {
+            return await getRecentBlogs()
+                .then(({ data }) => {
+                    this.$state.recentBlogs = data;
+                })
+                .catch((err) => {
+                    console.log('error ', err);
+                    throw err;
+                })
+        },
         async fetchBlogDetails(blogSlug :string) {
             return await getBlogDetails(blogSlug)
                 .then(({ data }) => {
                     this.$state.blogDetails = data[0];
+                })
+                .catch((err) => {
+                    console.log('error ', err);
+                    throw err;
                 })
         }
     }
