@@ -7,10 +7,9 @@ import type {JobQueryParams, JobSearchFilters, PaginationInfo, TypesenseQueryPar
 import SignUpCard from "~/components/pages/job-listings/SignUpCard.vue";
 import {
   extractMinMaxCompensationValues,
-  extractSpecificFilterValues,
   getFilterByQuery,
   itemsViewOptions,
-  jobFilters, setCompensationToInitialValues
+  jobFilters
 } from "~/components/core/constants/jobs.constants";
 
 const filters = ref(jobFilters);  // job's filters
@@ -94,8 +93,9 @@ onUnmounted(() => {
 
 const jobsLoading = ref(true);
 let selectedCompensation = ref<number[]>([0, 0]);
-let appliedCheckboxFilters = ref<string>('');
 let appliedCompensationFilters = ref<string>('');
+let appliedCheckboxFilters = ref<string>('');
+let appliedLocationFilters = ref<string>('');
 
 setInitialCompensationValues('salary');
 
@@ -107,7 +107,7 @@ function setInitialCompensationValues(wageType :string, isCompensationUpdate :bo
   if (isCompensationUpdate) return;  // only set the compensation values (when switch is toggled) and return
 
   appliedCompensationFilters.value = `min_${wageType}:>=${values[0]}&&max_${wageType}:<=${values[1]}&&is_salary_empty:true`;
-  query.value.filter_by = getFilterByQuery(appliedCompensationFilters.value, appliedCheckboxFilters.value);
+  query.value.filter_by = getFilterByQuery(appliedCompensationFilters.value, appliedCheckboxFilters.value, appliedLocationFilters.value);
 }
 
 async function doSearch(resetToDefaultPage = false) {
@@ -167,10 +167,8 @@ const fetchOnSearching = (searchValues :JobSearchFilters) => {
   if (searchValues.coordinates.lat && searchValues.coordinates.lng)    // when user searches location on 'Search' click (searchValues are null when redirected from Home view)
     coordinates.value = searchValues.coordinates
   if (coordinates.value.lat && coordinates.value.lng) {    // check if both lat and lng are propagated by SearchBar
-    const geoFilter = `geo_location:(${coordinates.value.lat}, ${coordinates.value.lng}, 10 mi)`
-    if (query.value.filter_by?.length && !query.value.filter_by.includes('geo_location'))
-      query.value.filter_by = `${query.value.filter_by}&&${geoFilter}`
-    else query.value.filter_by = geoFilter;
+    appliedLocationFilters.value = `geo_location:(${coordinates.value.lat}, ${coordinates.value.lng}, 10 mi)`
+    query.value.filter_by = getFilterByQuery(appliedCompensationFilters.value, appliedCheckboxFilters.value, appliedLocationFilters.value);
     searchedLocationText.value = searchValues.location // saving location string for route query
   }
 
@@ -186,16 +184,12 @@ function updateSideBarFilters(selectedFilters :{ field: string, values: string[]
   }
   else sidebarFilters.value = {};
 
-  const sidebBarFiltersPayload = selectedFilters.map((obj :{ field: string, values: string[] }) => {
+  appliedCheckboxFilters.value = selectedFilters.map((obj: { field: string, values: string[] }) => {
     return `${obj.field}:=[${obj.values.join(',')}]`;
   }).join('&&');
 
-  if (query.value.filter_by?.length && query.value.filter_by.includes('geo_location'))
-    query.value.filter_by = `${sidebBarFiltersPayload}&&${query.value.filter_by}`;
-  else {
-    appliedCheckboxFilters.value = sidebBarFiltersPayload;
-    query.value.filter_by = getFilterByQuery(appliedCompensationFilters.value, appliedCheckboxFilters.value);
-  }
+  query.value.filter_by = getFilterByQuery(appliedCompensationFilters.value, appliedCheckboxFilters.value, appliedLocationFilters.value);
+
   if (toggleFlag) isFilterSidebarVisible.value = false;
 
   doSearch();
@@ -203,7 +197,7 @@ function updateSideBarFilters(selectedFilters :{ field: string, values: string[]
 
 function applyCompensationFilters(filterString :string) { // replacing old compensation filters with new filter values
   appliedCompensationFilters.value = filterString;
-  query.value.filter_by = getFilterByQuery(appliedCompensationFilters.value, appliedCheckboxFilters.value)
+  query.value.filter_by = getFilterByQuery(appliedCompensationFilters.value, appliedCheckboxFilters.value, appliedLocationFilters.value)
   doSearch();
 }
 

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { setCompensationToInitialValues } from "~/components/core/constants/jobs.constants";
-
 const props = defineProps<{
   filtrationList: any[],
   itemsLoading: boolean,
