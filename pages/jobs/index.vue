@@ -4,12 +4,13 @@ import JobSkeleton from "~/components/pages/job-listings/JobSkeleton.vue";
 import {useJobStore} from "~/segments/jobs/store";
 import NoRecordFound from "~/components/core/NoRecordFound.vue";
 import type {JobQueryParams, JobSearchFilters, PaginationInfo, TypesenseQueryParam} from "~/segments/common.types";
-import { encode, decode } from "js-base64";
 import SignUpCard from "~/components/pages/job-listings/SignUpCard.vue";
 import {
-  jobFilters,
+  extractMinMaxCompensationValues,
+  extractSpecificFilterValues,
+  getFilterByQuery,
   itemsViewOptions,
-  extractSpecificFilterValues, extractMinMaxCompensationValues
+  jobFilters, setCompensationToInitialValues
 } from "~/components/core/constants/jobs.constants";
 
 const filters = ref(jobFilters);  // job's filters
@@ -98,19 +99,15 @@ let appliedCompensationFilters = ref<string>('');
 
 setInitialCompensationValues('salary');
 
-function setInitialCompensationValues(wageType :string, applyFilter :boolean = false) {
+function setInitialCompensationValues(wageType :string, isCompensationUpdate :boolean = false) {
   let values :number[] = [];
   if (wageType === 'salary') values = [20000, 200000];
   else if (wageType === 'hourly') values = [10, 200];
   selectedCompensation.value = values;
+  if (isCompensationUpdate) return;  // only set the compensation values (when switch is toggled) and return
 
-  let compensationFilter = `min_${wageType}:>=${values[0]}&&max_${wageType}:<=${values[1]}`;
-  appliedCompensationFilters.value = compensationFilter;
-  if (appliedCheckboxFilters.value.length) {
-    query.value.filter_by = `${compensationFilter}&&${appliedCheckboxFilters.value}`;
-  } else query.value.filter_by = compensationFilter+ '&&jobs_with_salary:=false';
-
-  if (applyFilter) doSearch();
+  appliedCompensationFilters.value = `min_${wageType}:>=${values[0]}&&max_${wageType}:<=${values[1]}&&is_salary_empty:true`;
+  query.value.filter_by = getFilterByQuery(appliedCompensationFilters.value, appliedCheckboxFilters.value);
 }
 
 async function doSearch(resetToDefaultPage = false) {
@@ -196,14 +193,8 @@ function updateSideBarFilters(selectedFilters :{ field: string, values: string[]
   if (query.value.filter_by?.length && query.value.filter_by.includes('geo_location'))
     query.value.filter_by = `${sidebBarFiltersPayload}&&${query.value.filter_by}`;
   else {
-    if (sidebBarFiltersPayload.length) {   // if the checkbox filters are selected
-      appliedCheckboxFilters.value = sidebBarFiltersPayload;
-      query.value.filter_by = `${appliedCompensationFilters.value}&&${sidebBarFiltersPayload}`
-    }
-    else {
-      appliedCheckboxFilters.value = '';
-      query.value.filter_by = appliedCompensationFilters.value; // don't use checkbox filters}
-    }
+    appliedCheckboxFilters.value = sidebBarFiltersPayload;
+    query.value.filter_by = getFilterByQuery(appliedCompensationFilters.value, appliedCheckboxFilters.value);
   }
   if (toggleFlag) isFilterSidebarVisible.value = false;
 
@@ -212,10 +203,7 @@ function updateSideBarFilters(selectedFilters :{ field: string, values: string[]
 
 function applyCompensationFilters(filterString :string) { // replacing old compensation filters with new filter values
   appliedCompensationFilters.value = filterString;
-  if (appliedCheckboxFilters.value.length) {  // if checkboxes filters are already applied
-    let updatedFilters: string = extractSpecificFilterValues(query.value.filter_by, 'compensation');
-    query.value.filter_by = `${filterString}&&${updatedFilters}`;
-  } else query.value.filter_by = filterString;
+  query.value.filter_by = getFilterByQuery(appliedCompensationFilters.value, appliedCheckboxFilters.value)
   doSearch();
 }
 

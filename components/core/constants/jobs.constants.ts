@@ -149,3 +149,33 @@ export function extractSpecificFilterValues(filterString :string, filterName :'c
     }
     return extractedFilters;
 }
+
+export function getFilterByQuery(compensationFilters :string, cbFilters :string) {
+    let finalQuery = [];
+    finalQuery.push(`date_posting_expires:<=${convertTodayInUnixTimeStamp()}`);
+    if (compensationFilters.length) finalQuery.push(compensationFilters);
+    if (cbFilters.length) finalQuery.push(cbFilters);
+    console.log('final query ', finalQuery)
+    return finalQuery.join('&&');
+}
+
+export function convertTodayInUnixTimeStamp() {
+    const now = new Date();
+    // Create a date object for today at midnight UTC
+    const todayMidnightUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    // Get the Unix timestamp (in milliseconds) and divide by 1000 to convert to seconds
+    return Math.floor(todayMidnightUTC.getTime() / 1000);
+}
+
+export function convertUnixTimestamp(timestamp :number) {
+    const date = new Date(timestamp * 1000); // Convert from seconds to milliseconds
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+}
+
+export function setCompensationToInitialValues(wageType :string) :number[] {
+    if (wageType === 'salary') return [20000, 200000];
+    return [10, 200];
+}

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { setCompensationToInitialValues } from "~/components/core/constants/jobs.constants";
+
 const props = defineProps<{
   filtrationList: any[],
   itemsLoading: boolean,
@@ -32,7 +34,7 @@ watch(props.filtrationList, (val) => {   // watcher for checking if the filters 
             values: updatedValues,
           };
         }
-        console.log('watcher ', selectedValues.value, parsedValue)
+        // console.log('watcher ', selectedValues.value, parsedValue)
       }
     })
     // emits('onFiltersChange', selectedValues.value);
@@ -90,9 +92,18 @@ const selectedWageType = ref('salary');
 const includeAllJobs = ref(true);
 
 function toggleSwitch(eve :boolean) {
-  if (eve) selectedWageType.value = 'salary';
-  else selectedWageType.value = 'hourly';
-  emits('compensationFilterTypeChange', selectedWageType.value, true)
+  let values = [];
+  if (eve) {
+    selectedWageType.value = 'salary';
+    values = [20000, 200000];
+  }
+  else {
+    selectedWageType.value = 'hourly';
+    values = [10, 200];
+  }
+
+  emits('compensationFilterTypeChange', selectedWageType.value, true);
+  handleValueChange(values);
 }
 
 onUnmounted(() => {
@@ -103,8 +114,13 @@ defineExpose({ emitSelectedValues })
 
 function handleValueChange(values :number[]) {
   const wageType = selectedWageType.value;
-  const compensationString = `min_${wageType}:>=${values[0]}&&max_${wageType}:<=${values[1]}`;
+  const compensationString = `min_${wageType}:>=${values[0]}&&max_${wageType}:<=${values[1]}&&is_${wageType}_empty:${includeAllJobs.value}`;
   emits('compensationFilterChange', compensationString)
+}
+
+function includeJobsWithoutCompensation($event :any) {
+  includeAllJobs.value = $event.target.checked;
+  handleValueChange(props.selectedCompensation);
 }
 </script>
 
@@ -188,11 +204,11 @@ function handleValueChange(values :number[]) {
                     id="includeAllJobsCB"
                     :checked="includeAllJobs"
                     type="checkbox"
-                    @change="($event) => includeAllJobs = $event.target.checked"
+                    @change="includeJobsWithoutCompensation"
                 >
               </div>
               <label class="font-medium cursor-pointer">
-                Includes jobs without {{ selectedWageType }} rate
+                Includes jobs without {{ selectedWageType }} rate {{includeAllJobs}}
               </label>
             </div>
           </template>

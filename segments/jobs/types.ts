@@ -7,7 +7,7 @@ interface Job {
     organization_slug: string
     organization_type?: string
     date_posted: string
-    date_posting_expires?: string
+    date_posting_expires: string // unix timestamp
     start_date?: string
     job_title: string
     job_role: string
