@@ -52,7 +52,7 @@ watch(() => props.selectedMax, (newSelectedMax) => maxAngle.value = newSelectedM
     <input type="range" :min="minValue" :max="maxValue" :step="stepValue" v-model="sliderMin" @change="updateValue">
     <input type="range" :min="minValue" :max="maxValue" :step="stepValue" v-model="sliderMax" @change="updateValue">
     <div class="absolute -bottom-8 flex justify-between w-full text-sm font-medium">
-      <span>{{ sliderMin || `$${sliderMin.toLocaleString()}` }}</span>
+      <span>{{ `$${sliderMin.toLocaleString()}` }}</span>
       <span>{{ sliderMax === maxValue ? `$${sliderMax.toLocaleString()}+` : `$${sliderMax.toLocaleString()}` }}</span>
     </div>
   </div>

@@ -4,6 +4,8 @@ const props = defineProps<{
   itemsLoading: boolean,
   insideSidebar: boolean,
   selectedCompensation: number[]
+  wageType: string
+  includeAllJobs: boolean
 }>()
 
 const emits = defineEmits([
@@ -86,8 +88,11 @@ function isItemChecked(value :string) {
   return mappedValues.includes(value);
 }
 
-const selectedWageType = ref('salary');
-const includeAllJobs = ref(true);
+const selectedWageType = ref(props.wageType);
+const includeAllJobs = ref(props.includeAllJobs);
+
+watch(() => props.wageType, (val) => selectedWageType.value = val);
+watch(() => props.includeAllJobs, (val) => includeAllJobs.value = val);
 
 function toggleSwitch(eve :boolean) {
   let values = [];
@@ -112,7 +117,7 @@ defineExpose({ emitSelectedValues })
 
 function handleValueChange(values :number[]) {
   const wageType = selectedWageType.value;
-  const compensationString = `min_${wageType}:>=${values[0]}&&max_${wageType}:<=${values[1]}&&is_${wageType}_empty:${includeAllJobs.value}`;
+  const compensationString = `is_${wageType}_empty:${includeAllJobs.value}&&min_${wageType}:>=${values[0]}&&max_${wageType}:<=${values[1]}`;
   emits('compensationFilterChange', compensationString)
 }
 

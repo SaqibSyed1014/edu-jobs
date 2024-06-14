@@ -134,10 +134,10 @@ export function extractMinMaxCompensationValues(compensationFilters :string) :Co
     const conditions :string[] = compensationFilters.split('&&');
     conditions.forEach((condition :string) => {
         // @ts-ignore
-        const [, key, type, value] = condition.match(/(min|max)_(salary|hourly):[><=]+(\d+)/);
-        if (key === 'min') result.min = Number(value);
-        else if (key === 'max') result.max = Number(value);
-        result.type = type;
+        // const [, key, type, value] = condition.match(/(min|max)_(salary|hourly):[><=]+(\d+)/);
+        // if (key === 'min') result.min = Number(value);
+        // else if (key === 'max') result.max = Number(value);
+        // result.type = type;
     });
     return result as CompensationResult;
 }
@@ -157,6 +157,38 @@ export function getFilterByQuery(compensationFilters :string, cbFilters :string,
     if (cbFilters.length) finalQuery.push(cbFilters);
     if (locationFilter.length) finalQuery.push(locationFilter)
     return finalQuery.join('&&');
+}
+
+export function divideFilterQuery(filterString :string) : { type: string, min: number, max :number, isCompensationEmpty: boolean } {
+    let splitFilters = filterString.split('&&')
+    console.log('here ', splitFilters);
+
+    let isSalary = false, minValue = 0, maxValue = 0, isCompensationEmpty = true;
+
+    splitFilters.forEach(filter => {
+        if (filter.includes('min_salary')) {
+            isSalary = true;
+            minValue = parseInt(filter.split('>=')[1], 10);
+        } else if (filter.includes('min_hourly')) {
+            isSalary = false;
+            minValue = parseInt(filter.split('>=')[1], 10);
+        } else if (filter.includes('max_salary')) {
+            maxValue = parseInt(filter.split('<=')[1], 10);
+        } else if (filter.includes('max_hourly')) {
+            maxValue = parseInt(filter.split('<=')[1], 10);
+        } else if (filter.includes('is_salary_empty')) {
+            isCompensationEmpty = filter.split(':')[1] === 'true';
+        } else if (filter.includes('is_hourly_empty')) {
+            isCompensationEmpty = filter.split(':')[1] === 'true';
+        }
+    });
+
+    return {
+        type: isSalary ? 'salary' : 'hourly',
+        min: minValue,
+        max: maxValue,
+        isCompensationEmpty: isCompensationEmpty,
+    };
 }
 
 export function convertTodayInUnixTimeStamp() {

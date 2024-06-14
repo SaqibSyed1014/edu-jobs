@@ -6,6 +6,7 @@ import NoRecordFound from "~/components/core/NoRecordFound.vue";
 import type {JobQueryParams, JobSearchFilters, PaginationInfo, TypesenseQueryParam} from "~/segments/common.types";
 import SignUpCard from "~/components/pages/job-listings/SignUpCard.vue";
 import {
+  divideFilterQuery,
   extractMinMaxCompensationValues,
   getFilterByQuery,
   itemsViewOptions,
@@ -77,10 +78,12 @@ onMounted(async () => {
   const paramsString = route.query.params as string;
   if (paramsString) {
     const parsedParams = JSON.parse(paramsString);
-    assignQueryParamsOnInitialLoad(parsedParams as JobQueryParams);
+    await assignQueryParamsOnInitialLoad(parsedParams as JobQueryParams);
     // assign the saved coordinates in store (searched on Home view) for query
     if (coordinates.value.lat && coordinates.value.lng) query.value.filter_by = `geo_location:(${coordinates.value.lat}, ${coordinates.value.lng}, 10 mi)`;
+    return;
   }
+
   await doSearch(); // Initial fetch
 });
 
@@ -201,6 +204,10 @@ function applyCompensationFilters(filterString :string) { // replacing old compe
   doSearch();
 }
 
+
+const wageType = ref('salary');  // initial values for wage type and compensation checkbox
+const includeAllJobs = ref(true);
+
 async function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
   const { keyword, mode, location, employment_type, job_role, experience_level, coordinates, filter_by, ...otherParams }
       = queryParams
@@ -224,19 +231,21 @@ async function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
       });
     }
   });
-  if (jobSidebarFilters.value) {
-    jobSidebarFilters.value.emitSelectedValues();
-  }
-  if (filter_by) {
-    const { min, max } = extractMinMaxCompensationValues(filter_by);  // get min/max compensation values from params
+  if (filter_by) {  // assigning filter_by compensation params
+    const { min, max, type, isCompensationEmpty } = divideFilterQuery(filter_by);
     selectedCompensation.value[0] = min;
     selectedCompensation.value[1] = max;
+    wageType.value = type;
+    includeAllJobs.value = isCompensationEmpty;
+    query.value.filter_by = filter_by;
   }
 
   if (coordinates && !coordinates?.includes(0)) {
     jobStore.coordinates.lat = coordinates[0];
     jobStore.coordinates.lng = coordinates[1];
   }
+
+  doSearch();
 }
 
 function sortJobs(sortBy :string) {
@@ -265,6 +274,8 @@ const signUpCardIndex = Math.floor(Math.random() * 25);  // randomly generate in
               :inside-sidebar="false"
               :filtration-list="filters"
               :selected-compensation="selectedCompensation"
+              :wage-type="wageType"
+              :include-all-jobs="includeAllJobs"
               @compensation-filter-type-change="setInitialCompensationValues"
               :items-loading="jobsLoading"
               @on-filters-change="updateSideBarFilters"
