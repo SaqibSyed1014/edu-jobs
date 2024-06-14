@@ -17,6 +17,16 @@ interface Blog {
     }
 }
 
+interface BlogCategory {
+    category_name: string;
+    category_slug: string;
+    createdAt: string;
+    id: number;
+    publishedAt: string;
+    updatedAt: string;
+}
+
+
 interface AuthorDetail {
     id: number
     name: string
@@ -31,6 +41,13 @@ interface Category {
 
 interface BlogResponseType {
     data: Blog[]
+    meta: {
+        pagination: Pagination
+    }
+}
+
+interface BlogCategoriesResponseType {
+    data: BlogCategory[]
     meta: {
         pagination: Pagination
     }
