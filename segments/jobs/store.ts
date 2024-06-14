@@ -1,5 +1,6 @@
 import {getJobDetails, getJobsList} from "~/segments/jobs/services";
 import type {Coordinates, TypesenseQueryParam} from "~/segments/common.types";
+import {convertUnixTimestamp} from "~/components/core/constants/jobs.constants";
 
 interface JobsState {
     jobsList: Job[]
@@ -44,7 +45,7 @@ export const useJobStore = defineStore('jobStore', {
     getters: {
         jobListings: (state) :Job[] => state.jobsList.map(job => ({
             ...job,
-            date_posting_expires: job.date_posting_expires ? job?.date_posting_expires.slice(0, job?.date_posting_expires.indexOf('00:00:00')) : 'N/A',
+            date_posting_expires: job.date_posting_expires ? convertUnixTimestamp(job.date_posting_expires as unknown as number) : 'N/A',
             date_posted: job.date_posted.slice(0, job.date_posted.indexOf('00:00:00'))
         })),
         jobDetails: (state) :JobDetails | null => {
@@ -52,7 +53,7 @@ export const useJobStore = defineStore('jobStore', {
             if (jobDetail)
                 return {
                     ...jobDetail,
-                    date_posting_expires:jobDetail.date_posting_expires ? jobDetail.date_posting_expires.slice(0, jobDetail.date_posting_expires.indexOf('00:00:00')) : 'N/A',
+                    date_posting_expires: jobDetail.date_posting_expires ? convertUnixTimestamp(jobDetail.date_posting_expires as unknown as number) : 'N/A',
                     date_posted: jobDetail.date_posted.slice(0, jobDetail.date_posted.indexOf('00:00:00'))
             }
             else return null

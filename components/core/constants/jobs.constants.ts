@@ -122,3 +122,60 @@ export const itemsViewOptions = [
         icon: 'SvgoGrid'
     }
 ]
+
+interface CompensationResult {
+    min :number,
+    max:number,
+    type: string
+}
+
+export function extractMinMaxCompensationValues(compensationFilters :string) :CompensationResult  {
+    const result :Partial<CompensationResult> = {};
+    const conditions :string[] = compensationFilters.split('&&');
+    conditions.forEach((condition :string) => {
+        // @ts-ignore
+        const [, key, type, value] = condition.match(/(min|max)_(salary|hourly):[><=]+(\d+)/);
+        if (key === 'min') result.min = Number(value);
+        else if (key === 'max') result.max = Number(value);
+        result.type = type;
+    });
+    return result as CompensationResult;
+}
+
+export function extractSpecificFilterValues(filterString :string, filterName :'compensation' | 'checkboxes') {
+    let extractedFilters :string = '';
+    if (filterName === 'compensation') {
+        extractedFilters = filterString.replace(/(min_(salary|hourly):>=\d+&&max_(salary|hourly):<=\d+&&)/, '');
+    }
+    return extractedFilters;
+}
+
+export function getFilterByQuery(compensationFilters :string, cbFilters :string) {
+    let finalQuery = [];
+    finalQuery.push(`date_posting_expires:<=${convertTodayInUnixTimeStamp()}`);
+    if (compensationFilters.length) finalQuery.push(compensationFilters);
+    if (cbFilters.length) finalQuery.push(cbFilters);
+    console.log('final query ', finalQuery)
+    return finalQuery.join('&&');
+}
+
+export function convertTodayInUnixTimeStamp() {
+    const now = new Date();
+    // Create a date object for today at midnight UTC
+    const todayMidnightUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    // Get the Unix timestamp (in milliseconds) and divide by 1000 to convert to seconds
+    return Math.floor(todayMidnightUTC.getTime() / 1000);
+}
+
+export function convertUnixTimestamp(timestamp :number) {
+    const date = new Date(timestamp * 1000); // Convert from seconds to milliseconds
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+}
+
+export function setCompensationToInitialValues(wageType :string) :number[] {
+    if (wageType === 'salary') return [20000, 200000];
+    return [10, 200];
+}

@@ -4,9 +4,14 @@ import JobSkeleton from "~/components/pages/job-listings/JobSkeleton.vue";
 import {useJobStore} from "~/segments/jobs/store";
 import NoRecordFound from "~/components/core/NoRecordFound.vue";
 import type {JobQueryParams, JobSearchFilters, PaginationInfo, TypesenseQueryParam} from "~/segments/common.types";
-import { encode, decode } from "js-base64";
 import SignUpCard from "~/components/pages/job-listings/SignUpCard.vue";
-import { jobFilters, itemsViewOptions } from "~/components/core/constants/jobs.constants";
+import {
+  extractMinMaxCompensationValues,
+  extractSpecificFilterValues,
+  getFilterByQuery,
+  itemsViewOptions,
+  jobFilters, setCompensationToInitialValues
+} from "~/components/core/constants/jobs.constants";
 
 const filters = ref(jobFilters);  // job's filters
 
@@ -33,7 +38,8 @@ const initialQuery = {
   page: pageInfo.value.currentPage,
   per_page: pageInfo.value.itemsPerPage,
   sort_by: 'date_posted:asc',
-  facet_by: 'employment_type,job_role,experience_level'
+  facet_by: 'employment_type,job_role,experience_level',
+  filter_by: ''
 };
 const query = ref<TypesenseQueryParam>(initialQuery);
 
@@ -45,7 +51,8 @@ const queryParams = computed(() => {
     page: pageInfo.value.currentPage,
     mode: layoutOptionSelected.value === 0 ? 'list' : 'grid',
     coordinates: [coordinates.value.lat, coordinates.value.lng],
-    sort_by: query.value.sort_by
+    sort_by: query.value.sort_by,
+    filter_by: query.value.filter_by
   }
   return urlParams
 })
@@ -55,7 +62,7 @@ watch(() => layoutOptionSelected.value, (val) => {
   router.replace({  // update route with updated query when layout mode is changed
     path: "/jobs",
     query: {
-      params: encode(JSON.stringify(queryParams.value))
+      params: JSON.stringify(queryParams.value)
     },
   });
 })
@@ -70,7 +77,7 @@ onMounted(async () => {
   }
   const paramsString = route.query.params as string;
   if (paramsString) {
-    const parsedParams = JSON.parse(decode(paramsString));
+    const parsedParams = JSON.parse(paramsString);
     assignQueryParamsOnInitialLoad(parsedParams as JobQueryParams);
     // assign the saved coordinates in store (searched on Home view) for query
     if (coordinates.value.lat && coordinates.value.lng) query.value.filter_by = `geo_location:(${coordinates.value.lat}, ${coordinates.value.lng}, 10 mi)`;
@@ -86,6 +93,23 @@ onUnmounted(() => {
 })
 
 const jobsLoading = ref(true);
+let selectedCompensation = ref<number[]>([0, 0]);
+let appliedCheckboxFilters = ref<string>('');
+let appliedCompensationFilters = ref<string>('');
+
+setInitialCompensationValues('salary');
+
+function setInitialCompensationValues(wageType :string, isCompensationUpdate :boolean = false) {
+  let values :number[] = [];
+  if (wageType === 'salary') values = [20000, 200000];
+  else if (wageType === 'hourly') values = [10, 200];
+  selectedCompensation.value = values;
+  if (isCompensationUpdate) return;  // only set the compensation values (when switch is toggled) and return
+
+  appliedCompensationFilters.value = `min_${wageType}:>=${values[0]}&&max_${wageType}:<=${values[1]}&&is_salary_empty:true`;
+  query.value.filter_by = getFilterByQuery(appliedCompensationFilters.value, appliedCheckboxFilters.value);
+}
+
 async function doSearch(resetToDefaultPage = false) {
   jobsLoading.value = true;
   if (resetToDefaultPage) pageInfo.value.currentPage = 1;  // set the current page to default (1)
@@ -96,7 +120,7 @@ async function doSearch(resetToDefaultPage = false) {
   await router.replace({
     path: '/jobs',
     query: {
-      params: encode(JSON.stringify(queryParams.value))
+      params: JSON.stringify(queryParams.value)
     }
   })
   if (query.value.q && query.value.q !== '*') query.value.query_by = 'job_title'  // search from job_title
@@ -169,16 +193,22 @@ function updateSideBarFilters(selectedFilters :{ field: string, values: string[]
   if (query.value.filter_by?.length && query.value.filter_by.includes('geo_location'))
     query.value.filter_by = `${sidebBarFiltersPayload}&&${query.value.filter_by}`;
   else {
-    if (sidebBarFiltersPayload.length) query.value.filter_by = sidebBarFiltersPayload;
-    else delete query.value.filter_by;
+    appliedCheckboxFilters.value = sidebBarFiltersPayload;
+    query.value.filter_by = getFilterByQuery(appliedCompensationFilters.value, appliedCheckboxFilters.value);
   }
   if (toggleFlag) isFilterSidebarVisible.value = false;
 
   doSearch();
 }
 
-function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
-  const { keyword, mode, location, employment_type, job_role, experience_level, coordinates, ...otherParams }
+function applyCompensationFilters(filterString :string) { // replacing old compensation filters with new filter values
+  appliedCompensationFilters.value = filterString;
+  query.value.filter_by = getFilterByQuery(appliedCompensationFilters.value, appliedCheckboxFilters.value)
+  doSearch();
+}
+
+async function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
+  const { keyword, mode, location, employment_type, job_role, experience_level, coordinates, filter_by, ...otherParams }
       = queryParams
   query.value = {
     ...query.value,
@@ -193,14 +223,21 @@ function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
   if (job_role) sidebarFilters.value.job_role = job_role
   if (experience_level) sidebarFilters.value.experience_level = experience_level
   filters.value.forEach(filter => {
-      if (filter.type === 'checkbox' && filter.list?.length) {
-        filter.list.forEach(item => {
-          const filterValues = sidebarFilters.value[filter.fieldName] || [];
-          item.checked = !!filterValues.includes(item.value);
-        });
-      }
-    });
-  if (jobSidebarFilters.value) jobSidebarFilters.value.emitSelectedValues();
+    if (filter.type === 'checkbox' && filter.list?.length) {
+      filter.list.forEach(item => {
+        const filterValues = sidebarFilters.value[filter.fieldName] || [];
+        item.checked = !!filterValues.includes(item.value);
+      });
+    }
+  });
+  if (jobSidebarFilters.value) {
+    jobSidebarFilters.value.emitSelectedValues();
+  }
+  if (filter_by) {
+    const { min, max } = extractMinMaxCompensationValues(filter_by);  // get min/max compensation values from params
+    selectedCompensation.value[0] = min;
+    selectedCompensation.value[1] = max;
+  }
 
   if (coordinates && !coordinates?.includes(0)) {
     jobStore.coordinates.lat = coordinates[0];
@@ -231,17 +268,22 @@ const signUpCardIndex = Math.floor(Math.random() * 25);  // randomly generate in
           <ListingFilters
               ref="jobSidebarFilters"
               class="hidden lg:flex"
-              :inside-sidebar="true"
+              :inside-sidebar="false"
               :filtration-list="filters"
+              :selected-compensation="selectedCompensation"
+              @compensation-filter-type-change="setInitialCompensationValues"
               :items-loading="jobsLoading"
               @on-filters-change="updateSideBarFilters"
+              @compensation-filter-change="applyCompensationFilters"
           />
 
           <SideBarWrapper :is-sidebar-visible="isFilterSidebarVisible">
             <ListingFilters
-                ref="jobSidebarFilters"
+                :inside-sidebar="true"
                 :filtration-list="filters"
                 :items-loading="jobsLoading"
+                :selected-compensation="selectedCompensation"
+                @compensation-filter-type-change="setInitialCompensationValues"
                 @apply-filters-on-click="(val) => updateSideBarFilters(val,true)"
                 @close-filter-sidebar="isFilterSidebarVisible = false"
             />

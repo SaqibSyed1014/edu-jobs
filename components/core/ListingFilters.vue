@@ -1,11 +1,20 @@
 <script setup lang="ts">
+import { setCompensationToInitialValues } from "~/components/core/constants/jobs.constants";
+
 const props = defineProps<{
   filtrationList: any[],
   itemsLoading: boolean,
-  insideSidebar: boolean
+  insideSidebar: boolean,
+  selectedCompensation: number[]
 }>()
 
-const emits = defineEmits(['closeFilterSidebar', 'onFiltersChange', 'applyFiltersOnClick'])
+const emits = defineEmits([
+  'closeFilterSidebar',
+  'onFiltersChange',
+  'compensationFilterChange',
+  'compensationFilterTypeChange',
+  'applyFiltersOnClick'
+])
 
 const filterState = ref(JSON.parse(JSON.stringify(props.filtrationList)));
 
@@ -19,11 +28,13 @@ watch(props.filtrationList, (val) => {   // watcher for checking if the filters 
       if (filter.type === 'checkbox') {
         const updatedValues = filter.list.filter((item :any) => item.checked).map((item :any) => item.value);
         if (updatedValues.length > 0) {
+          console.log('inside ', index)
           selectedValues.value[index] = {
             field: filter.fieldName,
             values: updatedValues,
           };
         }
+        // console.log('watcher ', selectedValues.value, parsedValue)
       }
     })
     // emits('onFiltersChange', selectedValues.value);
@@ -39,12 +50,16 @@ function resetFilters() {
     }
   });
   selectedValues.value = [];
+}
 
+function removeSelectedNullValues() {  // removing null values probably added from watcher
+  selectedValues.value = selectedValues.value.filter((item) => item !== null);
 }
 
 const updateChecked = (index: number, subIndex: number, checked: boolean, value: string, fieldName: string) => {
   filterState.value[index].list[subIndex].checked = checked;
 
+  removeSelectedNullValues();
   const selectedField = selectedValues.value.find(val => val.field === fieldName);
 
   // If the checkbox is checked and the value is not already selected, add it to the selected field
@@ -64,6 +79,7 @@ const updateChecked = (index: number, subIndex: number, checked: boolean, value:
 };
 
 function emitSelectedValues() {
+  removeSelectedNullValues();
   emits('onFiltersChange', selectedValues.value);
 }
 
@@ -73,19 +89,39 @@ function isItemChecked(value :string) {
 }
 
 const selectedWageType = ref('salary');
+const includeAllJobs = ref(true);
 
 function toggleSwitch(eve :boolean) {
-  if (eve) selectedWageType.value = 'salary';
-  else selectedWageType.value = 'hourly';
+  let values = [];
+  if (eve) {
+    selectedWageType.value = 'salary';
+    values = [20000, 200000];
+  }
+  else {
+    selectedWageType.value = 'hourly';
+    values = [10, 200];
+  }
+
+  emits('compensationFilterTypeChange', selectedWageType.value, true);
+  handleValueChange(values);
 }
 
 onUnmounted(() => {
   selectedValues.value = [];
 })
 
-defineExpose({
-  emitSelectedValues
-})
+defineExpose({ emitSelectedValues })
+
+function handleValueChange(values :number[]) {
+  const wageType = selectedWageType.value;
+  const compensationString = `min_${wageType}:>=${values[0]}&&max_${wageType}:<=${values[1]}&&is_${wageType}_empty:${includeAllJobs.value}`;
+  emits('compensationFilterChange', compensationString)
+}
+
+function includeJobsWithoutCompensation($event :any) {
+  includeAllJobs.value = $event.target.checked;
+  handleValueChange(props.selectedCompensation);
+}
 </script>
 
 <template>
@@ -144,17 +180,37 @@ defineExpose({
                 <span class="text-sm font-medium text-gray-900 dark:text-gray-300">Salary</span>
               </div>
             </template>
-            <RangeSlider v-if="selectedWageType === 'salary'" :max-value="filter.salary.max" :min-value="filter.salary.min" :step-value="10000"  />
-            <RangeSlider v-else :max-value="filter.hourly.max" :min-value="filter.hourly.min" :step-value="5"  />
+            <RangeSlider
+                v-if="selectedWageType === 'salary'"
+                :max-value="filter.salary.max"
+                :min-value="filter.salary.min"
+                :selected-min="selectedCompensation[0]"
+                :selected-max="selectedCompensation[1]"
+                :step-value="10000"
+                @update:value="handleValueChange"
+            />
+            <RangeSlider
+                v-else
+                :max-value="filter.hourly.max"
+                :min-value="filter.hourly.min"
+                :selected-min="selectedCompensation[0]"
+                :selected-max="selectedCompensation[1]"
+                :step-value="5"
+                @update:value="handleValueChange"
+            />
             <div class="flex gap-3 first:pt-2 pb-4 pt-12">
               <div class="shrink-0 relative">
-                <input :checked="true" type="checkbox">
+                <input
+                    id="includeAllJobsCB"
+                    :checked="includeAllJobs"
+                    type="checkbox"
+                    @change="includeJobsWithoutCompensation"
+                >
               </div>
               <label class="font-medium cursor-pointer">
                 Includes jobs without {{ selectedWageType }} rate
               </label>
             </div>
-
           </template>
         </div>
       </div>
