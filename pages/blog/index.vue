@@ -40,6 +40,15 @@ function paginateBlogs(page: number | "prev" | "next") {
   else pageInfo.value.currentPage = page;
   fetchingBlogs();
 }
+
+const searchedCategory = ref<string>('');
+const selectedCategory = ref<number>(-1);
+
+const filteredCategories = computed(() => {
+  return categories.value.filter(category => category.category_name.toLowerCase().includes(searchedCategory.value.toLowerCase()));
+})
+
+const setActiveCategory = (index :number) => selectedCategory.value = index;
 </script>
 
 <template>
@@ -74,7 +83,8 @@ function paginateBlogs(page: number | "prev" | "next") {
                     aria-hidden="true"
                 />
                 <input
-                    id="search-field"
+                    v-model="searchedCategory"
+                    id="search-category"
                     class="block h-full rounded-lg w-full shadow-xs border border-gray-300 bg-transparent py-[13px] pl-8 pr-0 text-black sm:text-sm"
                     placeholder="Search"
                     type="search"
@@ -86,8 +96,17 @@ function paginateBlogs(page: number | "prev" | "next") {
                 <h4 class="text-brand-700 font-semibold text-sm font-inter">Blog categories</h4>
 
                 <ul class="flex flex-col gap-2">
-                  <li class="category-option">View All</li>
-                  <li v-for="category in categories" class="category-option">
+                  <li
+                      class="category-option"
+                      :class="{ 'active': selectedCategory == -1 }"
+                      @click="selectedCategory = -1"
+                  >View All</li>
+                  <li
+                      v-for="(category, i) in filteredCategories"
+                      class="category-option"
+                      :class="{ 'active': selectedCategory == i }"
+                      @click="setActiveCategory(i)"
+                  >
                     {{ category.category_name }}
                   </li>
                 </ul>
@@ -242,7 +261,10 @@ function paginateBlogs(page: number | "prev" | "next") {
 
 <style scoped>
 .category-option{
-  @apply py-2 px-3 rounded-md text-gray-500 font-semibold cursor-pointer hover:text-gray-700 hover:bg-gray-50 transition
+  @apply py-2.5 px-3 rounded-md text-gray-500 font-semibold cursor-pointer hover:text-gray-700 hover:bg-gray-50 transition
+}
+.category-option.active{
+  @apply text-gray-700 bg-gray-50
 }
 </style>
 
