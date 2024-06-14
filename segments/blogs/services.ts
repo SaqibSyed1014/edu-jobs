@@ -14,6 +14,18 @@ const getBlogsList = (pageNumber :number, pageSize :number) :Promise<BlogRespons
     })
 }
 
+const getBlogsCategories = () :Promise<BlogCategoriesResponseType> => {
+    const { strapiBaseUrl, strapiApiToken } = usePayloadUrl()
+
+    const apiHeaders = {
+        Authorization: `Bearer ${strapiApiToken}`,
+    }
+    return $fetch(`${strapiBaseUrl}/api/categories`, {
+        method: 'get',
+        headers: apiHeaders,
+    })
+}
+
 const getRecentBlogs = () :Promise<BlogResponseType> => {
     const { strapiBaseUrl, strapiApiToken } = usePayloadUrl()
 
@@ -42,6 +54,7 @@ const getBlogDetails = (slug :string) :Promise<BlogResponseType> => {
 
 export {
     getBlogsList,
+    getBlogsCategories,
     getRecentBlogs,
     getBlogDetails
 }
