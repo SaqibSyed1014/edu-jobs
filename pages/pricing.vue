@@ -9,8 +9,12 @@ const selectedQty = ref<number[]>([1, 1]);
 const selectedSlot = ref<number>(10);
 const btnsLoading = ref<boolean[]>([false, false, false]);
 
+let selectedSlotDetail :any;
 const getSelectedSlotDetails = computed(() => {
-  return pricingPlans[2]?.slotsPricing?.filter(slot => slot.totalSlots == selectedSlot.value)[0];
+  if (selectedSlot.value) {
+    selectedSlotDetail = pricingPlans[2]?.slotsPricing?.filter(slot => slot.totalSlots == selectedSlot.value)[0];
+    return selectedSlotDetail;
+  } else return selectedSlotDetail;
 })
 
 async function redirectToStripe(priceId :string, idx :number) {
@@ -53,7 +57,7 @@ async function redirectToStripe(priceId :string, idx :number) {
                     <h4 class="capitalize text-xl mb-1">{{ offer.title }}</h4>
                     <h3 v-if="[3, 4].includes(offer.id)" class="text-2xl my-4">
                       Starts at {{ getSelectedSlotDetails.price }}
-                      <template v-if="offer.showSlotOptions">for {{ selectedSlot }}</template>
+                      <template v-if="offer.showSlotOptions">for {{ getSelectedSlotDetails.totalSlots }}</template>
                     </h3>
                     <h3 v-else class="text-4xl my-4">{{ offer.priceText }}</h3>
                     <p v-if="offer.showSlotOptions" class="text-success-600">Saving {{ getSelectedSlotDetails.saving }}</p>

@@ -12,7 +12,7 @@ const showBlogsLoader = ref<boolean>(false);
 
 const pageInfo = ref<PaginationInfo>({
   currentPage: 1,
-  itemsPerPage: 6,
+  itemsPerPage: 9,
   totalPages: 0
 });
 
