@@ -53,7 +53,7 @@ export const useJobStore = defineStore('jobStore', {
             if (jobDetail)
                 return {
                     ...jobDetail,
-                    date_posting_expires:jobDetail.date_posting_expires ? jobDetail.date_posting_expires.slice(0, jobDetail.date_posting_expires.indexOf('00:00:00')) : 'N/A',
+                    date_posting_expires: jobDetail.date_posting_expires ? convertUnixTimestamp(jobDetail.date_posting_expires as unknown as number) : 'N/A',
                     date_posted: jobDetail.date_posted.slice(0, jobDetail.date_posted.indexOf('00:00:00'))
             }
             else return null

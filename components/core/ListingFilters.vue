@@ -208,7 +208,7 @@ function includeJobsWithoutCompensation($event :any) {
                 >
               </div>
               <label class="font-medium cursor-pointer">
-                Includes jobs without {{ selectedWageType }} rate {{includeAllJobs}}
+                Includes jobs without {{ selectedWageType }} rate
               </label>
             </div>
           </template>
