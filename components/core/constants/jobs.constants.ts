@@ -150,12 +150,12 @@ export function extractSpecificFilterValues(filterString :string, filterName :'c
     return extractedFilters;
 }
 
-export function getFilterByQuery(compensationFilters :string, cbFilters :string) {
+export function getFilterByQuery(compensationFilters :string, cbFilters :string, locationFilter :string) {
     let finalQuery = [];
     finalQuery.push(`date_posting_expires:<=${convertTodayInUnixTimeStamp()}`);
     if (compensationFilters.length) finalQuery.push(compensationFilters);
     if (cbFilters.length) finalQuery.push(cbFilters);
-    console.log('final query ', finalQuery)
+    if (locationFilter.length) finalQuery.push(locationFilter)
     return finalQuery.join('&&');
 }
 
@@ -173,9 +173,4 @@ export function convertUnixTimestamp(timestamp :number) {
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
-}
-
-export function setCompensationToInitialValues(wageType :string) :number[] {
-    if (wageType === 'salary') return [20000, 200000];
-    return [10, 200];
 }
