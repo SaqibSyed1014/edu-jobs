@@ -5,9 +5,9 @@ import BaseSpinner from "~/components/core/BaseSpinner.vue";
 import type {PaginationInfo} from "~/segments/common.types";
 
 const blogsStore = useBlogStore();
-const { recentBlogs, blogs, categories, pagination } = storeToRefs(blogsStore);
+const { blogs, categories, pagination } = storeToRefs(blogsStore);
 
-const showPageLoader = ref<boolean>(false);
+const showPageLoader = ref<boolean>(true);
 const showBlogsLoader = ref<boolean>(false);
 
 const pageInfo = ref<PaginationInfo>({
@@ -17,14 +17,11 @@ const pageInfo = ref<PaginationInfo>({
 });
 
 onMounted(async () => {
-  if (!blogs.value.length) {
-    showPageLoader.value = true;
-    await blogsStore.fetchRecentBlogs();
-    await blogsStore.fetchBlogs(pageInfo.value);
-    await blogsStore.fetchBlogsCategories();
-    pageInfo.value.totalPages = pagination.value.pageCount;
-    showPageLoader.value = false;
-  }
+  showPageLoader.value = true;
+  await blogsStore.fetchBlogs(pageInfo.value);
+  await blogsStore.fetchBlogsCategories();
+  pageInfo.value.totalPages = pagination.value.pageCount;
+  showPageLoader.value = false;
 })
 
 async function fetchingBlogs() {

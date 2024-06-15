@@ -26,20 +26,6 @@ const getBlogsCategories = () :Promise<BlogCategoriesResponseType> => {
     })
 }
 
-const getRecentBlogs = () :Promise<BlogResponseType> => {
-    const { strapiBaseUrl, strapiApiToken } = usePayloadUrl()
-
-    const apiHeaders = {
-        Authorization: `Bearer ${strapiApiToken}`,
-    }
-    const strapiFieldsSchema = 'populate[category][fields][0]=category_name&populate[author][fields][1]=name&populate[post_photo]=*';
-    const strapiPaginationSchema = `pagination[page]=1&pagination[pageSize]=3`;
-    return $fetch(`${strapiBaseUrl}/api/posts?${strapiFieldsSchema}&${strapiPaginationSchema}`, {
-        method: 'get',
-        headers: apiHeaders,
-    })
-}
-
 const getBlogDetails = (slug :string) :Promise<BlogResponseType> => {
     const { strapiBaseUrl, strapiApiToken } = usePayloadUrl()
 
@@ -55,6 +41,5 @@ const getBlogDetails = (slug :string) :Promise<BlogResponseType> => {
 export {
     getBlogsList,
     getBlogsCategories,
-    getRecentBlogs,
     getBlogDetails
 }
