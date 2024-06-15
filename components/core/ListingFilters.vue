@@ -2,7 +2,7 @@
 const props = defineProps<{
   filtrationList: any[],
   itemsLoading: boolean,
-  insideSidebar: boolean,
+  isSidebarFilter: boolean,
   selectedCompensation: number[]
   wageType: string
   includeAllJobs: boolean
@@ -19,6 +19,9 @@ const emits = defineEmits([
 const filterState = ref(JSON.parse(JSON.stringify(props.filtrationList)));
 
 const selectedValues = ref<{ field: string, values: string[] }[]>([]);
+const savedCompensationValues = ref<number[]>(props.selectedCompensation);
+const selectedWageType = ref(props.wageType);
+const includeAllJobs = ref(props.includeAllJobs);
 
 watch(props.filtrationList, (val) => {   // watcher for checking if the filters are already selected and sent down by URL params
   const parsedValue = JSON.parse(JSON.stringify(val));
@@ -50,6 +53,9 @@ function resetFilters() {
     }
   });
   selectedValues.value = [];
+  includeAllJobs.value = true;
+  toggleSwitch(true);
+  emitSelectedValues();
 }
 
 function removeSelectedNullValues() {  // removing null values probably added from watcher
@@ -83,18 +89,20 @@ function emitSelectedValues() {
   emits('onFiltersChange', selectedValues.value);
 }
 
+function applyFiltersOnClick() {
+  handleValueChange(savedCompensationValues.value, false)
+  emits('applyFiltersOnClick', selectedValues.value);
+}
+
 function isItemChecked(value :string) {
   const mappedValues = selectedValues.value.flatMap(item => item.values)
   return mappedValues.includes(value);
 }
 
-const selectedWageType = ref(props.wageType);
-const includeAllJobs = ref(props.includeAllJobs);
-
 watch(() => props.wageType, (val) => selectedWageType.value = val);
 watch(() => props.includeAllJobs, (val) => includeAllJobs.value = val);
 
-function toggleSwitch(eve :boolean) {
+function toggleSwitch(eve :boolean, shouldApplyCompensationFilter = true) {
   let values = [];
   if (eve) {
     selectedWageType.value = 'salary';
@@ -105,8 +113,9 @@ function toggleSwitch(eve :boolean) {
     values = [10, 200];
   }
 
+  savedCompensationValues.value = values;
   emits('compensationFilterTypeChange', selectedWageType.value, true);
-  handleValueChange(values);
+  handleValueChange(savedCompensationValues.value);
 }
 
 onUnmounted(() => {
@@ -115,15 +124,22 @@ onUnmounted(() => {
 
 defineExpose({ emitSelectedValues })
 
-function handleValueChange(values :number[]) {
+function handleValueChange(values :number[], applyCompensationFilters :boolean = true) {
+  savedCompensationValues.value = values;
   const wageType = selectedWageType.value;
-  const compensationString = `is_${wageType}_empty:${includeAllJobs.value}&&min_${wageType}:>=${values[0]}&&max_${wageType}:<=${values[1]}`;
-  emits('compensationFilterChange', compensationString)
+  let jobsRangeWithCheckboxRelation: string
+  if (includeAllJobs.value) jobsRangeWithCheckboxRelation = '||';
+  else jobsRangeWithCheckboxRelation = '&&';
+  const compensationString = `(min_${wageType}:>=${values[0]}&&max_${wageType}:<=${values[1]})${jobsRangeWithCheckboxRelation}is_${wageType}_empty:${includeAllJobs.value}`;
+  if (props.isSidebarFilter) {
+    if (applyCompensationFilters) return;
+    else emits('compensationFilterChange', compensationString, false);
+  } else emits('compensationFilterChange', compensationString);
 }
 
 function includeJobsWithoutCompensation($event :any) {
   includeAllJobs.value = $event.target.checked;
-  handleValueChange(props.selectedCompensation);
+  handleValueChange(savedCompensationValues.value);
 }
 </script>
 
@@ -156,7 +172,7 @@ function includeJobsWithoutCompensation($event :any) {
               <div class="flex items-center gap-3 first:pt-2 pb-4">
                 <div class="shrink-0 relative">
                   <input :checked="isItemChecked(item.value)" @change="updateChecked(index as number, i as number, $event.target.checked, item.value, filter.fieldName)"
-                         :id="`${insideSidebar?'sidebar-':''}filter-cb-${index}-${i}`" type="checkbox">
+                         :id="`${isSidebarFilter?'sidebar-':''}filter-cb-${index}-${i}`" type="checkbox">
                 </div>
                 <BaseTooltip v-if="item.tooltipText" :tooltip-content="item.tooltipText" position="right" :id="`label-cb-${index}-${i}`">
                   <label :for="`filter-cb-${index}-${i}`" class="font-medium cursor-pointer">
@@ -187,8 +203,8 @@ function includeJobsWithoutCompensation($event :any) {
                 v-if="selectedWageType === 'salary'"
                 :max-value="filter.salary.max"
                 :min-value="filter.salary.min"
-                :selected-min="selectedCompensation[0]"
-                :selected-max="selectedCompensation[1]"
+                :selected-min="savedCompensationValues[0]"
+                :selected-max="savedCompensationValues[1]"
                 :step-value="10000"
                 @update:value="handleValueChange"
             />
@@ -196,8 +212,8 @@ function includeJobsWithoutCompensation($event :any) {
                 v-else
                 :max-value="filter.hourly.max"
                 :min-value="filter.hourly.min"
-                :selected-min="selectedCompensation[0]"
-                :selected-max="selectedCompensation[1]"
+                :selected-min="savedCompensationValues[0]"
+                :selected-max="savedCompensationValues[1]"
                 :step-value="5"
                 @update:value="handleValueChange"
             />
@@ -221,7 +237,7 @@ function includeJobsWithoutCompensation($event :any) {
 
 
     <div class="md:hidden pb-36">
-      <BaseButton label="Apply" :full-sized="true" @click="emitSelectedValues" />
+      <BaseButton label="Apply" :full-sized="true" @click="applyFiltersOnClick" />
     </div>
   </div>
 </template>
