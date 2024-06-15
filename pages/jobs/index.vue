@@ -162,7 +162,6 @@ const paginate = (page: number | "prev" | "next") => {
 };
 
 const fetchOnSearching = (searchValues :JobSearchFilters) => {
-  console.log('inside')
   query.value.q = searchValues.keyword.length ? searchValues.keyword : '*'
 
   if (searchValues.coordinates.lat && searchValues.coordinates.lng)    // when user searches location on 'Search' click (searchValues are null when redirected from Home view)
@@ -243,7 +242,6 @@ async function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
     jobStore.coordinates.lng = coordinates[1];
   }
 
-  console.log('checkl ', filter_by)
   query.value.filter_by = filter_by;
   doSearch();
 }
