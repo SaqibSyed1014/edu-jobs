@@ -23,7 +23,6 @@ const { jobListings, facetCounts, totalPages, coordinates } = storeToRefs(jobSto
 const layoutOptionSelected = ref(0);
 const searchedLocationText = ref('');
 const isFilterSidebarVisible = ref<boolean>(false);
-const jobSidebarFilters = ref(null);
 
 const sidebarFilters = ref<{ [key :string]: string | string[] }>({})
 
@@ -198,10 +197,12 @@ function updateSideBarFilters(selectedFilters :{ field: string, values: string[]
   doSearch();
 }
 
-function applyCompensationFilters(filterString :string) { // replacing old compensation filters with new filter values
+function applyCompensationFilters(filterString :string, shouldApply :boolean = true) { // replacing old compensation filters with new filter values
   appliedCompensationFilters.value = filterString;
-  query.value.filter_by = getFilterByQuery(appliedCompensationFilters.value, appliedCheckboxFilters.value, appliedLocationFilters.value)
-  doSearch();
+  if (shouldApply) {
+    query.value.filter_by = getFilterByQuery(appliedCompensationFilters.value, appliedCheckboxFilters.value, appliedLocationFilters.value)
+    doSearch();
+  }
 }
 
 
@@ -269,27 +270,29 @@ const signUpCardIndex = Math.floor(Math.random() * 25);  // randomly generate in
       <ListingView>
         <template #filters>
           <ListingFilters
-              ref="jobSidebarFilters"
               class="hidden lg:flex"
-              :inside-sidebar="false"
+              :is-sidebar-filter="false"
               :filtration-list="filters"
+              :items-loading="jobsLoading"
               :selected-compensation="selectedCompensation"
               :wage-type="wageType"
               :include-all-jobs="includeAllJobs"
               @compensation-filter-type-change="setInitialCompensationValues"
-              :items-loading="jobsLoading"
-              @on-filters-change="updateSideBarFilters"
               @compensation-filter-change="applyCompensationFilters"
+              @on-filters-change="updateSideBarFilters"
           />
 
           <SideBarWrapper :is-sidebar-visible="isFilterSidebarVisible">
             <ListingFilters
-                :inside-sidebar="true"
+                :is-sidebar-filter="true"
                 :filtration-list="filters"
                 :items-loading="jobsLoading"
                 :selected-compensation="selectedCompensation"
+                :wage-type="wageType"
+                :include-all-jobs="includeAllJobs"
                 @compensation-filter-type-change="setInitialCompensationValues"
                 @apply-filters-on-click="(val) => updateSideBarFilters(val,true)"
+                @compensation-filter-change="applyCompensationFilters"
                 @close-filter-sidebar="isFilterSidebarVisible = false"
             />
           </SideBarWrapper>
