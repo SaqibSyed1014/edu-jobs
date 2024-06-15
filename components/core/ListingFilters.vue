@@ -19,7 +19,9 @@ const emits = defineEmits([
 const filterState = ref(JSON.parse(JSON.stringify(props.filtrationList)));
 
 const selectedValues = ref<{ field: string, values: string[] }[]>([]);
-const savedCompensationValues = ref<number[]>([]);
+const savedCompensationValues = ref<number[]>(props.selectedCompensation);
+const selectedWageType = ref(props.wageType);
+const includeAllJobs = ref(props.includeAllJobs);
 
 watch(props.filtrationList, (val) => {   // watcher for checking if the filters are already selected and sent down by URL params
   const parsedValue = JSON.parse(JSON.stringify(val));
@@ -51,6 +53,9 @@ function resetFilters() {
     }
   });
   selectedValues.value = [];
+  includeAllJobs.value = true;
+  toggleSwitch(true);
+  emitSelectedValues();
 }
 
 function removeSelectedNullValues() {  // removing null values probably added from watcher
@@ -94,13 +99,10 @@ function isItemChecked(value :string) {
   return mappedValues.includes(value);
 }
 
-const selectedWageType = ref(props.wageType);
-const includeAllJobs = ref(props.includeAllJobs);
-
 watch(() => props.wageType, (val) => selectedWageType.value = val);
 watch(() => props.includeAllJobs, (val) => includeAllJobs.value = val);
 
-function toggleSwitch(eve :boolean) {
+function toggleSwitch(eve :boolean, shouldApplyCompensationFilter = true) {
   let values = [];
   if (eve) {
     selectedWageType.value = 'salary';
@@ -111,8 +113,9 @@ function toggleSwitch(eve :boolean) {
     values = [10, 200];
   }
 
+  savedCompensationValues.value = values;
   emits('compensationFilterTypeChange', selectedWageType.value, true);
-  handleValueChange(values);
+  handleValueChange(savedCompensationValues.value);
 }
 
 onUnmounted(() => {
@@ -136,7 +139,7 @@ function handleValueChange(values :number[], applyCompensationFilters :boolean =
 
 function includeJobsWithoutCompensation($event :any) {
   includeAllJobs.value = $event.target.checked;
-  handleValueChange(props.selectedCompensation);
+  handleValueChange(savedCompensationValues.value);
 }
 </script>
 
@@ -200,8 +203,8 @@ function includeJobsWithoutCompensation($event :any) {
                 v-if="selectedWageType === 'salary'"
                 :max-value="filter.salary.max"
                 :min-value="filter.salary.min"
-                :selected-min="selectedCompensation[0]"
-                :selected-max="selectedCompensation[1]"
+                :selected-min="savedCompensationValues[0]"
+                :selected-max="savedCompensationValues[1]"
                 :step-value="10000"
                 @update:value="handleValueChange"
             />
@@ -209,8 +212,8 @@ function includeJobsWithoutCompensation($event :any) {
                 v-else
                 :max-value="filter.hourly.max"
                 :min-value="filter.hourly.min"
-                :selected-min="selectedCompensation[0]"
-                :selected-max="selectedCompensation[1]"
+                :selected-min="savedCompensationValues[0]"
+                :selected-max="savedCompensationValues[1]"
                 :step-value="5"
                 @update:value="handleValueChange"
             />
