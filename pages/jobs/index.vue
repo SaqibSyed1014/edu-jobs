@@ -78,8 +78,6 @@ onMounted(async () => {
   if (paramsString) {
     const parsedParams = JSON.parse(paramsString);
     await assignQueryParamsOnInitialLoad(parsedParams as JobQueryParams);
-    // assign the saved coordinates in store (searched on Home view) for query
-    if (coordinates.value.lat && coordinates.value.lng) query.value.filter_by = `geo_location:(${coordinates.value.lat}, ${coordinates.value.lng}, 10 mi)`;
     return;
   }
 
@@ -164,6 +162,7 @@ const paginate = (page: number | "prev" | "next") => {
 };
 
 const fetchOnSearching = (searchValues :JobSearchFilters) => {
+  console.log('inside')
   query.value.q = searchValues.keyword.length ? searchValues.keyword : '*'
 
   if (searchValues.coordinates.lat && searchValues.coordinates.lng)    // when user searches location on 'Search' click (searchValues are null when redirected from Home view)
@@ -238,14 +237,14 @@ async function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
     selectedCompensation.value[1] = max;
     wageType.value = type;
     includeAllJobs.value = isCompensationEmpty;
-    query.value.filter_by = filter_by;
   }
-
   if (coordinates && !coordinates?.includes(0)) {
     jobStore.coordinates.lat = coordinates[0];
     jobStore.coordinates.lng = coordinates[1];
   }
 
+  console.log('checkl ', filter_by)
+  query.value.filter_by = filter_by;
   doSearch();
 }
 
