@@ -32,7 +32,7 @@ onMounted(async () => {
     jobStore.fetchJobs(query),
     homeStore.fetchPartnersLogos(),
     homeStore.fetchJobsSummaryByCities(),
-    blogStore.fetchBlogs()
+    blogStore.fetchBlogs({ itemsPerPage: 10, currentPage: 1, totalPages: 0 })
   ])
 })
 </script>
