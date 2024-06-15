@@ -48,6 +48,12 @@ const filteredCategories = computed(() => {
   return categories.value.filter(category => category.category_name.toLowerCase().includes(searchedCategory.value.toLowerCase()));
 })
 
+const firstBlog = ref<Blog>();
+const splitBlogs = computed(() => {
+  firstBlog.value = blogs.value.shift();
+  return blogs.value
+})
+
 const setActiveCategory = (index :number) => selectedCategory.value = index;
 </script>
 
@@ -76,6 +82,95 @@ const setActiveCategory = (index :number) => selectedCategory.value = index;
       <section>
         <div class="container">
           <div class="flex items-start gap-16">
+            <div class="grow">
+              <template v-if="showBlogsLoader">
+                <div class="flex justify-center items-center h-[40vh] w-full">
+                  <BaseSpinner size="lg" :show-loader="showBlogsLoader" />
+                </div>
+              </template>
+              <div v-else class="grid lg:grid-cols-2 gap-12 pb-16">
+                <template v-if="firstBlog">
+                  <div class="flex justify-around max-xl:flex-col gap-8 md:col-span-2">
+                    <div class="overflow-hidden md:h-[320px] md:grow shrink-0">
+                      <img :src="firstBlog.post_photo?.url ?? '/images/others/blog-mockup.jpg'" alt="blog-list-img"
+                           class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex flex-col xl:w-[350px]">
+                      <div class="flex flex-col gap-2 mb-6">
+                        <div>
+                          <span
+                            class="bg-gray-50 rounded-full p-1 pr-2.5 border border-brand-200 text-xs text-brand-600 inline-flex items-center gap-2 mb-4">
+                            <span class="h-[22px] flex items-center justify-center bg-white rounded-full py-0.5 px-2 border border-brand-200 leading-[18px]">
+                              {{ firstBlog?.category?.category_name || 'General' }}
+                            </span>
+                            {{ firstBlog.reading_time }}
+                          </span>
+                        </div>
+                        <h3>
+                          <NuxtLink :to="`/blog/${firstBlog.slug}`"
+                                    class="flex items-center justify-between gap-3 text-3xl font-semibold hover:text-brand-600">
+                            {{ firstBlog.title }}
+                          </NuxtLink>
+                        </h3>
+                        <p class="text-black-light font-normal">{{ firstBlog.post_excerpt }}</p>
+                      </div>
+
+                      <div class="flex items-center gap-3">
+                        <div class="h-10 w-10 rounded-full overflow-hidden">
+                          <img :src="firstBlog.author.avatar || '/images/people/olivia.png'" :alt="firstBlog.author.name">
+                        </div>
+                        <div class="flex flex-col text-sm">
+                          <h6 class="font-semibold">{{ firstBlog.author.name }}</h6>
+                          <p>{{ firstBlog.post_date }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+
+                <template v-for="blog in splitBlogs">
+                  <div class="flex flex-col justify-around">
+                    <div class="overflow-hidden mb-5">
+                      <div class="h-60">
+                        <img :src="blog.post_photo?.url ?? '/images/others/blog-mockup.jpg'" alt="blog-list-img4"
+                             class="w-full h-full object-cover">
+                      </div>
+                    </div>
+                    <div class="flex flex-col gap-2 mb-6">
+                      <div>
+                          <span
+                              class="bg-gray-50 rounded-full p-1 pr-2.5 border border-brand-200 text-xs text-brand-600 inline-flex items-center gap-2 mb-4">
+                            <span class="h-[22px] flex items-center justify-center bg-white rounded-full py-0.5 px-2 border border-brand-200 leading-[18px]">
+                              {{ blog?.category?.category_name || 'General' }}
+                            </span>
+                            {{ blog.reading_time }}
+                          </span>
+                      </div>
+                      <h3>
+                        <NuxtLink :to="`/blog/${blog.slug}`"
+                                  class="flex items-center justify-between gap-3 text-lg hover:text-brand-600">
+                          <div class="line-clamp-2">{{ blog.title }}</div>
+                          <span class="shrink-0">
+                          <SvgoArrowNarrowUpRight class="w-4 h-4"/>
+                        </span>
+                        </NuxtLink>
+                      </h3>
+                      <p class="font-normal line-clamp-2">{{ blog.post_excerpt }}</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <div class="h-10 w-10 rounded-full overflow-hidden">
+                        <img :src="blog.author.avatar || '/images/people/olivia.png'" :alt="blog.author.name">
+                      </div>
+                      <div class="flex flex-col text-sm">
+                        <h6 class="font-semibold">{{ blog.author.name }}</h6>
+                        <p>{{ blog.post_date }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </div>
+            <!--   Blog Categories List         -->
             <div class="w-[280px] shrink-0 flex flex-col gap-8">
               <div class="relative">
                 <SvgoSearchIcon
@@ -113,12 +208,19 @@ const setActiveCategory = (index :number) => selectedCategory.value = index;
               </div>
             </div>
           </div>
+
+          <hr class="mb-5">
+
+          <CustomPagination
+              v-if="pageInfo.totalPages !== 0"
+              :current-page="pageInfo.currentPage"
+              :total-pages="pageInfo.totalPages"
+              @paginate="paginateBlogs"
+          />
         </div>
-
-
       </section>
 
-<!--      <section>-->
+          <!--      <section>-->
 <!--        <div class="container md:px-8">-->
 <!--          <h2 class="text-xl md:text-2xl mb-8">Recent blog posts</h2>-->
 <!--          <div class="grid lg:grid-cols-2 gap-8">-->
