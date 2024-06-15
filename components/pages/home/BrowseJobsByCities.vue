@@ -14,12 +14,13 @@ function navigateToJob(cityDetails :JobsInCities) {
     location: `${cityDetails.job_city}, ${cityDetails.job_state}, USA`,
     page: 1,
     mode: 'grid',
-    coordinates: [cityDetails.lat, cityDetails.lng]
+    coordinates: [cityDetails.lat, cityDetails.lng],
+    filter_by: `(min_salary:>=20000&&max_salary:<=200000)||is_salary_empty:true&&geo_location:(${cityDetails.lat}, ${cityDetails.lng}, 10 mi)`
   }
   router.push({
     path: '/jobs',
     query: {
-      params: encode(JSON.stringify(queryParams))
+      params: JSON.stringify(queryParams)
     }
   });
 }

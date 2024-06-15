@@ -78,8 +78,6 @@ onMounted(async () => {
   if (paramsString) {
     const parsedParams = JSON.parse(paramsString);
     await assignQueryParamsOnInitialLoad(parsedParams as JobQueryParams);
-    // assign the saved coordinates in store (searched on Home view) for query
-    if (coordinates.value.lat && coordinates.value.lng) query.value.filter_by = `geo_location:(${coordinates.value.lat}, ${coordinates.value.lng}, 10 mi)`;
     return;
   }
 
@@ -238,14 +236,13 @@ async function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
     selectedCompensation.value[1] = max;
     wageType.value = type;
     includeAllJobs.value = isCompensationEmpty;
-    query.value.filter_by = filter_by;
   }
-
   if (coordinates && !coordinates?.includes(0)) {
     jobStore.coordinates.lat = coordinates[0];
     jobStore.coordinates.lng = coordinates[1];
   }
 
+  query.value.filter_by = filter_by;
   doSearch();
 }
 
