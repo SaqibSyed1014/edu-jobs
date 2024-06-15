@@ -117,7 +117,10 @@ defineExpose({ emitSelectedValues })
 
 function handleValueChange(values :number[]) {
   const wageType = selectedWageType.value;
-  const compensationString = `is_${wageType}_empty:${includeAllJobs.value}&&min_${wageType}:>=${values[0]}&&max_${wageType}:<=${values[1]}`;
+  let jobsRangeWithCheckboxRelation = '&&'
+  if (includeAllJobs.value) jobsRangeWithCheckboxRelation = '||';
+  else jobsRangeWithCheckboxRelation = '&&';
+  const compensationString = `(min_${wageType}:>=${values[0]}&&max_${wageType}:<=${values[1]})${jobsRangeWithCheckboxRelation}is_${wageType}_empty:${includeAllJobs.value}`;
   emits('compensationFilterChange', compensationString)
 }
 

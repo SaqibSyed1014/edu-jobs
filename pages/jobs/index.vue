@@ -109,7 +109,7 @@ function setInitialCompensationValues(wageType :string, isCompensationUpdate :bo
   selectedCompensation.value = values;
   if (isCompensationUpdate) return;  // only set the compensation values (when switch is toggled) and return
 
-  appliedCompensationFilters.value = `min_${wageType}:>=${values[0]}&&max_${wageType}:<=${values[1]}&&is_salary_empty:true`;
+  appliedCompensationFilters.value = `(min_${wageType}:>=${values[0]}&&max_${wageType}:<=${values[1]})||is_salary_empty:true`;
   query.value.filter_by = getFilterByQuery(appliedCompensationFilters.value, appliedCheckboxFilters.value, appliedLocationFilters.value);
 }
 
