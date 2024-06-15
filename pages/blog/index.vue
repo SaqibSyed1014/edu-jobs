@@ -261,7 +261,7 @@ const setActiveCategory = (index :number) => selectedCategory.value = index;
 
 <style scoped>
 .category-option{
-  @apply py-2.5 px-3 rounded-md text-gray-500 font-semibold cursor-pointer hover:text-gray-700 hover:bg-gray-50 transition
+  @apply py-[.35rem] px-3 rounded-md text-gray-500 font-semibold cursor-pointer hover:text-gray-700 hover:bg-gray-50 transition
 }
 .category-option.active{
   @apply text-gray-700 bg-gray-50
