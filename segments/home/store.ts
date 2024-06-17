@@ -42,7 +42,8 @@ export const useHomeStore = defineStore('homeStore', {
     },
     getters: {
         jobsInEachCity: (state) :JobsInCities[] => {
-            return state.jobsByCities?.sort((a, b) => a.priority_rank - b.priority_rank) || []
+            return state.jobsByCities.filter((city :JobsInCities) => city.lat && city.lng)
+                .sort((a, b) => a.priority_rank - b.priority_rank) || []
         },
         partnersLogo: (state) :PartnerLogo[] => {
             if (!Array.isArray(state.partnersLogos)) return [];

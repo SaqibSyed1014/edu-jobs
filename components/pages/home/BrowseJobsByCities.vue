@@ -2,6 +2,7 @@
 import {useHomeStore} from "~/segments/home/store";
 import {storeToRefs} from "pinia";
 import {encode} from "js-base64";
+import {getFilterByQuery} from "~/components/core/constants/jobs.constants";
 
 const homeStore = useHomeStore();
 const router = useRouter();
@@ -15,7 +16,7 @@ function navigateToJob(cityDetails :JobsInCities) {
     page: 1,
     mode: 'grid',
     coordinates: [cityDetails.lat, cityDetails.lng],
-    filter_by: `(min_salary:>=20000&&max_salary:<=200000)||is_salary_empty:true&&geo_location:(${cityDetails.lat}, ${cityDetails.lng}, 10 mi)`
+    filter_by: getFilterByQuery('(min_salary:>=20000&&max_salary:<=200000)||is_salary_empty:true', '', `geo_location:(${cityDetails.lat}, ${cityDetails.lng}, 10 mi)`)
   }
   router.push({
     path: '/jobs',
