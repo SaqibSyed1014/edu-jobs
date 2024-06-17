@@ -14,6 +14,21 @@ const getBlogsList = (pageNumber :number, pageSize :number) :Promise<BlogRespons
     })
 }
 
+const getBlogsByCategory = (pageNumber :number, pageSize :number, category :string) :Promise<BlogResponseType> => {
+    const { strapiBaseUrl, strapiApiToken } = usePayloadUrl()
+
+    const apiHeaders = {
+        Authorization: `Bearer ${strapiApiToken}`,
+    }
+    const strapiFieldsSchema = 'populate[category][fields][0]=category_name&populate[author][fields][1]=name&populate[post_photo]=*';
+    const strapiPaginationSchema = `pagination[page]=${pageNumber}&pagination[pageSize]=${pageSize}`;
+    const categoryFilter = `filters[category][category_name][$eq]=${category}`
+    return $fetch(`${strapiBaseUrl}/api/posts?${strapiFieldsSchema}&${strapiPaginationSchema}&${categoryFilter}`, {
+        method: 'get',
+        headers: apiHeaders,
+    })
+}
+
 const getBlogsCategories = () :Promise<BlogCategoriesResponseType> => {
     const { strapiBaseUrl, strapiApiToken } = usePayloadUrl()
 
@@ -40,6 +55,7 @@ const getBlogDetails = (slug :string) :Promise<BlogResponseType> => {
 
 export {
     getBlogsList,
+    getBlogsByCategory,
     getBlogsCategories,
     getBlogDetails
 }
