@@ -7,7 +7,7 @@ const blogsStore = useBlogStore();
 const { blogs, categoriesDropdown, pagination } = storeToRefs(blogsStore);
 
 const showPageLoader = ref<boolean>(true);
-const showBlogsLoader = ref<boolean>(true);
+const showBlogsLoader = ref<boolean>(false);
 
 const pageInfo = ref<PaginationInfo>({
   currentPage: 1,
