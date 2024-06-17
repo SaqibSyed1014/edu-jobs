@@ -7,7 +7,7 @@ const blogsStore = useBlogStore();
 const { blogs, categoriesDropdown, pagination } = storeToRefs(blogsStore);
 
 const showPageLoader = ref<boolean>(true);
-const showBlogsLoader = ref<boolean>(false);
+const showBlogsLoader = ref<boolean>(true);
 
 const pageInfo = ref<PaginationInfo>({
   currentPage: 1,
@@ -41,13 +41,12 @@ const searchedCategory = ref<string>('');
 const selectedCategory = ref<string>('View All');
 
 const filteredCategories = computed(() => {
-  console.log('che ', categoriesDropdown.value)
   return categoriesDropdown.value.filter(category => category.label.toLowerCase().includes(searchedCategory.value.toLowerCase())) || [];
 })
 
 const firstBlog = ref<Blog>();
 const splitBlogs = computed(() => {
-  firstBlog.value = blogs.value.shift();
+  if (window.innerWidth >= 1024 )firstBlog.value = blogs.value.shift();
   return blogs.value
 })
 
@@ -55,11 +54,11 @@ function selectCategory(label :string) {
   selectedCategory.value = label;
 }
 
-watch(() => selectedCategory.value, (val :string) => {
+watch(() => selectedCategory.value, async (val :string) => {
   showBlogsLoader.value = true;
   pageInfo.value.currentPage = 1;
-  if (val === 'View All') blogsStore.fetchBlogs(pageInfo.value);
-  else blogsStore.fetchBlogsByCategory(pageInfo.value, val);
+  if (val === 'View All') await blogsStore.fetchBlogs(pageInfo.value);
+  else await blogsStore.fetchBlogsByCategory(pageInfo.value, val);
   pageInfo.value.totalPages = pagination.value.pageCount;
   showBlogsLoader.value = false;
 })
@@ -192,7 +191,7 @@ watch(() => selectedCategory.value, (val :string) => {
                     </div>
                   </template>
               </div>
-              <div v-else class="text-center font-semibold text-lg mx-auto">
+              <div v-else class="text-center font-semibold text-lg lg:text-2xl mx-auto pb-10">
                 <p>No Blogs are found</p>
               </div>
             </div>
@@ -231,14 +230,16 @@ watch(() => selectedCategory.value, (val :string) => {
             </div>
           </div>
 
-          <hr class="mb-5">
 
-          <CustomPagination
-              v-if="pageInfo.totalPages !== 0"
-              :current-page="pageInfo.currentPage"
-              :total-pages="pageInfo.totalPages"
-              @paginate="paginateBlogs"
-          />
+          <template v-if="pageInfo.totalPages !== 0">
+            <hr class="mb-5">
+
+            <CustomPagination
+                :current-page="pageInfo.currentPage"
+                :total-pages="pageInfo.totalPages"
+                @paginate="paginateBlogs"
+            />
+          </template>
         </div>
       </section>
 
