@@ -6,6 +6,40 @@ nuxtApp.hook("page:finish", () => {
 })
 
 useState('userType', () => 'organization') // setting visitor as organization user
+
+useHead({
+  script: [
+    {
+      children: `window.$crisp=[];window.CRISP_WEBSITE_ID="9294fd27-8592-41bf-a6c9-ec44aa6d0905";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();`,
+      type: 'text/javascript'
+    },
+    {
+      src: 'https://www.googletagmanager.com/gtag/js?id=G-6S59LVT28G',
+      async: true,
+    },
+    {
+      children: `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-6S59LVT28G');
+      `,
+    },
+    {
+      children: `
+        (function(h,o,t,j,a,r){
+                h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+                h._hjSettings={hjid:1582803,hjsv:6};
+                a=o.getElementsByTagName('head')[0];
+                r=o.createElement('script');r.async=1;
+                r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+                a.appendChild(r);
+            })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');`
+    }
+  ]
+})
+
 </script>
 
 <template>
