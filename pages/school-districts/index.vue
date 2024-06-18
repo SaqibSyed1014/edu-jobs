@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { useDisrictsStore } from "~/segments/districts/store";
-import type { TypesenseQueryParam } from "~/segments/common.types";
+import {useDisrictsStore} from "~/segments/districts/store";
+import type {TypesenseQueryParam} from "~/segments/common.types";
 
 let toggleSideBar = ref<boolean>(false);
 const route = useRoute();
 const router = useRouter();
 const isLoading = ref<boolean>(true);
 const districtStore = useDisrictsStore();
-const selectedAlphabet = ref<number>(0);
+const selectedAlphabet = ref<string>('');
 const { distictsList, total_page } = storeToRefs(districtStore);
 const currentPage = ref<number>(Number(route?.query?.page) || 1);
 const queryValue = route?.query?.q === "*" ? "" : route?.query?.q;
@@ -26,10 +26,11 @@ const isGridView = ref(
 ); // Reactive variable to store the current view mode
 type SelectValue = { key1: string } | null;
 type SelectStuValue = { key2: string } | null;
-// type SelectJoValue = { key3: string } | null;
 const selectschValue = ref<SelectValue>(null);
 const selectstuValue = ref<SelectStuValue>(null);
-// const selectjobValue = ref<SelectJoValue>(null);
+
+let alphabetFilter = ref('');
+let checkboxesFilter = ref('');
 
 const jobOptions = ref({
   icon: "SvgoBriefCaseLight",
@@ -171,22 +172,20 @@ const query = ref<TypesenseQueryParam>({
   q: route?.query?.q ? route?.query?.q.toString() : "*",
   per_page: itemsPerPage.value,
   page: currentPage.value,
+  filter_by: 'status:=active'
 });
 
-if (route?.query?.filter_by) {
+if (route?.query.filter_by?.length) {
   // If it exists, assign its value to the filter_by property
   query.value.filter_by = route?.query?.filter_by.toString();
-} else {
-  // If it doesn't exist, delete the filter_by key
-  delete query?.value?.filter_by;
 }
 
 const queryParams = computed(() => {
-  const urlParams = {
+  return {
     q: query.value.q,
     page: query.value.page,
+    filter_by: query.value.filter_by
   };
-  return urlParams;
 });
 
 async function fetchDistricts() {
@@ -404,13 +403,8 @@ const toggleSchoolOption = (optionName: any, index: number) => {
   //   ? selectjobValue?.value?.key3
   //   : "");
 
-  // Assign mergedFilterBy to query.value.filter_by if it's not empty
-  if (mergedFilterBy !== "") {
-    query.value.filter_by = mergedFilterBy;
-  } else {
-    // Remove filter_by key if mergedFilterBy is empty
-    delete query.value.filter_by;
-  }
+  checkboxesFilter.value = mergedFilterBy;
+  query.value.filter_by = getDistrictFilterQuery(alphabetFilter.value, checkboxesFilter.value);
 
   router.replace({
     path: "/school-districts",
@@ -446,8 +440,19 @@ for (let i = 65; i <= 90; i++) {
   capitals.value.push(String.fromCharCode(i));
 }
 
-const selectAlphabet = (index: number) => {
-  selectedAlphabet.value = index;
+const selectAlphabet = (letter: string) => {
+  selectedAlphabet.value = letter;
+  if (letter.length) alphabetFilter.value = `district_name:=${letter}*`
+  else alphabetFilter.value = '';
+  query.value.filter_by = getDistrictFilterQuery(alphabetFilter.value, checkboxesFilter.value);
+  router.replace({
+    path: "/school-districts",
+    query: {
+      view: isGridView.value,
+      ...queryParams.value,
+    },
+  });
+  fetchDistricts();
 };
 
 const handleInput = _debounce(() => {
@@ -470,6 +475,14 @@ const search = (resetToDefaultPage = false) => {
   });
   fetchDistricts();
 };
+
+function getDistrictFilterQuery(alphabetFilter :string, cbFilters :string) {
+  let result :string[] = [];
+  result.push('status:=active');
+  if (alphabetFilter.length) result.push(alphabetFilter);
+  if (cbFilters.length) result.push(cbFilters)
+  return result.join('&&');
+}
 </script>
 
 <template>
@@ -682,39 +695,39 @@ const search = (resetToDefaultPage = false) => {
           </div>
         </div>
 
-<!--        <div-->
-<!--          class="pt-6 w-full gap-2 flex flex-col xl:flex-row border-b border-gray-200"-->
-<!--        >-->
-<!--          <div>-->
-<!--            <p class="text-gray-500 text-sm font-semibold !w-[139px]">-->
-<!--              Search by alphabet-->
-<!--            </p>-->
-<!--          </div>-->
+        <div
+          class="pt-6 w-full gap-2 flex flex-col xl:flex-row border-b border-gray-200"
+        >
+          <div>
+            <p class="text-gray-500 text-sm font-semibold !w-[139px]">
+              Search by alphabet
+            </p>
+          </div>
 
-<!--          <div-->
-<!--            class="flex flex-wrap gap-2.5 sm:gap-x-0 items-center w-full justify-between"-->
-<!--          >-->
-<!--            <div-->
-<!--              v-for="(capital, index) in capitals"-->
-<!--              :key="index"-->
-<!--              class="pr-1.5 borer-b border-gray-200"-->
-<!--            >-->
-<!--              <button-->
-<!--                :class="[-->
-<!--                  index === selectedAlphabet-->
-<!--                    ? 'text-blue-800 border-b-2 px-[5px] border-blue-800'-->
-<!--                    : 'md:px-[5px]',-->
-<!--                ]"-->
-<!--                @click="selectAlphabet(index)"-->
-<!--              >-->
-<!--                <span class="text-xs md:text-sm">{{ capital }}</span>-->
-<!--              </button>-->
-<!--            </div>-->
-<!--            <div class="text-brand-800 text-sm font-semibold leading-tight">-->
-<!--              Clear-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
+          <div
+            class="flex flex-wrap gap-2.5 sm:gap-x-0 items-center w-full justify-between"
+          >
+            <div
+              v-for="(capital, index) in capitals"
+              :key="index"
+              class="pr-1.5 borer-b border-gray-200"
+            >
+              <button
+                :class="[
+                  capital === selectedAlphabet
+                    ? 'text-blue-800 border-b-2 px-[5px] border-blue-800'
+                    : 'md:px-[5px]',
+                ]"
+                @click="selectAlphabet(capital)"
+              >
+                <span class="text-xs md:text-sm">{{ capital }}</span>
+              </button>
+            </div>
+            <div @click="selectAlphabet('')" class="text-brand-800 text-sm font-semibold leading-tight cursor-pointer">
+              Clear
+            </div>
+          </div>
+        </div>
 
         <div class="mt-1.5 mb-8">
           <!-- Grid View -->
