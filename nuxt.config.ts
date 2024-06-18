@@ -83,7 +83,6 @@ export default defineNuxtConfig({
         '@nuxtjs/tailwindcss',
         'nuxt-swiper',
         'nuxt-svgo',
-        '@nuxtjs/robots',
         '@pinia/nuxt',
         'nuxt-lodash'
     ],
@@ -101,10 +100,6 @@ export default defineNuxtConfig({
     },
     svgo: {
         defaultImport: 'component'
-    },
-    robots: {
-        UserAgent: '*',
-        Allow: '/'
     },
     lodash: {
         prefix: "_",
