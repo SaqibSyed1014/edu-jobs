@@ -6,6 +6,7 @@ interface Job {
     organization_id: string
     organization_slug: string
     organization_type?: string
+    slug?: string
     date_posted: string
     date_posting_expires: string // unix timestamp
     start_date?: string
@@ -22,6 +23,7 @@ interface Job {
     job_city: string
     job_state: string
     job_location: string
+    job_street_address?: string
     job_postal_code?: string
     job_logo?: string
     featured: string

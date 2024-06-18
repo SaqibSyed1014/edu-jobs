@@ -386,6 +386,8 @@ function jobOrgType() {
     <JobCTA />
 
     <QuickSignUpModal v-model="showSignupModal" @proceed="redirectToURL" />
+
+    <JobPostingJSONLD :job-data="jobDetails" />
   </div>
 </template>
 
@@ -393,7 +395,6 @@ function jobOrgType() {
 hr {
   @apply border-t border-gray-200 my-5
 }
-
 
 .option-box {
   @apply flex items-center cursor-pointer gap-1 py-2.5 px-3 text-sm border border-gray-300 rounded-lg hover:bg-brand-600 hover:text-white hover:border-brand-600 transition
