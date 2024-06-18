@@ -103,10 +103,8 @@ export default defineNuxtConfig({
         defaultImport: 'component'
     },
     robots: {
-        rules: {
-            UserAgent: '*',
-            Allow: '/'
-        }
+        UserAgent: '*',
+        Allow: '/'
     },
     lodash: {
         prefix: "_",
