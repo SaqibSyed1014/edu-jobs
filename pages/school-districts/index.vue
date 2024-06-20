@@ -422,7 +422,8 @@ const clearAll = () => {
       opt.checked = false;
     });
   });
-  delete query.value.filter_by; // Remove the filter_by property
+  checkboxesFilter.value = '';
+  query.value.filter_by = getDistrictFilterQuery(alphabetFilter.value, checkboxesFilter.value);
   router.replace({
     path: "/school-districts",
     query: {

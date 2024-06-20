@@ -166,7 +166,8 @@ const clearAll = () => {
   jobOptions?.value?.data?.forEach((option: any) => {
     option.checked = false;
   });
-  delete query.value.filter_by; // Remove the filter_by property
+  checkboxesFilter.value = '';
+  query.value.filter_by = getCollegesFilterQuery(alphabetFilter.value, checkboxesFilter.value);
   router.replace({
     path: "/charter-schools",
     query: {
@@ -288,6 +289,7 @@ function getCollegesFilterQuery(alphabetFilter :string, cbFilters :string) {
                   :options="jobOptions"
                   :total-jobs="collegesFound"
                   :inside-sidebar="true"
+                  @toggleSchoolOption="filtersChanged"
                 />
               </div>
               <!-- <div class="pt-[18px] w-full">
