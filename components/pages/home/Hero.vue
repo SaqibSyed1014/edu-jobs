@@ -3,6 +3,7 @@ import { register } from 'swiper/element/bundle';
 import type { JobSearchFilters } from "~/segments/common.types";
 import { useJobStore } from "~/segments/jobs/store";
 import {encode} from "js-base64";
+import {getFilterByQuery} from "~/components/core/constants/jobs.constants";
 register();
 
 const router = useRouter();
@@ -13,16 +14,22 @@ const { jobListings, itemsFound } = storeToRefs(jobStore)
 function searchJobs(filters :JobSearchFilters) {
   jobStore.setCoordinates(filters.coordinates);  // saving coordinates in store for persistence purpose
   const locationName = filters.location;
+  let appliedLocationFilter = '';
+  if (filters.coordinates.lat !== 0 && filters.coordinates.lng !== 0) {
+    appliedLocationFilter = `geo_location:(${filters.coordinates.lat}, ${filters.coordinates.lng}, 10 mi)`
+  }
   const queryParams = {
     keyword: filters.keyword.length ? filters.keyword : '*',
     ...(locationName.length && { location: locationName }),  // skip location from url if no location is searched
     page: 1,
-    mode: 'list'
+    mode: 'list',
+    filter_by: getFilterByQuery('(min_salary:>=20000&&max_salary:<=200000)||is_salary_empty:true', '', appliedLocationFilter)
   }
+
   router.push({
     path: '/jobs',
     query: {
-      params: encode(JSON.stringify(queryParams))
+      params: JSON.stringify(queryParams)
     }
   });
 }
