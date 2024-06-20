@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import type {TypesenseQueryParam} from "~/segments/common.types";
 import {useSchoolsStore} from "~/segments/schools/store";
+import AlphabetsInRow from "~/components/pages/common/AlphabetsInRow.vue";
+import {al} from "~/.output/public/_nuxt/swiper-vue.K8TE0-l0";
+
+const schoolsStore = useSchoolsStore();
+const { schoolsList, total_page, schoolsFound } = storeToRefs(schoolsStore);
 
 let toggleSideBar = ref<boolean>(false);
 const route = useRoute();
 const router = useRouter();
 const isLoading = ref<boolean>(true);
-const schoolsStore = useSchoolsStore();
-const selectedAlphabet = ref<number>(0);
-const { schoolsList, total_page, schoolsFound } = storeToRefs(schoolsStore);
+const selectedAlphabet = ref<string>('');
 const currentPage = ref<number>(Number(route?.query?.page) || 1);
 const queryValue = route?.query?.q === "*" ? "" : route?.query?.q;
 const searchedValue = ref<string>(
@@ -30,6 +33,9 @@ type SelectStuValue = { key2: string } | null;
 const selectschValue = ref<SelectValue>(null);
 const selectstuValue = ref<SelectStuValue>(null);
 // const selectjobValue = ref<SelectJoValue>(null);
+
+let alphabetFilter = ref('');
+let checkboxesFilter = ref('');
 
 const jobOptions = ref({
   icon: "SvgoBriefCaseLight",
@@ -74,8 +80,8 @@ const schOptions = ref({
   ],
 });
 
-// Function to switch to list view
-const switchView = (view: any) => {
+// Function to switch layout
+function switchView(view :string) {
   isGridView.value = view;
   localStorage.setItem('schoolsLayout', view);
   router.replace({
@@ -85,14 +91,6 @@ const switchView = (view: any) => {
       ...queryParams?.value,
     },
   });
-};
-
-const switchToListView = () => {
-  switchView("list");
-};
-
-const switchToGridView = () => {
-  switchView("grid");
 };
 
 onMounted(async () => {
@@ -105,59 +103,42 @@ onMounted(async () => {
   }
   if (route?.query?.q?.length) await search();  // if search param is there, call search() function
   else await fetchSchools(); // Initial fetch
+
+  if (route?.query?.filter_by) {
+    query.value.filter_by = route?.query?.filter_by.toString();
+    const splitFilterBy = query?.value?.filter_by.split('&&');
+    const alphabetFilterVal = splitFilterBy.filter(val => val.includes('name'))[0] || ''
+    if (alphabetFilterVal.length) {
+      selectedAlphabet.value = alphabetFilterVal?.match(/:=([a-zA-Z]+)/)[1] || '';
+      alphabetFilter.value = alphabetFilterVal;
+    }
+
+    const filteredJobCount = splitFilterBy.filter(val => val.includes('job_count'))[0] || ''
+    setCheckedValues(filteredJobCount);
+    checkboxesFilter.value = filteredJobCount;
+  }
 });
 
-const setCheckedValues = (filterBy: any) => {
+const setCheckedValues = (jobFilter :string) => {
   // Check if filterBy exists
-  if (filterBy) {
-    // Split filterBy into parts for school_count and student_count
-    const [schoolFilter, studentFilter] = filterBy.split(" && ");
-
+  if (jobFilter.length) {
     // Parse and set checked values for school_count
-    const schoolRanges = schoolFilter.match(/\d+\s*to\s*\d+|\d+|>\d+/g);
-    schoolRanges.forEach((range: any) => {
-      schOptions.value.data.forEach((item) => {
+    const jobRanges = jobFilter.match(/\d+\s*to\s*\d+|\d+|>\d+/g);
+    jobRanges.forEach((range: any) => {
+      jobOptions.value.data.forEach((item) => {
         const [itemStart, itemEnd] = item.label.split(" to ").map(Number);
         if (range.startsWith(">")) {
           let lastValue = parseInt(range.slice(1));
           const foundItem = schOptions.value.data.find(
             (item) => item.value === lastValue.toString()
           );
-          if (foundItem) {
-            foundItem.checked = true;
-          }
+          if (foundItem) foundItem.checked = true;
         }
 
         if (
           String(range) === String(itemStart) ||
           String(range) === String(itemEnd)
-        ) {
-          item.checked = true;
-        }
-      });
-    });
-
-    // Parse and set checked values for student_count
-    const studentRanges = studentFilter.match(/\d+\s*to\s*\d+|\d+|>\d+/g);
-    studentRanges.forEach((range: any) => {
-      stuOptions.value.data.forEach((item) => {
-        const [itemStart, itemEnd] = item.label.split(" to ").map(Number);
-        if (range.startsWith(">")) {
-          let lastValue = parseInt(range.slice(1));
-          const foundItem = stuOptions.value.data.find(
-            (item) => item.value === lastValue.toString()
-          );
-          if (foundItem) {
-            foundItem.checked = true;
-          }
-        }
-
-        if (
-          String(range) === String(itemStart) ||
-          String(range) === String(itemEnd)
-        ) {
-          item.checked = true;
-        }
+        ) item.checked = true;
       });
     });
   }
@@ -167,12 +148,14 @@ const query = ref<TypesenseQueryParam>({
   q: route?.query?.q ? route?.query?.q.toString() : "*",
   per_page: itemsPerPage.value,
   page: currentPage.value,
+  filter_by: ''
 });
 
 const queryParams = computed(() => {
   return {
     q: query.value.q,
     page: query.value.page,
+    filter_by: query.value.filter_by
   };
 });
 
@@ -198,7 +181,6 @@ const paginate = (page: number | "prev" | "next") => {
     },
   });
 
-  // Scroll to the top
   window.scrollTo({
     top: 0,
     behavior: "smooth",
@@ -384,19 +366,13 @@ const toggleSchoolOption = (optionName: any, index: number) => {
   //   ? selectjobValue?.value?.key3
   //   : "");
 
-  // Assign mergedFilterBy to query.value.filter_by if it's not empty
-  if (mergedFilterBy !== "") {
-    query.value.filter_by = mergedFilterBy;
-  } else {
-    // Remove filter_by key if mergedFilterBy is empty
-    delete query.value.filter_by;
-  }
+  checkboxesFilter.value = mergedFilterBy;
+  query.value.filter_by = getCharterFilterQuery(alphabetFilter.value, checkboxesFilter.value);
 
   router.replace({
     path: "/charter-schools",
     query: {
       view: isGridView.value,
-      ...(mergedFilterBy !== "" && { filter_by: mergedFilterBy }),
       ...queryParams.value,
     },
   });
@@ -421,13 +397,19 @@ const clearAll = () => {
   fetchSchools();
 };
 
-const capitals = ref<string[]>([]); // Declare capitals as a ref of type string array
-for (let i = 65; i <= 90; i++) {
-  capitals.value.push(String.fromCharCode(i));
-}
-
-const selectAlphabet = (index: number) => {
-  selectedAlphabet.value = index;
+const selectAlphabet = (letter: string) => {
+  selectedAlphabet.value = letter;
+  if (letter.length) alphabetFilter.value = `name:=${letter}*`
+  else alphabetFilter.value = '';
+  query.value.filter_by = getCharterFilterQuery(alphabetFilter.value, checkboxesFilter.value);
+  router.replace({
+    path: "/charter-schools",
+    query: {
+      view: isGridView.value,
+      ...queryParams.value,
+    },
+  });
+  fetchSchools();
 };
 
 const handleInput = _debounce(() => {
@@ -440,13 +422,6 @@ const search = (resetToDefaultPage = false) => {
   if (resetToDefaultPage) query.value.page = 1;
   else query.value.page = route?.query?.page ? route.query.page : 1;  // search with page number if there's page number in the query params
   currentPage.value = 1;
-  if (route?.query?.filter_by) {  // If it exists, assign its value to the filter_by property
-    const jobCountsValues = route?.query?.filter_by
-    const jobCountsParams = `job_count:[${jobCountsValues}]`
-    query.value.filter_by = jobCountsParams.toString();
-    // setCheckedValues(jobCountsValues);
-  } else delete query?.value?.filter_by;  // If it doesn't exist, delete the filter_by key
-  console.log('search ', query.value)
   router.replace({
     path: "/charter-schools",
     query: {
@@ -459,27 +434,31 @@ const search = (resetToDefaultPage = false) => {
 
 let selectedValues = ref<string[]>([])
 function filtersChanged(filterName :string, i :number, label :string, isChecked :boolean) {
-
   const value = jobOptions.value.data[i].value.replace(' to ', '..'); // Format value
 
   if (isChecked) selectedValues.value.push(value);
   else selectedValues.value = selectedValues.value.filter(v => v !== value);
 
-  if (selectedValues.value.length) {
-    query.value.filter_by = `job_count:[${[selectedValues.value]}]`
-  }
+  if (selectedValues.value.length) checkboxesFilter.value = `job_count:[${[selectedValues.value]}]`;
+  else checkboxesFilter.value = '';
+  query.value.filter_by = getCharterFilterQuery(alphabetFilter.value, checkboxesFilter.value);
 
-  console.log('Selected values:', selectedValues.value);
   router.replace({
     path: "/charter-schools",
     query: {
       view: isGridView.value,
-      ...(selectedValues.value.length ? { filter_by: selectedValues.value } : ''),
       ...queryParams.value,
     },
   });
 
   fetchSchools();
+}
+
+function getCharterFilterQuery(alphabetFilter :string, cbFilters :string) {
+  let result :string[] = [];
+  if (alphabetFilter.length) result.push(alphabetFilter);
+  if (cbFilters.length) result.push(cbFilters)
+  return result.join('&&');
 }
 </script>
 
@@ -663,7 +642,7 @@ function filtersChanged(filterName :string, i :number, label :string, isChecked 
             >
               <button
                 type="button"
-                @click="switchToListView"
+                @click="switchView('list')"
                 :class="{
                   'pl-3.5 pr-4 py-[11px] rounded-s-lg justify-center bg-white border border-gray-300 h-full items-center gap-2 flex':
                     isGridView === 'grid',
@@ -678,7 +657,7 @@ function filtersChanged(filterName :string, i :number, label :string, isChecked 
               </button>
               <button
                 type="button"
-                @click="switchToGridView"
+                @click="switchView('grid')"
                 :class="{
                   'pl-3.5 pr-4 py-[11px] rounded-e-lg justify-center bg-gray-50 border border-gray-300 h-full items-center gap-2 flex':
                     isGridView === 'grid',
@@ -695,39 +674,11 @@ function filtersChanged(filterName :string, i :number, label :string, isChecked 
           </div>
         </div>
 
-<!--        <div-->
-<!--          class="pt-6 w-full gap-2 flex flex-col xl:flex-row border-b border-gray-200"-->
-<!--        >-->
-<!--          <div>-->
-<!--            <p class="text-gray-500 text-sm font-semibold !w-[139px]">-->
-<!--              Search by alphabet-->
-<!--            </p>-->
-<!--          </div>-->
-
-<!--          <div-->
-<!--            class="flex flex-wrap gap-2.5 sm:gap-x-0 items-center w-full justify-between"-->
-<!--          >-->
-<!--            <div-->
-<!--              v-for="(capital, index) in capitals"-->
-<!--              :key="index"-->
-<!--              class="pr-1.5 borer-b border-gray-200"-->
-<!--            >-->
-<!--              <button-->
-<!--                :class="[-->
-<!--                  index === selectedAlphabet-->
-<!--                    ? 'text-blue-800 border-b-2 px-[5px] border-blue-800'-->
-<!--                    : 'md:px-[5px]',-->
-<!--                ]"-->
-<!--                @click="selectAlphabet(index)"-->
-<!--              >-->
-<!--                <span class="text-xs md:text-sm">{{ capital }}</span>-->
-<!--              </button>-->
-<!--            </div>-->
-<!--            <div class="text-brand-800 text-sm font-semibold leading-tight">-->
-<!--              Clear-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
+        <!--   Alphabet Filtration Row     -->
+        <AlphabetsInRow
+            :selected-alphabet="selectedAlphabet"
+            @select-alphabet="selectAlphabet"
+        />
 
         <div class="mt-1.5 mb-8">
           <div v-if="isLoading || schoolsList?.length" class="grid gap-6 pt-8" :class="[isGridView === 'grid' ? 'md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1']">
