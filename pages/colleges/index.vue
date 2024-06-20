@@ -5,7 +5,7 @@ import type {PaginationInfo, TypesenseQueryParam,} from "~/segments/common.types
 import AlphabetsInRow from "~/components/pages/common/AlphabetsInRow.vue";
 
 const collegesStore = useCollegesStore();
-const { collegesList, total_page } = storeToRefs(collegesStore);
+const { collegesList, total_page, collegesFound } = storeToRefs(collegesStore);
 
 const route = useRoute();
 const router = useRouter();
@@ -286,7 +286,7 @@ function getCollegesFilterQuery(alphabetFilter :string, cbFilters :string) {
                 <FilterSection
                   title="No. of jobs"
                   :options="jobOptions"
-                  total-jobs="125"
+                  :total-jobs="collegesFound"
                   :inside-sidebar="true"
                 />
               </div>
@@ -331,7 +331,7 @@ function getCollegesFilterQuery(alphabetFilter :string, cbFilters :string) {
               <FilterSection
                 title="No. of jobs"
                 :options="jobOptions"
-                total-jobs="125"
+                :total-jobs="collegesFound"
                 @toggleSchoolOption="filtersChanged"
               />
             </div>
