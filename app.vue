@@ -7,12 +7,21 @@ nuxtApp.hook("page:finish", () => {
 
 useState('userType', () => 'organization') // setting visitor as organization user
 
-useHead({
-  script: [
+const { host } = useRequestURL();
+console.log('host url: ', host, host?.endsWith('edujobs.org'))
+
+if (host?.includes('edujobs.org')) {
+  console.log('adding crisp chat')
+  useHead([
     {
       children: `window.$crisp=[];window.CRISP_WEBSITE_ID="9294fd27-8592-41bf-a6c9-ec44aa6d0905";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();`,
-      type: 'text/javascript'
-    },
+      type: "text/javascript",
+    }
+  ])
+}
+
+useHead({
+  script: [
     {
       src: 'https://www.googletagmanager.com/gtag/js?id=G-6S59LVT28G',
       async: true,
@@ -37,9 +46,17 @@ useHead({
                 a.appendChild(r);
             })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');`
     }
-  ]
+  ].filter(Boolean)
 })
 
+useHead({
+  script: [
+    {
+      children: `window.$crisp=[];window.CRISP_WEBSITE_ID="9294fd27-8592-41bf-a6c9-ec44aa6d0905";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();`,
+      type: 'text/javascript'
+    }
+  ]
+})
 </script>
 
 <template>
