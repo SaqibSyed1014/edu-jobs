@@ -68,6 +68,10 @@ interface JobDetails extends Job {
     geo_lng: number
     type: string
     slug: string
+    max_salary?: string
+    min_salary?: string
+    max_hourly?: string
+    min_hourly?: string
 }
 
 interface JobFaq {

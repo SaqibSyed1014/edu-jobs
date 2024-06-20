@@ -92,7 +92,7 @@ function jobOrgType() {
   </div>
 
 
-  <div v-else-if="jobDetails">
+  <div v-else-if="jobDetails.job_id">
     <section class="pt-8 pb-16">
       <div class="container">
         <div class="grid md:grid-cols-12 gap-8">
@@ -185,7 +185,14 @@ function jobOrgType() {
                     <p class="font-medium text-sm">Pay Range</p>
                     <div class="text-gray-600 flex items-center gap-2">
                       <SvgoCurrencyDollar class="w-4 h-4"/>
-                      N/A
+                      {{
+                        (jobDetails.min_salary && jobDetails.max_salary) || (jobDetails.min_hourly && jobDetails.max_hourly)
+                            ? (jobDetails.min_salary && jobDetails.max_salary
+                                    ? `${jobDetails.min_salary.toLocaleString()} - ${jobDetails.max_salary.toLocaleString()} Salary`
+                                    : `${jobDetails.min_hourly.toLocaleString()} - ${jobDetails.max_hourly.toLocaleString()} Hourly`
+                            )
+                            : 'N/A'
+                      }}
                     </div>
                   </div>
 

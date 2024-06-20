@@ -108,64 +108,67 @@ onMounted(async () => {
   else await fetchDistricts(); // Initial fetch
   if (route?.query?.filter_by) {
     query.value.filter_by = route?.query?.filter_by.toString();
+    const splitFilterBy = query?.value?.filter_by.split('&&');
+    const alphabetFilter = splitFilterBy.filter(val => val.includes('district_name'))[0] || ''
+    if (alphabetFilter.length) selectedAlphabet.value = alphabetFilter.match(/:=([a-zA-Z]+)/)[1] || '';
+
+    const filteredSclCount = splitFilterBy.filter(val => val.includes('school_count'))[0] || ''
+    const filteredStdCount = splitFilterBy.filter(val => val.includes('student_count'))[0] || ''
+    setCheckedValues(filteredSclCount, filteredStdCount);
+    checkboxesFilter.value = [filteredStdCount, filteredSclCount].join('&&');
   }
-  setCheckedValues(route?.query?.filter_by);
 });
 
-const setCheckedValues = (filterBy: any) => {
-  // Check if filterBy exists
-  if (filterBy) {
-    // Split filterBy into parts for school_count and student_count
-    const [schoolFilter, studentFilter] = filterBy.split("&&");
-
-    // Parse and set checked values for school_count
-    const schoolRanges = schoolFilter.match(/\d+\s*to\s*\d+|\d+|>\d+/g);
-    schoolRanges.forEach((range: any) => {
-      schOptions.value.data.forEach((item) => {
-        const [itemStart, itemEnd] = item.label.split(" to ").map(Number);
-        if (range.startsWith(">")) {
-          let lastValue = parseInt(range.slice(1));
-          const foundItem = schOptions.value.data.find(
-            (item) => item.value === lastValue.toString()
-          );
-          if (foundItem) {
-            foundItem.checked = true;
+const setCheckedValues = (schoolFilter: string, studentFilter :string) => {
+    if (schoolFilter.length) {
+      const schoolRanges = schoolFilter.match(/\d+\s*to\s*\d+|\d+|>\d+/g);
+      schoolRanges.forEach((range: any) => {
+        schOptions.value.data.forEach((item) => {
+          const [itemStart, itemEnd] = item.label.split(" to ").map(Number);
+          if (range.startsWith(">")) {
+            let lastValue = parseInt(range.slice(1));
+            const foundItem = schOptions.value.data.find(
+                (item) => item.value === lastValue.toString()
+            );
+            if (foundItem) {
+              foundItem.checked = true;
+            }
           }
-        }
 
-        if (
-          String(range) === String(itemStart) ||
-          String(range) === String(itemEnd)
-        ) {
-          item.checked = true;
-        }
-      });
-    });
-
-    // Parse and set checked values for student_count
-    const studentRanges = studentFilter.match(/\d+\s*to\s*\d+|\d+|>\d+/g);
-    studentRanges.forEach((range: any) => {
-      stuOptions.value.data.forEach((item) => {
-        const [itemStart, itemEnd] = item.label.split(" to ").map(Number);
-        if (range.startsWith(">")) {
-          let lastValue = parseInt(range.slice(1));
-          const foundItem = stuOptions.value.data.find(
-            (item) => item.value === lastValue.toString()
-          );
-          if (foundItem) {
-            foundItem.checked = true;
+          if (
+              String(range) === String(itemStart) ||
+              String(range) === String(itemEnd)
+          ) {
+            item.checked = true;
           }
-        }
-
-        if (
-          String(range) === String(itemStart) ||
-          String(range) === String(itemEnd)
-        ) {
-          item.checked = true;
-        }
+        });
       });
-    });
-  }
+    }
+
+    if (studentFilter.length) {
+      const studentRanges = studentFilter.match(/\d+\s*to\s*\d+|\d+|>\d+/g);
+      studentRanges.forEach((range: any) => {
+        stuOptions.value.data.forEach((item) => {
+          const [itemStart, itemEnd] = item.label.split(" to ").map(Number);
+          if (range.startsWith(">")) {
+            let lastValue = parseInt(range.slice(1));
+            const foundItem = stuOptions.value.data.find(
+                (item) => item.value === lastValue.toString()
+            );
+            if (foundItem) {
+              foundItem.checked = true;
+            }
+          }
+
+          if (
+              String(range) === String(itemStart) ||
+              String(range) === String(itemEnd)
+          ) {
+            item.checked = true;
+          }
+        });
+      });
+    }
 };
 
 const query = ref<TypesenseQueryParam>({
