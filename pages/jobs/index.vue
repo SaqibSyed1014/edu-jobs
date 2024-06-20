@@ -139,6 +139,7 @@ function updateFiltersWithFacetCounts() {
           filter.list.forEach((filterItem) => {
             const count = facet.counts.find(count => count.value === filterItem.value);
             if (count) filterItem.counts = count.count;
+            else filterItem.counts = 0;
           });
         }
       });
