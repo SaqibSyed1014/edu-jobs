@@ -109,8 +109,11 @@ onMounted(async () => {
   if (route?.query?.filter_by) {
     query.value.filter_by = route?.query?.filter_by.toString();
     const splitFilterBy = query?.value?.filter_by.split('&&');
-    const alphabetFilter = splitFilterBy.filter(val => val.includes('district_name'))[0] || ''
-    if (alphabetFilter.length) selectedAlphabet.value = alphabetFilter.match(/:=([a-zA-Z]+)/)[1] || '';
+    const alphabetFilterVal = splitFilterBy.filter(val => val.includes('district_name'))[0] || ''
+    if (alphabetFilterVal.length) {
+      selectedAlphabet.value = alphabetFilterVal.match(/:=([a-zA-Z]+)/)[1] || '';
+      alphabetFilter.value = alphabetFilterVal;
+    }
 
     const filteredSclCount = splitFilterBy.filter(val => val.includes('school_count'))[0] || ''
     const filteredStdCount = splitFilterBy.filter(val => val.includes('student_count'))[0] || ''
@@ -407,13 +410,13 @@ const toggleSchoolOption = (optionName: any, index: number) => {
   //   : "");
 
   checkboxesFilter.value = mergedFilterBy;
+  console.log('che ', alphabetFilter.value, checkboxesFilter.value)
   query.value.filter_by = getDistrictFilterQuery(alphabetFilter.value, checkboxesFilter.value);
 
   router.replace({
     path: "/school-districts",
     query: {
       view: isGridView.value,
-      ...(mergedFilterBy !== "" && { filter_by: mergedFilterBy }),
       ...queryParams.value,
     },
   });

@@ -176,7 +176,8 @@ function jobOrgType() {
                 <div class="details grid grid-cols-2 md:grid-cols-3 gap-6 max-md:pb-6">
                   <div>
                     <p class="font-medium text-sm">Location</p>
-                    <div class="text-gray-600">
+                    <div class="text-gray-600 flex items-center gap-2">
+                      <SvgoLocationPin class="w-4 h-4" />
                       {{ jobDetails.job_location }}
                     </div>
                   </div>
