@@ -77,8 +77,8 @@ const schOptions = ref({
   ],
 });
 
-// Function to switch to list view
-const switchView = (view: any) => {
+// Function to switch to layout view
+const switchView = (view: string) => {
   isGridView.value = view;
   localStorage.setItem('districtsLayout', view);
   router.replace({
@@ -88,14 +88,6 @@ const switchView = (view: any) => {
       ...queryParams?.value,
     },
   });
-};
-
-const switchToListView = () => {
-  switchView("list");
-};
-
-const switchToGridView = () => {
-  switchView("grid");
 };
 
 onMounted(async () => {
@@ -183,8 +175,7 @@ const query = ref<TypesenseQueryParam>({
   filter_by: 'status:=active'
 });
 
-if (route?.query.filter_by?.length) {
-  // If it exists, assign its value to the filter_by property
+if (route?.query.filter_by?.length) { // If it exists, assign its value to the filter_by property
   query.value.filter_by = route?.query?.filter_by.toString();
 }
 
@@ -665,7 +656,7 @@ function getDistrictFilterQuery(alphabetFilter :string, cbFilters :string) {
             >
               <button
                 type="button"
-                @click="switchToListView"
+                @click="switchView('list')"
                 :class="{
                   'pl-3.5 pr-4 py-[11px] rounded-s-lg justify-center bg-white border border-gray-300 h-full items-center gap-2 flex':
                     isGridView === 'grid',
@@ -680,7 +671,7 @@ function getDistrictFilterQuery(alphabetFilter :string, cbFilters :string) {
               </button>
               <button
                 type="button"
-                @click="switchToGridView"
+                @click="switchView('grid')"
                 :class="{
                   'pl-3.5 pr-4 py-[11px] rounded-e-lg justify-center bg-gray-50 border border-gray-300 h-full items-center gap-2 flex':
                     isGridView === 'grid',
