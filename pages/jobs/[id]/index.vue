@@ -188,8 +188,8 @@ function jobOrgType() {
                       {{
                         (jobDetails.min_salary && jobDetails.max_salary) || (jobDetails.min_hourly && jobDetails.max_hourly)
                             ? (jobDetails.min_salary && jobDetails.max_salary
-                                    ? `${jobDetails.min_salary.toLocaleString()} - ${jobDetails.max_salary.toLocaleString()} Salary`
-                                    : `${jobDetails.min_hourly.toLocaleString()} - ${jobDetails.max_hourly.toLocaleString()} Hourly`
+                                    ? `$${jobDetails.min_salary.toLocaleString()} - $${jobDetails.max_salary.toLocaleString()} Salary`
+                                    : `$${jobDetails.min_hourly.toLocaleString()} - $${jobDetails.max_hourly.toLocaleString()} Hourly`
                             )
                             : 'N/A'
                       }}
