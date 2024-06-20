@@ -163,8 +163,10 @@ const jobOptions = ref({
 });
 
 const clearAll = () => {
-  jobOptions?.value?.data?.forEach((option: any) => {
-    option.checked = false;
+  [jobOptions].forEach((option) => {
+    option.value.data.forEach((opt: any) => {
+      opt.checked = false;
+    });
   });
   checkboxesFilter.value = '';
   query.value.filter_by = getCollegesFilterQuery(alphabetFilter.value, checkboxesFilter.value);
@@ -215,6 +217,8 @@ const search = (resetToDefaultPage = false) => {
 
 let selectedValues = ref<string[]>([]);
 function filtersChanged(filterName :string, i :number, label :string, isChecked :boolean) {
+  jobOptions.value.data[i].checked = isChecked;
+
   const value = jobOptions.value.data[i].value.replace(' to ', '..'); // Format value
 
   if (isChecked) selectedValues.value.push(value);
