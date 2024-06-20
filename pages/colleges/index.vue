@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { useCollegesStore } from "~/segments/colleges/store";
-import type {
-  PaginationInfo,
-  TypesenseQueryParam,
-} from "~/segments/common.types";
+import {ref} from "vue";
+import {useCollegesStore} from "~/segments/colleges/store";
+import type {PaginationInfo, TypesenseQueryParam,} from "~/segments/common.types";
+import AlphabetsInRow from "~/components/pages/common/AlphabetsInRow.vue";
+
+const collegesStore = useCollegesStore();
+const { collegesList, total_page, collegesFound } = storeToRefs(collegesStore);
 
 const route = useRoute();
 const router = useRouter();
 const isLoading = ref<boolean>(true);
+const selectedAlphabet = ref<string>('');
 let toggleSideBar = ref(false);
-const collegesStore = useCollegesStore();
-const { collegesList, total_page } = storeToRefs(collegesStore);
 const totalPages = ref(total_page);
 const currentPage = ref<number>(Number(route?.query?.page) || 1);
 const queryValue = route?.query?.q === "*" ? "" : route?.query?.q;
@@ -26,7 +26,10 @@ const isGridView = ref(
     : "list"
 ); // Reactive variable to store the current view mode
 
-const switchView = (view: any) => {
+let alphabetFilter = ref('');
+let checkboxesFilter = ref('');
+
+const switchView = (view: string) => {
   isGridView.value = view;
   localStorage.setItem('collegesLayout', view);
   router.replace({
@@ -38,14 +41,6 @@ const switchView = (view: any) => {
   });
 };
 
-const switchToListView = () => {
-  switchView("list");
-};
-
-const switchToGridView = () => {
-  switchView("grid");
-};
-
 onMounted(async () => {
   let savedLayout :string | null = '';
   if (process.client) {   // using process.client due to SSR
@@ -55,7 +50,46 @@ onMounted(async () => {
     isGridView.value = savedLayout as string;
   }
   await fetchColleges(); // Initial fetch
+
+  if (route?.query?.filter_by) {
+    query.value.filter_by = route?.query?.filter_by.toString();
+    const splitFilterBy = query?.value?.filter_by.split('&&');
+    const alphabetFilterVal = splitFilterBy.filter(val => val.includes('institution_name'))[0] || ''
+    if (alphabetFilterVal.length) {
+      selectedAlphabet.value = alphabetFilterVal?.match(/:=([a-zA-Z]+)/)[1] || '';
+      alphabetFilter.value = alphabetFilterVal;
+    }
+
+    const filteredJobCount = splitFilterBy.filter(val => val.includes('job_count'))[0] || ''
+    setCheckedValues(filteredJobCount);
+    checkboxesFilter.value = filteredJobCount;
+  }
 });
+
+const setCheckedValues = (jobFilter :string) => {
+  // Check if filterBy exists
+  if (jobFilter.length) {
+    // Parse and set checked values for school_count
+    const jobRanges = jobFilter.match(/\d+\s*to\s*\d+|\d+|>\d+/g);
+    jobRanges.forEach((range: any) => {
+      jobOptions.value.data.forEach((item) => {
+        const [itemStart, itemEnd] = item.label.split(" to ").map(Number);
+        if (range.startsWith(">")) {
+          let lastValue = parseInt(range.slice(1));
+          const foundItem = schOptions.value.data.find(
+              (item) => item.value === lastValue.toString()
+          );
+          if (foundItem) foundItem.checked = true;
+        }
+
+        if (
+            String(range) === String(itemStart) ||
+            String(range) === String(itemEnd)
+        ) item.checked = true;
+      });
+    });
+  }
+};
 
 const pageInfo = ref<PaginationInfo>({
   currentPage: currentPage.value,
@@ -67,14 +101,19 @@ const query = ref<TypesenseQueryParam>({
   q: "*",
   page: pageInfo.value.currentPage,
   per_page: pageInfo.value.itemsPerPage,
+  filter_by: 'status:=active'
 });
 
+if (route?.query.filter_by?.length) { // If it exists, assign its value to the filter_by property
+  query.value.filter_by = route?.query?.filter_by.toString();
+}
+
 const queryParams = computed(() => {
-  const urlParams = {
+  return {
     q: query.value.q,
     page: query.value.page,
+    filter_by: query.value.filter_by
   };
-  return urlParams;
 });
 
 async function fetchColleges() {
@@ -86,13 +125,9 @@ async function fetchColleges() {
 }
 
 const paginate = (page: number | "prev" | "next") => {
-  if (page === "prev") {
-    currentPage.value--;
-  } else if (page === "next") {
-    currentPage.value++;
-  } else {
-    currentPage.value = page;
-  }
+  if (page === "prev") currentPage.value--;
+  else if (page === "next") currentPage.value++;
+  else currentPage.value = page;
   query.value.page = currentPage?.value;
 
   router.replace({
@@ -103,7 +138,6 @@ const paginate = (page: number | "prev" | "next") => {
     },
   });
 
-  // Scroll to the top
   window.scrollTo({
     top: 0,
     behavior: "smooth",
@@ -113,20 +147,18 @@ const paginate = (page: number | "prev" | "next") => {
 
 function togglingSidebarVisibility() {
   toggleSideBar.value = !toggleSideBar.value;
-  if (toggleSideBar.value) {
-    document.body.classList.add("overflow-hidden");
-  } else {
-    document.body.classList.remove("overflow-hidden");
-  }
+  if (toggleSideBar.value) document.body.classList.add("overflow-hidden");
+  else document.body.classList.remove("overflow-hidden");
 }
 
 const jobOptions = ref({
   icon: "SvgoBriefCaseLight",
+  name: "jobOptions",
   data: [
-    { id: "1", label: "0 to 10", checked: false },
-    { id: "2", label: "11 to 50", checked: true },
-    { id: "3", label: "51 to 100", checked: false },
-    { id: "4", label: "100+", checked: false },
+    { id: "1", label: "0 to 10", value: "0 to 10", checked: false },
+    { id: "2", label: "11 to 50", value: "11 to 50", checked: false },
+    { id: "3", label: "51 to 100", value: "51 to 100", checked: false },
+    { id: "4", label: "100+", value: "100", checked: false },
   ],
 });
 
@@ -134,27 +166,41 @@ const clearAll = () => {
   jobOptions?.value?.data?.forEach((option: any) => {
     option.checked = false;
   });
+  delete query.value.filter_by; // Remove the filter_by property
+  router.replace({
+    path: "/charter-schools",
+    query: {
+      view: isGridView.value,
+      ...queryParams.value,
+    },
+  });
+  fetchColleges();
 };
 
-const capitals = ref<string[]>([]); // Declare capitals as a ref of type string array
-for (let i = 65; i <= 90; i++) {
-  capitals.value.push(String.fromCharCode(i));
-}
-
-const selectedAlphabet = ref<number>(0); // Reactive variable to store the selected alphabet index
-
-const selectAlphabet = (index: number) => {
-  selectedAlphabet.value = index;
+const selectAlphabet = (letter: string) => {
+  selectedAlphabet.value = letter;
+  if (letter.length) alphabetFilter.value = `institution_name:=${letter}*`
+  else alphabetFilter.value = '';
+  query.value.filter_by = getCollegesFilterQuery(alphabetFilter.value, checkboxesFilter.value);
+  router.replace({
+    path: "/colleges",
+    query: {
+      view: isGridView.value,
+      ...queryParams.value,
+    },
+  });
+  fetchColleges();
 };
 
 const handleInput = _debounce(() => {
-  search();
+  search(true);
 }, 500); // Adjust the debounce delay as needed (in milliseconds)
 
-const search = () => {
+const search = (resetToDefaultPage = false) => {
   query.value.q = searchedValue.value.toString() ?? "*";
   query.value.query_by = "institution_name";
-  query.value.page = 1;
+  if (resetToDefaultPage) query.value.page = 1;
+  else query.value.page = route?.query?.page ? route.query.page : 1;  // search with page number if there's page number in the query params
   currentPage.value = 1;
   router.replace({
     path: "/colleges",
@@ -165,6 +211,36 @@ const search = () => {
   });
   fetchColleges();
 };
+
+let selectedValues = ref<string[]>([]);
+function filtersChanged(filterName :string, i :number, label :string, isChecked :boolean) {
+  const value = jobOptions.value.data[i].value.replace(' to ', '..'); // Format value
+
+  if (isChecked) selectedValues.value.push(value);
+  else selectedValues.value = selectedValues.value.filter(v => v !== value);
+
+  if (selectedValues.value.length) checkboxesFilter.value = `job_count:[${[selectedValues.value]}]`;
+  else checkboxesFilter.value = '';
+  query.value.filter_by = getCollegesFilterQuery(alphabetFilter.value, checkboxesFilter.value);
+
+  router.replace({
+    path: "/colleges",
+    query: {
+      view: isGridView.value,
+      ...queryParams.value,
+    },
+  });
+
+  fetchColleges();
+}
+
+function getCollegesFilterQuery(alphabetFilter :string, cbFilters :string) {
+  let result :string[] = [];
+  result.push('status:=active');
+  if (alphabetFilter.length) result.push(alphabetFilter);
+  if (cbFilters.length) result.push(cbFilters)
+  return result.join('&&');
+}
 </script>
 
 <template>
@@ -210,7 +286,7 @@ const search = () => {
                 <FilterSection
                   title="No. of jobs"
                   :options="jobOptions"
-                  total-jobs="125"
+                  :total-jobs="collegesFound"
                   :inside-sidebar="true"
                 />
               </div>
@@ -255,7 +331,8 @@ const search = () => {
               <FilterSection
                 title="No. of jobs"
                 :options="jobOptions"
-                total-jobs="125"
+                :total-jobs="collegesFound"
+                @toggleSchoolOption="filtersChanged"
               />
             </div>
           </div>
@@ -315,7 +392,7 @@ const search = () => {
             >
               <button
                 type="button"
-                @click="switchToListView"
+                @click="switchView('list')"
                 :class="{
                   'pl-3.5 pr-4 py-[11px] rounded-s-lg justify-center bg-white border border-gray-300 h-full items-center gap-2 flex':
                     isGridView === 'grid',
@@ -330,7 +407,7 @@ const search = () => {
               </button>
               <button
                 type="button"
-                @click="switchToGridView"
+                @click="switchView('grid')"
                 :class="{
                   'pl-3.5 pr-4 py-[11px] rounded-e-lg justify-center bg-gray-50 border border-gray-300 h-full items-center gap-2 flex':
                     isGridView === 'grid',
@@ -346,6 +423,12 @@ const search = () => {
             </div>
           </div>
         </div>
+
+        <!--   Alphabet Filtration Row     -->
+        <AlphabetsInRow
+            :selected-alphabet="selectedAlphabet"
+            @select-alphabet="selectAlphabet"
+        />
 
 <!--        <div-->
 <!--          class="pt-6 w-full gap-2 flex flex-col xl:flex-row border-b border-gray-200"-->
