@@ -151,6 +151,10 @@ const query = ref<TypesenseQueryParam>({
   filter_by: ''
 });
 
+if (route?.query.filter_by?.length) { // If it exists, assign its value to the filter_by property
+  query.value.filter_by = route?.query?.filter_by.toString();
+}
+
 const queryParams = computed(() => {
   return {
     q: query.value.q,
