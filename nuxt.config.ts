@@ -54,16 +54,12 @@ export default defineNuxtConfig({
     runtimeConfig: {
         API_URL: globalSettings[appEnv as keyof typeof globalSettings].API_URL,
         API_KEY: globalSettings[appEnv as keyof typeof globalSettings].API_KEY,
-        TYPESENSE_API_URL: globalSettings[appEnv as keyof typeof globalSettings].TYPESENSE_API_URL,
-        TYPESENSE_API_KEY: globalSettings[appEnv as keyof typeof globalSettings].TYPESENSE_API_KEY,
         STRAPI_API_URL: globalSettings[appEnv as keyof typeof globalSettings].STRAPI_API_URL,
         STRAPI_API_TOKEN: globalSettings[appEnv as keyof typeof globalSettings].STRAPI_API_TOKEN,
         SITE_ENVIRONMENT: globalSettings[appEnv as keyof typeof globalSettings].SITE_ENVIRONMENT, //globalSettings[appEnv].telephone,
         public: {
           API_URL: globalSettings[appEnv as keyof typeof globalSettings].API_URL,
           API_KEY: globalSettings[appEnv as keyof typeof globalSettings].API_KEY,
-          TYPESENSE_API_URL: globalSettings[appEnv as keyof typeof globalSettings].TYPESENSE_API_URL,
-          TYPESENSE_API_KEY: globalSettings[appEnv as keyof typeof globalSettings].TYPESENSE_API_KEY,
           STRAPI_API_URL: globalSettings[appEnv as keyof typeof globalSettings].STRAPI_API_URL,
           STRAPI_API_TOKEN: globalSettings[appEnv as keyof typeof globalSettings].STRAPI_API_TOKEN,
           SITE_ENVIRONMENT: globalSettings[appEnv as keyof typeof globalSettings].SITE_ENVIRONMENT, //globalSettings[appEnv].telephone,
