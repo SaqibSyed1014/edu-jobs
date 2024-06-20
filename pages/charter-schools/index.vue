@@ -151,6 +151,10 @@ const query = ref<TypesenseQueryParam>({
   filter_by: ''
 });
 
+if (route?.query.filter_by?.length) { // If it exists, assign its value to the filter_by property
+  query.value.filter_by = route?.query?.filter_by.toString();
+}
+
 const queryParams = computed(() => {
   return {
     q: query.value.q,
@@ -381,12 +385,11 @@ const toggleSchoolOption = (optionName: any, index: number) => {
 };
 
 const clearAll = () => {
-  [jobOptions, stuOptions, schOptions].forEach((option) => {
-    option.value.data.forEach((opt: any) => {
-      opt.checked = false;
-    });
+  jobOptions.value.data.forEach((option) => {
+      option.checked = false;
   });
-  delete query.value.filter_by; // Remove the filter_by property
+  checkboxesFilter.value = '';
+  query.value.filter_by = getCharterFilterQuery(alphabetFilter.value, checkboxesFilter.value);
   router.replace({
     path: "/charter-schools",
     query: {
