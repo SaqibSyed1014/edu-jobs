@@ -11,7 +11,8 @@ const { featuredOrganizations } = storeToRefs(homeStore);
 
 function orgModuleType(org :FeaturedOrganizations) {
   if (org.charter === 'Y') return 'charter-schools'
-  if (org.type === 'district') return 'school-districts'
+  else if (org.type === 'district') return 'school-districts'
+  else if (org.type === 'college') return 'colleges'
 }
 </script>
 
