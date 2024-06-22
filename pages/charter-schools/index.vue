@@ -41,10 +41,10 @@ const jobOptions = ref({
   icon: "SvgoBriefCaseLight",
   name: "jobOptions",
   data: [
-    { id: "1", label: "0 to 10", value: "0 to 10", checked: false },
-    { id: "2", label: "11 to 50", value: "11 to 50", checked: false },
-    { id: "3", label: "51 to 100", value: "51 to 100", checked: false },
-    { id: "4", label: "100+", value: "100", checked: false },
+    { id: "1", label: "0 to 10", value: "0..10", checked: false },
+    { id: "2", label: "11 to 50", value: "11..50", checked: false },
+    { id: "3", label: "51 to 100", value: "51..100", checked: false },
+    { id: "4", label: "100+", value: ">100", checked: false },
   ],
 });
 
@@ -116,6 +116,8 @@ onMounted(async () => {
     const filteredJobCount = splitFilterBy.filter(val => val.includes('job_count'))[0] || ''
     setCheckedValues(filteredJobCount);
     checkboxesFilter.value = filteredJobCount;
+    selectedValues.value = checkboxesFilter.value.match(/\[(.*?)\]/)[1] // Extract within []
+        .split(",")
   }
 });
 
@@ -128,9 +130,8 @@ const setCheckedValues = (jobFilter :string) => {
       jobOptions.value.data.forEach((item) => {
         const [itemStart, itemEnd] = item.label.split(" to ").map(Number);
         if (range.startsWith(">")) {
-          let lastValue = parseInt(range.slice(1));
-          const foundItem = schOptions.value.data.find(
-            (item) => item.value === lastValue.toString()
+          const foundItem = jobOptions.value.data.find(
+            (item) => item.value === range
           );
           if (foundItem) foundItem.checked = true;
         }
@@ -198,192 +199,6 @@ function togglingSidebarVisibility() {
   else document.body.classList.remove("overflow-hidden");
 }
 
-const toggleSchoolOption = (optionName: any, index: number) => {
-  const options = eval(optionName);
-  options.value.data[index].checked = !options.value.data[index].checked;
-
-  // Initialize an array to store selected ranges
-  const selectedRanges: any = [];
-  const lastOption = options.value.data[options.value.data.length - 1];
-  let lastValue: string | null = null;
-
-  // Iterate through the options to gather selected ranges
-  options.value.data.forEach((option: any) => {
-    if (option.checked) {
-      const labelParts = option.value.split(" to ");
-      if (labelParts.length === 2) {
-        const startRange = parseInt(labelParts[0].replace(/[^0-9]/g, ""));
-        const endRange = parseInt(labelParts[1].replace(/[^0-9]/g, ""));
-        if (!isNaN(startRange) && !isNaN(endRange)) {
-          // Add the range if it's checked
-          selectedRanges.push(`${startRange}..${endRange}`);
-        }
-      }
-
-      // Apply filters when value is greater than 100+ or 10000+
-      if (option.label.endsWith("+")) {
-        if (options.value.name === "schOptions") {
-          selectschValue.value = { key1: `school_count:>${lastOption?.value}` };
-          if (route?.query?.filter_by) {
-            const splitData = route?.query?.filter_by.split(" && ");
-            splitData.forEach((item: any) => {
-              if (item.includes("student_count")) {
-                selectstuValue.value = { key2: item };
-              }
-            });
-          }
-        }
-
-        if (options.value.name === "stuOptions") {
-          selectstuValue.value = {
-            key2: `student_count:>${lastOption?.value}`,
-          };
-          if (route?.query?.filter_by) {
-            const splitData = route?.query?.filter_by.split(" && ");
-            splitData.forEach((item: any) => {
-              if (item.includes("school_count")) {
-                selectschValue.value = { key1: item };
-              }
-            });
-          }
-        }
-      }
-    }
-  });
-
-  // Construct the combined range string
-  let range: string | null = null;
-  if (selectedRanges.length > 0) {
-    // Check if the last range is the "100+" range and it's checked
-    if (lastOption.checked && lastOption.label.endsWith("+")) {
-      lastValue = lastOption?.value;
-    }
-
-    // Construct the range string
-    range = selectedRanges.map((range: any) => `${range}`).join(",");
-
-    // Add `>${lastValue}` only if lastValue is not null
-    if (lastValue !== null) {
-      range += `,>${lastValue}`;
-    }
-
-    if (options.value.name === "schOptions") {
-      if (route?.query?.filter_by) {
-        const splitData = route?.query?.filter_by.split(" && ");
-        splitData.forEach((item: any) => {
-          if (item.includes("student_count")) {
-            selectstuValue.value = { key2: item };
-          }
-        });
-      }
-      selectschValue.value = { key1: `school_count:=[${range}]` };
-    }
-
-    if (options.value.name === "stuOptions") {
-      if (route?.query?.filter_by) {
-        const splitData = route?.query?.filter_by.split(" && ");
-        splitData.forEach((item: any) => {
-          if (item.includes("school_count")) {
-            selectschValue.value = { key1: item };
-          }
-        });
-      }
-      selectstuValue.value = { key2: `student_count:=[${range}]` };
-    }
-    // if (options.value.name === "jobOptions") {
-    //  if (route?.query?.filter_by) {
-    //   const splitData = route?.query?.filter_by.split(" && ");
-    //   splitData.forEach((item: any) => {
-    //     if (item.includes("school_count")) {
-    //       selectschValue.value = { key1: item };
-    //     }
-    //   });
-    // }
-    //   selectjobValue.value = { key3: `job_count:=[${range}]` };
-    // }
-  } else if (
-    selectedRanges.length > 0 &&
-    lastOption.checked &&
-    lastOption.label.endsWith("+")
-  ) {
-    if (options.value.name === "schOptions") {
-      selectschValue.value = null;
-    }
-
-    if (options.value.name === "stuOptions") {
-      selectstuValue.value = null;
-    }
-    let mergedFilterBy = "";
-    if (selectschValue.value && selectschValue.value.key1) {
-      mergedFilterBy += selectschValue.value.key1;
-    }
-    if (selectschValue.value && selectstuValue.value) {
-      mergedFilterBy += " && ";
-    }
-    if (selectstuValue.value && selectstuValue.value.key2) {
-      mergedFilterBy += selectstuValue.value.key2;
-    }
-    // if (selectjobValue.value?.key3) {
-    //   if (mergedFilterBy) {
-    //     mergedFilterBy += " && ";
-    //   }
-    //   mergedFilterBy += selectjobValue.value.key3;
-    // }
-  } else if (lastOption.checked === false && lastOption.label.endsWith("+")) {
-    if (options.value.name === "schOptions") {
-      selectschValue.value = null;
-    }
-
-    if (options.value.name === "stuOptions") {
-      selectstuValue.value = null;
-    }
-    let mergedFilterBy = "";
-    if (selectschValue.value && selectschValue.value.key1) {
-      mergedFilterBy += selectschValue.value.key1;
-    }
-    if (selectschValue.value && selectstuValue.value) {
-      mergedFilterBy += " && ";
-    }
-    if (selectstuValue.value && selectstuValue.value.key2) {
-      mergedFilterBy += selectstuValue.value.key2;
-    }
-    // if (selectjobValue.value?.key3) {
-    //   if (mergedFilterBy) {
-    //     mergedFilterBy += " && ";
-    //   }
-    //   mergedFilterBy += selectjobValue.value.key3;
-    // }
-  }
-
-  // Merge key1 and key2 with '&&' between them
-  const mergedFilterBy =
-    (selectschValue.value && selectschValue.value.key1
-      ? selectschValue.value.key1
-      : "") +
-    (selectschValue.value && selectstuValue.value ? " && " : "") +
-    (selectstuValue.value && selectstuValue?.value?.key2
-      ? selectstuValue?.value?.key2
-      : "");
-  // +
-  // (selectstuValue.value && selectjobValue.value ? " && " : "") +
-  // (selectjobValue.value && selectjobValue?.value?.key3
-  //   ? selectjobValue?.value?.key3
-  //   : "");
-
-  checkboxesFilter.value = mergedFilterBy;
-  query.value.filter_by = getCharterFilterQuery(alphabetFilter.value, checkboxesFilter.value);
-
-  router.replace({
-    path: "/charter-schools",
-    query: {
-      view: isGridView.value,
-      ...queryParams.value,
-    },
-  });
-
-  fetchSchools();
-};
-
 const clearAll = () => {
   [jobOptions].forEach((option) => {
     option.value.data.forEach((opt: any) => {
@@ -440,7 +255,7 @@ const search = (resetToDefaultPage = false) => {
 let selectedValues = ref<string[]>([])
 function filtersChanged(filterName :string, i :number, label :string, isChecked :boolean) {
   jobOptions.value.data[i].checked = isChecked;
-  const value = jobOptions.value.data[i].value.replace(' to ', '..'); // Format value
+  const value = jobOptions.value.data[i].value
 
   if (isChecked) selectedValues.value.push(value);
   else selectedValues.value = selectedValues.value.filter(v => v !== value);

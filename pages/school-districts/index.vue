@@ -26,10 +26,6 @@ const isGridView = ref(
       : "list"
     : "list"
 ); // Reactive variable to store the current view mode
-type SelectValue = { key1: string } | null;
-type SelectStuValue = { key2: string } | null;
-const selectschValue = ref<SelectValue>(null);
-const selectstuValue = ref<SelectStuValue>(null);
 
 let alphabetFilter = ref('');
 let checkboxesFilter = ref('');
@@ -38,10 +34,10 @@ const jobOptions = ref({
   icon: "SvgoBriefCaseLight",
   name: "jobOptions",
   data: [
-    { id: "1", label: "0 to 10", value: "0 to 10", checked: false },
-    { id: "2", label: "11 to 50", value: "11 to 50", checked: false },
-    { id: "3", label: "51 to 100", value: "51 to 100", checked: false },
-    { id: "4", label: "100+", value: "100", checked: false },
+    { id: "1", label: "0 to 10", value: "0..10", checked: false },
+    { id: "2", label: "11 to 50", value: "11..50", checked: false },
+    { id: "3", label: "51 to 100", value: "51..100", checked: false },
+    { id: "4", label: "100+", value: ">100", checked: false }
   ],
 });
 
@@ -49,19 +45,19 @@ const stuOptions = ref({
   icon: "SvgoGraduationHat",
   name: "stuOptions",
   data: [
-    { id: "5", label: "0 to 100", value: "0 to 100", checked: false },
-    { id: "6", label: "101 to 500", value: "101 to 500", checked: false },
-    { id: "7", label: "501 to 1000", value: "501 to 1000", checked: false },
-    { id: "8", label: "1001 to 2000", value: "1001 to 2000", checked: false },
-    { id: "9", label: "2001 to 3000", value: "2001 to 3000", checked: false },
-    { id: "10", label: "3001 to 5000", value: "3001 to 5000", checked: false },
+    { id: "5", label: "0 to 100", value: "0..100", checked: false },
+    { id: "6", label: "101 to 500", value: "101..500", checked: false },
+    { id: "7", label: "501 to 1000", value: "501..1000", checked: false },
+    { id: "8", label: "1001 to 2000", value: "1001..2000", checked: false },
+    { id: "9", label: "2001 to 3000", value: "2001..3000", checked: false },
+    { id: "10", label: "3001 to 5000", value: "3001..5000", checked: false },
     {
       id: "12",
       label: "5001 to 10,000",
-      value: "5001 to 10000",
+      value: "5001..10000",
       checked: false,
     },
-    { id: "13", label: "10,000+", value: "10000", checked: false },
+    { id: "13", label: "10,000+", value: ">10000", checked: false },
   ],
 });
 
@@ -69,11 +65,11 @@ const schOptions = ref({
   icon: "SvgoBuildingLight",
   name: "schOptions",
   data: [
-    { id: "14", label: "0 to 10", value: "0 to 10", checked: false },
-    { id: "15", label: "11 to 25", value: "11 to 25", checked: false },
-    { id: "16", label: "26 to 50", value: "26 to 50", checked: false },
-    { id: "17", label: "51 to 100", value: "51 to 100", checked: false },
-    { id: "18", label: "100+", value: "100", checked: false },
+    { id: "14", label: "0 to 10", value: "0..10", checked: false },
+    { id: "15", label: "11 to 25", value: "11..25", checked: false },
+    { id: "16", label: "26 to 50", value: "26..50", checked: false },
+    { id: "17", label: "51 to 100", value: "51..100", checked: false },
+    { id: "18", label: "100+", value: ">100", checked: false },
   ],
 });
 
@@ -109,35 +105,63 @@ onMounted(async () => {
       alphabetFilter.value = alphabetFilterVal;
     }
 
+    const filteredJobCount = splitFilterBy.filter(val => val.includes('job_count'))[0] || ''
     const filteredSclCount = splitFilterBy.filter(val => val.includes('school_count'))[0] || ''
     const filteredStdCount = splitFilterBy.filter(val => val.includes('student_count'))[0] || ''
-    setCheckedValues(filteredSclCount, filteredStdCount);
-    checkboxesFilter.value = [filteredStdCount, filteredSclCount].join('&&');
+    setCheckedValues(filteredJobCount, filteredSclCount, filteredStdCount);
+    checkboxesFilter.value = [filteredJobCount, filteredStdCount, filteredSclCount].join('&&');
+    parseFilterString(checkboxesFilter.value);
   }
 });
 
-const setCheckedValues = (schoolFilter: string, studentFilter :string) => {
-    if (schoolFilter.length) {
+function parseFilterString(filterString :string) {
+  const preSelectedValues = {};
+  const filterParts = filterString.split("&&");
+  filterParts.forEach(part => {
+    const [key, valueStr] = part.split(":");
+    preSelectedValues[key] = valueStr.match(/\[(.*?)\]/)[1]
+        .split(",").map(value => value.trim());
+  });
+  selectedValues.value = preSelectedValues;
+}
+
+const setCheckedValues = (jobFilter :string, schoolFilter: string, studentFilter :string) => {
+  if (jobFilter.length) {
+    const jobRanges = jobFilter.match(/\d+\s*to\s*\d+|\d+|>\d+/g);
+    jobRanges.forEach((range: any) => {
+      jobOptions.value.data.forEach((item) => {
+        const [itemStart, itemEnd] = item.label.split(" to ").map(Number);
+        if (range.startsWith(">")) {
+          const foundItem = jobOptions.value.data.find(
+              (item) => item.value === range
+          );
+          if (foundItem) foundItem.checked = true;
+        }
+
+        if (
+            String(range) === String(itemStart) ||
+            String(range) === String(itemEnd)
+        ) item.checked = true;
+      });
+    });
+  }
+
+  if (schoolFilter.length) {
       const schoolRanges = schoolFilter.match(/\d+\s*to\s*\d+|\d+|>\d+/g);
       schoolRanges.forEach((range: any) => {
         schOptions.value.data.forEach((item) => {
           const [itemStart, itemEnd] = item.label.split(" to ").map(Number);
           if (range.startsWith(">")) {
-            let lastValue = parseInt(range.slice(1));
             const foundItem = schOptions.value.data.find(
-                (item) => item.value === lastValue.toString()
+                (item) => item.value === range
             );
-            if (foundItem) {
-              foundItem.checked = true;
-            }
+            if (foundItem) foundItem.checked = true;
           }
 
           if (
               String(range) === String(itemStart) ||
               String(range) === String(itemEnd)
-          ) {
-            item.checked = true;
-          }
+          ) item.checked = true;
         });
       });
     }
@@ -148,21 +172,16 @@ const setCheckedValues = (schoolFilter: string, studentFilter :string) => {
         stuOptions.value.data.forEach((item) => {
           const [itemStart, itemEnd] = item.label.split(" to ").map(Number);
           if (range.startsWith(">")) {
-            let lastValue = parseInt(range.slice(1));
             const foundItem = stuOptions.value.data.find(
-                (item) => item.value === lastValue.toString()
+                (item) => item.value === range
             );
-            if (foundItem) {
-              foundItem.checked = true;
-            }
+            if (foundItem) foundItem.checked = true;
           }
 
           if (
               String(range) === String(itemStart) ||
               String(range) === String(itemEnd)
-          ) {
-            item.checked = true;
-          }
+          ) item.checked = true;
         });
       });
     }
@@ -194,15 +213,11 @@ async function fetchDistricts() {
   isLoading.value = false;
   totalPages.value = total_page?.value;
 }
-// Function to handle pagination
+
 const paginate = (page: number | "prev" | "next") => {
-  if (page === "prev") {
-    currentPage.value--;
-  } else if (page === "next") {
-    currentPage.value++;
-  } else {
-    currentPage.value = page;
-  }
+  if (page === "prev") currentPage.value--;
+  else if (page === "next") currentPage.value++;
+  else currentPage.value = page;
   query.value.page = currentPage?.value;
 
   router.replace({
@@ -213,7 +228,6 @@ const paginate = (page: number | "prev" | "next") => {
     },
   });
 
-  // Scroll to the top
   window.scrollTo({
     top: 0,
     behavior: "smooth",
@@ -223,186 +237,51 @@ const paginate = (page: number | "prev" | "next") => {
 
 function togglingSidebarVisibility() {
   toggleSideBar.value = !toggleSideBar.value;
-  if (toggleSideBar.value) {
-    document.body.classList.add("overflow-hidden");
-  } else {
-    document.body.classList.remove("overflow-hidden");
-  }
+  if (toggleSideBar.value) document.body.classList.add("overflow-hidden");
+  else document.body.classList.remove("overflow-hidden");
 }
 
-const toggleSchoolOption = (optionName: any, index: number) => {
-  const options = eval(optionName);
-  options.value.data[index].checked = !options.value.data[index].checked;
+let selectedValues = ref<string[]>([]);
+function filtersChanged(filterName :string, i :number, label :string, isChecked :boolean) {
+  let targetOptions;
+  let filterPrefix :string = '';
 
-  // Initialize an array to store selected ranges
-  const selectedRanges: any = [];
-  const lastOption = options.value.data[options.value.data.length - 1];
-  let lastValue: string | null = null;
-
-  // Iterate through the options to gather selected ranges
-  options.value.data.forEach((option: any) => {
-    if (option.checked) {
-      const labelParts = option.value.split(" to ");
-      if (labelParts.length === 2) {
-        const startRange = parseInt(labelParts[0].replace(/[^0-9]/g, ""));
-        const endRange = parseInt(labelParts[1].replace(/[^0-9]/g, ""));
-        if (!isNaN(startRange) && !isNaN(endRange)) {
-          // Add the range if it's checked
-          selectedRanges.push(`${startRange}..${endRange}`);
-        }
-      }
-
-      // Apply filters when value is greater than 100+ or 10000+
-      if (option.label.endsWith("+")) {
-        if (options.value.name === "schOptions") {
-          selectschValue.value = { key1: `school_count:>${lastOption?.value}` };
-          if (route?.query?.filter_by) {
-            const splitData = route?.query?.filter_by.split("&&");
-            splitData.forEach((item: any) => {
-              if (item.includes("student_count")) {
-                selectstuValue.value = { key2: item };
-              }
-            });
-          }
-        }
-
-        if (options.value.name === "stuOptions") {
-          selectstuValue.value = {
-            key2: `student_count:>${lastOption?.value}`,
-          };
-          if (route?.query?.filter_by) {
-            const splitData = route?.query?.filter_by.split("&&");
-            splitData.forEach((item: any) => {
-              if (item.includes("school_count")) {
-                selectschValue.value = { key1: item };
-              }
-            });
-          }
-        }
-      }
-    }
-  });
-
-  // Construct the combined range string
-  let range: string | null = null;
-  if (selectedRanges.length > 0) {
-    // Check if the last range is the "100+" range and it's checked
-    if (lastOption.checked && lastOption.label.endsWith("+")) {
-      lastValue = lastOption?.value;
-    }
-
-    // Construct the range string
-    range = selectedRanges.map((range: any) => `${range}`).join(",");
-
-    // Add `>${lastValue}` only if lastValue is not null
-    if (lastValue !== null) {
-      range += `,>${lastValue}`;
-    }
-
-    if (options.value.name === "schOptions") {
-      if (route?.query?.filter_by) {
-        const splitData = route?.query?.filter_by.split("&&");
-        splitData.forEach((item: any) => {
-          if (item.includes("student_count")) {
-            selectstuValue.value = { key2: item };
-          }
-        });
-      }
-      selectschValue.value = { key1: `school_count:=[${range}]` };
-    }
-
-    if (options.value.name === "stuOptions") {
-      if (route?.query?.filter_by) {
-        const splitData = route?.query?.filter_by.split("&&");
-        splitData.forEach((item: any) => {
-          if (item.includes("school_count")) {
-            selectschValue.value = { key1: item };
-          }
-        });
-      }
-      selectstuValue.value = { key2: `student_count:=[${range}]` };
-    }
-    // if (options.value.name === "jobOptions") {
-    //  if (route?.query?.filter_by) {
-    //   const splitData = route?.query?.filter_by.split(" && ");
-    //   splitData.forEach((item: any) => {
-    //     if (item.includes("school_count")) {
-    //       selectschValue.value = { key1: item };
-    //     }
-    //   });
-    // }
-    //   selectjobValue.value = { key3: `job_count:=[${range}]` };
-    // }
-  } else if (
-    selectedRanges.length > 0 &&
-    lastOption.checked &&
-    lastOption.label.endsWith("+")
-  ) {
-    if (options.value.name === "schOptions") {
-      selectschValue.value = null;
-    }
-
-    if (options.value.name === "stuOptions") {
-      selectstuValue.value = null;
-    }
-    let mergedFilterBy = "";
-    if (selectschValue.value && selectschValue.value.key1) {
-      mergedFilterBy += selectschValue.value.key1;
-    }
-    if (selectschValue.value && selectstuValue.value) {
-      mergedFilterBy += "&&";
-    }
-    if (selectstuValue.value && selectstuValue.value.key2) {
-      mergedFilterBy += selectstuValue.value.key2;
-    }
-    // if (selectjobValue.value?.key3) {
-    //   if (mergedFilterBy) {
-    //     mergedFilterBy += " && ";
-    //   }
-    //   mergedFilterBy += selectjobValue.value.key3;
-    // }
-  } else if (lastOption.checked === false && lastOption.label.endsWith("+")) {
-    if (options.value.name === "schOptions") {
-      selectschValue.value = null;
-    }
-
-    if (options.value.name === "stuOptions") {
-      selectstuValue.value = null;
-    }
-    let mergedFilterBy = "";
-    if (selectschValue.value && selectschValue.value.key1) {
-      mergedFilterBy += selectschValue.value.key1;
-    }
-    if (selectschValue.value && selectstuValue.value) {
-      mergedFilterBy += "&&";
-    }
-    if (selectstuValue.value && selectstuValue.value.key2) {
-      mergedFilterBy += selectstuValue.value.key2;
-    }
-    // if (selectjobValue.value?.key3) {
-    //   if (mergedFilterBy) {
-    //     mergedFilterBy += " && ";
-    //   }
-    //   mergedFilterBy += selectjobValue.value.key3;
-    // }
+  // Determine which option set is being changed
+  switch (filterName) {
+    case "jobOptions":
+      targetOptions = jobOptions.value;
+      filterPrefix = "job_count";
+      break;
+    case "stuOptions":
+      targetOptions = stuOptions.value;
+      filterPrefix = "student_count";
+      break;
+    case "schOptions":
+      targetOptions = schOptions.value;
+      filterPrefix = "school_count";
+      break;
   }
 
-  // Merge key1 and key2 with '&&' between them
-  const mergedFilterBy =
-    (selectschValue.value && selectschValue.value.key1
-      ? selectschValue.value.key1
-      : "") +
-    (selectschValue.value && selectstuValue.value ? "&&" : "") +
-    (selectstuValue.value && selectstuValue?.value?.key2
-      ? selectstuValue?.value?.key2
-      : "");
-  // +
-  // (selectstuValue.value && selectjobValue.value ? " && " : "") +
-  // (selectjobValue.value && selectjobValue?.value?.key3
-  //   ? selectjobValue?.value?.key3
-  //   : "");
+  // Update the checked state
+  targetOptions.data[i].checked = isChecked;
+  const value = targetOptions.data[i].value;
 
-  checkboxesFilter.value = mergedFilterBy;
+  // Update selectedValues based on the specific filter type
+  if (isChecked) {
+    selectedValues.value[filterPrefix] = selectedValues.value[filterPrefix] || [];
+    selectedValues.value[filterPrefix].push(value);
+  } else {
+    selectedValues.value[filterPrefix] = selectedValues.value[filterPrefix].filter(v => v !== value);
+    if (selectedValues.value[filterPrefix].length === 0) {
+      delete selectedValues.value[filterPrefix];
+    }
+  }
+
+  const filterParts = Object.entries(selectedValues.value)
+      .map(([prefix, values]) => `${prefix}:[${values.join(",")}]`)
+      .filter(part => part.length > 0);
+
+  checkboxesFilter.value = filterParts.length > 0 ? filterParts.join("&&") : "";
   query.value.filter_by = getDistrictFilterQuery(alphabetFilter.value, checkboxesFilter.value);
 
   router.replace({
@@ -414,7 +293,7 @@ const toggleSchoolOption = (optionName: any, index: number) => {
   });
 
   fetchDistricts();
-};
+}
 
 const clearAll = () => {
   [jobOptions, stuOptions, schOptions].forEach((option) => {
@@ -523,6 +402,7 @@ function getDistrictFilterQuery(alphabetFilter :string, cbFilters :string) {
                   title="No. of jobs"
                   :options="jobOptions"
                   total-jobs="125"
+                  @toggleSchoolOption="filtersChanged"
                   :inside-sidebar="true"
                 />
 
@@ -530,7 +410,7 @@ function getDistrictFilterQuery(alphabetFilter :string, cbFilters :string) {
                   title="No. of students"
                   :options="stuOptions"
                   total-jobs="12,000"
-                  @toggleSchoolOption="toggleSchoolOption"
+                  @toggleSchoolOption="filtersChanged"
                   :inside-sidebar="true"
                 />
 
@@ -538,7 +418,7 @@ function getDistrictFilterQuery(alphabetFilter :string, cbFilters :string) {
                   title="No. of schools"
                   :options="schOptions"
                   total-jobs="13"
-                  @toggleSchoolOption="toggleSchoolOption"
+                  @toggleSchoolOption="filtersChanged"
                   :inside-sidebar="true"
                 />
               </div>
@@ -584,20 +464,21 @@ function getDistrictFilterQuery(alphabetFilter :string, cbFilters :string) {
                 title="No. of jobs"
                 :options="jobOptions"
                 total-jobs="125"
+                @toggleSchoolOption="filtersChanged"
               />
 
               <FilterSection
                 title="No. of students"
                 :options="stuOptions"
                 total-jobs="12,000"
-                @toggleSchoolOption="toggleSchoolOption"
+                @toggleSchoolOption="filtersChanged"
               />
 
               <FilterSection
                 title="No. of schools"
                 :options="schOptions"
                 total-jobs="13"
-                @toggleSchoolOption="toggleSchoolOption"
+                @toggleSchoolOption="filtersChanged"
               />
             </div>
           </div>
