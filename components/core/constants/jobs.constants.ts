@@ -152,7 +152,7 @@ export function extractSpecificFilterValues(filterString :string, filterName :'c
 
 export function getFilterByQuery(compensationFilters :string, cbFilters :string, locationFilter :string) {
     let finalQuery = [];
-    finalQuery.push(`date_posting_expires:>=${convertTodayInUnixTimeStamp()}`);
+    finalQuery.push(`date_posting_expires:<=${convertTodayInUnixTimeStamp()}`);
     if (compensationFilters.length) finalQuery.push(compensationFilters);
     if (cbFilters.length) finalQuery.push(cbFilters);
     if (locationFilter.length) finalQuery.push(locationFilter)
