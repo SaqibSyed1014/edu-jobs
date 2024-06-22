@@ -1,14 +1,14 @@
 import {
     getDistrictList,
-    getDistrictSchoolDetail,
-    getDistrictSchoolJobs
+    getDistrictSchoolDetail
 } from "~/segments/districts/services"
+import { getJobsList } from "~/segments/jobs/services";
 
 interface DistrictState {
     distictsList: DistrictHit[],
     total_page: number
     openedJobs: number
-    totalPagesInOpenedJobs: number
+    totalPagesInDistrictJobs: number
     schoolDistrictDetails: DistrictDocument | null
     schoolDistrictJobs: Job[]
 }
@@ -18,7 +18,7 @@ export const useDisrictsStore = defineStore('districtStore', {
         distictsList: [],
         total_page: 0,
         openedJobs: 0,
-        totalPagesInOpenedJobs: 0,
+        totalPagesInDistrictJobs: 0,
         schoolDistrictDetails: null,
         schoolDistrictJobs: []
     } as DistrictState),
@@ -34,10 +34,10 @@ export const useDisrictsStore = defineStore('districtStore', {
         async fetchSchoolDistrictJobs(query :any) {
             if (query.q.length) query.query_by = 'job_title';
             else delete query.query_by;
-            const { hits, found } = await getDistrictSchoolJobs(query);
+            const { hits, found } = await getJobsList(query);
             this.$state.schoolDistrictJobs = hits.map((hit :JobHit) => hit.document);
             this.$state.openedJobs = found;
-            this.$state.totalPagesInOpenedJobs = Math.ceil(found / 10);
+            this.$state.totalPagesInDistrictJobs = Math.ceil(found / 10);
         }
     }
 })

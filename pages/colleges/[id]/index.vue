@@ -2,6 +2,7 @@
 import {useCollegesStore} from "~/segments/colleges/store";
 import OrgMapLocation from "~/components/pages/schoolDistrict/OrgMapLocation.vue";
 import BaseSpinner from "~/components/core/BaseSpinner.vue";
+import OrgOpenedJobsList from "~/components/pages/common/OrgOpenedJobsList.vue";
 
 const activeTab = ref(0); // Default to first tab
 
@@ -153,101 +154,10 @@ const videoList = ref([
   },
 ]);
 
-const jobList = [
-  {
-    logo: "logo-one.jpg",
-    postedAt: "1h ago",
-    title: "Marketing Associate",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-  {
-    logo: "logo-two.jpg",
-    postedAt: "6h ago",
-    title: "Senior Graphic Designer",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-  {
-    logo: "logo-three.jpg",
-    postedAt: "2h ago",
-    title: "Lead Product Designer",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-  {
-    logo: "logo-four.jpg",
-    postedAt: "6h ago",
-    title: "Senior Graphic Designer",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-  {
-    logo: "logo-two.jpg",
-    postedAt: "6h ago",
-    title: "Senior Graphic Designer",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-  {
-    logo: "logo-one.jpg",
-    postedAt: "6h ago",
-    title: "Senior Graphic Designer",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-  {
-    logo: "logo-two.jpg",
-    postedAt: "2h ago",
-    title: "Lead Product Designer",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-  {
-    logo: "logo-three.jpg",
-    postedAt: "2h ago",
-    title: "Lead Product Designer",
-    country: "Polymath, Melbourne, AU",
-    category: "Design",
-    description:
-      "We’re looking for a mid-level product designer to join our team.",
-    duration: "Full-time",
-    wage: "80k - 100k",
-  },
-];
-
 const route = useRoute();
 const router = useRouter();
 const collegeStore = useCollegesStore();
-const { collegeDetails } = storeToRefs(collegeStore);
+const { collegeDetails, collegeJobs } = storeToRefs(collegeStore);
 
 const isCollegeFetching = ref<boolean>(true);
 
@@ -256,6 +166,8 @@ onMounted(async () => {
   await collegeStore.fetchCollegeDetails(route.params?.id as string);
   isCollegeFetching.value = false;
 })
+
+const searchedJob= ref<string>('');
 </script>
 
 <template>
@@ -480,7 +392,7 @@ onMounted(async () => {
               </div>
 
               <div
-                  v-if="false"
+                  v-if="activeTab === 1 && collegeDetails.job_count"
                   class="w-full sm:w-1/2 sm:flex sm:items-end sm:justify-end relative"
               >
                 <label for="search-field" class="sr-only">Search</label>
@@ -489,6 +401,7 @@ onMounted(async () => {
                     aria-hidden="true"
                 />
                 <input
+                    v-model="searchedJob"
                     id="search-field"
                     class="form-input w-full md:w-[320px] pl-8"
                     placeholder="Search..."
@@ -501,18 +414,11 @@ onMounted(async () => {
             <AboutSD :data="listData" v-if="activeTab === 0" />
 
             <div v-if="activeTab === 1">
-              <div v-if="false" class="grid gap-6 grid-cols-1">
-                <template v-for="job in jobList">
-                  <JobCard
-                      :job="job"
-                      :show-job-description="false"
-                      :card-form="false"
-                  />
-                </template>
-              </div>
-
-              <NoRecordFound v-else name="jobs" />
-              <Pagination v-if="false" />
+              <OrgOpenedJobsList
+                type="college"
+                :opened-jobs="collegeJobs"
+                :searched-keyword="searchedJob"
+              />
             </div>
             <ListSchools :data="schoolList" v-if="activeTab === 2" />
 

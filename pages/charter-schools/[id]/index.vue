@@ -3,9 +3,9 @@ import {useSchoolsStore} from "~/segments/schools/store";
 import BaseSpinner from "~/components/core/BaseSpinner.vue";
 import OrgMapLocation from "~/components/pages/schoolDistrict/OrgMapLocation.vue";
 
-const schoolStore = useSchoolsStore();
 const router = useRouter();
 const route = useRoute();
+const schoolStore = useSchoolsStore();
 
 const { charterSchoolDetails, schoolJobs } = storeToRefs(schoolStore);
 
@@ -45,7 +45,9 @@ onMounted(async () => {
   isSchoolFetching.value = true;
   await schoolStore.fetchCharterSchoolDetails(route.params?.id as string);
   isSchoolFetching.value = false;
-})
+});
+
+const searchedJob= ref<string>('');
 </script>
 
 <template>
@@ -187,7 +189,7 @@ onMounted(async () => {
                 </span>
                 <div class="inline-flex gap-2">
                   <SvgoBriefCase class="size-5" />
-                  <span class="text-slate-600 text-base font-medium leading-normal">0</span>
+                  <span class="text-slate-600 text-base font-medium leading-normal">{{ charterSchoolDetails.job_count }}</span>
                 </div>
               </div>
 
@@ -267,7 +269,7 @@ onMounted(async () => {
               </div>
 
               <div
-                v-if="activeTab === 1 && schoolJobs.length"
+                v-if="activeTab === 1 && charterSchoolDetails.job_count"
                 class="w-full sm:w-1/2 sm:flex sm:items-end sm:justify-end relative"
               >
                 <label for="search-field" class="sr-only">Search</label>
@@ -276,6 +278,7 @@ onMounted(async () => {
                   aria-hidden="true"
                 />
                 <input
+                  v-model="searchedJob"
                   id="search-field"
                   class="form-input w-full md:w-[320px] pl-8"
                   placeholder="Search..."
@@ -288,18 +291,11 @@ onMounted(async () => {
             <AboutSD :data="listData" v-if="activeTab === 0" />
 
             <div v-if="activeTab === 1">
-              <div v-if="schoolJobs.length" class="grid gap-6 grid-cols-1">
-                <template v-for="job in schoolJobs">
-                  <JobCard
-                    :job="job"
-                    :show-job-description="false"
-                    :card-form="false"
-                  />
-                </template>
-              </div>
-
-              <NoRecordFound v-else name="jobs" />
-              <Pagination v-if="false" />
+              <OrgOpenedJobsList
+                  type="school"
+                  :opened-jobs="schoolJobs"
+                  :searched-keyword="searchedJob"
+              />
             </div>
 
 <!--            <PhotoCard :data="photoList" v-if="activeTab === 2" />-->

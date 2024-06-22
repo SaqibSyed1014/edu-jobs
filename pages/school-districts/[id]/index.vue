@@ -49,7 +49,7 @@ onMounted(async () => {
   isOrgFetching.value = false;
 })
 
-const searchedJob= ref('');
+const searchedJob= ref<string>('');
 </script>
 
 <template>
@@ -267,7 +267,7 @@ const searchedJob= ref('');
               </div>
 
               <div
-                  v-if="activeTab === 1 && schoolDistrictJobs.length"
+                  v-if="activeTab === 1 && schoolDistrictDetails.job_count"
                   class="w-full sm:w-1/2 sm:flex sm:items-end sm:justify-end relative"
               >
                 <label for="search-field" class="sr-only">Search</label>
@@ -290,6 +290,7 @@ const searchedJob= ref('');
 
             <div v-if="activeTab === 1">
               <OrgOpenedJobsList
+                  type="district"
                   :opened-jobs="schoolDistrictJobs"
                   :searched-keyword="searchedJob"
               />
