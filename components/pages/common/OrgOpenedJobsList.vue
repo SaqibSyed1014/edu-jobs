@@ -2,16 +2,23 @@
 import type {PaginationInfo} from "~/segments/common.types";
 import BaseSpinner from "~/components/core/BaseSpinner.vue";
 import {useDisrictsStore} from "~/segments/districts/store";
+import {useCollegesStore} from "~/segments/colleges/store";
+import {useSchoolsStore} from "~/segments/schools/store";
 
 const props = defineProps<{
+  type: string
   openedJobs: any
   searchedKeyword: string
 }>()
 
 const route = useRoute();
 const districtStore = useDisrictsStore();
+const schoolStore = useSchoolsStore();
+const collegeStore = useCollegesStore();
 
-const { totalPagesInOpenedJobs } = storeToRefs(districtStore);
+const { totalPagesInDistrictJobs } = storeToRefs(districtStore);
+const { totalPagesInSchoolsJobs } = storeToRefs(schoolStore);
+const { totalPagesInCollegeJobs } = storeToRefs(collegeStore);
 
 const orgJobsFetching = ref<boolean>(false);
 
@@ -45,8 +52,20 @@ onMounted(async () => {
 
 async function getOrgJobs() {
   orgJobsFetching.value = true;
-  await districtStore.fetchSchoolDistrictJobs(queryParams.value);
-  pageInfo.value.totalPages = totalPagesInOpenedJobs.value;
+  switch (props.type) {
+    case 'district':
+      await districtStore.fetchSchoolDistrictJobs(queryParams.value);
+      pageInfo.value.totalPages = totalPagesInDistrictJobs.value;
+      break;
+    case 'school':
+      await schoolStore.fetchSchoolJobs(queryParams.value);
+      pageInfo.value.totalPages = totalPagesInSchoolsJobs.value;
+      break;
+    case 'college':
+      await collegeStore.fetchCollegeJobs(queryParams.value);
+      pageInfo.value.totalPages = totalPagesInCollegeJobs.value;
+      break;
+  }
   orgJobsFetching.value = false;
 }
 

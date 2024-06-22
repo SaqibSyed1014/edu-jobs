@@ -39,7 +39,7 @@ const listData = ref([
 const route = useRoute();
 const districtStore = useDisrictsStore();
 
-const { schoolDistrictDetails, schoolDistrictJobs, totalPagesInOpenedJobs } = storeToRefs(districtStore);
+const { schoolDistrictDetails, schoolDistrictJobs } = storeToRefs(districtStore);
 
 const isOrgFetching = ref<boolean>(true);
 
@@ -49,7 +49,7 @@ onMounted(async () => {
   isOrgFetching.value = false;
 })
 
-const searchedJob= ref('');
+const searchedJob= ref<string>('');
 </script>
 
 <template>
@@ -290,6 +290,7 @@ const searchedJob= ref('');
 
             <div v-if="activeTab === 1">
               <OrgOpenedJobsList
+                  type="district"
                   :opened-jobs="schoolDistrictJobs"
                   :searched-keyword="searchedJob"
               />
