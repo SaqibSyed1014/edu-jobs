@@ -87,10 +87,11 @@ const paginate = (page: number | "prev" | "next") => {
           :current-page="pageInfo.currentPage"
           :total-pages="pageInfo.totalPages"
           @paginate="paginate"
+          class="pt-8"
       />
     </template>
 
-    <NoRecordFound v-else name="jobs" />
+    <NoRecordFound v-else name="jobs" :searchValue="searchedKeyword" />
   </div>
 
 </template>
