@@ -2,6 +2,7 @@
 import { useDisrictsStore } from "~/segments/districts/store";
 import BaseSpinner from "~/components/core/BaseSpinner.vue";
 import OrgMapLocation from "~/components/pages/schoolDistrict/OrgMapLocation.vue";
+import OrgOpenedJobsList from "~/components/pages/common/OrgOpenedJobsList.vue";
 
 const activeTab = ref(0); // Default to first tab
 const router = useRouter();
@@ -47,6 +48,8 @@ onMounted(async () => {
   await districtStore.fetchDistrictSchoolDetails(route.params?.id as string);
   isOrgFetching.value = false;
 })
+
+const searchedJob= ref('');
 </script>
 
 <template>
@@ -147,9 +150,8 @@ onMounted(async () => {
               </div>
             </div>
 
-            <div
-              class="flex flex-wrap gap-x-12 gap-y-6 lg:gap-x-14 pb-6 pt-6 lg:pt-0 border-b border-gray-200"
-            >
+            <!--    Insights        -->
+            <div class="flex flex-wrap gap-x-12 gap-y-6 lg:gap-x-14 pb-6 pt-6 lg:pt-0 border-b border-gray-200">
               <div class="flex flex-col gap-2">
                 <span class="text-gray-900 text-sm font-medium leading-tight">Location</span>
                 <div class="inline-flex gap-2">
@@ -274,6 +276,7 @@ onMounted(async () => {
                     aria-hidden="true"
                 />
                 <input
+                    v-model="searchedJob"
                     id="search-field"
                     class="form-input w-full md:w-[320px] pl-8"
                     placeholder="Search..."
@@ -286,18 +289,10 @@ onMounted(async () => {
             <AboutSD :data="listData" v-if="activeTab === 0" />
 
             <div v-if="activeTab === 1">
-              <div v-if="schoolDistrictJobs.length" class="grid gap-6 grid-cols-1">
-                <template v-for="job in schoolDistrictJobs">
-                  <JobCard
-                    :job="job"
-                    :show-job-description="false"
-                    :card-form="false"
-                  />
-                </template>
-              </div>
-
-              <NoRecordFound v-else name="jobs" />
-              <Pagination v-if="false" />
+              <OrgOpenedJobsList
+                  :opened-jobs="schoolDistrictJobs"
+                  :searched-keyword="searchedJob"
+              />
             </div>
 <!--            <ListSchools :data="schoolList" v-if="activeTab === 2" />-->
 
