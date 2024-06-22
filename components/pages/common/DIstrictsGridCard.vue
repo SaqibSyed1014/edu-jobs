@@ -33,7 +33,8 @@ defineProps<{ data: any }>();
         <span
           class="text-gray-600 text-xs md:text-sm font-medium leading-tight"
         >
-          0 jobs
+          {{ data?.document?.job_count }} jobs
+
         </span>
       </div>
 

@@ -63,6 +63,8 @@ onMounted(async () => {
     const filteredJobCount = splitFilterBy.filter(val => val.includes('job_count'))[0] || ''
     setCheckedValues(filteredJobCount);
     checkboxesFilter.value = filteredJobCount;
+    selectedValues.value = checkboxesFilter.value.match(/\[(.*?)\]/)[1] // Extract within []
+        .split(",")
   }
 });
 
@@ -75,9 +77,8 @@ const setCheckedValues = (jobFilter :string) => {
       jobOptions.value.data.forEach((item) => {
         const [itemStart, itemEnd] = item.label.split(" to ").map(Number);
         if (range.startsWith(">")) {
-          let lastValue = parseInt(range.slice(1));
-          const foundItem = schOptions.value.data.find(
-              (item) => item.value === lastValue.toString()
+          const foundItem = jobOptions.value.data.find(
+              (item) => item.value === range
           );
           if (foundItem) foundItem.checked = true;
         }
@@ -155,10 +156,10 @@ const jobOptions = ref({
   icon: "SvgoBriefCaseLight",
   name: "jobOptions",
   data: [
-    { id: "1", label: "0 to 10", value: "0 to 10", checked: false },
-    { id: "2", label: "11 to 50", value: "11 to 50", checked: false },
-    { id: "3", label: "51 to 100", value: "51 to 100", checked: false },
-    { id: "4", label: "100+", value: "100", checked: false },
+    { id: "1", label: "0 to 10", value: "0..10", checked: false },
+    { id: "2", label: "11 to 50", value: "11..50", checked: false },
+    { id: "3", label: "51 to 100", value: "51..100", checked: false },
+    { id: "4", label: "100+", value: ">100", checked: false },
   ],
 });
 
@@ -219,7 +220,7 @@ let selectedValues = ref<string[]>([]);
 function filtersChanged(filterName :string, i :number, label :string, isChecked :boolean) {
   jobOptions.value.data[i].checked = isChecked;
 
-  const value = jobOptions.value.data[i].value.replace(' to ', '..'); // Format value
+  const value = jobOptions.value.data[i].value;
 
   if (isChecked) selectedValues.value.push(value);
   else selectedValues.value = selectedValues.value.filter(v => v !== value);
