@@ -52,3 +52,10 @@ export function debounce<T extends (...args: any[]) => any>(
         timeout = setTimeout(() => func.apply(context, args), wait);
     };
 }
+
+export function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+    });
+}

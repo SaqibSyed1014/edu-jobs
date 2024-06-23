@@ -34,7 +34,7 @@ const jobOptions = ref({
   icon: "SvgoBriefCaseLight",
   name: "jobOptions",
   data: [
-    { id: "1", label: "0 to 10", value: "0..10", checked: false },
+    { id: "1", label: "1 to 10", value: "1..10", checked: false },
     { id: "2", label: "11 to 50", value: "11..50", checked: false },
     { id: "3", label: "51 to 100", value: "51..100", checked: false },
     { id: "4", label: "100+", value: ">100", checked: false }
@@ -242,7 +242,7 @@ function togglingSidebarVisibility() {
 }
 
 let selectedValues = ref<string[]>([]);
-function filtersChanged(filterName :string, i :number, label :string, isChecked :boolean) {
+function filtersChanged(filterName :string, i :number, label :string, isChecked :boolean, toggleFlag = true) {
   let targetOptions;
   let filterPrefix :string = '';
 
@@ -277,11 +277,22 @@ function filtersChanged(filterName :string, i :number, label :string, isChecked 
     }
   }
 
-  const filterParts = Object.entries(selectedValues.value)
-      .map(([prefix, values]) => `${prefix}:[${values.join(",")}]`)
-      .filter(part => part.length > 0);
+  if (toggleFlag) processFiltration();
+}
 
-  checkboxesFilter.value = filterParts.length > 0 ? filterParts.join("&&") : "";
+function applyFiltersOnClick() {
+  toggleSideBar.value = false;
+  processFiltration();
+}
+
+function processFiltration() {
+  if (Object.keys(selectedValues.value).length) {
+    const filterParts = Object.entries(selectedValues.value)
+        .map(([prefix, values]) => `${prefix}:[${values.join(",")}]`)
+        .filter(part => part.length > 0);
+
+    checkboxesFilter.value = filterParts.length > 0 ? filterParts.join("&&") : "";
+  } else checkboxesFilter.value = '';
   query.value.filter_by = getDistrictFilterQuery(alphabetFilter.value, checkboxesFilter.value);
 
   router.replace({
@@ -294,23 +305,18 @@ function filtersChanged(filterName :string, i :number, label :string, isChecked 
 
   fetchDistricts();
 }
-
-const clearAll = () => {
+const clearAll = (applyResetFilters :boolean) => {
   [jobOptions, stuOptions, schOptions].forEach((option) => {
     option.value.data.forEach((opt: any) => {
       opt.checked = false;
     });
   });
   checkboxesFilter.value = '';
-  query.value.filter_by = getDistrictFilterQuery(alphabetFilter.value, checkboxesFilter.value);
-  router.replace({
-    path: "/school-districts",
-    query: {
-      view: isGridView.value,
-      ...queryParams.value,
-    },
-  });
-  fetchDistricts();
+  selectedValues.value = [];
+  if (applyResetFilters) {
+    toggleSideBar.value = false;
+    processFiltration();
+  }
 };
 
 const selectAlphabet = (letter: string) => {
@@ -363,37 +369,24 @@ function getDistrictFilterQuery(alphabetFilter :string, cbFilters :string) {
     <div class="container flex w-full">
       <!-- For Mobile -->
       <div class="block xl:hidden">
-        <DistrickSideBarWrapper
-          class="transform transition-all"
-          :class="[toggleSideBar ? 'translate-x-0' : '-translate-x-full ']"
-        >
-          <div class="relative">
-            <SvgoXClose
-              v-if="toggleSideBar"
-              class="block xl:hidden w-4 h-4 absolute right-0 -top-3"
-              @click="togglingSidebarVisibility"
-            />
-            <div
-              class="py-2 flex-col justify-start items-start gap-2.5 inline-flex"
-            >
-              <div
-                class="justify-between items-center inline-flex w-full border-b border-gray-200 pb-2"
-              >
+        <SideBarWrapper :is-sidebar-visible="toggleSideBar">
+          <div class="flex flex-col gap-3 relative">
+            <div class="flex justify-end">
+              <SvgoXClose class="w-4 h-4" @click="togglingSidebarVisibility" />
+            </div>
+            <div class="py-2 flex-col justify-start items-start gap-2.5 inline-flex">
+              <div class="justify-between items-center inline-flex w-full border-b border-gray-200 pb-2">
                 <div class="justify-start items-center gap-3 flex">
                   <SvgoFilterLines class="size-6" />
-                  <div
-                    class="text-gray-700 text-base font-semibold leading-normal"
-                  >
+                  <div class="text-gray-700 text-base font-semibold leading-normal">
                     Filters
                   </div>
                 </div>
                 <div class="justify-center items-center gap-1.5 flex">
                   <button
-                    @click="clearAll"
+                    @click="clearAll(false)"
                     class="text-brand-800 text-sm font-semibold leading-tight"
-                  >
-                    Clear All
-                  </button>
+                  >Clear All</button>
                 </div>
               </div>
 
@@ -401,33 +394,33 @@ function getDistrictFilterQuery(alphabetFilter :string, cbFilters :string) {
                 <FilterSection
                   title="No. of jobs"
                   :options="jobOptions"
-                  total-jobs="125"
-                  @toggleSchoolOption="filtersChanged"
+                  total-jobs=""
+                  @toggleSchoolOption="(f, i, l ,c) => filtersChanged(f, i, l, c, false)"
                   :inside-sidebar="true"
                 />
 
                 <FilterSection
                   title="No. of students"
                   :options="stuOptions"
-                  total-jobs="12,000"
-                  @toggleSchoolOption="filtersChanged"
+                  total-jobs=""
+                  @toggleSchoolOption="(f, i, l ,c) => filtersChanged(f, i, l, c, false)"
                   :inside-sidebar="true"
                 />
 
                 <FilterSection
                   title="No. of schools"
                   :options="schOptions"
-                  total-jobs="13"
-                  @toggleSchoolOption="filtersChanged"
+                  total-jobs=""
+                  @toggleSchoolOption="(f, i, l ,c) => filtersChanged(f, i, l, c, false)"
                   :inside-sidebar="true"
                 />
               </div>
-              <!-- <div class="pt-[18px] w-full">
-                <BaseButton label="Apply" color="primary" :fullSized="true" />
-              </div> -->
+              <div class="pt-6 pb-36 w-full">
+                <BaseButton label="Apply" color="primary" :fullSized="true" @click="applyFiltersOnClick" />
+              </div>
             </div>
           </div>
-        </DistrickSideBarWrapper>
+        </SideBarWrapper>
       </div>
 
       <!-- for desktop -->
@@ -435,23 +428,17 @@ function getDistrictFilterQuery(alphabetFilter :string, cbFilters :string) {
         <div
           class="flex grow flex-col gap-y-5 pt-8 overflow-y-auto border-r pr-4 border-gray-200 bg-transparent ring-1 ring-white/5"
         >
-          <div
-            class="py-2 flex-col justify-start items-start gap-2.5 inline-flex"
-          >
-            <div
-              class="justify-between items-center inline-flex w-full border-b border-gray-200 pb-2"
-            >
+          <div class="py-2 flex-col justify-start items-start gap-2.5 inline-flex">
+            <div class="justify-between items-center inline-flex w-full border-b border-gray-200 pb-2">
               <div class="justify-start items-center gap-3 flex">
                 <SvgoFilterLines class="size-6" />
-                <div
-                  class="text-gray-700 text-base font-semibold leading-normal"
-                >
+                <div class="text-gray-700 text-base font-semibold leading-normal">
                   Filters
                 </div>
               </div>
               <div class="justify-center items-center gap-1.5 flex">
                 <button
-                  @click="clearAll"
+                  @click="clearAll(true)"
                   class="text-brand-800 text-sm font-semibold leading-tight"
                 >
                   Clear All
@@ -463,21 +450,21 @@ function getDistrictFilterQuery(alphabetFilter :string, cbFilters :string) {
               <FilterSection
                 title="No. of jobs"
                 :options="jobOptions"
-                total-jobs="125"
+                total-jobs=""
                 @toggleSchoolOption="filtersChanged"
               />
 
               <FilterSection
                 title="No. of students"
                 :options="stuOptions"
-                total-jobs="12,000"
+                total-jobs=""
                 @toggleSchoolOption="filtersChanged"
               />
 
               <FilterSection
                 title="No. of schools"
                 :options="schOptions"
-                total-jobs="13"
+                total-jobs=""
                 @toggleSchoolOption="filtersChanged"
               />
             </div>

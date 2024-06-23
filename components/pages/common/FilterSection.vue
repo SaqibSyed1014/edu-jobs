@@ -18,7 +18,7 @@ const props = defineProps<{
           {{ title }}
         </div>
         <span class="text-gray-400 text-base font-normal leading-normal"
-          >({{ totalJobs }})
+          >{{ totalJobs ? `(${totalJobs})` : '' }}
         </span>
       </div>
     </div>

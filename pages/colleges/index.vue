@@ -163,24 +163,6 @@ const jobOptions = ref({
   ],
 });
 
-const clearAll = () => {
-  [jobOptions].forEach((option) => {
-    option.value.data.forEach((opt: any) => {
-      opt.checked = false;
-    });
-  });
-  checkboxesFilter.value = '';
-  query.value.filter_by = getCollegesFilterQuery(alphabetFilter.value, checkboxesFilter.value);
-  router.replace({
-    path: "/charter-schools",
-    query: {
-      view: isGridView.value,
-      ...queryParams.value,
-    },
-  });
-  fetchColleges();
-};
-
 const selectAlphabet = (letter: string) => {
   selectedAlphabet.value = letter;
   if (letter.length) alphabetFilter.value = `institution_name:=${letter}*`
@@ -217,7 +199,7 @@ const search = (resetToDefaultPage = false) => {
 };
 
 let selectedValues = ref<string[]>([]);
-function filtersChanged(filterName :string, i :number, label :string, isChecked :boolean) {
+function filtersChanged(filterName :string, i :number, label :string, isChecked :boolean, toggleFlag = true) {
   jobOptions.value.data[i].checked = isChecked;
 
   const value = jobOptions.value.data[i].value;
@@ -227,6 +209,11 @@ function filtersChanged(filterName :string, i :number, label :string, isChecked 
 
   if (selectedValues.value.length) checkboxesFilter.value = `job_count:[${[selectedValues.value]}]`;
   else checkboxesFilter.value = '';
+
+  if (toggleFlag) processFiltration();
+}
+
+function processFiltration() {
   query.value.filter_by = getCollegesFilterQuery(alphabetFilter.value, checkboxesFilter.value);
 
   router.replace({
@@ -239,6 +226,25 @@ function filtersChanged(filterName :string, i :number, label :string, isChecked 
 
   fetchColleges();
 }
+
+function applyFiltersOnClick() {
+  toggleSideBar.value = false;
+  processFiltration();
+}
+
+const clearAll = (applyResetFilters :boolean) => {
+  [jobOptions].forEach((option) => {
+    option.value.data.forEach((opt: any) => {
+      opt.checked = false;
+    });
+  });
+  checkboxesFilter.value = '';
+  selectedValues.value = [];
+  if (applyResetFilters) {
+    toggleSideBar.value = false;
+    processFiltration();
+  }
+};
 
 function getCollegesFilterQuery(alphabetFilter :string, cbFilters :string) {
   let result :string[] = [];
@@ -254,22 +260,13 @@ function getCollegesFilterQuery(alphabetFilter :string, cbFilters :string) {
     <div class="container flex w-full">
       <!-- For Mobile -->
       <div class="block xl:hidden">
-        <DistrickSideBarWrapper
-          class="transform transition-all"
-          :class="[toggleSideBar ? 'translate-x-0' : '-translate-x-full ']"
-        >
-          <div class="relative">
-            <SvgoXClose
-              v-if="toggleSideBar"
-              class="block xl:hidden w-4 h-4 absolute right-0 -top-3"
-              @click="togglingSidebarVisibility"
-            />
-            <div
-              class="py-2 flex-col justify-start items-start gap-2.5 inline-flex"
-            >
-              <div
-                class="justify-between items-center inline-flex w-full border-b border-gray-200 pb-2"
-              >
+        <SideBarWrapper :is-sidebar-visible="toggleSideBar">
+          <div class="flex flex-col gap-3 relative">
+            <div class="flex justify-end">
+              <SvgoXClose class="w-4 h-4" @click="togglingSidebarVisibility" />
+            </div>
+            <div class="py-2 flex-col justify-start items-start gap-2.5 inline-flex">
+              <div class="justify-between items-center inline-flex w-full border-b border-gray-200 pb-2">
                 <div class="justify-start items-center gap-3 flex">
                   <SvgoFilterLines class="size-6" />
                   <div
@@ -280,7 +277,7 @@ function getCollegesFilterQuery(alphabetFilter :string, cbFilters :string) {
                 </div>
                 <div class="justify-center items-center gap-1.5 flex">
                   <button
-                    @click="clearAll"
+                    @click="clearAll(false)"
                     class="text-brand-800 text-sm font-semibold leading-tight"
                   >
                     Clear All
@@ -294,15 +291,15 @@ function getCollegesFilterQuery(alphabetFilter :string, cbFilters :string) {
                   :options="jobOptions"
                   :total-jobs="collegesFound"
                   :inside-sidebar="true"
-                  @toggleSchoolOption="filtersChanged"
+                  @toggleSchoolOption="(f, i, l ,c) => filtersChanged(f, i, l, c, false)"
                 />
               </div>
-              <!-- <div class="pt-[18px] w-full">
-                <BaseButton label="Apply" color="primary" :fullSized="true" />
-              </div> -->
+              <div class="pt-6 pb-36 w-full">
+                <BaseButton label="Apply" color="primary" :fullSized="true" @click="applyFiltersOnClick" />
+              </div>
             </div>
           </div>
-        </DistrickSideBarWrapper>
+        </SideBarWrapper>
       </div>
 
       <!-- for desktop -->
@@ -326,7 +323,7 @@ function getCollegesFilterQuery(alphabetFilter :string, cbFilters :string) {
               </div>
               <div class="justify-center items-center gap-1.5 flex">
                 <button
-                  @click="clearAll"
+                  @click="clearAll(true)"
                   class="text-brand-800 text-sm font-semibold leading-tight"
                 >
                   Clear All
