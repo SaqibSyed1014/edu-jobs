@@ -314,8 +314,8 @@ const signUpCardIndex = Math.floor(Math.random() * 25);  // randomly generate in
 
         <template #cards-list>
           <div class="flex gap-4 justify-between lg:items-center">
-            <div class="relative max-md:flex-1">
-              <BaseButton id="dropdownToggler" data-dropdown-toggle="sort-jobs-by-dropdown" color="gray" :outline="true" :full-sized-on-small="true" :label="SortDropdownLabel" class="justify-between text-sm">
+            <div class="relative max-lg:flex-1">
+              <BaseButton id="dropdownToggler" data-dropdown-toggle="sort-jobs-by-dropdown" color="gray" :outline="true" :full-sized-on-small="true" :label="SortDropdownLabel" class="justify-between text-sm max-lg:w-full">
                 <template #prepend-icon>
                   <SvgoFilterFunnel class="w-5 h-5 text-gray-600"/>
                 </template>
@@ -345,7 +345,7 @@ const signUpCardIndex = Math.floor(Math.random() * 25);  // randomly generate in
               </div>
             </div>
 
-            <div class="hidden md:inline-flex rounded-md shadow-sm" role="group">
+            <div class="hidden lg:inline-flex rounded-md shadow-sm" role="group">
               <BaseButtonsGroup
                   v-model="layoutOptionSelected"
                   color="gray"
@@ -354,7 +354,7 @@ const signUpCardIndex = Math.floor(Math.random() * 25);  // randomly generate in
               />
             </div>
 
-            <BaseButton @click="isFilterSidebarVisible = true" color="gray" :outline="true" label="" class="md:hidden">
+            <BaseButton @click="isFilterSidebarVisible = true" color="gray" :outline="true" label="" class="lg:hidden">
               <template #prepend-icon>
                 <SvgoFilter class="w-5 h-5 text-gray-600"/>
               </template>

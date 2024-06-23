@@ -37,10 +37,8 @@ watch(props.filtrationList, (val) => {   // watcher for checking if the filters 
             values: updatedValues,
           };
         }
-        // console.log('watcher ', selectedValues.value, parsedValue)
       }
     })
-    // emits('onFiltersChange', selectedValues.value);
   }
 });
 
@@ -145,7 +143,7 @@ function includeJobsWithoutCompensation($event :any) {
 
 <template>
   <div class="flex flex-col gap-3 max-md:h-screen">
-    <div @click="emits('closeFilterSidebar')" class="flex justify-end md:hidden">
+    <div @click="emits('closeFilterSidebar')" class="flex justify-end lg:hidden">
       <SvgoXClose class="w-4 h-4" />
     </div>
     <div class="flex justify-between items-center font-semibold border-b border-gray-200 py-2">
@@ -236,7 +234,7 @@ function includeJobsWithoutCompensation($event :any) {
     </template>
 
 
-    <div class="md:hidden pb-36">
+    <div class="lg:hidden pb-36">
       <BaseButton label="Apply" :full-sized="true" @click="applyFiltersOnClick" />
     </div>
   </div>
