@@ -34,7 +34,7 @@ const jobOptions = ref({
   icon: "SvgoBriefCaseLight",
   name: "jobOptions",
   data: [
-    { id: "1", label: "0 to 10", value: "0..10", checked: false },
+    { id: "1", label: "1 to 10", value: "1..10", checked: false },
     { id: "2", label: "11 to 50", value: "11..50", checked: false },
     { id: "3", label: "51 to 100", value: "51..100", checked: false },
     { id: "4", label: "100+", value: ">100", checked: false }
@@ -401,7 +401,7 @@ function getDistrictFilterQuery(alphabetFilter :string, cbFilters :string) {
                 <FilterSection
                   title="No. of jobs"
                   :options="jobOptions"
-                  total-jobs="125"
+                  total-jobs=""
                   @toggleSchoolOption="filtersChanged"
                   :inside-sidebar="true"
                 />
@@ -409,7 +409,7 @@ function getDistrictFilterQuery(alphabetFilter :string, cbFilters :string) {
                 <FilterSection
                   title="No. of students"
                   :options="stuOptions"
-                  total-jobs="12,000"
+                  total-jobs=""
                   @toggleSchoolOption="filtersChanged"
                   :inside-sidebar="true"
                 />
@@ -417,7 +417,7 @@ function getDistrictFilterQuery(alphabetFilter :string, cbFilters :string) {
                 <FilterSection
                   title="No. of schools"
                   :options="schOptions"
-                  total-jobs="13"
+                  total-jobs=""
                   @toggleSchoolOption="filtersChanged"
                   :inside-sidebar="true"
                 />
@@ -463,21 +463,21 @@ function getDistrictFilterQuery(alphabetFilter :string, cbFilters :string) {
               <FilterSection
                 title="No. of jobs"
                 :options="jobOptions"
-                total-jobs="125"
+                total-jobs=""
                 @toggleSchoolOption="filtersChanged"
               />
 
               <FilterSection
                 title="No. of students"
                 :options="stuOptions"
-                total-jobs="12,000"
+                total-jobs=""
                 @toggleSchoolOption="filtersChanged"
               />
 
               <FilterSection
                 title="No. of schools"
                 :options="schOptions"
-                total-jobs="13"
+                total-jobs=""
                 @toggleSchoolOption="filtersChanged"
               />
             </div>
