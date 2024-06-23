@@ -2,7 +2,7 @@
 import type {TypesenseQueryParam} from "~/segments/common.types";
 import {useSchoolsStore} from "~/segments/schools/store";
 import AlphabetsInRow from "~/components/pages/common/AlphabetsInRow.vue";
-import {al} from "~/.output/public/_nuxt/swiper-vue.K8TE0-l0";
+import {scrollToTop} from "~/segments/utils";
 
 const schoolsStore = useSchoolsStore();
 const { schoolsList, total_page, schoolsFound } = storeToRefs(schoolsStore);
@@ -186,10 +186,7 @@ const paginate = (page: number | "prev" | "next") => {
     },
   });
 
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
+  scrollToTop();
   fetchSchools();
 };
 
