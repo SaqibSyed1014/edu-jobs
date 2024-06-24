@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {useHomeStore} from "~/segments/home/store";
+import {reloadActiveRouteOnClick} from "~/segments/utils";
 
 defineProps<{
   subLinks: { label: string, path: string }[],
@@ -14,6 +15,8 @@ function orgModuleType(org :FeaturedOrganizations) {
   else if (org.type === 'district') return 'school-districts'
   else if (org.type === 'college') return 'colleges'
 }
+
+const router = useRouter();
 </script>
 
 <template>
@@ -24,7 +27,13 @@ function orgModuleType(org :FeaturedOrganizations) {
         <ul class="flex flex-col gap-4">
           <template v-for="orgLink in subLinks">
             <li>
-              <NuxtLink :to="orgLink.path" class="hover:text-brand-500 transition">{{ orgLink.label }}</NuxtLink>
+              <NuxtLink
+                  :to="orgLink.path"
+                  @click.native.prevent="reloadActiveRouteOnClick(orgLink.path, router)"
+                  class="hover:text-brand-500 transition"
+              >
+                {{ orgLink.label }}
+              </NuxtLink>
             </li>
           </template>
         </ul>

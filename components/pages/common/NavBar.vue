@@ -4,6 +4,7 @@ import XCloseIcon from "~/assets/icons/x-close.svg";
 import OrganizationsMegaMenu from "~/components/pages/common/OrganizationsMegaMenu.vue";
 import type {MenuLinksType} from "~/segments/common.types";
 import {useHomeStore} from "~/segments/home/store";
+import {reloadActiveRouteOnClick} from "~/segments/utils";
 
 const homeStore = useHomeStore();
 
@@ -65,13 +66,13 @@ onMounted(async () => {
   await homeStore.fetchFeaturedOrganizations();
   orgsFetching.value = false;
 })
+
+const router = useRouter();
 </script>
 
 <template>
   <header class="max-md:sticky bg-gray-25 top-0 w-full z-[500]">
-    <div
-      class="container mx-auto flex items-center justify-between bg-transparent py-4 relative z-40"
-    >
+    <div class="container mx-auto flex items-center justify-between bg-transparent py-4 relative z-40">
       <div class="content flex items-center justify-between gap-7 xl:gap-10">
         <div class="logo shrink-0">
           <NuxtLink to="/">
@@ -85,7 +86,7 @@ onMounted(async () => {
           >
             <template v-for="link in menuLinks">
               <li>
-                <NuxtLink v-if="link.type === 'link'" :to="link.path" class="hover:text-brand-500 transition">{{ link.label }}</NuxtLink>
+                <NuxtLink v-if="link.type === 'link'" :to="link.path" @click.native.prevent="reloadActiveRouteOnClick(link.path, router)" class="hover:text-brand-500 transition">{{ link.label }}</NuxtLink>
                 <MegaMenu v-else-if="link.type === 'megaMenu'" :label="link.label">
                   <OrganizationsMegaMenu v-if="link.subLinks?.length" :sub-links="link.subLinks" :loading="orgsFetching" />
                 </MegaMenu>
