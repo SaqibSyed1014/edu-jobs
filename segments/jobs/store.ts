@@ -45,7 +45,6 @@ export const useJobStore = defineStore('jobStore', {
     getters: {
         jobListings: (state) :Job[] => state.jobsList.map(job => ({
             ...job,
-            date_posting_expires: job.date_posting_expires ? convertUnixTimestamp(job.date_posting_expires as unknown as number) : 'N/A',
             date_posted: job.date_posted.slice(0, job.date_posted.indexOf('00:00:00'))
         })),
         jobDetails: (state) :JobDetails | null => {
@@ -53,7 +52,7 @@ export const useJobStore = defineStore('jobStore', {
             if (jobDetail)
                 return {
                     ...jobDetail,
-                    date_posting_expires: jobDetail.date_posting_expires ? convertUnixTimestamp(jobDetail.date_posting_expires as unknown as number) : 'N/A',
+                    application_deadline: jobDetail.application_deadline ? jobDetail.application_deadline.slice(0, jobDetail.application_deadline.indexOf('00:00:00')) : '',
                     date_posted: jobDetail.date_posted.slice(0, jobDetail.date_posted.indexOf('00:00:00'))
             }
             else return null

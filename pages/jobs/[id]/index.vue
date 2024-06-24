@@ -3,6 +3,7 @@ import { initModals } from 'flowbite'
 import {useJobStore} from "~/segments/jobs/store";
 import QuickSignUpModal from "~/components/pages/job-listings/QuickSignUpModal.vue";
 import BaseSpinner from "~/components/core/BaseSpinner.vue";
+import {convertTZDateToShortDate} from "~/segments/utils";
 const center = ref({ lat: 0, lng: 0 })
 
 const router = useRouter();
@@ -209,7 +210,7 @@ function jobOrgType() {
                     <p class="font-medium text-sm">Deadline</p>
                     <div class="text-gray-600 flex items-center gap-2">
                       <SvgoClock class="w-4 h-4"/>
-                      {{ jobDetails.date_posting_expires }}
+                      {{ jobDetails?.application_deadline || 'N/A' }}
                     </div>
                   </div>
 
