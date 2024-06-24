@@ -388,6 +388,10 @@ function jobOrgType() {
         </div>
 
         <hr>
+
+        <div class="max-md:hidden md:px-8 md:pt-4">
+          <BaseButton @click="applyBtnAction" label="Apply Now" />
+        </div>
       </div>
     </section>
 
