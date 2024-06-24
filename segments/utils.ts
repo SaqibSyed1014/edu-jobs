@@ -1,3 +1,5 @@
+import type { Router } from "vue-router";
+
 export const usePayloadUrl = () => {
     const config = useRuntimeConfig()
     let baseUrl, apiKey, strapiBaseUrl, strapiApiToken
@@ -58,4 +60,8 @@ export function scrollToTop() {
         top: 0,
         behavior: "smooth",
     });
+}
+
+export function reloadActiveRouteOnClick(path :string, router: Router) {
+    if (router.currentRoute.value.path === path) reloadNuxtApp();
 }
