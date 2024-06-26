@@ -134,7 +134,7 @@ function jobOrgType() {
                           {{ jobDetails.job_title }}
                         </h2>
                       </BaseTooltip>
-                      <p v-if="jobDetails?.organization_name" class="text-gray-600">
+                      <p v-if="jobDetails?.organization_name" class="text-gray-600 md:line-clamp-1">
                         {{ jobDetails.organization_name }}
                       </p>
                     </div>
