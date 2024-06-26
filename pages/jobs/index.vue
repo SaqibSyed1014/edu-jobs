@@ -36,7 +36,7 @@ const initialQuery = {
   q: "*",
   page: pageInfo.value.currentPage,
   per_page: pageInfo.value.itemsPerPage,
-  sort_by: 'date_posted:asc',
+  sort_by: 'date_posted:desc',
   facet_by: 'employment_type,job_role,experience_level',
   filter_by: ''
 };
@@ -248,15 +248,15 @@ async function assignQueryParamsOnInitialLoad(queryParams :JobQueryParams) {
 }
 
 function sortJobs(sortBy :string) {
-  if (sortBy === 'most_relevant') query.value.sort_by = 'date_posted:asc';
-  if (sortBy === 'date_posted') query.value.sort_by = 'date_posted:desc';
+  if (sortBy === 'most_relevant') query.value.sort_by = 'date_posted:desc';
+  if (sortBy === 'date_posted') query.value.sort_by = 'date_posted:asc';
   const sortDropdown = document.getElementById('dropdownToggler');
   if (sortDropdown) sortDropdown.click();
   doSearch();
 }
 
 const SortDropdownLabel = computed(() => {
-  if (query.value.sort_by?.includes('desc')) return 'Date Posted';
+  if (query.value.sort_by?.includes('asc')) return 'Date Posted';
   return 'Most Relevant';
 })
 
@@ -330,14 +330,14 @@ const signUpCardIndex = Math.floor(Math.random() * 25);  // randomly generate in
                   <li
                       @click="sortJobs('most_relevant')"
                       class="cursor-pointer px-4 py-2 hover:bg-gray-100"
-                      :class="{'bg-gray-100 hover:bg-gray-200': query.sort_by?.includes('asc')}"
+                      :class="{'bg-gray-100 hover:bg-gray-200': query.sort_by?.includes('desc')}"
                   >
                     Most Relevant
                   </li>
                   <li
                       @click="sortJobs('date_posted')"
                       class="cursor-pointer px-4 py-2 hover:bg-gray-100"
-                      :class="{'bg-gray-100 hover:bg-gray-200': query.sort_by?.includes('desc')}"
+                      :class="{'bg-gray-100 hover:bg-gray-200': query.sort_by?.includes('asc')}"
                   >
                     Date Posted
                   </li>
