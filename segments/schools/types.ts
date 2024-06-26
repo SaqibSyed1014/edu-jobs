@@ -7,6 +7,7 @@ interface School {
   geo_location?: [number, number];
   id: string;
   name: string;
+  organization_description: string
   slug: string;
   state_code: string;
   street_address: string;

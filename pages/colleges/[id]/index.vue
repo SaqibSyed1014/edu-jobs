@@ -12,29 +12,6 @@ const tabs = ref([
   { name: "Open Jobs" }
 ]);
 
-const listData = ref([
-  {
-    title: "Academic Excellence:",
-    desc: "The district is recognized for its commitment to academic excellence, and many of its schools have received high rankings. Students often excel in various academic and extracurricular activities.",
-  },
-  {
-    title: "Innovation and Technology:",
-    desc: "Given its location in the heart of Silicon Valley, PAUSD emphasizes innovation and technology in education. There are efforts to incorporate technology into the learning environment, preparing students for the challenges of the digital age.",
-  },
-  {
-    title: "Diversity:",
-    desc: "The district is known for its diverse student body, reflecting the cultural and socioeconomic diversity of the community. Efforts are made to promote inclusivity and provide a well-rounded education for all students.",
-  },
-  {
-    title: "Community Engagement:",
-    desc: "Palo Alto residents are actively involved in the education system, participating in school activities, parent-teacher organizations, and community initiatives that support the schools.",
-  },
-  {
-    title: "Challenges:",
-    desc: "Like many high-performing school districts, PAUSD faces challenges related to academic pressure, student well-being, and maintaining a balance between achievement and the overall well-rounded development of students.",
-  },
-]);
-
 const route = useRoute();
 const router = useRouter();
 const collegeStore = useCollegesStore();
@@ -49,6 +26,14 @@ onMounted(async () => {
 })
 
 const searchedJob= ref<string>('');
+
+// remove the 'About College tab if no description is found'
+watch(() => collegeDetails.value, (val) => {
+  if (!val?.organization_description.length) {
+    tabs.value[0].name = '';
+    activeTab.value = 1;
+  }
+})
 </script>
 
 <template>
@@ -68,18 +53,17 @@ const searchedJob= ref<string>('');
           >
             <!-- Tabs -->
             <div class="flex flex-col">
-              <button
-                  v-for="(tab, index) in tabs"
-                  :key="index"
-                  :class="
-                  activeTab === index
+              <template v-for="(tab, index) in tabs" :key="index">
+                <button
+                  v-if="tab.name.length"
+                  :class="activeTab === index
                     ? 'text-brand-800 text-sm font-semibold py-2 px-3 flex items-center justify-between border-l-2 border-brand-600'
-                    : 'py-2 px-3 flex items-center justify-between text-sm text-gray-500 '
-                "
+                    : 'py-2 px-3 flex items-center justify-between text-sm text-gray-500 ' "
                   @click="activeTab = index"
-              >
-                <span>{{ tab.name }}</span>
-              </button>
+                >
+                  <span>{{ tab.name }}</span>
+                </button>
+              </template>
             </div>
           </aside>
         </div>
@@ -90,7 +74,7 @@ const searchedJob= ref<string>('');
         <!-- Content for each tab -->
         <div>
           <div
-              class="w-full h-5 justify-between items-start inline-flex pl-6 sm:pl-0"
+              class="w-full h-5 justify-between items-start inline-flex pl-3 sm:pl-0"
           >
             <div class="pl-3 justify-start items-center gap-3 hidden lg:flex">
               <div class="justify-center items-center flex">
@@ -218,14 +202,15 @@ const searchedJob= ref<string>('');
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               >
                 <option disabled value="">Choose an option</option>
-                <option
-                    v-for="(option, index) in tabs"
-                    :key="index"
+                <template v-for="(option, index) in tabs" :key="index">
+                  <option
+                    v-if="option.name.length"
                     :value="index"
                     @click="activeTab = index"
-                >
-                  {{ option.name }}
-                </option>
+                  >
+                    {{ option.name }}
+                  </option>
+                </template>
               </select>
             </form>
 
@@ -237,26 +222,21 @@ const searchedJob= ref<string>('');
               "
             >
               <div class="justify-start items-start gap-4 inline-flex w-full">
-                <div
-                    class="flex-col justify-start items-start gap-1 inline-flex"
-                >
-                  <p
-                      class="text-gray-900 text-2xl md:text-3xl font-semibold leading-[38px]"
-                  >
+                <div class="flex-col justify-start items-start gap-1 inline-flex">
+                  <p class="text-gray-900 text-2xl md:text-3xl font-semibold leading-[38px]">
                     {{
-                      activeTab === 0
+                      activeTab === 0 && collegeDetails.organization_description.length
                           ? "About School District"
                           : activeTab === 1
                               ? "List of Jobs"
-                                    : activeTab === 3
+                                    : activeTab === 2
                                         ? "Location" : ""
                     }}
                   </p>
-                  <p
-                      class="text-slate-600 text-base font-normal leading-normal"
-                  >
+                  <p class="text-slate-600 text-base font-normal leading-normal">
                     {{
-                      activeTab === 0 ? "Read out the information about patlo alto unified school."
+                      activeTab === 0 && collegeDetails.organization_description.length
+                          ? "Read out the information about patlo alto unified school."
                           : activeTab === 1 ? "Have a look to the list of Jobs." : ""
                     }}
                   </p>
@@ -283,7 +263,12 @@ const searchedJob= ref<string>('');
               </div>
             </div>
 
-            <AboutSD :data="listData" v-if="activeTab === 0" />
+            <!--   College Description   -->
+            <template v-if="activeTab === 0">
+              <div class="description-content mb-5">
+                <div v-html="collegeDetails.organization_description"></div>
+              </div>
+            </template>
 
             <div v-if="activeTab === 1">
               <OrgOpenedJobsList
@@ -304,3 +289,15 @@ const searchedJob= ref<string>('');
     </div>
   </div>
 </template>
+
+<style scoped>
+.description-content :deep(ul) {
+  @apply list-disc ml-6 mb-4
+}
+.description-content :deep(p) {
+  @apply mb-2
+}
+.description-content :deep(a) {
+  word-break: break-word;
+}
+</style>
