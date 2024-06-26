@@ -32,11 +32,5 @@ defineProps<{ data: any[] }>();
         </div>
       </li>
     </ol>
-
-    <div class="pt-5 justify-end items-center w-full gap-1.5 inline-flex">
-      <div class="text-blue-800 text-sm font-semibold leading-tight">
-        Read Less
-      </div>
-    </div>
   </div>
 </template>

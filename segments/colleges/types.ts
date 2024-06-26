@@ -10,6 +10,7 @@ interface CollegeDocument {
   mission_statement: string;
   mission_statement_url: string;
   ope_id_number: number;
+  organization_description: string
   phone_number: string;
   size_category: number;
   state_abbr: string;

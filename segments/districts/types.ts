@@ -14,6 +14,7 @@ interface DistrictDocument {
   instagram_handle: string;
   logo_path: string;
   nces_district_id: string;
+  organization_description: string
   phone: string;
   school_count: number;
   state_code: string;
