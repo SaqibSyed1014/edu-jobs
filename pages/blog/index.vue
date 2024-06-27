@@ -18,15 +18,17 @@ const pageInfo = ref<PaginationInfo>({
 
 onMounted(async () => {
   showPageLoader.value = true;
-  await blogsStore.fetchBlogs(pageInfo.value);
+  await blogsStore.fetchBlogs(pageInfo.value, '', '');
   await blogsStore.fetchBlogsCategories();
   pageInfo.value.totalPages = pagination.value.pageCount;
   showPageLoader.value = false;
 })
 
-async function fetchingBlogs() {
+async function fetchingBlogs(resetToDefaultPage = false) {
+  firstBlog.value = undefined;
+  if (resetToDefaultPage) pageInfo.value.currentPage = 1;
   showBlogsLoader.value = true;
-  await blogsStore.fetchBlogs(pageInfo.value);
+  await blogsStore.fetchBlogs(pageInfo.value, searchedBlog.value, selectedCategory.value);
   pageInfo.value.totalPages = pagination.value.pageCount;
   showBlogsLoader.value = false;
 }
@@ -39,6 +41,7 @@ function paginateBlogs(page: number | "prev" | "next") {
   fetchingBlogs();
 }
 
+const searchedBlog = ref<string>('');
 const searchedCategory = ref<string>('');
 const selectedCategory = ref<string>('View All');
 
@@ -46,21 +49,21 @@ const filteredCategories = computed(() => {
   return categoriesDropdown.value.filter(category => category.label.toLowerCase().includes(searchedCategory.value.toLowerCase())) || [];
 })
 
+const handleSearchInput = _debounce(() => {
+  fetchingBlogs(true);
+}, 500);
+
 const firstBlog = ref<Blog>();
 const splitBlogs = computed(() => {
-  if (window.innerWidth >= 1024 )firstBlog.value = blogs.value.shift();
-  return blogs.value
+  let allBlogs = toRaw(blogs.value);
+  if (window.innerWidth >= 1024 && allBlogs.length > 1) firstBlog.value = allBlogs.shift();
+  return allBlogs;
 })
-
-function selectCategory(label :string) {
-  selectedCategory.value = label;
-}
 
 watch(() => selectedCategory.value, async (val :string) => {
   showBlogsLoader.value = true;
   pageInfo.value.currentPage = 1;
-  if (val === 'View All') await blogsStore.fetchBlogs(pageInfo.value);
-  else await blogsStore.fetchBlogsByCategory(pageInfo.value, val);
+  await blogsStore.fetchBlogs(pageInfo.value, searchedBlog.value, val);
   pageInfo.value.totalPages = pagination.value.pageCount;
   showBlogsLoader.value = false;
 })
@@ -76,35 +79,69 @@ watch(() => selectedCategory.value, async (val :string) => {
   </template>
   <template v-else>
     <div class="blog-listing-page">
-      <section class="py-16 md:pt-24">
+      <section class="pb-12 pt-16 md:pt-24">
         <div class="container">
-          <div class="text-left md:mb-16">
+          <div class="text-left md:mb-14">
             <h3 class="text-brand-600 text-sm md:text-base mb-3">Our blog</h3>
             <h2 class="text-4xl md:text-5xl mb-6">Resources and insights</h2>
             <p class="md:text-xl font-normal mb-12">
               The latest industry news, interviews, technologies, and resources.
             </p>
           </div>
+
+          <!--    Blogs Search Bar on Large Devices      -->
+          <div class="search-input-prepended hidden lg:block">
+            <SvgoSearchIcon
+                class="search-prepend-icon"
+                aria-hidden="true"
+            />
+            <input
+                v-model="searchedBlog"
+                id="searchBlog"
+                class="search-input md:!w-[45%]"
+                placeholder="Search Blogs"
+                type="search"
+                @input="handleSearchInput"
+            />
+          </div>
         </div>
       </section>
 
       <section>
         <div class="container">
-          <div class="flex max-lg:flex-col items-start gap-16">
-            <!--   Blog Categories Dropdown for Smaller Devices   -->
-            <form class="w-full block lg:hidden">
-              <label class="sr-only">Select Category</label>
-              <select v-model="selectedCategory" id="categoriesDropdown" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                <template v-for="category in filteredCategories">
-                  <option :value="category.label">{{ category.label }}</option>
-                </template>
-              </select>
-            </form>
+          <div class="flex max-lg:flex-col items-stretch gap-16">
+            <!--   Blog Categories Dropdown and Search bar for Smaller and Medium Devices   -->
+            <div class="flex flex-col gap-8 lg:hidden">
+              <form class="w-full block">
+                <label class="sr-only">Select Category</label>
+                <select v-model="selectedCategory" id="categoriesDropdown"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                  <template v-for="category in filteredCategories">
+                    <option :value="category.label">{{ category.label }}</option>
+                  </template>
+                </select>
+              </form>
+
+              <div class="search-input-prepended">
+                <SvgoSearchIcon
+                    class="search-prepend-icon"
+                    aria-hidden="true"
+                />
+                <input
+                    v-model="searchedBlog"
+                    id="searchBlog"
+                    class="search-input lg:!w-[45%]"
+                    placeholder="Search Blogs"
+                    type="search"
+                    @input="handleSearchInput"
+                />
+              </div>
+            </div>
 
             <!--   Blog Posts List    -->
             <div class="w-full lg:grow">
               <template v-if="showBlogsLoader">
-                <div class="flex justify-center items-center h-[40vh] w-full">
+                <div class="flex justify-center items-center max-md:h-[70vh] w-full">
                   <BaseSpinner size="lg" :show-loader="showBlogsLoader" />
                 </div>
               </template>
@@ -151,7 +188,6 @@ watch(() => selectedCategory.value, async (val :string) => {
                 </template>
 
                 <template v-for="blog in splitBlogs">
-
                     <div v-if="blogs.length" class="flex flex-col justify-around">
                       <div class="overflow-hidden mb-5">
                         <div class="h-60">
@@ -161,8 +197,7 @@ watch(() => selectedCategory.value, async (val :string) => {
                       </div>
                       <div class="flex flex-col gap-2 mb-6">
                         <div>
-                          <span
-                              class="bg-gray-50 rounded-full p-1 pr-2.5 border border-brand-200 text-xs text-brand-600 inline-flex items-center gap-2 mb-4">
+                          <span class="bg-gray-50 rounded-full p-1 pr-2.5 border border-brand-200 text-xs text-brand-600 inline-flex items-center gap-2 mb-4">
                             <span
                                 class="h-[22px] flex items-center justify-center bg-white rounded-full py-0.5 px-2 border border-brand-200 leading-[18px]">
                               {{ blog?.category?.category_name || 'General' }}
@@ -200,15 +235,15 @@ watch(() => selectedCategory.value, async (val :string) => {
 
             <!--   Blog Categories List   -->
             <div class="hidden lg:flex w-[280px] shrink-0 flex-col gap-8">
-              <div class="relative">
+              <div class="search-input-prepended">
                 <SvgoSearchIcon
-                    class="pointer-events-none absolute inset-y-0 left-2 h-full w-5 text-gray-500"
+                    class="search-prepend-icon"
                     aria-hidden="true"
                 />
                 <input
                     v-model="searchedCategory"
-                    id="search-category"
-                    class="block h-full rounded-lg w-full shadow-xs border border-gray-300 bg-transparent py-[13px] pl-8 pr-0 text-black sm:text-sm"
+                    id="searchCategory"
+                    class="search-input"
                     placeholder="Search"
                     type="search"
                     name="search"
@@ -223,7 +258,7 @@ watch(() => selectedCategory.value, async (val :string) => {
                       v-for="category in filteredCategories"
                       class="category-option"
                       :class="{ 'active': selectedCategory == category.label }"
-                      @click="selectCategory(category.label)"
+                      @click="selectedCategory = category.label"
                   >
                     {{ category.label }}
                   </li>

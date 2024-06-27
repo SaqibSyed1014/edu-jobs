@@ -168,3 +168,15 @@ h1, h2, h3, h4, h5, h6{
 .multiselect.custom-multi-select .multiselect__content-wrapper{
     @apply border-0
 }
+
+
+/* Search Bar */
+.search-input-prepended{
+    @apply relative
+}
+.search-input-prepended .search-prepend-icon{
+    @apply pointer-events-none absolute inset-y-0 left-2 h-full w-5 text-gray-500
+}
+.search-input-prepended .search-input{
+    @apply block h-full rounded-lg w-full shadow-xs border border-gray-300 bg-transparent py-[13px] pl-8 pr-0 text-black sm:text-sm
+}
