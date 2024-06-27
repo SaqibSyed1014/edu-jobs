@@ -1,6 +1,5 @@
 import {
     getBlogsList,
-    getBlogsByCategory,
     getBlogsCategories,
     getBlogDetails
 } from "~/segments/blogs/services";
@@ -32,20 +31,9 @@ export const useBlogStore = defineStore('blogStore', {
         }
     } as BlogState),
     actions: {
-        async fetchBlogs(pageInfo :PaginationInfo) {
-            return await getBlogsList(pageInfo.currentPage, pageInfo.itemsPerPage)
+        async fetchBlogs(pageInfo :PaginationInfo, queryVal :string, category :string) {
+            return await getBlogsList(pageInfo.currentPage, pageInfo.itemsPerPage, queryVal, category==='View All'? '':category)
                 .then(({data, meta }) => {
-                    this.$state.blogs = data;
-                    this.$state.pagination = meta.pagination
-                })
-                .catch((err) => {
-                    console.log('error ', err);
-                    throw err;
-                })
-        },
-        async fetchBlogsByCategory(pageInfo :PaginationInfo, category :string) {
-            return await getBlogsByCategory(pageInfo.currentPage, pageInfo.itemsPerPage, category)
-                .then(({ data, meta }) => {
                     this.$state.blogs = data;
                     this.$state.pagination = meta.pagination
                 })
