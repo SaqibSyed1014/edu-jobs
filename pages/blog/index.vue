@@ -18,7 +18,7 @@ const pageInfo = ref<PaginationInfo>({
 
 onMounted(async () => {
   showPageLoader.value = true;
-  await blogsStore.fetchBlogs(pageInfo.value, '', '');
+  await blogsStore.fetchBlogs(pageInfo.value);
   await blogsStore.fetchBlogsCategories();
   pageInfo.value.totalPages = pagination.value.pageCount;
   showPageLoader.value = false;
