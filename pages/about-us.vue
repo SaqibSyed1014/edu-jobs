@@ -138,7 +138,7 @@ import {values} from "~/components/core/constants/about-us.constants";
       </div>
     </section>
 
-    <section class="pb-12 pt-16 md:pt-24">
+    <section class="py-16 md:py-24">
       <div class="container">
         <div class="text-center md:mb-14">
           <h3 class="text-brand-600 text-sm md:text-base mb-3">Our values</h3>
