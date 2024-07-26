@@ -52,11 +52,13 @@ import {values} from "~/components/core/constants/about-us.constants";
             </div>
           </div>
           <div class="col-span-1">
-            <img src="/images/about/about-img-1.png" alt="About Section One Image">
+            <div class="rounded-[10px] overflow-hidden">
+              <img src="/images/about/about-img-1.png" alt="About Section One Image">
+            </div>
           </div>
         </div>
 
-        <div class="grid md:grid-cols-2 max-md:gap-14 py-20 md:py-24">
+        <div class="grid md:grid-cols-2 max-md:gap-14 py-14 md:py-24">
           <div class="col-span-1 md:order-2">
             <div class="flex flex-col gap-6 md:pl-20 xl:pl-24">
               <div class="bg-brand-100 size-12 rounded-full flex items-center justify-center">
@@ -92,7 +94,9 @@ import {values} from "~/components/core/constants/about-us.constants";
             </div>
           </div>
           <div class="col-span-1 md:order-1">
-            <img src="/images/about/about-img-2.png" alt="About Section Two Image">
+            <div class="rounded-[10px] overflow-hidden">
+              <img src="/images/about/about-img-2.png" alt="About Section Two Image">
+            </div>
           </div>
         </div>
 
@@ -132,7 +136,9 @@ import {values} from "~/components/core/constants/about-us.constants";
             </div>
           </div>
           <div class="col-span-1">
-            <img src="/images/about/about-img-3.png" alt="About Section Three Image">
+            <div class="rounded-[10px] overflow-hidden">
+              <img src="/images/about/about-img-3.png" alt="About Section Three Image">
+            </div>
           </div>
         </div>
       </div>
