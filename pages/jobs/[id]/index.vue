@@ -30,6 +30,22 @@ onMounted(async () => {
   isJobFetching.value = true;
   await jobStore.fetchJobDetails(route.params?.id as string);
   isJobFetching.value = false;
+
+  window.addEventListener('message', (event) => {
+    // Ensure the message is from the trusted domain
+    console.log('event ', event);
+    if (event.origin !== 'http://localhost:5173') return;
+
+    console.log('source ', event);
+    if (event.data.source !== 'candidate-dashboard') return;
+
+    console.log('final ', event.data);
+    const { token } = event.data;
+    if (token) {
+      localStorage.setItem('authToken', token);
+      console.log('Token received and stored');
+    }
+  }, false);
 })
 
 const showSignupModal = ref<boolean>(false)
